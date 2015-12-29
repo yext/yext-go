@@ -4,12 +4,31 @@ import (
 	"reflect"
 )
 
-func (a Location) Diff(b Location) (d *Location, diff bool) {
+// Diff calculates the differences between a base Location (a) and a proposed set of changes
+// represented by a second Location (b).  The diffing logic will ignore fields in the proposed
+// Location that aren't set (nil).  This characteristic makes the function ideal for
+// calculting the minimal PUT required to bring an object "up-to-date" via the API.
+//
+// Example:
+//   var (
+//     // Typically, this would come from an authoritative source, like the API
+//     base     = Location{Name: "Yext, Inc.", Address1: "123 Mulberry St"}
+//     proposed = Location{Name: "Yext, Inc.", Address1: "456 Washington St"}
+//   )
+//
+//   delta, isDiff := base.Diff(proposed)
+//   // isDiff -> true
+//   // delta -> &Location{Address1: "456 Washington St"}
+//
+//   delta, isDiff = base.Diff(base)
+//   // isDiff -> false
+//   // delta -> nil
+func (y Location) Diff(b Location) (d *Location, diff bool) {
 	diff = false
 
 	var (
-		aV, bV = reflect.ValueOf(a), reflect.ValueOf(b)
-		aT     = reflect.TypeOf(a)
+		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b)
+		aT     = reflect.TypeOf(y)
 		numA   = aV.NumField()
 	)
 
@@ -28,12 +47,12 @@ func (a Location) Diff(b Location) (d *Location, diff bool) {
 			d = new(Location)
 			if nameA == "CustomFields" {
 				// deal with case where left is nil and right is empty
-				if a.CustomFields == nil && b.CustomFields != nil {
+				if y.CustomFields == nil && b.CustomFields != nil {
 					diff = true
 				}
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
-					if aValue, ok := a.CustomFields[field]; ok {
+					if aValue, ok := y.CustomFields[field]; ok {
 						if !reflect.DeepEqual(aValue, value) {
 							d.CustomFields[field] = value
 							diff = true

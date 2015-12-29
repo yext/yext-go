@@ -2,7 +2,7 @@ package yext
 
 // TODO
 // * Need better custom field accessors and helpers
-// *  The API will accept some things and return them in a different format - this makes diff'ing difficult:
+// * The API will accept some things and return them in a different format - this makes diff'ing difficult:
 // ** Phone: Send in 540-444-4444, get back 5404444444
 // ** Custom Field Multi-Option: Send in options ["3", "2", "1"], get back ["1", "2", "3"]
 
@@ -11,7 +11,8 @@ import (
 	"fmt"
 )
 
-// Source: https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
+// Location is the representation of a Location in Yext Location Manager.
+// For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
 	Id                     *string                `json:"id,omitempty"`
 	Name                   *string                `json:"locationName,omitempty"`
@@ -317,25 +318,31 @@ func (y Location) String() string {
 	return string(b)
 }
 
+// LocationPhoto represents a photo associated with a Location in Yext Location Manager.
+// For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
 	Url             string `json:"url,omitempty"`
 	Description     string `json:"description,omitempty"`
 	ClickThroughURL string `json:"clickthroughUrl,omitempty"`
 }
 
-func (this LocationPhoto) String() string {
-	return fmt.Sprintf("Url: '%v', Description: '%v'", this.Url, this.Description)
+func (l LocationPhoto) String() string {
+	return fmt.Sprintf("Url: '%v', Description: '%v'", l.Url, l.Description)
 }
 
+// LocationClosed represents the 'closed' state of a Location in Yext Location Manager.
+// For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Closed
 type LocationClosed struct {
 	IsClosed   string `json:"isClosed"`
 	ClosedDate string `json:"closedDate,omitempty"`
 }
 
-func (this LocationClosed) String() string {
-	return fmt.Sprintf("isClosed: %v, closedDate: '%v'", this.IsClosed, this.ClosedDate)
+func (l LocationClosed) String() string {
+	return fmt.Sprintf("isClosed: %v, closedDate: '%v'", l.IsClosed, l.ClosedDate)
 }
 
+// HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.
+// For details see
 type HolidayHours struct {
 	Date  string `json:"date"`
 	Hours string `json:"hours"`

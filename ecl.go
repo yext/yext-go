@@ -1,5 +1,6 @@
 package yext
 
+// ListECLResponse is a calculated value that provides typed access to an underlying 'ListECL' response
 type ListECLResponse struct {
 	AllLists     []ECL
 	ProductLists []ProductsECL
@@ -14,7 +15,7 @@ type ECL struct {
 	Type     *string      `json:"type,omitempty"`  // one of MENU, BIOS, PRODUCTS, EVENTS
 	Size     *int         `json:"size,omitempty"`  // read only
 	Publish  *bool        `json:"publish"`
-	Currency *string      `json:"currency,omitempty"` //ISO Code for currency
+	Currency *string      `json:"currency,omitempty"` // ISO Code for currency
 	Sections []ECLSection `json:"sections,omitempty"`
 }
 
