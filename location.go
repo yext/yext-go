@@ -2,7 +2,7 @@ package yext
 
 // TODO
 // * Need better custom field accessors and helpers
-// *  will accept some things and return them in a different format:
+// *  The API will accept some things and return them in a different format - this makes diff'ing difficult:
 // ** Phone: Send in 540-444-4444, get back 5404444444
 // ** Custom Field Multi-Option: Send in options ["3", "2", "1"], get back ["1", "2", "3"]
 
@@ -11,8 +11,7 @@ import (
 	"fmt"
 )
 
-// please see: https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
-// for information on these fields
+// Source: https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
 	Id                     *string                `json:"id,omitempty"`
 	Name                   *string                `json:"locationName,omitempty"`
@@ -64,11 +63,8 @@ type Location struct {
 	Logo                   *LocationPhoto         `json:"logo,omitempty"`
 	Photos                 []LocationPhoto        `json:"photos,omitempty"`
 	Closed                 *LocationClosed        `json:"closed,omitempty"`
-	/***** Note *****
-	  These fields are excluded becuase I'm not sure how to unmarshall them properly:
-	  categoryIds Integer Array or string Array `json:"//categoryIds,omitempty"`
-		HolidayHours []Holiday Hours `json:"holidayHours,omitempty"`
-	  *****************/
+	CategoryIds            []string               `json:"categoryIds,omitempty"`
+	HolidayHours           []HolidayHours         `json:"holidayHours,omitempty"`
 }
 
 func (y Location) GetId() string {
@@ -338,4 +334,9 @@ type LocationClosed struct {
 
 func (this LocationClosed) String() string {
 	return fmt.Sprintf("isClosed: %v, closedDate: '%v'", this.IsClosed, this.ClosedDate)
+}
+
+type HolidayHours struct {
+	Date  string `json:"date"`
+	Hours string `json:"hours"`
 }
