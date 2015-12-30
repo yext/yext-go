@@ -24,7 +24,7 @@ import (
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b Location) (d *Location, diff bool) {
-	diff = false
+	diff, d = false, new(Location)
 
 	var (
 		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b)
@@ -44,7 +44,6 @@ func (y Location) Diff(b Location) (d *Location, diff bool) {
 		}
 
 		if !reflect.DeepEqual(valA.Interface(), valB.Interface()) {
-			d = new(Location)
 			if nameA == "CustomFields" {
 				// deal with case where left is nil and right is empty
 				if y.CustomFields == nil && b.CustomFields != nil {

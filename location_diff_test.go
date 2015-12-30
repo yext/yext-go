@@ -883,3 +883,14 @@ func TestClosedDiffs(t *testing.T) {
 		}
 	}
 }
+
+func TestComplexDiffs(t *testing.T) {
+	matt, ben := Location{Name: String("matt"), Emails: []string{"matt@yext.com"}}, Location{Name: String("ben"), Emails: []string{"ben@yext.com"}}
+	delta, isDiff := matt.Diff(ben)
+	if !isDiff {
+		t.Errorf("Expected true diff was false\ndelta was:\n%v\n", delta)
+	}
+	if delta.GetName() != "ben" || len(delta.Emails) != 1 || delta.Emails[0] != "ben@yext.com" {
+		t.Errorf("Delta was not as expected\ndelta was:\n%v\nexpected\v%v\n", delta, ben)
+	}
+}
