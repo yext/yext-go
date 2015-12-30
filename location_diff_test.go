@@ -6,18 +6,18 @@ import (
 	"testing"
 )
 
-var examplePhoto LocationPhoto = LocationPhoto{
+var examplePhoto = LocationPhoto{
 	Url:         "http://www.google.com",
 	Description: "An example image",
 }
 
-var exampleECL ECL = ECL{
-	Id:       "ding",
-	Name:     "ding",
-	Title:    "ding",
-	EclType:  "ding",
-	Publish:  false,
-	Currency: "ding",
+var exampleECL = ECL{
+	Id:       String("ding"),
+	Name:     String("ding"),
+	Title:    String("ding"),
+	Type:     String("ding"),
+	Publish:  Bool(false),
+	Currency: String("ding"),
 	Sections: []ECLSection{},
 }
 
@@ -411,21 +411,21 @@ var eclTests = []eclTest{
 	{
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
@@ -435,32 +435,32 @@ var eclTests = []eclTest{
 	{
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "Dang",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("Dang"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		true,
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
@@ -468,40 +468,40 @@ var eclTests = []eclTest{
 	{
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		true,
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
@@ -509,48 +509,48 @@ var eclTests = []eclTest{
 	{
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
 		true,
 		[]ECL{
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 			ECL{
-				Id:       "1",
-				Name:     "ding",
-				Title:    "dong",
-				EclType:  "EVENTS",
-				Currency: "USD",
+				Id:       String("1"),
+				Name:     String("ding"),
+				Title:    String("dong"),
+				Type:     String("EVENTS"),
+				Currency: String("USD"),
 				Sections: []ECLSection{},
 			},
 		},
@@ -579,26 +579,26 @@ func TestECLDiffs(t *testing.T) {
 			for i := 0; i < len(d.Lists); i++ {
 				good := true
 				dL, eL := d.Lists[i], data.expectedFieldValue[i]
-				if dL.Id != eL.Id {
+				if dL.GetId() != eL.GetId() {
 					good = false
-				} else if dL.Name != eL.Name {
+				} else if dL.GetName() != eL.GetName() {
 					good = false
-				} else if dL.Title != eL.Title {
+				} else if dL.GetTitle() != eL.GetTitle() {
 					good = false
-				} else if dL.EclType != eL.EclType {
+				} else if dL.GetType() != eL.GetType() {
 					good = false
-				} else if dL.Currency != eL.Currency {
+				} else if dL.GetCurrency() != eL.GetCurrency() {
 					good = false
 				} else if len(dL.Sections) != len(eL.Sections) {
 					good = false
 				} else {
 					for j := 0; j < len(dL.Sections); j++ {
 						dS, eS := dL.Sections[j], eL.Sections[i]
-						if dS.Id != eS.Id {
+						if dS.GetId() != eS.GetId() {
 							good = false
-						} else if dS.Name != eS.Name {
+						} else if dS.GetName() != eS.GetName() {
 							good = false
-						} else if dS.Description != eS.Description {
+						} else if dS.GetDescription() != eS.GetDescription() {
 							good = false
 						}
 					}
