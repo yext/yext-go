@@ -38,30 +38,30 @@ func (e *ECLService) CreateEventList(y *EventsECL) (*EventsECL, error) {
 
 func (e *ECLService) Edit(y *ECL) (*ECL, error) {
 	var v ECL
-	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.Id), y, &v)
+	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.GetId()), y, &v)
 	return &v, err
 }
 
 func (e *ECLService) EditProductList(y *ProductsECL) (*ProductsECL, error) {
 	var v ProductsECL
-	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.Id), y, &v)
+	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.GetId()), y, &v)
 	return &v, err
 }
 
 func (e *ECLService) EditBioList(y *BiosECL) (*BiosECL, error) {
 	var v BiosECL
-	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.Id), y, &v)
+	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.GetId()), y, &v)
 	return &v, err
 }
 
 func (e *ECLService) EditEventList(y *EventsECL) (*EventsECL, error) {
 	var v EventsECL
-	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.Id), y, &v)
+	err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", listsPath, y.GetId()), y, &v)
 	return &v, err
 }
 
 type genericECLResponse struct {
-	Lists []ECL `json:"lists"`
+	Lists []*ECL `json:"lists"`
 }
 
 func (e *ECLService) List() (*ListECLResponse, error) {
@@ -99,21 +99,21 @@ func parseECLResponse(buf []byte) (*ListECLResponse, error) {
 
 		switch ecl["type"] {
 		case "PRODUCTS":
-			var prod ProductsECL
+			var prod *ProductsECL
 			err = json.Unmarshal(reMarshalled, &prod)
 			if err != nil {
 				return nil, err
 			}
 			res.ProductLists = append(res.ProductLists, prod)
 		case "BIOS":
-			var bio BiosECL
+			var bio *BiosECL
 			err = json.Unmarshal(reMarshalled, &bio)
 			if err != nil {
 				return nil, err
 			}
 			res.BioLists = append(res.BioLists, bio)
 		case "EVENTS":
-			var event EventsECL
+			var event *EventsECL
 			err = json.Unmarshal(reMarshalled, &event)
 			if err != nil {
 				return nil, err

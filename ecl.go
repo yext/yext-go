@@ -2,21 +2,21 @@ package yext
 
 // ListECLResponse is a calculated value that provides typed access to an underlying 'ListECL' response
 type ListECLResponse struct {
-	AllLists     []ECL
-	ProductLists []ProductsECL
-	BioLists     []BiosECL
-	EventsLists  []EventsECL
+	AllLists     []*ECL
+	ProductLists []*ProductsECL
+	BioLists     []*BiosECL
+	EventsLists  []*EventsECL
 }
 
 type ECL struct {
-	Id       *string      `json:"id"`
-	Name     *string      `json:"name,omitempty"`  // max length 100
-	Title    *string      `json:"title,omitempty"` // max length 100
-	Type     *string      `json:"type,omitempty"`  // one of MENU, BIOS, PRODUCTS, EVENTS
-	Size     *int         `json:"size,omitempty"`  // read only
-	Publish  *bool        `json:"publish"`
-	Currency *string      `json:"currency,omitempty"` // ISO Code for currency
-	Sections []ECLSection `json:"sections,omitempty"`
+	Id       *string       `json:"id"`
+	Name     *string       `json:"name,omitempty"`  // max length 100
+	Title    *string       `json:"title,omitempty"` // max length 100
+	Type     *string       `json:"type,omitempty"`  // one of MENU, BIOS, PRODUCTS, EVENTS
+	Size     *int          `json:"size,omitempty"`  // read only
+	Publish  *bool         `json:"publish"`
+	Currency *string       `json:"currency,omitempty"` // ISO Code for currency
+	Sections []*ECLSection `json:"sections,omitempty"`
 }
 
 func (e ECL) GetId() string {
@@ -129,12 +129,12 @@ type Photo struct {
 }
 
 type Cost struct {
-	Type    string        `json:"type,omitempty"`
-	Price   string        `json:"price,omitempty"`
-	Unit    string        `json:"unit,omitempty"`
-	RangeTo string        `json:"rangeTo,omitempty"`
-	Other   string        `json:"other,omitempty"`
-	Options []CostOptions `json:"options,omitempty"`
+	Type    string         `json:"type,omitempty"`
+	Price   string         `json:"price,omitempty"`
+	Unit    string         `json:"unit,omitempty"`
+	RangeTo string         `json:"rangeTo,omitempty"`
+	Other   string         `json:"other,omitempty"`
+	Options []*CostOptions `json:"options,omitempty"`
 }
 
 type CostOptions struct {
@@ -145,12 +145,12 @@ type CostOptions struct {
 
 type EventsECL struct {
 	ECL
-	Sections []EventsECLSection `json:"sections,omitempty"`
+	Sections []*EventsECLSection `json:"sections,omitempty"`
 }
 
 type EventsECLSection struct {
 	ECLSection
-	Items []Event `json:"items,omitempty"` // max 100 items
+	Items []*Event `json:"items,omitempty"` // max 100 items
 }
 
 type Event struct {
@@ -163,31 +163,31 @@ type Event struct {
 
 type ProductsECL struct {
 	ECL
-	Sections []ProductsECLSection `json:"sections,omitempty"`
+	Sections []*ProductsECLSection `json:"sections,omitempty"`
 }
 
 type ProductsECLSection struct {
 	ECLSection
-	Items []Product `json:"items,omitempty"` // max 100 items
+	Items []*Product `json:"items,omitempty"` // max 100 items
 }
 
 type Product struct {
 	ECLItem
-	Type   string  `json:"idcode,omitempty"`
-	Cost   *Cost   `json:"cost,omitempty"`
-	Photos []Photo `json:"photos,omitempty"`
-	Video  string  `json:"video,omitempty"`
-	Url    string  `json:"url,omitempty"`
+	Type   string   `json:"idcode,omitempty"`
+	Cost   *Cost    `json:"cost,omitempty"`
+	Photos []*Photo `json:"photos,omitempty"`
+	Video  string   `json:"video,omitempty"`
+	Url    string   `json:"url,omitempty"`
 }
 
 type BiosECL struct {
 	ECL
-	Sections []BiosECLSection `json:"sections,omitempty"`
+	Sections []*BiosECLSection `json:"sections,omitempty"`
 }
 
 type BiosECLSection struct {
 	ECLSection
-	Items []Bio `json:"items,omitempty"` // max 100 items
+	Items []*Bio `json:"items,omitempty"` // max 100 items
 }
 
 type Bio struct {
