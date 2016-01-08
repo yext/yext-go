@@ -18,7 +18,7 @@ var exampleECL = ECL{
 	Type:     String("ding"),
 	Publish:  Bool(false),
 	Currency: String("ding"),
-	Sections: []ECLSection{},
+	Sections: []*ECLSection{},
 }
 
 var baseLocation Location = Location{
@@ -91,7 +91,7 @@ func TestCopy(t *testing.T) {
 }
 
 func TestDiffIdentical(t *testing.T) {
-	secondLocation := *baseLocation.Copy()
+	secondLocation := baseLocation.Copy()
 	d, isDiff := baseLocation.Diff(secondLocation)
 	if isDiff == true {
 		t.Errorf("Expected diff to be false was true, diff result %v", d)
@@ -134,7 +134,7 @@ func (t stringTest) formatErrorBase(index int) string {
 }
 
 func TestStringDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 
 	for i, data := range stringTests {
 		a.Name, b.Name = data.baseValue, data.newValue
@@ -188,7 +188,7 @@ func (t boolTest) formatErrorBase(index int) string {
 }
 
 func TestBoolDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range boolTests {
 		a.SuppressAddress, b.SuppressAddress = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -232,7 +232,7 @@ func (t stringArrayTest) formatErrorBase(index int) string {
 }
 
 func TestStringArrayDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range stringArrayTests {
 		a.PaymentOptions, b.PaymentOptions = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -287,7 +287,7 @@ func (t floatTest) formatErrorBase(index int) string {
 }
 
 func TestFloatDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range floatTests {
 		a.DisplayLat, b.DisplayLat = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -334,7 +334,7 @@ var photoTests = []photoTest{
 }
 
 func TestPhotoDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range photoTests {
 		a.FacebookCoverPhoto, b.FacebookCoverPhoto = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -374,7 +374,7 @@ func (t photoArrayTest) formatErrorBase(index int) string {
 }
 
 func TestPhotoArrayDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range photoArrayTests {
 		a.Photos, b.Photos = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -416,7 +416,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		[]ECL{
@@ -426,7 +426,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		false,
@@ -440,7 +440,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		[]ECL{
@@ -450,7 +450,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		true,
@@ -461,7 +461,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 	},
@@ -473,7 +473,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 			ECL{
 				Id:       String("1"),
@@ -481,7 +481,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		[]ECL{
@@ -491,7 +491,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		true,
@@ -502,7 +502,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 	},
@@ -514,7 +514,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		[]ECL{
@@ -524,7 +524,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 			ECL{
 				Id:       String("1"),
@@ -532,7 +532,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 		true,
@@ -543,7 +543,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 			ECL{
 				Id:       String("1"),
@@ -551,7 +551,7 @@ var eclTests = []eclTest{
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []ECLSection{},
+				Sections: []*ECLSection{},
 			},
 		},
 	},
@@ -562,7 +562,7 @@ func (t eclTest) formatErrorBase(index int) string {
 }
 
 func TestECLDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range eclTests {
 		a.Lists, b.Lists = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -757,7 +757,7 @@ func (t customFieldsTest) formatErrorBase(index int) string {
 
 func TestCustomFieldsDiff(t *testing.T) {
 	addZeroTests()
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range customFieldsTests {
 		a.CustomFields, b.CustomFields = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -863,7 +863,7 @@ func (t closedTest) formatErrorBase(index int) string {
 }
 
 func TestClosedDiffs(t *testing.T) {
-	a, b := *new(Location), *new(Location)
+	a, b := *new(Location), new(Location)
 	for i, data := range closedTests {
 		a.Closed, b.Closed = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
@@ -886,7 +886,7 @@ func TestClosedDiffs(t *testing.T) {
 
 func TestComplexDiffs(t *testing.T) {
 	matt, ben := Location{Name: String("matt"), Emails: []string{"matt@yext.com"}}, Location{Name: String("ben"), Emails: []string{"ben@yext.com"}}
-	delta, isDiff := matt.Diff(ben)
+	delta, isDiff := matt.Diff(&ben)
 	if !isDiff {
 		t.Errorf("Expected true diff was false\ndelta was:\n%v\n", delta)
 	}

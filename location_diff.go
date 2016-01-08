@@ -23,11 +23,11 @@ import (
 //   delta, isDiff = base.Diff(base)
 //   // isDiff -> false
 //   // delta -> nil
-func (y Location) Diff(b Location) (d *Location, diff bool) {
-	diff, d = false, new(Location)
+func (y Location) Diff(b *Location) (d *Location, diff bool) {
+	diff, d = false, &Location{Id: String(y.GetId())}
 
 	var (
-		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b)
+		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b).Elem()
 		aT     = reflect.TypeOf(y)
 		numA   = aV.NumField()
 	)
@@ -39,7 +39,7 @@ func (y Location) Diff(b Location) (d *Location, diff bool) {
 			valB  = bV.Field(i)
 		)
 
-		if valB.IsNil() {
+		if valB.IsNil() || nameA == "Id" {
 			continue
 		}
 
