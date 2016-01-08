@@ -18,6 +18,7 @@ type Location struct {
 	Name                   *string                `json:"locationName,omitempty"`
 	Lists                  []ECL                  `json:"lists,omitempty"`
 	Keywords               []string               `json:"keywords,omitempty"`
+	Associations           []string               `json:"associations,omitempty"`
 	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
 	CustomerId             *string                `json:"customerId,omitempty"`
 	Address                *string                `json:"address,omitempty"`
