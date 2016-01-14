@@ -46,12 +46,13 @@ func TestGetResponseError(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(licenseDoesNotExistResponse))
 	})
 
 	resp, err := client.LicenseService.Get(licenseId)
-	if err != nil {
-		t.Error("Error making request:", err)
+	if err == nil {
+		t.Error("Error should have been returned.")
 	}
 
 	if len(resp.LocationIds) > 0 {
@@ -98,12 +99,13 @@ func TestAddLocationToLicenseError(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(licenseError))
 	})
 
 	resp, err := client.LicenseService.AddLocationToLicense(licenseId, locationId)
-	if err != nil {
-		t.Errorf("Error making request:", err)
+	if err == nil {
+		t.Error("Should have received location not found error")
 	}
 
 	if len(resp.LocationIds) > 0 {
@@ -149,12 +151,13 @@ func TestRemoveLocationFromLicenseError(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(licenseError))
 	})
 
 	resp, err := client.LicenseService.RemoveLocationFromLicense(licenseId, locationId)
-	if err != nil {
-		t.Error("Error making request:", err)
+	if err == nil {
+		t.Error("Should have received location not found error")
 	}
 
 	if len(resp.LocationIds) > 0 {
