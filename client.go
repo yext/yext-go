@@ -17,16 +17,18 @@ const ProductionHost string = "api.yext.com"
 var ResourceNotFound = errors.New("Resource not found")
 
 type Client struct {
-	client     *http.Client
-	username   string
-	password   string
-	customerId string
-	baseUrl    string
+	client      *http.Client
+	username    string
+	password    string
+	customerId  string
+	baseUrl     string
+	ShowRequest bool
 
 	LocationService    *LocationService
 	ECLService         *ECLService
 	CustomFieldService *CustomFieldService
 	FolderService      *FolderService
+	LicenseService     *LicenseService
 }
 
 type Config struct {
@@ -51,6 +53,7 @@ func NewClient(username string, password string, customerId string, config Confi
 	c.ECLService = &ECLService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
+	c.LicenseService = &LicenseService{client: c}
 
 	return c
 }
@@ -69,9 +72,7 @@ func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*h
 		return nil, err
 	}
 
-	r, err := c.NewRequestBody(method, path, json)
-
-	return r, err
+	return c.NewRequestBody(method, path, json)
 }
 
 func (c *Client) NewRequestBody(method string, path string, data []byte) (*http.Request, error) {
@@ -106,6 +107,10 @@ func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v in
 }
 
 func (c *Client) Do(req *http.Request, v interface{}) error {
+	if c.ShowRequest {
+		fmt.Printf("%+v\n", req)
+	}
+
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
