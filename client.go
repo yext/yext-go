@@ -134,14 +134,15 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 }
 
 func CheckResponseError(res *http.Response) error {
-	body, _ := ioutil.ReadAll(res.Body)
 	if res.StatusCode == 404 {
 		return ResourceNotFound
-	} else if res.StatusCode >= 400 && res.StatusCode < 500 {
-		aeResp := UnmarhsalAPIError(res.StatusCode, body)
-		return aeResp
-	} else if res.StatusCode < 200 || res.StatusCode >= 500 {
-		return errors.New(fmt.Sprintf("%d: %v", res.StatusCode, string(body)))
+	} else if res.StatusCode < 200 || res.StatusCode >= 400 {
+		body, _ := ioutil.ReadAll(res.Body)
+		if res.StatusCode >= 400 && res.StatusCode < 500 {
+			return UnmarhsalAPIError(res.StatusCode, body)
+		} else {
+			return errors.New(fmt.Sprintf("%d: %v", res.StatusCode, string(body)))
+		}
 	}
 	return nil
 }
