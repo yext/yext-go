@@ -134,15 +134,17 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 }
 
 func CheckResponseError(res *http.Response) error {
-	if res.StatusCode == 404 {
+	if sc := res.StatusCode; 200 <= sc && sc <= 299 {
+		return nil
+	} else if sc == 404 {
 		return ResourceNotFound
-	} else if res.StatusCode < 200 || res.StatusCode >= 400 {
-		body, _ := ioutil.ReadAll(res.Body)
-		if res.StatusCode >= 400 && res.StatusCode < 500 {
-			return UnmarhsalAPIError(res.StatusCode, body)
-		} else {
-			return errors.New(fmt.Sprintf("%d: %v", res.StatusCode, string(body)))
+	} else {
+		errorResponse := &ErrorResponse{Response: res}
+		data, err := ioutil.ReadAll(res.Body)
+		if err != nil || json.Unmarshal(data, err) != nil {
+			return errors.New(fmt.Sprintf("unable to unmarshal error from: %s", string(data)))
 		}
+		return errorResponse
 	}
 	return nil
 }

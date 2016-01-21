@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 )
@@ -50,14 +51,7 @@ func (l *LocationService) Get(id string) (*Location, error) {
 func validateCustomFields(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
 		if !customFieldKeyRegex.Match([]byte(k)) {
-			return &APIErrorResponse{
-				Errors: []*APIError{
-					&APIError{
-						Code:    -2,
-						Message: fmt.Sprintf("Custom Fields must be specified by their ID (found %s)", k),
-					},
-				},
-			}
+			return errors.New(fmt.Sprintf("custom fields must be specified by their id, not name: %s", k))
 		}
 	}
 	return nil

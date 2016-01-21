@@ -1,49 +1,31 @@
 package yext
 
 import (
-	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
 )
 
-type APIError struct {
+type Error struct {
 	Message string `json:"message"`
 	Code    int    `json:"errorCode"`
 }
 
-type APIErrorResponse struct {
-	Errors   []*APIError `json:"errors"`
-	HTTPCode int
+type ErrorResponse struct {
+	Errors   []Error `json:"errors"`
+	Response *http.Response
 }
 
-func (e *APIError) Error() string {
-	return fmt.Sprintf("Recieved error code: '%d', messsage was: '%s'", e.Code, e.Message)
+func (e *Error) Error() string {
+	return fmt.Sprintf("code: %d message: %s", e.Code, e.Message)
 }
 
-func (e *APIErrorResponse) Error() string {
-	var errStr string
+func (e *ErrorResponse) Error() string {
+	errs := make([]string, len(e.Errors))
 
-	for _, err := range e.Errors {
-		errStr += fmt.Sprintf("%s\n", err.Error())
-	}
-	return errStr
-}
-
-func UnmarhsalAPIError(httpCode int, respBody []byte) (e *APIErrorResponse) {
-	if len(respBody) == 0 {
-		return nil
+	for i, err := range e.Errors {
+		errs[i] = err.Error()
 	}
 
-	var errResp = new(APIErrorResponse)
-	err := json.Unmarshal(respBody, errResp)
-	if err != nil {
-		ae := &APIError{
-			Code:    -1,
-			Message: fmt.Sprintf("Unknown API Error %v", string(respBody)),
-		}
-		errResp.Errors = append(errResp.Errors, ae)
-	}
-
-	errResp.HTTPCode = httpCode
-
-	return errResp
+	return strings.Join(errs, "; ")
 }
