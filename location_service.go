@@ -48,6 +48,12 @@ func (l *LocationService) Get(id string) (*Location, error) {
 	return &v, err
 }
 
+func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, error) {
+	v := &locationListResponse{}
+	err := l.client.DoRequest("GET", fmt.Sprintf("%s?searchIds=%s", locationsPath, strings.Join(searchIds, ",")), v)
+	return v.Locations, err
+}
+
 func validateCustomFields(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
 		if !customFieldKeyRegex.Match([]byte(k)) {
