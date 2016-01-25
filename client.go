@@ -139,10 +139,14 @@ func CheckResponseError(res *http.Response) error {
 	} else if sc == 404 {
 		return ResourceNotFound
 	} else {
-		errorResponse := &ErrorResponse{Response: res}
 		data, err := ioutil.ReadAll(res.Body)
-		if err != nil || json.Unmarshal(data, err) != nil {
-			return errors.New(fmt.Sprintf("unable to unmarshal error from: %s", string(data)))
+		if err != nil {
+			return err
+		}
+
+		errorResponse := &ErrorResponse{Response: res}
+		if err := json.Unmarshal(data, errorResponse); err != nil {
+			return errors.New(fmt.Sprintf("unable to unmarshal error from: %s : %s", string(data), err))
 		}
 		return errorResponse
 	}
