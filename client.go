@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 const SandboxHost string = "api-sandbox.yext.com"
@@ -17,11 +18,13 @@ const ProductionHost string = "api.yext.com"
 var ResourceNotFound = errors.New("Resource not found")
 
 type Client struct {
-	client      *http.Client
-	username    string
-	password    string
-	customerId  string
-	baseUrl     string
+	client        *http.Client
+	username      string
+	password      string
+	customerId    string
+	baseUrl       string
+	retryAttempts int
+
 	ShowRequest bool
 
 	LocationService    *LocationService
@@ -37,10 +40,11 @@ type Config struct {
 
 func NewClient(username string, password string, customerId string, config Config) *Client {
 	c := &Client{
-		client:     http.DefaultClient,
-		username:   username,
-		password:   password,
-		customerId: customerId,
+		client:        http.DefaultClient,
+		username:      username,
+		password:      password,
+		customerId:    customerId,
+		retryAttempts: 3,
 	}
 
 	host := SandboxHost
@@ -107,30 +111,41 @@ func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v in
 }
 
 func (c *Client) Do(req *http.Request, v interface{}) error {
-	if c.ShowRequest {
-		fmt.Printf("%+v\n", req)
-	}
+	var resultError error
+	for attempt := 0; attempt <= c.retryAttempts; attempt++ {
+		resultError = nil
+		time.Sleep(DefaultBackoffPolicy.Duration(attempt))
 
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return err
-	}
+		if c.ShowRequest {
+			fmt.Printf("%+v\n", req)
+		}
 
-	defer resp.Body.Close()
+		resp, err := c.client.Do(req)
+		if err != nil {
+			resultError = err
+			continue
+		}
 
-	if err := CheckResponseError(resp); err != nil {
-		return err
-	}
+		defer resp.Body.Close()
 
-	if v != nil {
-		if w, ok := v.(io.Writer); ok {
-			io.Copy(w, resp.Body)
-		} else {
-			err = json.NewDecoder(resp.Body).Decode(v)
+		if err := CheckResponseError(resp); err != nil {
+			resultError = err
+			continue
+		}
+
+		if v != nil {
+			if w, ok := v.(io.Writer); ok {
+				io.Copy(w, resp.Body)
+			} else {
+				resultError = json.NewDecoder(resp.Body).Decode(v)
+			}
+		}
+
+		if resultError == nil {
+			return nil
 		}
 	}
-
-	return err
+	return resultError
 }
 
 func CheckResponseError(res *http.Response) error {

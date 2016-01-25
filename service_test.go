@@ -25,8 +25,11 @@ func setup() {
 	client = NewClient("", "", "customerId", Config{})
 	client.baseUrl = server.URL
 
-	// Show requests for debugging
-	// client.ShowRequest = true
+	// Disable retries in test
+	client.retryAttempts = 0
+
+	// 0 delay between retries for test
+	DefaultBackoffPolicy = BackoffPolicy{[]int{0}}
 }
 
 func teardown() {
