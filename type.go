@@ -17,3 +17,9 @@ func Float(v float64) *float64 {
 	*p = v
 	return p
 }
+
+func Int(v int) *int {
+	p := new(int)
+	*p = v
+	return p
+}

@@ -12,8 +12,11 @@ import (
 	"time"
 )
 
-const SandboxHost string = "api-sandbox.yext.com"
-const ProductionHost string = "api.yext.com"
+const (
+	SandboxHost    string = "api-sandbox.yext.com"
+	ProductionHost string = "api.yext.com"
+	CUSTOMERS_PATH string = "customers"
+)
 
 var ResourceNotFound = errors.New("Resource not found")
 
@@ -32,6 +35,7 @@ type Client struct {
 	CustomFieldService *CustomFieldService
 	FolderService      *FolderService
 	LicenseService     *LicenseService
+	UserService        *UserService
 }
 
 type Config struct {
@@ -51,23 +55,32 @@ func NewClient(username string, password string, customerId string, config Confi
 	if config.Host != "" {
 		host = config.Host
 	}
-	c.baseUrl = "https://" + host + "/v1/customers"
+	c.baseUrl = "https://" + host + "/v1"
 
 	c.LocationService = &LocationService{client: c}
 	c.ECLService = &ECLService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
 	c.LicenseService = &LicenseService{client: c}
+	c.UserService = &UserService{client: c}
 
 	return c
 }
 
-func (c *Client) apiRequestURL(path string) string {
-	return fmt.Sprintf("%s/%s/%s", c.baseUrl, c.customerId, path)
+func (c *Client) customerRequestUrl(path string) string {
+	return fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, CUSTOMERS_PATH, c.customerId, path)
+}
+
+func (c *Client) rawRequestURL(path string) string {
+	return fmt.Sprintf("%s/%s", c.baseUrl, path)
 }
 
 func (c *Client) NewRequest(method string, path string) (*http.Request, error) {
-	return c.NewRequestBody(method, path, nil)
+	return c.NewCustomerRequestBody(method, path, nil)
+}
+
+func (c *Client) NewRawRequest(method string, path string) (*http.Request, error) {
+	return c.NewRawRequestBody(method, path, nil)
 }
 
 func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
@@ -76,11 +89,20 @@ func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*h
 		return nil, err
 	}
 
-	return c.NewRequestBody(method, path, json)
+	return c.NewCustomerRequestBody(method, path, json)
 }
 
-func (c *Client) NewRequestBody(method string, path string, data []byte) (*http.Request, error) {
-	req, err := http.NewRequest(method, c.apiRequestURL(path), bytes.NewBuffer(data))
+func (c *Client) NewRawRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
+	json, err := json.Marshal(obj)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.NewRawRequestBody(method, path, json)
+}
+
+func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*http.Request, error) {
+	req, err := http.NewRequest(method, fullPath, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
@@ -101,8 +123,34 @@ func (c *Client) DoRequest(method string, path string, v interface{}) error {
 	return c.Do(req, v)
 }
 
+func (c *Client) DoRawRequest(method string, path string, v interface{}) error {
+	req, err := c.NewRawRequest(method, path)
+	if err != nil {
+		return err
+	}
+
+	return c.Do(req, v)
+}
+
+func (c *Client) NewCustomerRequestBody(method string, path string, data []byte) (*http.Request, error) {
+	return c.NewRequestBody(method, c.customerRequestUrl(path), data)
+}
+
+func (c *Client) NewRawRequestBody(method string, path string, data []byte) (*http.Request, error) {
+	return c.NewRequestBody(method, c.rawRequestURL(path), data)
+}
+
 func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v interface{}) error {
 	req, err := c.NewRequestJSON(method, path, obj)
+	if err != nil {
+		return err
+	}
+
+	return c.Do(req, v)
+}
+
+func (c *Client) DoRawRequestJSON(method string, path string, obj interface{}, v interface{}) error {
+	req, err := c.NewRawRequestJSON(method, path, obj)
 	if err != nil {
 		return err
 	}
