@@ -1,8 +1,11 @@
 package yext
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -40,7 +43,7 @@ func TestRetries(t *testing.T) {
 		w.WriteHeader(http.StatusInternalServerError)
 	})
 
-	client.DoRequest("", "", nil)
+	client.DoRequest("GET", "", nil)
 
 	if requests != 4 {
 		t.Error("Expected 4 net attempts when error encountered, only got", requests)
@@ -64,7 +67,7 @@ func TestLastRetryError(t *testing.T) {
 		w.Write([]byte(errf(request)))
 	})
 
-	err := client.DoRequest("", "", nil)
+	err := client.DoRequest("GET", "", nil)
 
 	expectedErr := errf(client.retryAttempts + 1)
 	if !strings.Contains(err.Error(), expectedErr) {
@@ -90,9 +93,34 @@ func TestBailout(t *testing.T) {
 
 	})
 
-	err := client.DoRequest("", "", nil)
+	err := client.DoRequest("GET", "", nil)
 
 	if err != nil {
 		t.Error("Expected error to be nil when final attempt succeeded:", err)
 	}
+}
+
+func TestRetryWithBody(t *testing.T) {
+	setup()
+	client.retryAttempts = 3
+	defer teardown()
+
+	requests := 0
+	body := map[string]interface{}{"foo": "bar"}
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		requests++
+
+		b, _ := ioutil.ReadAll(r.Body)
+		var payload map[string]interface{}
+		json.Unmarshal(b, &payload)
+		if !reflect.DeepEqual(body, payload) {
+			t.Error("Expected to get identical body in retry scenario, got", string(b), "instead")
+		}
+
+		// Force retries
+		w.WriteHeader(http.StatusInternalServerError)
+	})
+
+	client.DoRequestJSON("POST", "", body, nil)
 }

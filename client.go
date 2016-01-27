@@ -111,10 +111,19 @@ func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v in
 }
 
 func (c *Client) Do(req *http.Request, v interface{}) error {
+	// drain and cache the request body
+	originalRequestBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		return err
+	}
+
 	var resultError error
 	for attempt := 0; attempt <= c.retryAttempts; attempt++ {
 		resultError = nil
 		time.Sleep(DefaultBackoffPolicy.Duration(attempt))
+
+		// Rehydrate the request body since it might have been drained by the previous attempt
+		req.Body = ioutil.NopCloser(bytes.NewBuffer(originalRequestBody))
 
 		if c.ShowRequest {
 			fmt.Printf("%+v\n", req)
