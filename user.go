@@ -12,6 +12,7 @@ type User struct {
 	EmailAddress *string `json:"emailAddress,omitempty"` // req in post
 	PhoneNumber  *string `json:"phoneNumber,omitempty"`
 	Password     *string `json:"password,omitempty"`
+	SSO          *bool   `json:"sso,omitempty"`
 	ACLs         []ACL   `json:"acl,omitempty"`
 }
 
@@ -61,6 +62,13 @@ func (u *User) GetPassword() string {
 		return ""
 	}
 	return *u.Password
+}
+
+func (u *User) GetSSO() bool {
+	if u.SSO == nil {
+		return false
+	}
+	return *u.SSO
 }
 
 func (u *User) String() string {
