@@ -12,7 +12,7 @@ type User struct {
 	EmailAddress *string `json:"emailAddress,omitempty"` // req in post
 	PhoneNumber  *string `json:"phoneNumber,omitempty"`
 	Password     *string `json:"password,omitempty"`
-	ACLs         []*ACL  `json:"acl,omitempty"`
+	ACLs         []ACL   `json:"acl,omitempty"`
 }
 
 func (u *User) GetId() string {

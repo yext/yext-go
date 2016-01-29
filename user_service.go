@@ -63,26 +63,26 @@ func (u *UserService) AvailableRoles() ([]*Role, error) {
 	return v.Roles, err
 }
 
-func (u *UserService) NewFolderACL(f *Folder, r *Role) *ACL {
-	return &ACL{
+func (u *UserService) NewFolderACL(f *Folder, r Role) ACL {
+	return ACL{
 		Role:     r,
-		On:       String(f.Id),
+		On:       f.Id,
 		AccessOn: ACCESS_FOLDER,
 	}
 }
 
-func (u *UserService) NewCustomerACL(r *Role) *ACL {
-	return &ACL{
+func (u *UserService) NewCustomerACL(r Role) ACL {
+	return ACL{
 		Role:     r,
-		On:       String(u.client.customerId),
+		On:       u.client.customerId,
 		AccessOn: ACCESS_CUSTOMER,
 	}
 }
 
-func (u *UserService) NewLocationACL(l *Location, r *Role) *ACL {
-	return &ACL{
+func (u *UserService) NewLocationACL(l *Location, r Role) ACL {
+	return ACL{
 		Role:     r,
-		On:       l.Id,
+		On:       l.GetId(),
 		AccessOn: ACCESS_LOCATION,
 	}
 }
