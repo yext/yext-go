@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -20,6 +21,138 @@ var exampleECL = ECL{
 	Currency: String("ding"),
 	Sections: []*ECLSection{},
 }
+
+var complexOne = &Location{
+	Id:   String("lock206"),
+	Name: String("Farmers Insurance - Stephen Lockhart "),
+	CustomFields: map[string]interface{}{
+		"1857": "",
+		"1858": "47291E",
+		"1859": "Stephen",
+		"1871": "Lockhart",
+		"3004": "Agent",
+		"7240": "Stephen Paul Lockhart",
+		"7251": true,
+		"7253": "4729",
+		"7254": "slockhart",
+		"7255": "2684",
+		"7256": []string{"lock206"},
+		"7261": false,
+		"7263": true,
+		"7265": "",
+		"7266": "",
+		"7269": "1E",
+		"7270": true,
+		"7271": "29",
+		"7272": "User",
+		"7273": "Tonawanda",
+		"7274": "NY",
+		"7275": "2690 Sheridan Dr W",
+		"7276": "14150-9425",
+		"7277": "47",
+		"7278": false,
+		"7279": true,
+		"7283": "",
+		"7284": "Paul",
+		"7285": "1225598",
+		"7286": "",
+		"7287": false,
+		"7288": true,
+		"7296": "1225598",
+		"7297": "",
+		"7298": "",
+		"7299": "1046846",
+		"7300": true,
+	},
+	Address:         String("2690 Sheridan Dr W"),
+	Address2:        String(""),
+	City:            String("Tonawanda"),
+	State:           String("NY"),
+	Zip:             String("14150-9425"),
+	Phone:           String("716-835-0306"),
+	FaxPhone:        String("716-835-0415"),
+	YearEstablished: String("2015"),
+	Emails:          []string{"slockhart@farmersagent.com"},
+	Services: []string{
+		"Auto Insurance",
+		"Home Insurance",
+		"Homeowners Insurance",
+		"Business Insurance",
+		"Motorcyle Insurance",
+		"Recreational Insurance",
+		"Renters Insurance",
+		"Umbrella Insurance",
+	},
+	Languages: []string{"English"},
+	FolderId:  String("91760"),
+}
+
+var complexTwo = &Location{
+	Id:   String("lock206"),
+	Name: String("Farmers Insurance - Stephen Lockhart "),
+	CustomFields: map[string]interface{}{
+		"1857": "",
+		"1858": "47291E",
+		"1859": "Stephen",
+		"1871": "Lockhart",
+		"3004": "Agent",
+		"7240": "Stephen Paul Lockhart",
+		"7251": true,
+		"7253": "4729",
+		"7254": "slockhart",
+		"7255": "2684",
+		"7256": []string{"lock206"},
+		"7261": false,
+		"7263": true,
+		"7265": "",
+		"7266": "",
+		"7269": "1E",
+		"7270": true,
+		"7271": "29",
+		"7272": "User",
+		"7273": "Tonawanda",
+		"7274": "NY",
+		"7275": "2690 Sheridan Dr W",
+		"7276": "14150-9425",
+		"7277": "47",
+		"7278": false,
+		"7279": true,
+		"7283": "",
+		"7284": "Paul",
+		"7285": "1225598",
+		"7286": "",
+		"7287": false,
+		"7288": true,
+		"7296": "1225598",
+		"7297": "",
+		"7298": "",
+		"7299": "1046846",
+		"7300": true,
+	},
+	Address:         String("2690 Sheridan Dr W"),
+	Address2:        String(""),
+	City:            String("Tonawanda"),
+	State:           String("NY"),
+	Zip:             String("14150-9425"),
+	Phone:           String("716-835-0306"),
+	FaxPhone:        String("716-835-0415"),
+	YearEstablished: String("2015"),
+	Emails:          []string{"slockhart@farmersagent.com"},
+	Services: []string{
+		"Auto Insurance",
+		"Home Insurance",
+		"Homeowners Insurance",
+		"Business Insurance",
+		"Motorcyle Insurance",
+		"Recreational Insurance",
+		"Renters Insurance",
+		"Umbrella Insurance",
+	},
+	Languages: []string{"English"},
+	FolderId:  String("91760"),
+}
+
+var jsonData string = `{"id":"phai514","locationName":"Farmers Insurance - Aroun Phaisan ","customFields":{"1857":"","1858":"122191","1859":"Aroun","1871":"Phaisan","3004":"Agent","7240":"Aroun Phaisan","7251":true,"7253":"1221","7254":"aphaisan","7255":"2685","7256":["phai514"],"7261":false,"7263":true,"7265":"","7266":"","7269":"91","7270":true,"7271":"21","7272":"User_Dup","7273":"Lincoln","7274":"NE","7275":"5730 R St Ste B","7276":"68505-2309","7277":"12","7278":false,"7279":true,"7283":"","7284":"","7285":"16133384","7286":"","7287":true,"7288":true,"7296":"16133384","7297":"","7298":"","7299":"786200","7300":true},"address":"5730 R St","address2":"Ste B","city":"Lincoln","state":"NE","zip":"68505-2309","phone":"402-417-4266","faxPhone":"402-423-3141","yearEstablished":"2011","emails":["aphaisan@farmersagent.com"],"services":["Auto Insurance","Home Insurance","Homeowners Insurance","Business Insurance","Motorcyle Insurance","Recreational Insurance","Renters Insurance","Umbrella Insurance","Term Life Insurance","Whole Life Insurance"],"languages":["English"],"folderId":"91760"}`
 
 var baseLocation Location = Location{
 	Id:                     String("ding"),
@@ -184,7 +317,7 @@ func formatBoolPtr(b *bool) string {
 func (t boolTest) formatErrorBase(index int) string {
 	bv := formatBoolPtr(t.baseValue)
 	nv := formatBoolPtr(t.newValue)
-	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'", index, bv, nv)
+	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'\n", index, bv, nv)
 }
 
 func TestBoolDiffs(t *testing.T) {
@@ -193,7 +326,7 @@ func TestBoolDiffs(t *testing.T) {
 		a.SuppressAddress, b.SuppressAddress = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
-			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
+			t.Errorf("%v\nExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
 		}
 		if d == nil && data.expectedFieldValue == nil {
 			continue
@@ -221,14 +354,14 @@ var stringArrayTests = []stringArrayTest{
 	{[]string{}, []string{}, false, nil},
 	{[]string{}, []string{"ding"}, true, []string{"ding"}},
 	{[]string{}, nil, false, nil},
-	{nil, []string{}, true, []string{}},
+	{nil, []string{}, false, nil},
 	{nil, nil, false, nil},
 	{[]string{"ding"}, []string{}, true, []string{}},
 	{[]string{"ding"}, nil, false, nil},
 }
 
 func (t stringArrayTest) formatErrorBase(index int) string {
-	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'", index, t.baseValue, t.newValue)
+	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'\n", index, t.baseValue, t.newValue)
 }
 
 func TestStringArrayDiffs(t *testing.T) {
@@ -361,7 +494,7 @@ type photoArrayTest struct {
 }
 
 var photoArrayTests = []photoArrayTest{
-	{nil, []LocationPhoto{}, true, []LocationPhoto{}},
+	{nil, []LocationPhoto{}, false, nil},
 	{nil, nil, false, nil},
 	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{}, true, []LocationPhoto{}},
 	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, nil, false, nil},
@@ -405,7 +538,7 @@ type eclTest struct {
 }
 
 var eclTests = []eclTest{
-	{nil, []ECL{}, true, []ECL{}},
+	{nil, []ECL{}, false, nil},
 	{[]ECL{}, nil, false, nil},
 	{nil, nil, false, nil},
 	{
@@ -735,7 +868,7 @@ var customFieldsTests = []customFieldsTest{
 	{nil, nil, false, nil},
 	{map[string]interface{}{}, nil, false, nil},
 	{map[string]interface{}{}, map[string]interface{}{}, false, nil},
-	{nil, map[string]interface{}{}, true, map[string]interface{}{}},
+	{nil, map[string]interface{}{}, false, nil},
 	{baseCustomFields, copyOfBase, false, nil},
 	{baseCustomFields, appendedCF, true, map[string]interface{}{"guy": "random junk"}},
 	{baseCustomFields, trimmedCF, false, nil},
@@ -892,5 +1025,59 @@ func TestComplexDiffs(t *testing.T) {
 	}
 	if delta.GetName() != "ben" || len(delta.Emails) != 1 || delta.Emails[0] != "ben@yext.com" {
 		t.Errorf("Delta was not as expected\ndelta was:\n%v\nexpected\v%v\n", delta, ben)
+	}
+}
+
+func TestComplexIdentical(t *testing.T) {
+	delta, isDiff := complexOne.Diff(complexTwo)
+	if isDiff {
+		t.Errorf("Expected false but was true, delta was:\n%v\n", delta)
+	}
+	if delta != nil {
+		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
+	}
+}
+
+func TestUnmarshal(t *testing.T) {
+	var one, two = new(Location), new(Location)
+	err := json.Unmarshal([]byte(jsonData), one)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	err = json.Unmarshal([]byte(jsonData), two)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	delta, isDiff := one.Diff(two)
+	if isDiff {
+		t.Errorf("Expected false but was true, delta was:\n%v\n", delta)
+	}
+	if delta != nil {
+		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
+	}
+}
+
+func TestSetCustomFields(t *testing.T) {
+	var one, two = new(Location), new(Location)
+	err := json.Unmarshal([]byte(jsonData), one)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	err = json.Unmarshal([]byte(jsonData), two)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	two.CustomFields["7256"] = []string{"phai514"}
+
+	delta, isDiff := one.Diff(two)
+	if isDiff {
+		t.Errorf("Expected false but was true, delta was:\n%v\n", delta)
+	}
+	if delta != nil {
+		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
 	}
 }

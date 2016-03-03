@@ -24,7 +24,19 @@ import (
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	diff, d = false, &Location{Id: String(y.GetId())}
+	// TODO (bjm):
+	// We need a better way of checking equality, currently the deep equal
+	// Returns true if we unmarshal something complex in the custom fields,
+	// such as an array of strings, because it gets unmarshalled into []interface{}{}
+	// If you later set that field normally as a []string{} the diff will return true
+	// we need to write a json Decoder that can properly decode a location with
+	// full real types.
+
+	if y.String() == b.String() {
+		return nil, false
+	}
+
+	d = &Location{Id: String(y.GetId())}
 
 	var (
 		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b).Elem()
