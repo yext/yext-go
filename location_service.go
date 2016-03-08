@@ -12,7 +12,8 @@ const locationsPath = "locations"
 var customFieldKeyRegex = regexp.MustCompile("^[0-9]+$")
 
 type LocationService struct {
-	client *Client
+	client           *Client
+	CustomFieldCache *CustomFieldCache
 }
 
 type locationListResponse struct {
@@ -22,7 +23,10 @@ type locationListResponse struct {
 func (l *LocationService) List() ([]*Location, error) {
 	v := &locationListResponse{}
 	err := l.client.DoRequest("GET", locationsPath, v)
-	return v.Locations, err
+	if err != nil {
+		return nil, err
+	}
+	return l.HydrateLocations(v.Locations)
 }
 
 func (l *LocationService) Edit(y *Location) (*Location, error) {
@@ -31,7 +35,10 @@ func (l *LocationService) Edit(y *Location) (*Location, error) {
 	}
 	var v Location
 	err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", locationsPath, y.GetId()), y, &v)
-	return &v, err
+	if err != nil {
+		return nil, err
+	}
+	return l.HydrateLocation(&v)
 }
 
 func (l *LocationService) Create(y *Location) (*Location, error) {
@@ -40,19 +47,63 @@ func (l *LocationService) Create(y *Location) (*Location, error) {
 	}
 	var v Location
 	err := l.client.DoRequestJSON("POST", fmt.Sprintf("%s", locationsPath), y, &v)
-	return &v, err
+	if err != nil {
+		return nil, err
+	}
+	return l.HydrateLocation(&v)
 }
 
 func (l *LocationService) Get(id string) (*Location, error) {
 	var v Location
 	err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", locationsPath, id), &v)
-	return &v, err
+	if err != nil {
+		return nil, err
+	}
+	return l.HydrateLocation(&v)
 }
 
 func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, error) {
 	v := &locationListResponse{}
 	err := l.client.DoRequest("GET", fmt.Sprintf("%s?searchIds=%s", locationsPath, strings.Join(searchIds, ",")), v)
-	return v.Locations, err
+	if err != nil {
+		return nil, err
+	}
+	return l.HydrateLocations(v.Locations)
+}
+
+func (l *LocationService) HydrateLocation(loc *Location) (*Location, error) {
+	if loc == nil || loc.CustomFields == nil || l.CustomFieldCache == nil || l.CustomFieldCache.CustomFields == nil {
+		return loc, nil
+	}
+
+	hydrated, err := ParseCustomFields(loc.CustomFields, l.CustomFieldCache.CustomFields)
+	if err != nil {
+		return loc, fmt.Errorf("hydration failure: location: '%v' %v", loc.String(), err)
+	}
+
+	loc.CustomFields = hydrated
+	loc.hydrated = true
+
+	return loc, nil
+}
+
+func (l *LocationService) HydrateLocations(locs []*Location) ([]*Location, error) {
+	if l.CustomFieldCache == nil || l.CustomFieldCache.CustomFields == nil {
+		return locs, nil
+	}
+
+	if l.CustomFieldCache == nil {
+		return locs, nil
+	}
+
+	for _, loc := range locs {
+		_, err := l.HydrateLocation(loc)
+		if err != nil {
+			return locs, err
+		}
+	}
+
+	return locs, nil
 }
 
 func validateCustomFields(cfs map[string]interface{}) error {

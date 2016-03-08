@@ -1,9 +1,6 @@
 package yext
 
-import (
-	"log"
-	"reflect"
-)
+import "reflect"
 
 // Diff calculates the differences betwee a base User (a) and a proposed set of
 // changes represented by a second User (b). The diffing logic will ignore fields in
@@ -30,7 +27,6 @@ func (a *User) Diff(b *User) (d *User, diff bool) {
 		}
 
 		if nameA == "ACLs" {
-			log.Println("Checking acls")
 			if len(a.ACLs) != len(b.ACLs) {
 				diff = true
 				d.ACLs = b.ACLs

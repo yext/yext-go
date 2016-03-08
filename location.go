@@ -67,6 +67,7 @@ type Location struct {
 	Closed                 *LocationClosed        `json:"closed,omitempty"`
 	CategoryIds            []string               `json:"categoryIds,omitempty"`
 	HolidayHours           []HolidayHours         `json:"holidayHours,omitempty"`
+	hydrated               bool
 }
 
 func (y Location) GetId() string {

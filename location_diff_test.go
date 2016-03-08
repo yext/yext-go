@@ -211,20 +211,63 @@ var baseLocation Location = Location{
 	},
 }
 
-func TestCopy(t *testing.T) {
-	secondLocation := *baseLocation.Copy()
-	bV, sV := reflect.ValueOf(baseLocation), reflect.ValueOf(secondLocation)
-	for i := 0; i < bV.NumField(); i++ {
-		fieldName := reflect.TypeOf(baseLocation).Field(i).Name
-		iBase, iSecond := bV.Field(i).Interface(), sV.Field(i).Interface()
-		if !reflect.DeepEqual(iBase, iSecond) {
-			t.Errorf("Copy not equal for field %v, expected %v got %v", fieldName, iBase, iSecond)
-		}
-	}
-}
-
 func TestDiffIdentical(t *testing.T) {
-	secondLocation := baseLocation.Copy()
+	secondLocation := &Location{
+		Id:                     String("ding"),
+		Name:                   String("ding"),
+		CustomerId:             String("ding"),
+		Address:                String("ding"),
+		Address2:               String("ding"),
+		DisplayAddress:         String("ding"),
+		City:                   String("ding"),
+		State:                  String("ding"),
+		Zip:                    String("ding"),
+		CountryCode:            String("ding"),
+		Phone:                  String("ding"),
+		LocalPhone:             String("ding"),
+		AlternatePhone:         String("ding"),
+		FaxPhone:               String("ding"),
+		MobilePhone:            String("ding"),
+		TollFreePhone:          String("ding"),
+		TtyPhone:               String("ding"),
+		SpecialOffer:           String("ding"),
+		SpecialOfferUrl:        String("ding"),
+		WebsiteUrl:             String("ding"),
+		DisplayWebsiteUrl:      String("ding"),
+		ReservationUrl:         String("ding"),
+		Hours:                  String("ding"),
+		AdditionalHoursText:    String("ding"),
+		Description:            String("ding"),
+		TwitterHandle:          String("ding"),
+		FacebookPageUrl:        String("ding"),
+		YearEstablished:        String("ding"),
+		FolderId:               String("ding"),
+		SuppressAddress:        Bool(false),
+		IsPhoneTracked:         Bool(true),
+		DisplayLat:             Float(1234.0),
+		DisplayLng:             Float(1234.0),
+		RoutableLat:            Float(1234.0),
+		RoutableLng:            Float(1234.0),
+		Keywords:               []string{"ding", "ding"},
+		PaymentOptions:         []string{"ding", "ding"},
+		VideoUrls:              []string{"ding", "ding"},
+		Emails:                 []string{"ding", "ding"},
+		Specialties:            []string{"ding", "ding"},
+		Services:               []string{"ding", "ding"},
+		Brands:                 []string{"ding", "ding"},
+		Languages:              []string{"ding", "ding"},
+		Logo:                   &examplePhoto,
+		FacebookCoverPhoto:     &examplePhoto,
+		FacebookProfilePicture: &examplePhoto,
+		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
+		Lists:                  []ECL{exampleECL},
+		Closed: &LocationClosed{
+			IsClosed: "false",
+		},
+		CustomFields: map[string]interface{}{
+			"1234": "ding",
+		},
+	}
 	d, isDiff := baseLocation.Diff(secondLocation)
 	if isDiff == true {
 		t.Errorf("Expected diff to be false was true, diff result %v", d)
