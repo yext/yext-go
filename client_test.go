@@ -15,9 +15,9 @@ func TestErrorDeserialzation(t *testing.T) {
 	defer teardown()
 
 	errorResp := `{"errors": [{
-  "message": "We had a problem with our software. Please contact support!",
-  "errorCode": 9
-}]}`
+	  "message": "We had a problem with our software. Please contact support!",
+	  "errorCode": 9
+	}]}`
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -123,4 +123,42 @@ func TestRetryWithBody(t *testing.T) {
 	})
 
 	client.DoRequestJSON("POST", "", body, nil)
+}
+
+func TestRetryWith400Error(t *testing.T) {
+	setup()
+	defer teardown()
+	client.retryAttempts = 3
+
+	requests := 0
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.WriteHeader(http.StatusBadRequest)
+	})
+
+	client.DoRequest("GET", "", nil)
+
+	if requests != 1 {
+		t.Errorf("Expected 1 net attempts when %d encountered, got %d", http.StatusBadRequest, requests)
+	}
+}
+
+func TestRetryWith404Error(t *testing.T) {
+	setup()
+	defer teardown()
+	client.retryAttempts = 3
+
+	requests := 0
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.WriteHeader(http.StatusNotFound)
+	})
+
+	client.DoRequest("GET", "", nil)
+
+	if requests != 1 {
+		t.Errorf("Expected 1 net attempts when %d encountered, got %d", http.StatusNotFound, requests)
+	}
 }

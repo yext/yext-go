@@ -185,9 +185,13 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 
 		defer resp.Body.Close()
 
-		if err := CheckResponseError(resp); err != nil {
+		if retryable, err := CheckResponseError(resp); err != nil {
 			resultError = err
-			continue
+			if retryable {
+				continue
+			} else {
+				break
+			}
 		}
 
 		if v != nil {
@@ -205,22 +209,22 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	return resultError
 }
 
-func CheckResponseError(res *http.Response) error {
+func CheckResponseError(res *http.Response) (bool, error) {
 	if sc := res.StatusCode; 200 <= sc && sc <= 299 {
-		return nil
+		return true, nil
 	} else if sc == 404 {
-		return ResourceNotFound
+		return false, ResourceNotFound
 	} else {
+		retryable := !(400 <= sc && sc <= 499)
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			return err
+			return retryable, err
 		}
 
 		errorResponse := &ErrorResponse{Response: res}
 		if err := json.Unmarshal(data, errorResponse); err != nil {
-			return errors.New(fmt.Sprintf("unable to unmarshal error from: %s : %s", string(data), err))
+			return retryable, errors.New(fmt.Sprintf("unable to unmarshal error from: %s : %s", string(data), err))
 		}
-		return errorResponse
+		return retryable, errorResponse
 	}
-	return nil
 }
