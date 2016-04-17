@@ -32,9 +32,8 @@ func TestErrorDeserialzation(t *testing.T) {
 }
 
 func TestRetries(t *testing.T) {
-	setup()
+	setup().WithRetries(3)
 	defer teardown()
-	client.retryAttempts = 3
 
 	requests := 0
 
@@ -51,9 +50,8 @@ func TestRetries(t *testing.T) {
 }
 
 func TestLastRetryError(t *testing.T) {
-	setup()
+	setup().WithRetries(3)
 	defer teardown()
-	client.retryAttempts = 3
 
 	request := 0
 
@@ -69,15 +67,14 @@ func TestLastRetryError(t *testing.T) {
 
 	err := client.DoRequest("GET", "", nil)
 
-	expectedErr := errf(client.retryAttempts + 1)
+	expectedErr := errf(*client.Config.RetryCount + 1)
 	if !strings.Contains(err.Error(), expectedErr) {
 		t.Errorf("Expected to get error `%s`, instead got `%s`", expectedErr, err)
 	}
 }
 
 func TestBailout(t *testing.T) {
-	setup()
-	client.retryAttempts = 3
+	setup().WithRetries(3)
 	defer teardown()
 
 	requests := 0
@@ -101,8 +98,7 @@ func TestBailout(t *testing.T) {
 }
 
 func TestRetryWithBody(t *testing.T) {
-	setup()
-	client.retryAttempts = 3
+	setup().WithRetries(3)
 	defer teardown()
 
 	requests := 0
@@ -126,9 +122,8 @@ func TestRetryWithBody(t *testing.T) {
 }
 
 func TestRetryWith400Error(t *testing.T) {
-	setup()
+	setup().WithRetries(3)
 	defer teardown()
-	client.retryAttempts = 3
 
 	requests := 0
 
@@ -145,9 +140,8 @@ func TestRetryWith400Error(t *testing.T) {
 }
 
 func TestRetryWith404Error(t *testing.T) {
-	setup()
+	setup().WithRetries(3)
 	defer teardown()
-	client.retryAttempts = 3
 
 	requests := 0
 

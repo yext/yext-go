@@ -30,7 +30,7 @@ type Client struct {
 }
 
 func NewClient(config *Config) *Client {
-	c := &Client{}
+	c := &Client{Config: config}
 
 	c.LocationService = &LocationService{client: c}
 	c.ECLService = &ECLService{client: c}

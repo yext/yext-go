@@ -16,20 +16,23 @@ var (
 	server *httptest.Server
 )
 
-func setup() {
+func setup() *Config {
 	// test server
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
 	// client configured to use test server
-	client = NewClient("", "", "customerId", Config{})
-	client.baseUrl = server.URL
+	config := NewConfig().
+		WithHTTPClient(http.DefaultClient).
+		WithBaseUrl(server.URL).               // Use test server
+		WithCredentials("", "", "customerid"). // Customer ID needs to be set to something to avoid '//' in the URL path
+		WithRetries(0)                         // No retries
 
-	// Disable retries in test
-	client.retryAttempts = 0
-
-	// 0 delay between retries for test
+	client = NewClient(config)
+	// No delay between attempts
 	DefaultBackoffPolicy = BackoffPolicy{[]int{0}}
+
+	return config
 }
 
 func teardown() {
