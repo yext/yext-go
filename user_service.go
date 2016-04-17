@@ -74,7 +74,7 @@ func (u *UserService) NewFolderACL(f *Folder, r Role) ACL {
 func (u *UserService) NewCustomerACL(r Role) ACL {
 	return ACL{
 		Role:     r,
-		On:       u.client.customerId,
+		On:       u.client.Config.CustomerId,
 		AccessOn: ACCESS_CUSTOMER,
 	}
 }

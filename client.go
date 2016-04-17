@@ -13,22 +13,13 @@ import (
 )
 
 const (
-	SandboxHost    string = "api-sandbox.yext.com"
-	ProductionHost string = "api.yext.com"
 	CUSTOMERS_PATH string = "customers"
 )
 
 var ResourceNotFound = errors.New("Resource not found")
 
 type Client struct {
-	client        *http.Client
-	username      string
-	password      string
-	customerId    string
-	baseUrl       string
-	retryAttempts int
-
-	ShowRequest bool
+	Config *Config
 
 	LocationService    *LocationService
 	ECLService         *ECLService
@@ -38,24 +29,8 @@ type Client struct {
 	UserService        *UserService
 }
 
-type Config struct {
-	Host string
-}
-
-func NewClient(username string, password string, customerId string, config Config) *Client {
-	c := &Client{
-		client:        http.DefaultClient,
-		username:      username,
-		password:      password,
-		customerId:    customerId,
-		retryAttempts: 3,
-	}
-
-	host := SandboxHost
-	if config.Host != "" {
-		host = config.Host
-	}
-	c.baseUrl = "https://" + host + "/v1"
+func NewClient(config *Config) *Client {
+	c := &Client{}
 
 	c.LocationService = &LocationService{client: c}
 	c.ECLService = &ECLService{client: c}
@@ -68,11 +43,11 @@ func NewClient(username string, password string, customerId string, config Confi
 }
 
 func (c *Client) customerRequestUrl(path string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", c.baseUrl, CUSTOMERS_PATH, c.customerId, path)
+	return fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseUrl, CUSTOMERS_PATH, c.Config.CustomerId, path)
 }
 
 func (c *Client) rawRequestURL(path string) string {
-	return fmt.Sprintf("%s/%s", c.baseUrl, path)
+	return fmt.Sprintf("%s/%s", c.Config.BaseUrl, path)
 }
 
 func (c *Client) NewRequest(method string, path string) (*http.Request, error) {
@@ -107,7 +82,7 @@ func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*h
 		return nil, err
 	}
 
-	rawAuth := []byte(fmt.Sprintf("%v:%v", c.username, c.password))
+	rawAuth := []byte(fmt.Sprintf("%v:%v", c.Config.Username, c.Config.Password))
 	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(rawAuth))
 	req.Header.Set("Content-Type", "application/json")
 
@@ -165,19 +140,27 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 		return err
 	}
 
-	var resultError error
-	for attempt := 0; attempt <= c.retryAttempts; attempt++ {
+	var (
+		resultError error
+		retries     = 3
+	)
+
+	if c.Config.RetryCount != nil {
+		retries = *c.Config.RetryCount
+	}
+
+	for attempt := 0; attempt <= retries; attempt++ {
 		resultError = nil
 		time.Sleep(DefaultBackoffPolicy.Duration(attempt))
 
 		// Rehydrate the request body since it might have been drained by the previous attempt
 		req.Body = ioutil.NopCloser(bytes.NewBuffer(originalRequestBody))
 
-		if c.ShowRequest {
-			fmt.Printf("%+v\n", req)
+		if c.Config.Logger != nil {
+			c.Config.Logger.Log(fmt.Printf("%+v", req))
 		}
 
-		resp, err := c.client.Do(req)
+		resp, err := c.Config.HTTPClient.Do(req)
 		if err != nil {
 			resultError = err
 			continue
