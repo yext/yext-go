@@ -320,7 +320,7 @@ func (y Location) String() string {
 	return string(b)
 }
 
-// LocationPhoto represents a photo associated with a Location in Yext Location Manager.
+// Photo represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
 	Url             string `json:"url,omitempty"`
@@ -328,7 +328,7 @@ type LocationPhoto struct {
 	ClickThroughURL string `json:"clickthroughUrl,omitempty"`
 }
 
-func (l LocationPhoto) String() string {
+func (l Photo) String() string {
 	return fmt.Sprintf("Url: '%v', Description: '%v'", l.Url, l.Description)
 }
 

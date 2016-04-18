@@ -46,13 +46,7 @@ var (
 		"title":           "A great picture",
 		"description":     "This is a picture of an awesome event",
 		"clickthroughUrl": "https://yext.com/event",
-		"sizes": []interface{}{
-			map[string]interface{}{
-				"Height": 100,
-				"Width":  100,
-				"Url":    "https://mktgcdn.com/awesome.jpg",
-			},
-		},
+		"url":             "https://mktgcdn.com/awesome.jpg",
 	}
 	hours = map[string]interface{}{
 		"additionalHoursText": "This is an example of extra hours info",
@@ -93,7 +87,7 @@ var (
 		customFieldParseTest{CUSTOMFIELDTYPE_TEXTLIST, []interface{}{"a", "b", "c"}, reflect.TypeOf(TextList([]string{}))},
 		customFieldParseTest{CUSTOMFIELDTYPE_MULTIOPTION, []string{"a", "b", "c"}, reflect.TypeOf(MultiOption([]string{}))},
 		customFieldParseTest{CUSTOMFIELDTYPE_MULTIOPTION, []interface{}{"a", "b", "c"}, reflect.TypeOf(MultiOption([]string{}))},
-		customFieldParseTest{CUSTOMFIELDTYPE_PHOTO, customPhoto, reflect.TypeOf(CustomPhoto{})},
+		customFieldParseTest{CUSTOMFIELDTYPE_PHOTO, customPhoto, reflect.TypeOf(Photo{})},
 		customFieldParseTest{CUSTOMFIELDTYPE_GALLERY, []interface{}{customPhoto}, reflect.TypeOf(Gallery{})},
 		customFieldParseTest{CUSTOMFIELDTYPE_VIDEO, video, reflect.TypeOf(Video{})},
 		customFieldParseTest{CUSTOMFIELDTYPE_HOURS, hours, reflect.TypeOf(Hours{})},
@@ -109,7 +103,7 @@ func TestParsing(t *testing.T) {
 // other tests
 func TestMapMarshalling(t *testing.T) {
 	target := map[string]interface{}{}
-	var cp = &CustomPhoto{}
+	var cp = &Photo{}
 	target["123"] = cp
 
 	raw := map[string]interface{}{"123": customPhoto, "234": customPhoto}

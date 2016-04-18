@@ -12,8 +12,8 @@ const locationsPath = "locations"
 var customFieldKeyRegex = regexp.MustCompile("^[0-9]+$")
 
 type LocationService struct {
-	client           *Client
-	CustomFieldCache *CustomFieldCache
+	client       *Client
+	CustomFields []*CustomField
 }
 
 type locationListResponse struct {
@@ -72,11 +72,11 @@ func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, erro
 }
 
 func (l *LocationService) HydrateLocation(loc *Location) (*Location, error) {
-	if loc == nil || loc.CustomFields == nil || l.CustomFieldCache == nil || l.CustomFieldCache.CustomFields == nil {
+	if loc == nil || loc.CustomFields == nil || l.CustomFields == nil {
 		return loc, nil
 	}
 
-	hydrated, err := ParseCustomFields(loc.CustomFields, l.CustomFieldCache.CustomFields)
+	hydrated, err := ParseCustomFields(loc.CustomFields, l.CustomFields)
 	if err != nil {
 		return loc, fmt.Errorf("hydration failure: location: '%v' %v", loc.String(), err)
 	}
@@ -88,11 +88,7 @@ func (l *LocationService) HydrateLocation(loc *Location) (*Location, error) {
 }
 
 func (l *LocationService) HydrateLocations(locs []*Location) ([]*Location, error) {
-	if l.CustomFieldCache == nil || l.CustomFieldCache.CustomFields == nil {
-		return locs, nil
-	}
-
-	if l.CustomFieldCache == nil {
+	if l.CustomFields == nil {
 		return locs, nil
 	}
 

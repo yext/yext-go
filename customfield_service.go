@@ -8,21 +8,192 @@ import (
 
 const customFieldPath = "customFields"
 
-type CustomFieldCache struct {
+type CustomFieldManager struct {
 	CustomFields []*CustomField
 }
 
-func (c *CustomFieldCache) CustomField(name string) (*CustomField, error) {
+func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
+	if loc == nil || loc.CustomFields == nil {
+		return nil, nil
+	}
+
+	var (
+		field *CustomField
+		err   error
+	)
+
+	if field, err = c.CustomField(name); err != nil {
+		return nil, err
+	}
+
+	return loc.CustomFields[field.Id], nil
+}
+
+func (c *CustomFieldManager) MustGet(name string, loc *Location) interface{} {
+	if ret, err := c.Get(name, loc); err != nil {
+		panic(err)
+	} else {
+		return ret
+	}
+}
+
+func (c *CustomFieldManager) IsOptionSet(fieldName string, optionName string, loc *Location) (bool, error) {
+	var (
+		field interface{}
+		err   error
+		of    OptionField
+		id    string
+	)
+
+	if field, err = c.Get(fieldName, loc); err != nil {
+		return false, err
+	}
+
+	if field == nil {
+		return false, nil
+	}
+	switch field.(type) {
+	case nil:
+		return false, nil
+	case MultiOption:
+		mo := field.(MultiOption)
+		of = &mo
+	case SingleOption:
+		so := field.(SingleOption)
+		of = &so
+	default:
+		return false, fmt.Errorf("'%s' is not an OptionField custom field", fieldName)
+	}
+
+	if id, err = c.CustomFieldOptionId(fieldName, optionName); err != nil {
+		return false, err
+	}
+
+	return of.IsOptionIdSet(id), nil
+}
+
+func (c *CustomFieldManager) MustIsOptionSet(fieldName string, optionName string, loc *Location) bool {
+	if set, err := c.IsOptionSet(fieldName, optionName, loc); err != nil {
+		panic(err)
+	} else {
+		return set
+	}
+}
+
+func (c *CustomFieldManager) SetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
+	var (
+		field interface{}
+		err   error
+		of    OptionField
+		ok    bool
+		id    string
+	)
+
+	if field, err = c.Get(fieldName, loc); err != nil {
+		return loc, err
+	}
+
+	if field == nil {
+		var cf *CustomField
+		if cf, err = c.CustomField(fieldName); err != nil {
+			return loc, fmt.Errorf("problem getting '%s': %v", fieldName, err)
+		}
+		switch cf.Type {
+		case CUSTOMFIELDTYPE_MULTIOPTION:
+			of = new(MultiOption)
+		case CUSTOMFIELDTYPE_SINGLEOPTION:
+			of = new(SingleOption)
+		default:
+			return loc, fmt.Errorf("'%s' is not an OptionField is '%s'", cf.Name, cf.Type)
+		}
+	} else if of, ok = field.(OptionField); !ok {
+		return loc, fmt.Errorf("'%s': %v is not an OptionField custom field is %T", fieldName, field, field)
+	}
+
+	if id, err = c.CustomFieldOptionId(fieldName, optionName); err != nil {
+		return loc, err
+	}
+
+	of.SetOptionId(id)
+	return c.Set(fieldName, of, loc)
+}
+
+func (c *CustomFieldManager) MustSetOption(fieldName string, optionName string, loc *Location) *Location {
+	if loc, err := c.SetOption(fieldName, optionName, loc); err != nil {
+		panic(err)
+	} else {
+		return loc
+	}
+}
+
+func (c *CustomFieldManager) UnsetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
+	var (
+		field interface{}
+		err   error
+		of    OptionField
+		id    string
+	)
+
+	if field, err = c.Get(fieldName, loc); err != nil {
+		return loc, err
+	}
+
+	switch field.(type) {
+	case nil:
+		return loc, fmt.Errorf("'%s' is not currently set", fieldName)
+	case MultiOption, *MultiOption:
+		mo := field.(MultiOption)
+		of = &mo
+	case SingleOption, *SingleOption:
+		so := field.(SingleOption)
+		of = &so
+	default:
+		return loc, fmt.Errorf("'%s' is not an OptionField custom field", fieldName)
+	}
+
+	if id, err = c.CustomFieldOptionId(fieldName, optionName); err != nil {
+		return loc, err
+	}
+	of.UnsetOptionId(id)
+	return c.Set(fieldName, of, loc)
+}
+
+func (c *CustomFieldManager) MustUnsetOption(fieldName string, optionName string, loc *Location) *Location {
+	if loc, err := c.UnsetOption(fieldName, optionName, loc); err != nil {
+		panic(err)
+	} else {
+		return loc
+	}
+}
+
+func (c *CustomFieldManager) Set(name string, value CustomFieldValue, loc *Location) (*Location, error) {
+	field, err := c.CustomField(name)
+	if err != nil {
+		return loc, err
+	}
+	loc.CustomFields[field.Id] = value
+	return loc, nil
+}
+
+func (c *CustomFieldManager) MustSet(name string, value CustomFieldValue, loc *Location) *Location {
+	if loc, err := c.Set(name, value, loc); err != nil {
+		panic(err)
+	} else {
+		return loc
+	}
+}
+
+func (c *CustomFieldManager) CustomField(name string) (*CustomField, error) {
 	for _, cf := range c.CustomFields {
 		if name == cf.Name {
 			return cf, nil
 		}
 	}
 
-	return nil, fmt.Errorf("Unable to find custom field with name %s", name)
+	return nil, fmt.Errorf("Unable to find custom field with name %s, available field: %v", name, c.CustomFields)
 }
 
-func (c *CustomFieldCache) MustCustomField(name string) *CustomField {
+func (c *CustomFieldManager) MustCustomField(name string) *CustomField {
 	if cf, err := c.CustomField(name); err != nil {
 		panic(err)
 	} else {
@@ -30,7 +201,7 @@ func (c *CustomFieldCache) MustCustomField(name string) *CustomField {
 	}
 }
 
-func (c *CustomFieldCache) CustomFieldId(name string) (string, error) {
+func (c *CustomFieldManager) CustomFieldId(name string) (string, error) {
 	if cf, err := c.CustomField(name); err != nil {
 		return "", err
 	} else {
@@ -38,7 +209,7 @@ func (c *CustomFieldCache) CustomFieldId(name string) (string, error) {
 	}
 }
 
-func (c *CustomFieldCache) MustCustomFieldId(name string) string {
+func (c *CustomFieldManager) MustCustomFieldId(name string) string {
 	if id, err := c.CustomFieldId(name); err != nil {
 		panic(err)
 	} else {
@@ -46,7 +217,7 @@ func (c *CustomFieldCache) MustCustomFieldId(name string) string {
 	}
 }
 
-func (c *CustomFieldCache) CustomFieldOptionId(fieldName, optionName string) (string, error) {
+func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (string, error) {
 	cf, err := c.CustomField(fieldName)
 	if err != nil {
 		return "", err
@@ -65,7 +236,7 @@ func (c *CustomFieldCache) CustomFieldOptionId(fieldName, optionName string) (st
 	return "", fmt.Errorf("Unable to find custom field option with name %s", optionName)
 }
 
-func (c *CustomFieldCache) MustCustomFieldOptionId(fieldName, optionName string) string {
+func (c *CustomFieldManager) MustCustomFieldOptionId(fieldName, optionName string) string {
 	if id, err := c.CustomFieldOptionId(fieldName, optionName); err != nil {
 		panic(err)
 	} else {
@@ -74,8 +245,8 @@ func (c *CustomFieldCache) MustCustomFieldOptionId(fieldName, optionName string)
 }
 
 type CustomFieldService struct {
-	CustomFieldCache *CustomFieldCache
-	client           *Client
+	CustomFieldManager *CustomFieldManager
+	client             *Client
 }
 
 type customFieldResponse struct {
@@ -89,12 +260,12 @@ func (s *CustomFieldService) List() ([]*CustomField, error) {
 }
 
 func (s *CustomFieldService) CacheCustomFields() error {
-	cfs, err := s.List()
-	if err != nil {
-		return err
-	}
+		cfs, err := s.List()
+		if err != nil {
+			return err
+		}
 
-	s.CustomFieldCache = &CustomFieldCache{CustomFields: cfs}
+		s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
 	return nil
 }
 
@@ -117,6 +288,11 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 	parsed := map[string]interface{}{}
 
 	for k, v := range cfraw {
+		if _, ok := v.(CustomFieldValue); ok {
+			parsed[k] = v
+			continue
+		}
+
 		var newval interface{}
 
 		switch typefor(k) {
@@ -195,7 +371,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Photo Field %v", v, err)
 			}
-			var cfp CustomPhoto
+			var cfp Photo
 			err = json.Unmarshal(asJson, &cfp)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Photo Field %v", v, err)

@@ -796,14 +796,14 @@ type customFieldsTest struct {
 }
 
 var baseCustomFields = map[string]interface{}{
-	"62150": []LocationPhoto{
-		LocationPhoto{
+	"62150": Gallery{
+		&Photo{
 			ClickThroughURL: "https://locations.yext.com",
 			Description:     "This is the caption",
 			Url:             "http://a.mktgcdn.com/p-sandbox/gRcmaehu-FoJtL3Ld6vNjYHpbZxmPSYZ1cTEF_UU7eY/1247x885.png",
 		},
 	},
-	"62151": LocationPhoto{
+	"62151": Photo{
 		ClickThroughURL: "https://locations.yext.com",
 		Description:     "This is a caption on a single!",
 		Url:             "http://a.mktgcdn.com/p-sandbox/bSZ_mKhfFYGih6-ry5mtbwB_JbKu930kFxHOaQRwZC4/1552x909.png",

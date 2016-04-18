@@ -122,7 +122,7 @@ func (e ECLItem) GetDescription() string {
 	return ""
 }
 
-type Photo struct {
+type EclPhoto struct {
 	Url    string `json:"url"`
 	Height int    `json:"height,omitempty"`
 	Width  int    `json:"width,omitempty"`
@@ -173,11 +173,11 @@ type ProductsECLSection struct {
 
 type Product struct {
 	ECLItem
-	Type   string   `json:"idcode,omitempty"`
-	Cost   *Cost    `json:"cost,omitempty"`
-	Photos []*Photo `json:"photos,omitempty"`
-	Video  string   `json:"video,omitempty"`
-	Url    string   `json:"url,omitempty"`
+	Type   string      `json:"idcode,omitempty"`
+	Cost   *Cost       `json:"cost,omitempty"`
+	Photos []*EclPhoto `json:"photos,omitempty"`
+	Video  string      `json:"video,omitempty"`
+	Url    string      `json:"url,omitempty"`
 }
 
 type BiosECL struct {
@@ -192,10 +192,10 @@ type BiosECLSection struct {
 
 type Bio struct {
 	ECLItem
-	Title          string   `json:"idcode,omitempty"`
-	Photo          *Photo   `json:"photo,omitempty"`
-	Education      []string `json:"education"`
-	Certifications []string `json:"certifications"`
-	Services       []string `json:"services,omitempty"`
-	Url            string   `json:"url,omitempty"`
+	Title          string    `json:"idcode,omitempty"`
+	Photo          *EclPhoto `json:"photo,omitempty"`
+	Education      []string  `json:"education"`
+	Certifications []string  `json:"certifications"`
+	Services       []string  `json:"services,omitempty"`
+	Url            string    `json:"url,omitempty"`
 }

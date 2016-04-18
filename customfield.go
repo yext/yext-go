@@ -28,32 +28,131 @@ type CustomField struct {
 	Type    string            `json:"type"`
 }
 
+type CustomFieldValue interface {
+	CustomFieldTag() string
+}
+
 type YesNo bool
 
+func (y YesNo) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_YESNO
+}
+
 type SingleLineText string
+
+func (s SingleLineText) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_SINGLELINETEXT
+}
+
 type MultiLineText string
-type SingleOption string
+
+func (m MultiLineText) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_MULTILINETEXT
+}
+
 type Url string
+
+func (u Url) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_URL
+}
+
 type Date string
+
+func (d Date) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_DATE
+}
+
 type Number string
 
+func (n Number) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_NUMBER
+}
+
+type OptionField interface {
+	CustomFieldValue
+	SetOptionId(id string)
+	UnsetOptionId(id string)
+	IsOptionIdSet(id string) bool
+}
+
+type SingleOption string
+
+func (s *SingleOption) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_SINGLEOPTION
+}
+
+func (s *SingleOption) SetOptionId(id string) {
+	*s = SingleOption(id)
+}
+
+func (s *SingleOption) UnsetOptionId(id string) {
+	if string(*s) == id {
+		*s = SingleOption("")
+	}
+}
+
+func (s *SingleOption) IsOptionIdSet(id string) bool {
+	return *s == SingleOption(id)
+}
+
 type MultiOption []string
+
+func (m *MultiOption) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_MULTIOPTION
+}
+
+func (m *MultiOption) SetOptionId(id string) {
+	if !m.IsOptionIdSet(id) {
+		*m = append(*m, id)
+	}
+}
+
+func (m *MultiOption) UnsetOptionId(id string) {
+	if m.IsOptionIdSet(id) {
+		t := []string(*m)
+		indexOfTarget := -1
+		for i := 0; i < len(*m); i++ {
+			if t[i] == id {
+				indexOfTarget = i
+			}
+		}
+		if indexOfTarget >= 0 {
+			*m = append(t[:indexOfTarget], t[indexOfTarget+1:]...)
+		}
+	}
+}
+
+func (m *MultiOption) IsOptionIdSet(id string) bool {
+	for _, option := range *m {
+		if option == id {
+			return true
+		}
+	}
+	return false
+}
+
 type TextList []string
 
-type Image struct {
-	Height int    `json:"height"`
-	Width  int    `json:"width"`
-	Url    string `json:"url"`
+func (t TextList) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_TEXTLIST
 }
 
-type CustomPhoto struct {
-	Title           string  `json:"title"`
-	Description     string  `json:"description"`
-	ClickthroughUrl string  `json:"clickthroughUrl"`
-	Sizes           []Image `json:"sizes"`
+type Photo struct {
+	Url             string `json:"url,omitempty"`
+	Description     string `json:"description,omitempty"`
+	Details         string `json:"details,omitempty"`
+	ClickThroughURL string `json:"clickthroughUrl,omitempty"`
 }
 
-type Gallery []CustomPhoto
+func (p *Photo) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_PHOTO
+}
+
+type Gallery []*Photo
+
+func (g *Gallery) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_GALLERY
+}
 
 type Video struct {
 	Description string `json:"description"`
@@ -62,8 +161,16 @@ type Video struct {
 
 type VideoGallery []Video
 
+func (v *VideoGallery) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_VIDEO
+}
+
 type Hours struct {
 	AdditionalText string         `json:"additionalHoursText"`
 	Hours          string         `json:"hours"`
 	HolidayHours   []HolidayHours `json:"holidayHours"`
+}
+
+func (h *Hours) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_HOURS
 }
