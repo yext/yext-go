@@ -60,6 +60,7 @@ type Location struct {
 	Brands                 []string               `json:"brands,omitempty"`
 	Languages              []string               `json:"languages,omitempty"`
 	FolderId               *string                `json:"folderId,omitempty"`
+	LabelIds               []string               `json:"labelIds,omitempty"`
 	FacebookCoverPhoto     *LocationPhoto         `json:"facebookCoverPhoto,omitempty"`
 	FacebookProfilePicture *LocationPhoto         `json:"facebookProfilePicture,omitempty"`
 	Logo                   *LocationPhoto         `json:"logo,omitempty"`
