@@ -2,6 +2,8 @@ package yext
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 )
 
 const (
@@ -21,9 +23,47 @@ type rolesRepsonse struct {
 	Roles []*Role `json:"roles"`
 }
 
-func (u *UserService) List() ([]*User, error) {
+func (u *UserService) ListAll() ([]*User, error) {
+	var (
+		start     int
+		allUsers  []*User
+		increment = 1000
+	)
+
+	for {
+		users, err := u.List(start, increment)
+		if err != nil {
+			return nil, err
+		}
+
+		allUsers = append(allUsers, users...)
+
+		if len(users) < increment {
+			break
+		}
+
+		start += increment
+	}
+	return allUsers, nil
+}
+
+func (u *UserService) List(start, limit int) ([]*User, error) {
+	userUrl := url.URL{Path: userPath}
+
+	if start > 0 {
+		q := userUrl.Query()
+		q.Set("start", strconv.Itoa(start))
+		userUrl.RawQuery = q.Encode()
+	}
+
+	if limit > 0 {
+		q := userUrl.Query()
+		q.Set("limit", strconv.Itoa(limit))
+		userUrl.RawQuery = q.Encode()
+	}
+
 	v := &userListResponse{}
-	err := u.client.DoRequest("GET", userPath, v)
+	err := u.client.DoRequest("GET", userUrl.String(), v)
 	return v.Users, err
 }
 
