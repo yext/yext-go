@@ -130,7 +130,6 @@ func (c *CustomFieldManager) UnsetOption(fieldName string, optionName string, lo
 	var (
 		field interface{}
 		err   error
-		of    OptionField
 		id    string
 	)
 
@@ -138,24 +137,21 @@ func (c *CustomFieldManager) UnsetOption(fieldName string, optionName string, lo
 		return loc, err
 	}
 
-	switch field.(type) {
-	case nil:
+	if field == nil {
 		return loc, fmt.Errorf("'%s' is not currently set", fieldName)
-	case MultiOption, *MultiOption:
-		mo := field.(MultiOption)
-		of = &mo
-	case SingleOption, *SingleOption:
-		so := field.(SingleOption)
-		of = &so
-	default:
+	}
+
+	option, ok := field.(OptionField)
+	if !ok {
 		return loc, fmt.Errorf("'%s' is not an OptionField custom field", fieldName)
 	}
 
 	if id, err = c.CustomFieldOptionId(fieldName, optionName); err != nil {
 		return loc, err
 	}
-	of.UnsetOptionId(id)
-	return c.Set(fieldName, of, loc)
+
+	option.UnsetOptionId(id)
+	return c.Set(fieldName, option, loc)
 }
 
 func (c *CustomFieldManager) MustUnsetOption(fieldName string, optionName string, loc *Location) *Location {
@@ -260,12 +256,12 @@ func (s *CustomFieldService) List() ([]*CustomField, error) {
 }
 
 func (s *CustomFieldService) CacheCustomFields() error {
-		cfs, err := s.List()
-		if err != nil {
-			return err
-		}
+	cfs, err := s.List()
+	if err != nil {
+		return err
+	}
 
-		s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
+	s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
 	return nil
 }
 

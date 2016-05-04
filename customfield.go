@@ -77,7 +77,7 @@ type OptionField interface {
 
 type SingleOption string
 
-func (s *SingleOption) CustomFieldTag() string {
+func (s SingleOption) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_SINGLEOPTION
 }
 
@@ -97,7 +97,7 @@ func (s *SingleOption) IsOptionIdSet(id string) bool {
 
 type MultiOption []string
 
-func (m *MultiOption) CustomFieldTag() string {
+func (m MultiOption) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_MULTIOPTION
 }
 
