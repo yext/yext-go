@@ -17,8 +17,8 @@ type Location struct {
 	Id                     *string                `json:"id,omitempty"`
 	Name                   *string                `json:"locationName,omitempty"`
 	Lists                  []ECL                  `json:"lists,omitempty"`
-	Keywords               []string               `json:"keywords,omitempty"`
-	Associations           []string               `json:"associations,omitempty"`
+	Keywords               *[]string              `json:"keywords,omitempty"`
+	Associations           *[]string              `json:"associations,omitempty"`
 	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
 	CustomerId             *string                `json:"customerId,omitempty"`
 	Address                *string                `json:"address,omitempty"`
@@ -45,8 +45,8 @@ type Location struct {
 	Hours                  *string                `json:"hours,omitempty"` // A concrete type would be nice for this
 	AdditionalHoursText    *string                `json:"additionalHoursText,omitempty"`
 	Description            *string                `json:"description,omitempty"`
-	PaymentOptions         []string               `json:"paymentOptions,omitempty"`
-	VideoUrls              []string               `json:"videoUrls,omitempty"`
+	PaymentOptions         *[]string              `json:"paymentOptions,omitempty"`
+	VideoUrls              *[]string              `json:"videoUrls,omitempty"`
 	TwitterHandle          *string                `json:"twitterHandle,omitempty"`
 	FacebookPageUrl        *string                `json:"facebookPageUrl,omitempty"`
 	YearEstablished        *string                `json:"yearEstablished,omitempty"`
@@ -54,19 +54,19 @@ type Location struct {
 	DisplayLng             *float64               `json:"displayLng,omitempty"`
 	RoutableLat            *float64               `json:"routableLat,omitempty"`
 	RoutableLng            *float64               `json:"routableLng,omitempty"`
-	Emails                 []string               `json:"emails,omitempty"`
-	Specialties            []string               `json:"specialties,omitempty"`
-	Services               []string               `json:"services,omitempty"`
-	Brands                 []string               `json:"brands,omitempty"`
-	Languages              []string               `json:"languages,omitempty"`
+	Emails                 *[]string              `json:"emails,omitempty"`
+	Specialties            *[]string              `json:"specialties,omitempty"`
+	Services               *[]string              `json:"services,omitempty"`
+	Brands                 *[]string              `json:"brands,omitempty"`
+	Languages              *[]string              `json:"languages,omitempty"`
 	FolderId               *string                `json:"folderId,omitempty"`
-	LabelIds               []string               `json:"labelIds,omitempty"`
+	LabelIds               *[]string              `json:"labelIds,omitempty"`
 	FacebookCoverPhoto     *LocationPhoto         `json:"facebookCoverPhoto,omitempty"`
 	FacebookProfilePicture *LocationPhoto         `json:"facebookProfilePicture,omitempty"`
 	Logo                   *LocationPhoto         `json:"logo,omitempty"`
 	Photos                 []LocationPhoto        `json:"photos,omitempty"`
 	Closed                 *LocationClosed        `json:"closed,omitempty"`
-	CategoryIds            []string               `json:"categoryIds,omitempty"`
+	CategoryIds            *[]string              `json:"categoryIds,omitempty"`
 	HolidayHours           []HolidayHours         `json:"holidayHours,omitempty"`
 	hydrated               bool
 }
@@ -319,6 +319,83 @@ func (y Location) GetFolderId() string {
 func (y Location) String() string {
 	b, _ := json.Marshal(y)
 	return string(b)
+}
+
+func (y Location) GetKeywords() (v []string) {
+	if y.Keywords != nil {
+		v = *y.Keywords
+	}
+	return v
+}
+
+func (y Location) GetAssociations() (v []string) {
+	if y.Associations != nil {
+		v = *y.Associations
+	}
+	return v
+}
+
+func (y Location) GetEmails() (v []string) {
+	if y.Emails != nil {
+		v = *y.Emails
+	}
+	return v
+}
+
+func (y Location) GetSpecialties() (v []string) {
+	if y.Specialties != nil {
+		v = *y.Specialties
+	}
+	return v
+}
+
+func (y Location) GetServices() (v []string) {
+	if y.Services != nil {
+		v = *y.Services
+	}
+	return v
+}
+
+func (y Location) GetBrands() (v []string) {
+	if y.Brands != nil {
+		v = *y.Brands
+	}
+	return v
+}
+
+func (y Location) GetLanguages() (v []string) {
+	if y.Languages != nil {
+		v = *y.Languages
+	}
+	return v
+}
+
+func (y Location) GetLabelIds() (v []string) {
+	if y.LabelIds != nil {
+		v = *y.LabelIds
+	}
+	return v
+}
+
+func (y Location) GetCategoryIds() (v []string) {
+	if y.CategoryIds != nil {
+		v = *y.CategoryIds
+	}
+	return v
+}
+
+func (y Location) GetPaymentOptions() (v []string) {
+	if y.PaymentOptions != nil {
+		v = *y.PaymentOptions
+	}
+	return v
+}
+
+func (y Location) GetVideoUrls() (v []string) {
+	if y.VideoUrls != nil {
+		v = *y.VideoUrls
+	}
+	return v
 }
 
 // Photo represents a photo associated with a Location in Yext Location Manager.

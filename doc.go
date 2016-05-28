@@ -59,6 +59,7 @@ In order to support partial object updates, many of the struct attributes are re
 		Id: yext.String("JB-01"),
 		SuppressAddress: yext.Bool(true),
 		DisplayLat: yext.Float(38.813),
+		Keywords: yext.Strings([]string{"pastries", "bakery", "food"})
 	}
 
 In addition, accessors are provided to make extracting data from the model objects simpler:
@@ -66,6 +67,7 @@ In addition, accessors are provided to make extracting data from the model objec
 	l.GetId() // => "JB-01"
 	l.GetSuppressAddress() // => true
 	l.GetDisplayLat() // => 38.813
+	l.GetKeywords() // => ["pastries", "bakery", "food"]
 
 Error handling
 
