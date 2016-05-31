@@ -23,3 +23,7 @@ func Int(v int) *int {
 	*p = v
 	return p
 }
+
+func Strings(v []string) *[]string {
+	return &v
+}
