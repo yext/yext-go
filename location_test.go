@@ -25,9 +25,9 @@ func TestJSONSerialization(t *testing.T) {
 		{&Location{City: nil}, `{}`},
 		{&Location{City: String("")}, `{"city":""}`},
 		{&Location{Languages: nil}, `{}`},
-		{&Location{Languages: []string(nil)}, `{}`},
-		{&Location{Languages: []string{}}, `{"languages":[]}`},
-		{&Location{Languages: []string{"English"}}, `{"languages":["English"]}`},
+		{&Location{Languages: nil}, `{}`},
+		{&Location{Languages: &[]string{}}, `{"languages":[]}`},
+		{&Location{Languages: &[]string{"English"}}, `{"languages":["English"]}`},
 	}
 
 	for _, test := range tests {

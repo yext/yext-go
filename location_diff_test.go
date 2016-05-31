@@ -72,8 +72,8 @@ var complexOne = &Location{
 	Phone:           String("716-835-0306"),
 	FaxPhone:        String("716-835-0415"),
 	YearEstablished: String("2015"),
-	Emails:          []string{"slockhart@farmersagent.com"},
-	Services: []string{
+	Emails:          &[]string{"slockhart@farmersagent.com"},
+	Services: &[]string{
 		"Auto Insurance",
 		"Home Insurance",
 		"Homeowners Insurance",
@@ -83,7 +83,7 @@ var complexOne = &Location{
 		"Renters Insurance",
 		"Umbrella Insurance",
 	},
-	Languages: []string{"English"},
+	Languages: &[]string{"English"},
 	FolderId:  String("91760"),
 }
 
@@ -137,8 +137,8 @@ var complexTwo = &Location{
 	Phone:           String("716-835-0306"),
 	FaxPhone:        String("716-835-0415"),
 	YearEstablished: String("2015"),
-	Emails:          []string{"slockhart@farmersagent.com"},
-	Services: []string{
+	Emails:          &[]string{"slockhart@farmersagent.com"},
+	Services: &[]string{
 		"Auto Insurance",
 		"Home Insurance",
 		"Homeowners Insurance",
@@ -148,7 +148,7 @@ var complexTwo = &Location{
 		"Renters Insurance",
 		"Umbrella Insurance",
 	},
-	Languages: []string{"English"},
+	Languages: &[]string{"English"},
 	FolderId:  String("91760"),
 }
 
@@ -190,14 +190,14 @@ var baseLocation Location = Location{
 	DisplayLng:             Float(1234.0),
 	RoutableLat:            Float(1234.0),
 	RoutableLng:            Float(1234.0),
-	Keywords:               []string{"ding", "ding"},
-	PaymentOptions:         []string{"ding", "ding"},
-	VideoUrls:              []string{"ding", "ding"},
-	Emails:                 []string{"ding", "ding"},
-	Specialties:            []string{"ding", "ding"},
-	Services:               []string{"ding", "ding"},
-	Brands:                 []string{"ding", "ding"},
-	Languages:              []string{"ding", "ding"},
+	Keywords:               &[]string{"ding", "ding"},
+	PaymentOptions:         &[]string{"ding", "ding"},
+	VideoUrls:              &[]string{"ding", "ding"},
+	Emails:                 &[]string{"ding", "ding"},
+	Specialties:            &[]string{"ding", "ding"},
+	Services:               &[]string{"ding", "ding"},
+	Brands:                 &[]string{"ding", "ding"},
+	Languages:              &[]string{"ding", "ding"},
 	Logo:                   &examplePhoto,
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
@@ -248,14 +248,14 @@ func TestDiffIdentical(t *testing.T) {
 		DisplayLng:             Float(1234.0),
 		RoutableLat:            Float(1234.0),
 		RoutableLng:            Float(1234.0),
-		Keywords:               []string{"ding", "ding"},
-		PaymentOptions:         []string{"ding", "ding"},
-		VideoUrls:              []string{"ding", "ding"},
-		Emails:                 []string{"ding", "ding"},
-		Specialties:            []string{"ding", "ding"},
-		Services:               []string{"ding", "ding"},
-		Brands:                 []string{"ding", "ding"},
-		Languages:              []string{"ding", "ding"},
+		Keywords:               &[]string{"ding", "ding"},
+		PaymentOptions:         &[]string{"ding", "ding"},
+		VideoUrls:              &[]string{"ding", "ding"},
+		Emails:                 &[]string{"ding", "ding"},
+		Specialties:            &[]string{"ding", "ding"},
+		Services:               &[]string{"ding", "ding"},
+		Brands:                 &[]string{"ding", "ding"},
+		Languages:              &[]string{"ding", "ding"},
 		Logo:                   &examplePhoto,
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
@@ -384,23 +384,23 @@ func TestBoolDiffs(t *testing.T) {
 }
 
 type stringArrayTest struct {
-	baseValue          []string
-	newValue           []string
+	baseValue          *[]string
+	newValue           *[]string
 	isDiff             bool
 	expectedFieldValue []string
 }
 
 var stringArrayTests = []stringArrayTest{
-	{[]string{"ding", "dong"}, []string{"ding", "dong"}, false, nil},
-	{[]string{"ding", "dong"}, []string{"ding", "dong", "dang"}, true, []string{"ding", "dong", "dang"}},
-	{[]string{"ding", "dong", "dang"}, []string{"ding", "dong"}, true, []string{"ding", "dong"}},
-	{[]string{}, []string{}, false, nil},
-	{[]string{}, []string{"ding"}, true, []string{"ding"}},
-	{[]string{}, nil, false, nil},
-	{nil, []string{}, false, nil},
+	{&[]string{"ding", "dong"}, &[]string{"ding", "dong"}, false, nil},
+	{&[]string{"ding", "dong"}, &[]string{"ding", "dong", "dang"}, true, []string{"ding", "dong", "dang"}},
+	{&[]string{"ding", "dong", "dang"}, &[]string{"ding", "dong"}, true, []string{"ding", "dong"}},
+	{&[]string{}, &[]string{}, false, nil},
+	{&[]string{}, &[]string{"ding"}, true, []string{"ding"}},
+	{&[]string{}, nil, false, nil},
+	{nil, &[]string{}, true, []string{}},
 	{nil, nil, false, nil},
-	{[]string{"ding"}, []string{}, true, []string{}},
-	{[]string{"ding"}, nil, false, nil},
+	{&[]string{"ding"}, &[]string{}, true, []string{}},
+	{&[]string{"ding"}, nil, false, nil},
 }
 
 func (t stringArrayTest) formatErrorBase(index int) string {
@@ -419,11 +419,11 @@ func TestStringArrayDiffs(t *testing.T) {
 			continue
 		} else if d == nil && data.expectedFieldValue != nil {
 			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
-		} else if len(d.PaymentOptions) != len(data.expectedFieldValue) {
+		} else if len(d.GetPaymentOptions()) != len(data.expectedFieldValue) {
 			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 		} else {
-			for i := 0; i < len(d.PaymentOptions); i++ {
-				if d.PaymentOptions[i] != data.expectedFieldValue[i] {
+			for i := 0; i < len(d.GetPaymentOptions()); i++ {
+				if d.GetPaymentOptions()[i] != data.expectedFieldValue[i] {
 					t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 				}
 			}
@@ -1061,12 +1061,12 @@ func TestClosedDiffs(t *testing.T) {
 }
 
 func TestComplexDiffs(t *testing.T) {
-	matt, ben := Location{Name: String("matt"), Emails: []string{"matt@yext.com"}}, Location{Name: String("ben"), Emails: []string{"ben@yext.com"}}
+	matt, ben := Location{Name: String("matt"), Emails: &[]string{"matt@yext.com"}}, Location{Name: String("ben"), Emails: &[]string{"ben@yext.com"}}
 	delta, isDiff := matt.Diff(&ben)
 	if !isDiff {
 		t.Errorf("Expected true diff was false\ndelta was:\n%v\n", delta)
 	}
-	if delta.GetName() != "ben" || len(delta.Emails) != 1 || delta.Emails[0] != "ben@yext.com" {
+	if delta.GetName() != "ben" || len(delta.GetEmails()) != 1 || delta.GetEmails()[0] != "ben@yext.com" {
 		t.Errorf("Delta was not as expected\ndelta was:\n%v\nexpected\v%v\n", delta, ben)
 	}
 }
