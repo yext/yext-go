@@ -2,6 +2,7 @@ package yext
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 )
 
@@ -35,6 +36,29 @@ func TestJSONSerialization(t *testing.T) {
 			t.Error("Unable to convert", test.l, "to JSON:", err)
 		} else if got != test.want {
 			t.Errorf("json.Marshal(%#v) = %s; expected %s", test.l, got, test.want)
+		}
+	}
+}
+
+func TestJSONDeserialization(t *testing.T) {
+	type test struct {
+		json string
+		want *Location
+	}
+
+	tests := []test{
+		{`{}`, &Location{}},
+		{`{"emails": []}`, &Location{Emails: Strings([]string{})}},
+		{`{"emails": ["mhupman@yext.com", "bmcginnis@yext.com"]}`, &Location{Emails: Strings([]string{"mhupman@yext.com", "bmcginnis@yext.com"})}},
+	}
+
+	for _, test := range tests {
+		v := &Location{}
+
+		if err := json.Unmarshal([]byte(test.json), v); err != nil {
+			t.Error("Unable to deserialize", test.json, "from JSON:", err)
+		} else if !reflect.DeepEqual(v, test.want) {
+			t.Errorf("json.Unmarshal(%#v) = %s; expected %s", test.json, v, test.want)
 		}
 	}
 }
