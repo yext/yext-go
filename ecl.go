@@ -97,7 +97,7 @@ func (e ECLSection) GetDescription() string {
 
 type ECLItem struct {
 	Id          *string `json:"id"`
-	Name        *string `json:"name"`
+	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
 
@@ -155,10 +155,11 @@ type EventsECLSection struct {
 
 type Event struct {
 	ECLItem
-	Type   string `json:"type,omitempty"`
-	Starts string `json:"starts,omitempty"`
-	Ends   string `json:"ends,omitempty"`
-	Url    string `json:"url,omitempty"`
+	Type   string    `json:"type,omitempty"`
+	Starts string    `json:"starts,omitempty"`
+	Ends   string    `json:"ends,omitempty"`
+	Photo  *EclPhoto `json:"photo,omitempty"`
+	Url    string    `json:"url,omitempty"`
 }
 
 type ProductsECL struct {
@@ -192,8 +193,10 @@ type BiosECLSection struct {
 
 type Bio struct {
 	ECLItem
-	Title          string    `json:"idcode,omitempty"`
+	Title          string    `json:"title,omitempty"`
 	Photo          *EclPhoto `json:"photo,omitempty"`
+	PhoneNumber    string    `json:"phone,omitempty"`
+	EmailAddress   string    `json:"emailAddress,omitempty"`
 	Education      []string  `json:"education"`
 	Certifications []string  `json:"certifications"`
 	Services       []string  `json:"services,omitempty"`

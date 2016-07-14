@@ -24,11 +24,13 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	return &Config{}
+	return &Config{
+		HTTPClient: http.DefaultClient,
+	}
 }
 
 func NewDefaultConfig() *Config {
-	return NewConfig().WithHTTPClient(http.DefaultClient).WithProductionHost().WithRetries(3)
+	return NewConfig().WithProductionHost().WithRetries(3)
 }
 
 func (c *Config) WithHTTPClient(client *http.Client) *Config {
