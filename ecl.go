@@ -196,7 +196,7 @@ type Bio struct {
 	Title          string    `json:"title,omitempty"`
 	Photo          *EclPhoto `json:"photo,omitempty"`
 	PhoneNumber    string    `json:"phone,omitempty"`
-	EmailAddress   string    `json:"emailAddress,omitempty"`
+	EmailAddress   string    `json:"email,omitempty"`
 	Education      []string  `json:"education"`
 	Certifications []string  `json:"certifications"`
 	Services       []string  `json:"services,omitempty"`
