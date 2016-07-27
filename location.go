@@ -16,6 +16,10 @@ import (
 type Location struct {
 	Id                     *string                `json:"id,omitempty"`
 	Name                   *string                `json:"locationName,omitempty"`
+	LocationType           *[]string              `json:"locationType,omitempty"`
+	FirstName              *string                `json:"firstName,omitempty"`
+	LastName               *string                `json:"lastName,omitempty"`
+	NPI                    *string                `json:"npi,omitempty"`
 	Lists                  []ECL                  `json:"lists,omitempty"`
 	Keywords               *[]string              `json:"keywords,omitempty"`
 	Associations           *[]string              `json:"associations,omitempty"`
@@ -78,9 +82,37 @@ func (y Location) GetId() string {
 	return ""
 }
 
+func (y Location) GetLocationType() (v []string) {
+	if y.LocationType != nil {
+		v = *y.LocationType
+	}
+	return v
+}
+
 func (y Location) GetName() string {
 	if y.Name != nil {
 		return *y.Name
+	}
+	return ""
+}
+
+func (y Location) GetFirstName() string {
+	if y.FirstName != nil {
+		return *y.FirstName
+	}
+	return ""
+}
+
+func (y Location) GetLastName() string {
+	if y.LastName != nil {
+		return *y.LastName
+	}
+	return ""
+}
+
+func (y Location) GetNPI() string {
+	if y.NPI != nil {
+		return *y.NPI
 	}
 	return ""
 }
