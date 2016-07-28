@@ -16,7 +16,7 @@ import (
 type Location struct {
 	Id                     *string                `json:"id,omitempty"`
 	Name                   *string                `json:"locationName,omitempty"`
-	LocationType           *[]string              `json:"locationType,omitempty"`
+	LocationType           *string                `json:"locationType,omitempty"`
 	FirstName              *string                `json:"firstName,omitempty"`
 	LastName               *string                `json:"lastName,omitempty"`
 	NPI                    *string                `json:"npi,omitempty"`
@@ -82,11 +82,11 @@ func (y Location) GetId() string {
 	return ""
 }
 
-func (y Location) GetLocationType() (v []string) {
+func (y Location) GetLocationType() string {
 	if y.LocationType != nil {
-		v = *y.LocationType
+		return *y.LocationType
 	}
-	return v
+	return ""
 }
 
 func (y Location) GetName() string {
