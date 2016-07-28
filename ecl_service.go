@@ -125,6 +125,12 @@ func parseECLResponse(buf []byte) (*ListECLResponse, error) {
 	return res, nil
 }
 
+func (e *ECLService) GetList(id string) (*ECL, error) {
+	var v ECL
+	err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", listsPath, id), &v)
+	return &v, err
+}
+
 func (e *ECLService) GetProductList(id string) (*ProductsECL, error) {
 	var v ProductsECL
 	err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", listsPath, id), &v)
