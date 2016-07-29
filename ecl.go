@@ -155,11 +155,11 @@ type EventsECLSection struct {
 
 type Event struct {
 	ECLItem
-	Type   string    `json:"type,omitempty"`
-	Starts string    `json:"starts,omitempty"`
-	Ends   string    `json:"ends,omitempty"`
-	Photo  *EclPhoto `json:"photo,omitempty"`
-	Url    string    `json:"url,omitempty"`
+	Type   string      `json:"type,omitempty"`
+	Starts string      `json:"starts,omitempty"`
+	Ends   string      `json:"ends,omitempty"`
+	Photos []*EclPhoto `json:"photos,omitempty"`
+	Url    string      `json:"url,omitempty"`
 }
 
 type ProductsECL struct {
