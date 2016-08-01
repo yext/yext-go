@@ -25,6 +25,7 @@ type Client struct {
 	ECLService         *ECLService
 	CustomFieldService *CustomFieldService
 	FolderService      *FolderService
+	CategoryService    *CategoryService
 	LicenseService     *LicenseService
 	UserService        *UserService
 }
@@ -36,6 +37,7 @@ func NewClient(config *Config) *Client {
 	c.ECLService = &ECLService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
+	c.CategoryService = &CategoryService{client: c}
 	c.LicenseService = &LicenseService{client: c}
 	c.UserService = &UserService{client: c}
 

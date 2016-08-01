@@ -72,6 +72,7 @@ type Location struct {
 	Closed                 *LocationClosed        `json:"closed,omitempty"`
 	CategoryIds            *[]string              `json:"categoryIds,omitempty"`
 	HolidayHours           []HolidayHours         `json:"holidayHours,omitempty"`
+	AdmittingHospitals     *[]string              `json:"admittingHospitals,omitempty"`
 	hydrated               bool
 }
 
@@ -426,6 +427,13 @@ func (y Location) GetPaymentOptions() (v []string) {
 func (y Location) GetVideoUrls() (v []string) {
 	if y.VideoUrls != nil {
 		v = *y.VideoUrls
+	}
+	return v
+}
+
+func (y Location) GetAdmittingHospitals() (v []string) {
+	if y.AdmittingHospitals != nil {
+		v = *y.AdmittingHospitals
 	}
 	return v
 }
