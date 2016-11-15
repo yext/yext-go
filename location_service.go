@@ -20,6 +20,16 @@ type locationListResponse struct {
 	Locations []*Location `json:"locations"`
 }
 
+func (l *locationListResponse) Print() string {
+	locs := make([]string, len(l.Locations))
+
+	for i, loc := range l.Locations {
+		locs[i] = *loc.Id
+	}
+
+	return strings.Join(locs, "; ")
+}
+
 func (l *LocationService) List() ([]*Location, error) {
 	v := &locationListResponse{}
 	err := l.client.DoRequest("GET", locationsPath, v)

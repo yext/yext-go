@@ -2,6 +2,7 @@ package yext
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -50,13 +51,13 @@ func TestGetResponseError(t *testing.T) {
 		w.Write([]byte(licenseDoesNotExistResponse))
 	})
 
-	resp, err := client.LicenseService.Get(licenseId)
+	_, err := client.LicenseService.Get(licenseId)
 	if err == nil {
 		t.Error("Error should have been returned.")
 	}
 
-	if len(resp.LocationIds) > 0 {
-		t.Error("Did not get successful status from response.")
+	if !strings.Contains(err.Error(), "code: 3034") {
+		t.Errorf("Error not correct, was %v", err.Error())
 	}
 }
 
@@ -167,65 +168,86 @@ func TestRemoveLocationFromLicenseError(t *testing.T) {
 
 var licenseResponse = `
 {
-  "locationIds": [
-    "0A8804",
-    "0A8823",
-    "0A8845",
-    "0A8404",
-    "0A8789",
-    "0A8908",
-    "0B0291",
-    "0A8906",
-    "0A8787"
-  ],
-  "features": [
-    "Yellow Cauldron [TEST]",
-    "2findlocal",
-    "Custom Fields"
-  ],
-  "id": 16091,
-  "quantity": 1000,
-  "status": "ACTIVE"
+	"meta": {
+		"uuid": "123456789",
+		"errors": []
+	},
+	"response":
+
+	{
+		"locationIds": [
+			"0A8804",
+			"0A8823",
+			"0A8845",
+			"0A8404",
+			"0A8789",
+			"0A8908",
+			"0B0291",
+			"0A8906",
+			"0A8787"
+		],
+		"features": [
+			"Yellow Cauldron [TEST]",
+			"2findlocal",
+			"Custom Fields"
+		],
+		"id": 16091,
+		"quantity": 1000,
+		"status": "ACTIVE"
+	}
 }`
 
 var licenseDoesNotExistResponse = `
 {
-  "errors": [
-    {
-      "message": "License pack does not exist.",
-      "errorCode": 3034
-    }
-  ]
+	"meta": {
+		"uuid": "12345678",
+	  "errors": [
+	    {
+	      "message": "License pack does not exist.",
+	      "code": 3034,
+				"type": "FAILURE"
+	    }
+	  ]
+	}
 }`
 
 var licenseError = `
 {
-  "errors": [
-    {
-      "message": "Location not found: 0A880",
-      "errorCode": 2000
-    }
-  ]
+	"meta": {
+		"uuid": "12345678",
+	  "errors": [
+	    {
+	      "message": "Location not found: 0A880",
+	      "errorCode": 2000
+	    }
+	  ]
+	}
 }`
 
 var licenseRemoveResponse = `
 {
-  "locationIds": [
-    "0A8823",
-    "0A8845",
-    "0A8404",
-    "0A8789",
-    "0A8908",
-    "0B0291",
-    "0A8906",
-    "0A8787"
-  ],
-  "features": [
-    "Yellow Cauldron [TEST]",
-    "2findlocal",
-    "Custom Fields"
-  ],
-  "id": 16091,
-  "quantity": 1000,
-  "status": "ACTIVE"
+	"meta": {
+		"uuid": "12345678",
+		"errors": []
+	},
+	"response": {
+	  "locationIds": [
+	    "0A8823",
+	    "0A8845",
+	    "0A8404",
+	    "0A8789",
+	    "0A8908",
+	    "0B0291",
+	    "0A8906",
+	    "0A8787"
+	  ],
+	  "features": [
+	    "Yellow Cauldron [TEST]",
+	    "2findlocal",
+	    "Custom Fields"
+	  ],
+	  "id": 16091,
+	  "quantity": 1000,
+	  "status": "ACTIVE"
+	}
 }`

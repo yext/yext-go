@@ -14,10 +14,10 @@ func TestErrorDeserialzation(t *testing.T) {
 	setup()
 	defer teardown()
 
-	errorResp := `{"errors": [{
+	errorResp := `{"meta": {"errors": [{
 	  "message": "We had a problem with our software. Please contact support!",
 	  "errorCode": 9
-	}]}`
+	}], "uuid": "123456789"}}`
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -26,8 +26,12 @@ func TestErrorDeserialzation(t *testing.T) {
 
 	err := client.DoRequest("", "", nil)
 
-	if _, ok := err.(*ErrorResponse); !ok {
-		t.Error("Expected to recieve *ErrorResponse type, got", err, "instead")
+	if _, ok := err.(*Response); !ok {
+		t.Error("Expected to recieve *Response type, got", err, "instead")
+	}
+
+	if !strings.Contains(err.Error(), "message: We had a problem with") {
+		t.Error("Issue parsing the error, was: ", err.Error())
 	}
 }
 
@@ -136,6 +140,46 @@ func TestRetryWith400Error(t *testing.T) {
 
 	if requests != 1 {
 		t.Errorf("Expected 1 net attempts when %d encountered, got %d", http.StatusBadRequest, requests)
+	}
+}
+
+func TestMetaDeserialization(t *testing.T) {
+	setup()
+	defer teardown()
+
+	resp := `{
+		  "meta": {
+		    "uuid": "0556abaf-e5fb-475f-8e2a-79688bf4bc18",
+		    "errors": [
+		    ]
+		  },
+		  "response": {
+		    "count": 1,
+		    "locations": [
+		      {
+		        "id": "3810730"
+					}
+		    ]
+		  }
+		}`
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(resp))
+	})
+
+	v := &locationListResponse{}
+	err := client.DoRequest("", "", v)
+	if err != nil {
+		t.Error("Error came back in request")
+	}
+
+	if len(v.Locations) < 1 {
+		t.Error("No Locations came back")
+	}
+
+	if *v.Locations[0].Id != "3810730" {
+		t.Errorf("ID didn't come back correctly, it was %v instead", *v.Locations[0].Id)
 	}
 }
 

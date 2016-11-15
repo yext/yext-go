@@ -2,7 +2,6 @@ package yext
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,7 +12,7 @@ import (
 )
 
 const (
-	CUSTOMERS_PATH string = "customers"
+	CUSTOMERS_PATH string = "accounts"
 )
 
 var ResourceNotFound = errors.New("Resource not found")
@@ -45,7 +44,7 @@ func NewClient(config *Config) *Client {
 }
 
 func (c *Client) customerRequestUrl(path string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseUrl, CUSTOMERS_PATH, c.Config.CustomerId, path)
+	return fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseUrl, CUSTOMERS_PATH, c.Config.AccountId, path)
 }
 
 func (c *Client) rawRequestURL(path string) string {
@@ -84,9 +83,11 @@ func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*h
 		return nil, err
 	}
 
-	rawAuth := []byte(fmt.Sprintf("%v:%v", c.Config.Username, c.Config.Password))
-	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(rawAuth))
 	req.Header.Set("Content-Type", "application/json")
+	q := req.URL.Query()
+	q.Add("api_key", c.Config.ApiKey)
+	q.Add("v", c.Config.VParam)
+	req.URL.RawQuery = q.Encode()
 
 	return req, nil
 }
@@ -180,10 +181,12 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 		}
 
 		if v != nil {
-			if w, ok := v.(io.Writer); ok {
+			var fullResponse interface{}
+			fullResponse = &Response{Body: v}
+			if w, ok := fullResponse.(io.Writer); ok {
 				io.Copy(w, resp.Body)
 			} else {
-				resultError = json.NewDecoder(resp.Body).Decode(v)
+				resultError = json.NewDecoder(resp.Body).Decode(fullResponse)
 			}
 		}
 
@@ -206,7 +209,8 @@ func CheckResponseError(res *http.Response) (bool, error) {
 			return retryable, err
 		}
 
-		errorResponse := &ErrorResponse{Response: res}
+		// errorResponse := &Response{HTTPResponse: res}
+		errorResponse := &Response{}
 		if err := json.Unmarshal(data, errorResponse); err != nil {
 			return retryable, errors.New(fmt.Sprintf("unable to unmarshal error from: %s : %s", string(data), err))
 		}

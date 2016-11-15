@@ -24,9 +24,9 @@ func setup() *Config {
 	// client configured to use test server
 	config := NewConfig().
 		WithHTTPClient(http.DefaultClient).
-		WithBaseUrl(server.URL).               // Use test server
-		WithCredentials("", "", "customerid"). // Customer ID needs to be set to something to avoid '//' in the URL path
-		WithRetries(0)                         // No retries
+		WithBaseUrl(server.URL). // Use test server
+		WithApiKey("apikey").    // Customer ID needs to be set to something to avoid '//' in the URL path
+		WithRetries(0)           // No retries
 
 	client = NewClient(config)
 	// No delay between attempts
