@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-const customFieldPath = "customFields"
+const customFieldPath = "customfields"
 
 type CustomFieldManager struct {
 	CustomFields []*CustomField
