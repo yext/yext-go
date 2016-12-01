@@ -106,7 +106,7 @@ func (m MultiOption) CustomFieldTag() string {
 }
 
 func (m MultiOption) Equal(c CustomFieldValueComparable) bool {
-	n := *c.(*MultiOption)
+	n := c.(MultiOption)
 	if len(m) != len(n) {
 		return false
 	}
