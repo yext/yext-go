@@ -60,13 +60,13 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
 					if aValue, ok := y.CustomFields[field]; ok {
-						var valuediff bool
+						var valueDiff bool
 						if v, ok := aValue.(CustomFieldValueComparable); ok {
-							valuediff = !v.Equal(value.(CustomFieldValueComparable))
+							valueDiff = !v.Equal(value.(CustomFieldValueComparable))
 						} else if !reflect.DeepEqual(aValue, value) {
-							valuediff = true
+							valueDiff = true
 						}
-						if valuediff {
+						if valueDiff {
 							diff = true
 							d.CustomFields[field] = value
 						}

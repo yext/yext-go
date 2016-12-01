@@ -106,20 +106,19 @@ func (m MultiOption) CustomFieldTag() string {
 }
 
 func (m MultiOption) Equal(c CustomFieldValueComparable) bool {
-	n := c.(MultiOption)
+	n := *c.(*MultiOption)
 	if len(m) != len(n) {
 		return false
-	} else {
-		for i := 0; i < len(m); i++ {
-			found := false
-			for j := 0; j < len(n); j++ {
-				if m[i] == n[j] {
-					found = true
-				}
+	}
+	for i := 0; i < len(m); i++ {
+		found := false
+		for j := 0; j < len(n); j++ {
+			if m[i] == n[j] {
+				found = true
 			}
-			if found != true {
-				return false
-			}
+		}
+		if !found {
+			return false
 		}
 	}
 	return true
