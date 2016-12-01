@@ -1,8 +1,6 @@
 package yext
 
-import (
-	"reflect"
-)
+import "reflect"
 
 // Diff calculates the differences between a base Location (a) and a proposed set of changes
 // represented by a second Location (b).  The diffing logic will ignore fields in the proposed
@@ -62,9 +60,15 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
 					if aValue, ok := y.CustomFields[field]; ok {
-						if !reflect.DeepEqual(aValue, value) {
-							d.CustomFields[field] = value
+						var valueDiff bool
+						if v, ok := aValue.(CustomFieldValueComparable); ok {
+							valueDiff = !v.Equal(value.(CustomFieldValueComparable))
+						} else if !reflect.DeepEqual(aValue, value) {
+							valueDiff = true
+						}
+						if valueDiff {
 							diff = true
+							d.CustomFields[field] = value
 						}
 					} else {
 						d.CustomFields[field] = value

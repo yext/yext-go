@@ -862,6 +862,7 @@ var baseCustomFields = map[string]interface{}{
 		"27348",
 		"27349",
 	},
+	"62149": MultiOption{"1", "2"},
 }
 
 func copyCustomFields(cf map[string]interface{}) map[string]interface{} {
@@ -890,6 +891,12 @@ func modifyCF(cf map[string]interface{}) map[string]interface{} {
 	return n
 }
 
+func reorderedMultiOptionCF(cf map[string]interface{}) map[string]interface{} {
+	n := copyCustomFields(cf)
+	n["62149"] = MultiOption{"2", "1"}
+	return n
+}
+
 func zeroCFKEy(cf map[string]interface{}, key string) map[string]interface{} {
 	n := copyCustomFields(cf)
 
@@ -901,10 +908,11 @@ func zeroCFKEy(cf map[string]interface{}, key string) map[string]interface{} {
 }
 
 var (
-	copyOfBase = copyCustomFields(baseCustomFields)
-	appendedCF = appendJunkToCustomFields(baseCustomFields)
-	trimmedCF  = deleteKeyFromCustomField(baseCustomFields)
-	modifiedCF = modifyCF(baseCustomFields)
+	copyOfBase             = copyCustomFields(baseCustomFields)
+	appendedCF             = appendJunkToCustomFields(baseCustomFields)
+	trimmedCF              = deleteKeyFromCustomField(baseCustomFields)
+	modifiedCF             = modifyCF(baseCustomFields)
+	differentOptionOrderCF = reorderedMultiOptionCF(baseCustomFields)
 )
 
 var customFieldsTests = []customFieldsTest{
@@ -916,6 +924,7 @@ var customFieldsTests = []customFieldsTest{
 	{baseCustomFields, appendedCF, true, map[string]interface{}{"guy": "random junk"}},
 	{baseCustomFields, trimmedCF, false, nil},
 	{baseCustomFields, modifiedCF, true, map[string]interface{}{"62153": "This is a\r\nMODIFIED multi\r\nline\r\ntext"}},
+	{baseCustomFields, differentOptionOrderCF, false, nil},
 }
 
 func addZeroTests() {
