@@ -1,5 +1,7 @@
 package yext
 
+import "reflect"
+
 // ListECLResponse is a calculated value that provides typed access to an underlying 'ListECL' response
 type ListECLResponse struct {
 	AllLists     []*ECL
@@ -201,4 +203,8 @@ type Bio struct {
 	Certifications []string  `json:"certifications"`
 	Services       []string  `json:"services,omitempty"`
 	Url            string    `json:"url,omitempty"`
+}
+
+func BioItemCompare(itemA Bio, itemB Bio) bool {
+	return reflect.DeepEqual(itemA, itemB)
 }
