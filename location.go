@@ -453,7 +453,7 @@ func (l Photo) String() string {
 // LocationClosed represents the 'closed' state of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Closed
 type LocationClosed struct {
-	IsClosed   string `json:"isClosed"`
+	IsClosed   bool   `json:"isClosed"`
 	ClosedDate string `json:"closedDate,omitempty"`
 }
 
