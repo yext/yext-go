@@ -16,6 +16,7 @@ const (
 	CUSTOMFIELDTYPE_GALLERY        = "GALLERY"
 	CUSTOMFIELDTYPE_VIDEO          = "VIDEO"
 	CUSTOMFIELDTYPE_HOURS          = "HOURS"
+	CUSTOMFIELDTYPE_CUSTOMHOURS    = "HOURS"
 	// not sure what to do with "DAILYTIMES", omitting
 )
 
@@ -189,9 +190,9 @@ func (v *VideoGallery) CustomFieldTag() string {
 }
 
 type Hours struct {
-	AdditionalText string         `json:"additionalHoursText"`
-	Hours          string         `json:"hours"`
-	HolidayHours   []HolidayHours `json:"holidayHours"`
+	AdditionalText string         `json:"additionalHoursText,omitempty"`
+	Hours          string         `json:"hours,omitempty"`
+	HolidayHours   []HolidayHours `json:"holidayHours,omitempty"`
 }
 
 func (h *Hours) CustomFieldTag() string {
