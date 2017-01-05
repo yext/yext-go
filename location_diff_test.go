@@ -12,14 +12,14 @@ var examplePhoto = LocationPhoto{
 	Description: "An example image",
 }
 
-var exampleECL = ECL{
+var exampleList = List{
 	Id:       String("ding"),
 	Name:     String("ding"),
 	Title:    String("ding"),
 	Type:     String("ding"),
 	Publish:  Bool(false),
 	Currency: String("ding"),
-	Sections: []*ECLSection{},
+	Sections: []*ListSection{},
 }
 
 var complexOne = &Location{
@@ -157,7 +157,7 @@ var jsonData string = `{"id":"phai514","locationName":"Farmers Insurance - Aroun
 var baseLocation Location = Location{
 	Id:                     String("ding"),
 	Name:                   String("ding"),
-	CustomerId:             String("ding"),
+	AccountId:              String("ding"),
 	Address:                String("ding"),
 	Address2:               String("ding"),
 	DisplayAddress:         String("ding"),
@@ -202,7 +202,7 @@ var baseLocation Location = Location{
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
 	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-	Lists:                  []ECL{exampleECL},
+	Lists:                  []List{exampleList},
 	Closed: &LocationClosed{
 		IsClosed: "false",
 	},
@@ -215,7 +215,7 @@ func TestDiffIdentical(t *testing.T) {
 	secondLocation := &Location{
 		Id:                     String("ding"),
 		Name:                   String("ding"),
-		CustomerId:             String("ding"),
+		AccountId:              String("ding"),
 		Address:                String("ding"),
 		Address2:               String("ding"),
 		DisplayAddress:         String("ding"),
@@ -260,7 +260,7 @@ func TestDiffIdentical(t *testing.T) {
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
 		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-		Lists:                  []ECL{exampleECL},
+		Lists:                  []List{exampleList},
 		Closed: &LocationClosed{
 			IsClosed: "false",
 		},
@@ -573,173 +573,173 @@ func TestPhotoArrayDiffs(t *testing.T) {
 	}
 }
 
-type eclTest struct {
-	baseValue          []ECL
-	newValue           []ECL
+type listTest struct {
+	baseValue          []List
+	newValue           []List
 	isDiff             bool
-	expectedFieldValue []ECL
+	expectedFieldValue []List
 }
 
-var eclTests = []eclTest{
-	{nil, []ECL{}, false, nil},
-	{[]ECL{}, nil, false, nil},
+var listTests = []listTest{
+	{nil, []List{}, false, nil},
+	{[]List{}, nil, false, nil},
 	{nil, nil, false, nil},
 	{
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 		false,
 		nil,
 	},
 	{
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("Dang"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 		true,
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 	},
 	{
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
-			ECL{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 		true,
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 	},
 	{
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
-			ECL{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 		true,
-		[]ECL{
-			ECL{
+		[]List{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
-			ECL{
+			List{
 				Id:       String("1"),
 				Name:     String("ding"),
 				Title:    String("dong"),
 				Type:     String("EVENTS"),
 				Currency: String("USD"),
-				Sections: []*ECLSection{},
+				Sections: []*ListSection{},
 			},
 		},
 	},
 }
 
-func (t eclTest) formatErrorBase(index int) string {
+func (t listTest) formatErrorBase(index int) string {
 	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'", index, t.baseValue, t.newValue)
 }
 
-func TestECLDiffs(t *testing.T) {
+func TestListDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
-	for i, data := range eclTests {
+	for i, data := range listTests {
 		a.Lists, b.Lists = data.baseValue, data.newValue
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {

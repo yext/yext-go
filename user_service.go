@@ -1,70 +1,58 @@
 package yext
 
-import (
-	"fmt"
-	"net/url"
-	"strconv"
-)
+import "fmt"
 
 const (
 	userPath = "users"
 	rolePath = "roles"
 )
 
+var UserListMaxLimit = 50
+
 type UserService struct {
 	client *Client
 }
 
-type userListResponse struct {
+type UserListResponse struct {
+	Count int     `json:"count"`
 	Users []*User `json:"users"`
 }
 
-type rolesRepsonse struct {
+type RolesListResponse struct {
+	Count int     `json:"count"`
 	Roles []*Role `json:"roles"`
 }
 
 func (u *UserService) ListAll() ([]*User, error) {
-	var (
-		start     int
-		allUsers  []*User
-		increment = 1000
-	)
-
-	for {
-		users, err := u.List(start, increment)
+	var users []*User
+	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
+		ulr, _, err := u.List(opts)
 		if err != nil {
-			return nil, err
+			return 0, 0, err
 		}
-
-		allUsers = append(allUsers, users...)
-
-		if len(users) < increment {
-			break
-		}
-
-		start += increment
+		users = append(users, ulr.Users...)
+		return len(ulr.Users), ulr.Count, err
 	}
-	return allUsers, nil
+
+	if err := listHelper(lr, UserListMaxLimit); err != nil {
+		return nil, err
+	} else {
+		return users, nil
+	}
 }
 
-func (u *UserService) List(start, limit int) ([]*User, error) {
-	userUrl := url.URL{Path: userPath}
-
-	if start > 0 {
-		q := userUrl.Query()
-		q.Set("start", strconv.Itoa(start))
-		userUrl.RawQuery = q.Encode()
+func (u *UserService) List(opts *ListOptions) (*UserListResponse, *Response, error) {
+	requrl, err := addListOptions(userPath, opts)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	if limit > 0 {
-		q := userUrl.Query()
-		q.Set("limit", strconv.Itoa(limit))
-		userUrl.RawQuery = q.Encode()
+	v := &UserListResponse{}
+	r, err := u.client.DoRequest("GET", requrl, v)
+	if err != nil {
+		return nil, r, err
 	}
-
-	v := &userListResponse{}
-	err := u.client.DoRequest("GET", userUrl.String(), v)
-	return v.Users, err
+	return v, r, nil
 }
 
 func (u *User) pathToUser() string {
@@ -75,54 +63,59 @@ func pathToUserId(id string) string {
 	return fmt.Sprintf("%s/%s", userPath, id)
 }
 
-func (u *UserService) Get(id string) (*User, error) {
+func (u *UserService) Get(id string) (*User, *Response, error) {
 	var v = &User{}
-	err := u.client.DoRequest("GET", pathToUserId(id), v)
-	return v, err
+	r, err := u.client.DoRequest("GET", pathToUserId(id), v)
+	if err != nil {
+		return nil, r, err
+	}
+	return v, r, nil
 }
 
-func (u *UserService) Edit(y *User) (*User, error) {
-	var v = &User{}
-	err := u.client.DoRequestJSON("PUT", y.pathToUser(), y, v)
-	return v, err
+func (u *UserService) Edit(y *User) (*Response, error) {
+	return u.client.DoRequestJSON("PUT", y.pathToUser(), y, nil)
 }
 
-func (u *UserService) Create(y *User) (*User, error) {
-	var v = &User{}
-	err := u.client.DoRequestJSON("POST", userPath, y, v)
-	return v, err
+func (u *UserService) Create(y *User) (*Response, error) {
+	return u.client.DoRequestJSON("POST", userPath, y, nil)
 }
 
-func (u *UserService) Delete(y *User) error {
+func (u *UserService) Delete(y *User) (*Response, error) {
 	return u.client.DoRequest("DELETE", y.pathToUser(), nil)
 }
 
-func (u *UserService) AvailableRoles() ([]*Role, error) {
-	v := &rolesRepsonse{}
-	err := u.client.DoRawRequest("GET", rolePath, v)
-	return v.Roles, err
+func (u *UserService) ListRoles() (*RolesListResponse, *Response, error) {
+	v := &RolesListResponse{}
+	r, err := u.client.DoRequest("GET", rolePath, v)
+	if err != nil {
+		return nil, r, err
+	}
+	return v, r, nil
 }
 
 func (u *UserService) NewFolderACL(f *Folder, r Role) ACL {
 	return ACL{
-		Role:     r,
-		On:       f.Id,
-		AccessOn: ACCESS_FOLDER,
+		Role:      r,
+		On:        f.Id,
+		AccountId: u.client.Config.AccountId,
+		AccessOn:  ACCESS_FOLDER,
 	}
 }
 
-func (u *UserService) NewCustomerACL(r Role) ACL {
+func (u *UserService) NewAccountACL(r Role) ACL {
 	return ACL{
-		Role:     r,
-		On:       u.client.Config.CustomerId,
-		AccessOn: ACCESS_CUSTOMER,
+		Role:      r,
+		On:        u.client.Config.AccountId,
+		AccountId: u.client.Config.AccountId,
+		AccessOn:  ACCESS_ACCOUNT,
 	}
 }
 
 func (u *UserService) NewLocationACL(l *Location, r Role) ACL {
 	return ACL{
-		Role:     r,
-		On:       l.GetId(),
-		AccessOn: ACCESS_LOCATION,
+		Role:      r,
+		On:        l.GetId(),
+		AccountId: u.client.Config.AccountId,
+		AccessOn:  ACCESS_LOCATION,
 	}
 }

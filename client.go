@@ -2,31 +2,33 @@ package yext
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strconv"
 	"time"
 )
 
 const (
-	CUSTOMERS_PATH string = "customers"
+	ACCOUNTS_PATH string = "accounts"
 )
 
-var ResourceNotFound = errors.New("Resource not found")
+type ListOptions struct {
+	Limit  int
+	Offset int
+}
 
 type Client struct {
 	Config *Config
 
 	LocationService    *LocationService
-	ECLService         *ECLService
+	ListService        *ListService
 	CustomFieldService *CustomFieldService
 	FolderService      *FolderService
 	CategoryService    *CategoryService
-	LicenseService     *LicenseService
 	UserService        *UserService
 }
 
@@ -34,18 +36,23 @@ func NewClient(config *Config) *Client {
 	c := &Client{Config: config}
 
 	c.LocationService = &LocationService{client: c}
-	c.ECLService = &ECLService{client: c}
+	c.ListService = &ListService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
 	c.CategoryService = &CategoryService{client: c}
-	c.LicenseService = &LicenseService{client: c}
 	c.UserService = &UserService{client: c}
 
 	return c
 }
 
-func (c *Client) customerRequestUrl(path string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseUrl, CUSTOMERS_PATH, c.Config.CustomerId, path)
+// TODO: The account (e.g. /v2/account/me/locations) vs raw (e.g. /v2/categories)
+// URL distiction is present in the API.  We currently have the NewXXX and DoXXX
+// helpers split as well, but that probably isn't necessary.  We could have the
+// services do their own URL path construction (possibly with some helpers in
+// this file)
+
+func (c *Client) accountRequestUrl(path string) string {
+	return fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseUrl, ACCOUNTS_PATH, c.Config.AccountId, path)
 }
 
 func (c *Client) rawRequestURL(path string) string {
@@ -53,11 +60,11 @@ func (c *Client) rawRequestURL(path string) string {
 }
 
 func (c *Client) NewRequest(method string, path string) (*http.Request, error) {
-	return c.NewCustomerRequestBody(method, path, nil)
+	return c.NewAccountRequestBody(method, path, nil)
 }
 
-func (c *Client) NewRawRequest(method string, path string) (*http.Request, error) {
-	return c.NewRawRequestBody(method, path, nil)
+func (c *Client) NewRootRequest(method string, path string) (*http.Request, error) {
+	return c.NewRootRequestBody(method, path, nil)
 }
 
 func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
@@ -66,16 +73,16 @@ func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*h
 		return nil, err
 	}
 
-	return c.NewCustomerRequestBody(method, path, json)
+	return c.NewAccountRequestBody(method, path, json)
 }
 
-func (c *Client) NewRawRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
+func (c *Client) NewRootRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
 	json, err := json.Marshal(obj)
 	if err != nil {
 		return nil, err
 	}
 
-	return c.NewRawRequestBody(method, path, json)
+	return c.NewRootRequestBody(method, path, json)
 }
 
 func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*http.Request, error) {
@@ -84,67 +91,70 @@ func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*h
 		return nil, err
 	}
 
-	rawAuth := []byte(fmt.Sprintf("%v:%v", c.Config.Username, c.Config.Password))
-	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(rawAuth))
 	req.Header.Set("Content-Type", "application/json")
+	q := req.URL.Query()
+	q.Add("api_key", c.Config.ApiKey)
+	q.Add("v", c.Config.Version)
+	req.URL.RawQuery = q.Encode()
 
 	return req, nil
 }
 
-func (c *Client) DoRequest(method string, path string, v interface{}) error {
+func (c *Client) DoRequest(method string, path string, v interface{}) (*Response, error) {
 	req, err := c.NewRequest(method, path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return c.Do(req, v)
 }
 
-func (c *Client) DoRawRequest(method string, path string, v interface{}) error {
-	req, err := c.NewRawRequest(method, path)
+func (c *Client) DoRootRequest(method string, path string, v interface{}) (*Response, error) {
+	req, err := c.NewRootRequest(method, path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return c.Do(req, v)
 }
 
-func (c *Client) NewCustomerRequestBody(method string, path string, data []byte) (*http.Request, error) {
-	return c.NewRequestBody(method, c.customerRequestUrl(path), data)
+func (c *Client) NewAccountRequestBody(method string, path string, data []byte) (*http.Request, error) {
+	return c.NewRequestBody(method, c.accountRequestUrl(path), data)
 }
 
-func (c *Client) NewRawRequestBody(method string, path string, data []byte) (*http.Request, error) {
+func (c *Client) NewRootRequestBody(method string, path string, data []byte) (*http.Request, error) {
 	return c.NewRequestBody(method, c.rawRequestURL(path), data)
 }
 
-func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v interface{}) error {
+func (c *Client) DoRequestJSON(method string, path string, obj interface{}, v interface{}) (*Response, error) {
 	req, err := c.NewRequestJSON(method, path, obj)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return c.Do(req, v)
 }
 
-func (c *Client) DoRawRequestJSON(method string, path string, obj interface{}, v interface{}) error {
-	req, err := c.NewRawRequestJSON(method, path, obj)
+func (c *Client) DoRootRequestJSON(method string, path string, obj interface{}, v interface{}) (*Response, error) {
+	req, err := c.NewRootRequestJSON(method, path, obj)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return c.Do(req, v)
 }
 
-func (c *Client) Do(req *http.Request, v interface{}) error {
+func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	// drain and cache the request body
 	originalRequestBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var (
-		resultError error
-		retries     = 3
+		resultError    error
+		resultResponse *Response
+		retries        = 3
 	)
 
 	if c.Config.RetryCount != nil {
@@ -153,6 +163,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 
 	for attempt := 0; attempt <= retries; attempt++ {
 		resultError = nil
+		resultResponse = nil
 		time.Sleep(DefaultBackoffPolicy.Duration(attempt))
 
 		// Rehydrate the request body since it might have been drained by the previous attempt
@@ -167,49 +178,104 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 			resultError = err
 			continue
 		}
-
 		defer resp.Body.Close()
 
-		if retryable, err := CheckResponseError(resp); err != nil {
-			resultError = err
-			if retryable {
-				continue
+		resultResponse = &Response{}
+		decodeError := json.NewDecoder(resp.Body).Decode(resultResponse)
+
+		var responseData []byte
+		if resultResponse.ResponseRaw != nil {
+			responseData = *resultResponse.ResponseRaw
+		}
+		resultResponse.ResponseRaw = nil
+
+		if resp.StatusCode >= 500 {
+			if decodeError != nil {
+				resultError = decodeError
+				resultResponse = nil
 			} else {
-				break
+				resultError = resultResponse.Meta.Errors
 			}
+			continue
 		}
 
 		if v != nil {
 			if w, ok := v.(io.Writer); ok {
-				io.Copy(w, resp.Body)
+				_, err = io.Copy(w, bytes.NewReader(responseData))
 			} else {
-				resultError = json.NewDecoder(resp.Body).Decode(v)
+				err = json.Unmarshal(responseData, &v)
+				if err == nil {
+					resultResponse.Response = v
+				}
 			}
 		}
 
-		if resultError == nil {
-			return nil
+		if err != nil {
+			return resultResponse, err
+		} else if len(resultResponse.Meta.Errors) > 0 {
+			return resultResponse, resultResponse.Meta.Errors
+		} else {
+			return resultResponse, nil
 		}
 	}
-	return resultError
+	return resultResponse, resultError
 }
 
-func CheckResponseError(res *http.Response) (bool, error) {
-	if sc := res.StatusCode; 200 <= sc && sc <= 299 {
-		return true, nil
-	} else if sc == 404 {
-		return false, ResourceNotFound
-	} else {
-		retryable := !(400 <= sc && sc <= 499)
-		data, err := ioutil.ReadAll(res.Body)
+type listRetriever func(*ListOptions) (int, int, error)
+
+// listHelper handles all the generic work of making paged requests up until
+// we've recieved the last page of results.
+func listHelper(lr listRetriever, limit int) error {
+	var (
+		opts                                         = &ListOptions{Limit: limit}
+		found, firstReportedTotal, lastReportedTotal int
+	)
+	for {
+		els, reportedtotal, err := lr(opts)
 		if err != nil {
-			return retryable, err
+			return err
 		}
 
-		errorResponse := &ErrorResponse{Response: res}
-		if err := json.Unmarshal(data, errorResponse); err != nil {
-			return retryable, errors.New(fmt.Sprintf("unable to unmarshal error from: %s : %s", string(data), err))
+		found += els
+
+		if firstReportedTotal == 0 {
+			firstReportedTotal = reportedtotal
 		}
-		return retryable, errorResponse
+		lastReportedTotal = reportedtotal
+
+		if reportedtotal <= opts.Offset+opts.Limit {
+			break
+		}
+
+		opts.Offset += opts.Limit
 	}
+
+	// Safety check
+	if firstReportedTotal != found || lastReportedTotal != found {
+		return fmt.Errorf("got %d elements total, first response indicated %d, last response indicated %d", found, firstReportedTotal, lastReportedTotal)
+	}
+
+	return nil
+}
+
+func addListOptions(requrl string, opts *ListOptions) (string, error) {
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return "", nil
+	}
+
+	if opts == nil {
+		return requrl, nil
+	}
+
+	q := u.Query()
+	if opts.Limit != 0 {
+		q.Add("limit", strconv.Itoa(opts.Limit))
+	}
+	if opts.Offset != 0 {
+		q.Add("offset", strconv.Itoa(opts.Offset))
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
 }

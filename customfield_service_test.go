@@ -1,7 +1,6 @@
 package yext
 
 import (
-	"encoding/json"
 	"reflect"
 	"testing"
 )
@@ -98,21 +97,6 @@ func TestParsing(t *testing.T) {
 	for i, testData := range parseTests {
 		runParseTest(t, i, testData)
 	}
-}
-
-// other tests
-func TestMapMarshalling(t *testing.T) {
-	target := map[string]interface{}{}
-	var cp = &Photo{}
-	target["123"] = cp
-
-	raw := map[string]interface{}{"123": customPhoto, "234": customPhoto}
-
-	b, _ := json.Marshal(raw)
-	err := json.Unmarshal(b, &target)
-
-	t.Logf("Err: %v", err)
-	t.Logf("Got: %#v", target)
 }
 
 func TestParseLeaveUnknownTypes(t *testing.T) {

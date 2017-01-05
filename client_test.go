@@ -10,24 +10,63 @@ import (
 	"testing"
 )
 
-func TestErrorDeserialzation(t *testing.T) {
-	setup()
-	defer teardown()
+func TestResponseDeserialzation(t *testing.T) {
+	tests := []struct {
+		data       string
+		statuscode int
+		want       *Response
+		obj        interface{}
+	}{
+		{
+			data: `{"meta": {"errors": [{
+		  "message": "We had a problem with our software. Please contact support!",
+		  "code": 9,
+			"type": "FATAL_ERROR"
+		}], "uuid": ""}}`,
+			want: &Response{
+				Meta: Meta{
+					Errors: Errors{
+						Error{
+							Code:    9,
+							Type:    ErrorTypeFatal,
+							Message: "We had a problem with our software. Please contact support!",
+						}}}},
+		},
+		{
+			data: `{"meta": {"errors": [], "uuid": ""}}`,
+			want: &Response{},
+		},
+		{
+			data: `{"meta": {"errors": [], "uuid": ""}, "response": {"foo": true}}`,
+			want: &Response{Response: map[string]interface{}{"foo": true}},
+			obj:  map[string]interface{}{},
+		},
+		{
+			data: `{"meta": {"errors": [], "uuid": "0556abaf-e5fb-475f-8e2a-79688bf4bc18"}}`,
+			want: &Response{Meta: Meta{UUID: "0556abaf-e5fb-475f-8e2a-79688bf4bc18"}},
+		},
+	}
 
-	errorResp := `{"errors": [{
-	  "message": "We had a problem with our software. Please contact support!",
-	  "errorCode": 9
-	}]}`
+	for _, test := range tests {
+		setup()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errorResp))
-	})
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(test.data))
+		})
 
-	err := client.DoRequest("", "", nil)
+		resp, _ := client.DoRequest("", "", test.obj)
 
-	if _, ok := err.(*ErrorResponse); !ok {
-		t.Error("Expected to recieve *ErrorResponse type, got", err, "instead")
+		// Avoid DeepEqual issues comparing yext.Errors(nil) and yext.Errors{} as
+		// the API always returns `errors: []` vs `errors: null` to indicate 'no error'
+		if len(resp.Meta.Errors) == 0 {
+			resp.Meta.Errors = nil
+		}
+
+		if !reflect.DeepEqual(resp, test.want) {
+			t.Errorf("ResponseData: %s\n\tWanted: %#v\n\tGot: %#v", test.data, test.want, resp)
+		}
+
+		teardown()
 	}
 }
 
@@ -59,13 +98,17 @@ func TestLastRetryError(t *testing.T) {
 		return fmt.Sprintf("error from request #%d", n)
 	}
 
+	wraperr := func(m string) string {
+		return fmt.Sprintf(`{"meta": {"errors": [{"message": "%s"}], "uuid": ""}}`, m)
+	}
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		request++
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errf(request)))
+		w.Write([]byte(wraperr(errf(request))))
 	})
 
-	err := client.DoRequest("GET", "", nil)
+	_, err := client.DoRequest("GET", "", nil)
 
 	expectedErr := errf(*client.Config.RetryCount + 1)
 	if !strings.Contains(err.Error(), expectedErr) {
@@ -90,7 +133,7 @@ func TestBailout(t *testing.T) {
 
 	})
 
-	err := client.DoRequest("GET", "", nil)
+	_, err := client.DoRequest("GET", "", nil)
 
 	if err != nil {
 		t.Error("Expected error to be nil when final attempt succeeded:", err)
@@ -101,11 +144,9 @@ func TestRetryWithBody(t *testing.T) {
 	setup().WithRetries(3)
 	defer teardown()
 
-	requests := 0
 	body := map[string]interface{}{"foo": "bar"}
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		requests++
 
 		b, _ := ioutil.ReadAll(r.Body)
 		var payload map[string]interface{}
@@ -154,5 +195,59 @@ func TestRetryWith404Error(t *testing.T) {
 
 	if requests != 1 {
 		t.Errorf("Expected 1 net attempts when %d encountered, got %d", http.StatusNotFound, requests)
+	}
+}
+
+func TestAddListOptions(t *testing.T) {
+	tests := []struct {
+		requrl string
+		opts   *ListOptions
+		want   string
+	}{
+		{
+			requrl: "locations",
+			want:   "locations",
+		},
+		{
+			requrl: "locations",
+			opts:   &ListOptions{Limit: 99},
+			want:   "locations?limit=99",
+		},
+		{
+			requrl: "locations",
+			opts:   &ListOptions{Offset: 99},
+			want:   "locations?offset=99",
+		},
+	}
+
+	for _, test := range tests {
+		if got, err := addListOptions(test.requrl, test.opts); err != nil {
+			t.Errorf("addListOptions(%s, %#v) error %s", test.requrl, test.opts, err.Error())
+		} else if got != test.want {
+			t.Errorf("addListOptions(%s, %#v) = %s, wanted %s", test.requrl, test.opts, got, test.want)
+		}
+	}
+}
+
+func TestNoRetryOnDeserError(t *testing.T) {
+	setup().WithRetries(3)
+	defer teardown()
+
+	requests := 0
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.Write([]byte(`{"meta": {"errors": [], "uuid": ""}, "response": false}`))
+	})
+
+	var v map[string]interface{}
+	_, err := client.DoRequest("GET", "", &v)
+
+	if err == nil {
+		t.Error("Expected deserialization error")
+	}
+
+	if requests != 1 {
+		t.Errorf("Expected 1 net attempts when %s encountered, got %d", err.Error(), requests)
 	}
 }

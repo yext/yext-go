@@ -3,20 +3,22 @@ package yext
 import (
 	"net/http"
 	"os"
+	"time"
 )
 
 const (
 	SandboxHost    string = "api-sandbox.yext.com"
 	ProductionHost string = "api.yext.com"
+	AccountId      string = "me"
+	Version        string = "20170101"
 )
 
 type Config struct {
 	HTTPClient *http.Client
 	BaseUrl    string
-
-	Username   string
-	Password   string
-	CustomerId string
+	ApiKey     string
+	AccountId  string
+	Version    string
 
 	RetryCount *int
 
@@ -26,6 +28,8 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		HTTPClient: http.DefaultClient,
+		AccountId:  AccountId,
+		Version:    Version,
 	}
 }
 
@@ -44,7 +48,7 @@ func (c *Config) WithBaseUrl(baseUrl string) *Config {
 }
 
 func (c *Config) WithHost(host string) *Config {
-	return c.WithBaseUrl("https://" + host + "/v1")
+	return c.WithBaseUrl("https://" + host + "/v2")
 }
 
 func (c *Config) WithSandboxHost() *Config {
@@ -55,18 +59,32 @@ func (c *Config) WithProductionHost() *Config {
 	return c.WithHost(ProductionHost)
 }
 
-func (c *Config) WithCredentials(username, password, customerid string) *Config {
-	c.Username = username
-	c.Password = password
-	c.CustomerId = customerid
+func (c *Config) WithApiKey(apikey string) *Config {
+	c.ApiKey = apikey
+	return c
+}
+
+func (c *Config) WithAccountId(id string) *Config {
+	c.AccountId = id
+	return c
+}
+
+func (c *Config) WithVersion(v string) *Config {
+	c.Version = v
+	return c
+}
+
+func (c *Config) WithTodaysVersion() *Config {
+	c.Version = time.Now().Format("20060102")
 	return c
 }
 
 func (c *Config) WithEnvCredentials() *Config {
-	return c.WithCredentials(
-		os.ExpandEnv("$YEXT_API_USER"),
-		os.ExpandEnv("$YEXT_API_PASS"),
-		os.ExpandEnv("$YEXT_API_CUSTOMERID"))
+	c = c.WithApiKey(os.ExpandEnv("$YEXT_API_KEY"))
+	if os.ExpandEnv("$YEXT_API_ACCOUNTID") != "" {
+		c = c.WithAccountId(os.ExpandEnv("$YEXT_API_ACCOUNTID"))
+	}
+	return c
 }
 
 func (c *Config) WithRetries(r int) *Config {

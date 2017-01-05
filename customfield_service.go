@@ -6,7 +6,9 @@ import (
 	"strconv"
 )
 
-const customFieldPath = "customFields"
+const customFieldPath = "customfields"
+
+var CustomFieldListMaxLimit = 1000
 
 type CustomFieldManager struct {
 	CustomFields []*CustomField
@@ -223,9 +225,9 @@ func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (
 		return "", fmt.Errorf("Custom field %s doesn't have any options", fieldName)
 	}
 
-	for id, name := range cf.Options {
-		if name == optionName {
-			return id, nil
+	for _, option := range cf.Options {
+		if option.Value == optionName {
+			return option.Key, nil
 		}
 	}
 
@@ -245,18 +247,45 @@ type CustomFieldService struct {
 	client             *Client
 }
 
-type customFieldResponse struct {
+type CustomFieldResponse struct {
+	Count        int            `json:"count"`
 	CustomFields []*CustomField `json:"customFields"`
 }
 
-func (s *CustomFieldService) List() ([]*CustomField, error) {
-	v := &customFieldResponse{}
-	err := s.client.DoRequest("GET", customFieldPath, v)
-	return v.CustomFields, err
+func (s *CustomFieldService) ListAll() ([]*CustomField, error) {
+	var customFields []*CustomField
+	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
+		cfr, _, err := s.List(opts)
+		if err != nil {
+			return 0, 0, err
+		}
+		customFields = append(customFields, cfr.CustomFields...)
+		return len(cfr.CustomFields), cfr.Count, err
+	}
+
+	if err := listHelper(lr, CustomFieldListMaxLimit); err != nil {
+		return nil, err
+	} else {
+		return customFields, nil
+	}
+}
+
+func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Response, error) {
+	requrl, err := addListOptions(customFieldPath, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := &CustomFieldResponse{}
+	r, err := s.client.DoRequest("GET", requrl, v)
+	if err != nil {
+		return nil, r, err
+	}
+	return v, r, nil
 }
 
 func (s *CustomFieldService) CacheCustomFields() error {
-	cfs, err := s.List()
+	cfs, err := s.ListAll()
 	if err != nil {
 		return err
 	}

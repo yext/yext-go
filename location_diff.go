@@ -22,8 +22,7 @@ import "reflect"
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	// TODO (bjm):
-	// remove this once the ETL is upgraded to use hydration
+	// TODO(bjm): remove this once the ETL is upgraded to use hydration
 	if (!y.hydrated || !b.hydrated) && y.String() == b.String() {
 		return nil, false
 	}

@@ -1,23 +1,21 @@
 /*
-Package yext provides bindings for Yext Platform API.
+Package yext provides bindings for Yext Location Cloud APIs.
 
-For full Platform API documentation visit https://www.yext.com/support/platform-api/
+For full documentation visit http://developer.yext.com/docs/api-reference/
 
 Usage
 
-Create an authenticated client
+Create an authenticated client (requires an API key)
 
-	// `user`, `pass`, and `customerid` should be populated with
-	// account credentials for a user that has the "API Access" role.
-	client := yext.NewClient(yext.NewDefaultConfig().WithCredentials("[user]", "[pass]", "[customerid]"))
+	client := yext.NewClient(yext.NewDefaultConfig().WithApiKey("[API KEY]"))
 
 List all locations
 
-	locs, err := client.LocationService.List()
+	locs, err := client.LocationService.ListAll()
 
 Fetch a single location
 
-	loc, err := client.LocationService.Get("JB-01")
+	loc, _, err := client.LocationService.Get("JB-01")
 
 Create a new location (see full documentation for required fields)
 
@@ -43,13 +41,18 @@ The behavior of the API client can be controlled with a Config instance.  The Co
 	yext.NewDefaultConfig()
 
 	// Set authentication parameters
-	yext.NewDefaultConfig().WithCredentials("[user]", "[password]", "[customerid]")
+	yext.NewDefaultConfig().WithApiKey("[API KEY]")
 
-	// Set authentication parameters from environment
+	// Set authentication parameters from environment: $YEXT_API_KEY (required) and $YEXT_API_ACCOUNTID (optional)
 	yext.NewDefaultConfig().WithEnvCredentials()
 
-	// Communicate with Yext Sandbox
+	// Communicate with the Yext Sandbox
 	yext.NewConfig().WithSandboxHost()
+
+By default, clients will retry API requests up to 3 times in the case of non-4xx errors including HTTP transport, 5xx responses, etc.  This can be modified via Config:
+
+	// No retries
+	yext.NewDefaultConfig().WithRetries(0)
 
 Models
 
@@ -71,31 +74,35 @@ In addition, accessors are provided to make extracting data from the model objec
 
 Error handling
 
-Errors returned from the API are surfaced as ErrorResponse objects. The ErrorReponse contains a list of encountered errors, each with a Message and Code, as well as the raw http.Response object.  A full list a expected errors can be found here:  https://www.yext.com/support/platform-api/#API_Conventions_and_Authentication.htm
+Errors returned from the API are surfaced as Errors objects.  The Errors object is comprised of a list of errors, each with a Message, Code, and Type.  A full list of expected errors can be found here:  http://developer.yext.com/support/error-messages/
 
-	_, err := client.LocationService.Create(&yext.Location{})
+	_, _, err := client.LocationService.Create(&yext.Location{})
 
-	// {"errors": [{"code": "123", message": "Id cannot be blank"}]}
+	// yext.Errors([{"code": "2068", message": "location.phone: The field location.phone is required", type: "FATAL_ERROR"}])
 
-One exception to the above is 404 "Not Found" errors which are returned as the named error `ResourceNotFound`.
+Response Metadata
 
-All non-4xx errors (transport, API 5xx responses, etc.) are elligible for automatic retries.
+Most functions that interact with the API will return at least two parameters - a yext.Response object and an error.  Response contains a Meta substructure that in turn has a UUID and Errors attribute.  The UUID can be used to look up individual requests in the developer.yext.com portal, useful for debugging requests.
+
+	locs, resp, err := client.LocationService.List(nil)
+	resp.Meta.UUID // "a219023e-d090-4e4e-9732-b823e9b66c8a"
 
 Services
 
 Most of the functionality within the API is exposed via domain-specific services available under the `Client` object.  For example, if you are interacting with Locations, use the Client instance's LocationService.  If you need to interact with Users, you'd use the UserService.
 
+ * CategoryService
  * CustomFieldService
- * ECLService
+ * ListService
  * FolderService
- * LicenseService
  * LocationService
  * UserService
 
 Each service provides a set of common data-access functions that you can use to interact with objects under the service's domain.
 
 	Get() // Fetch by known ID
-	List() // Fetch all
+	List() // Fetch all (or first page in paged endpoints)
+	ListAll() // Available in paged endpoints
 	Edit() // Update and return API version
 	Create() // Create and return API version
 

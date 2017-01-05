@@ -84,7 +84,7 @@ func TestAppendACL(t *testing.T) {
 			Name: yext.String("Crazy Role"),
 		},
 		On:       "123456",
-		AccessOn: yext.ACCESS_CUSTOMER,
+		AccessOn: yext.ACCESS_ACCOUNT,
 	}
 	secondUser = exampleUser.Copy()
 	secondUser.ACLs = append(secondUser.ACLs, expectACL)

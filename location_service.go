@@ -9,62 +9,101 @@ import (
 
 const locationsPath = "locations"
 
-var customFieldKeyRegex = regexp.MustCompile("^[0-9]+$")
+var (
+	LocationListMaxLimit = 50
+
+	customFieldKeyRegex = regexp.MustCompile("^[0-9]+$")
+)
 
 type LocationService struct {
 	client       *Client
 	CustomFields []*CustomField
 }
 
-type locationListResponse struct {
+type LocationListResponse struct {
+	Count     int         `json:"count"`
 	Locations []*Location `json:"locations"`
 }
 
-func (l *LocationService) List() ([]*Location, error) {
-	v := &locationListResponse{}
-	err := l.client.DoRequest("GET", locationsPath, v)
-	if err != nil {
-		return nil, err
+func (l *LocationService) ListAll() ([]*Location, error) {
+	var locations []*Location
+	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
+		llr, _, err := l.List(opts)
+		if err != nil {
+			return 0, 0, err
+		}
+		locations = append(locations, llr.Locations...)
+		return len(llr.Locations), llr.Count, err
 	}
-	return l.HydrateLocations(v.Locations)
+
+	if err := listHelper(lg, LocationListMaxLimit); err != nil {
+		return nil, err
+	} else {
+		return locations, nil
+	}
 }
 
-func (l *LocationService) Edit(y *Location) (*Location, error) {
+func (l *LocationService) List(opts *ListOptions) (*LocationListResponse, *Response, error) {
+	requrl, err := addListOptions(locationsPath, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := &LocationListResponse{}
+	r, err := l.client.DoRequest("GET", requrl, v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	if _, err := l.HydrateLocations(v.Locations); err != nil {
+		return nil, r, err
+	}
+
+	return v, r, nil
+}
+
+func (l *LocationService) Edit(y *Location) (*Response, error) {
 	if err := validateCustomFields(y.CustomFields); err != nil {
 		return nil, err
 	}
-	var v Location
-	err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", locationsPath, y.GetId()), y, &v)
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", locationsPath, y.GetId()), y, nil)
 	if err != nil {
-		return nil, err
+		return r, err
 	}
-	return l.HydrateLocation(&v)
+
+	return r, nil
 }
 
-func (l *LocationService) Create(y *Location) (*Location, error) {
+func (l *LocationService) Create(y *Location) (*Response, error) {
 	if err := validateCustomFields(y.CustomFields); err != nil {
 		return nil, err
 	}
-	var v Location
-	err := l.client.DoRequestJSON("POST", fmt.Sprintf("%s", locationsPath), y, &v)
+	r, err := l.client.DoRequestJSON("POST", fmt.Sprintf("%s", locationsPath), y, nil)
 	if err != nil {
-		return nil, err
+		return r, err
 	}
-	return l.HydrateLocation(&v)
+
+	return r, nil
 }
 
-func (l *LocationService) Get(id string) (*Location, error) {
+func (l *LocationService) Get(id string) (*Location, *Response, error) {
 	var v Location
-	err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", locationsPath, id), &v)
+	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", locationsPath, id), &v)
 	if err != nil {
-		return nil, err
+		return nil, r, err
 	}
-	return l.HydrateLocation(&v)
+
+	if _, err := l.HydrateLocation(&v); err != nil {
+		return nil, r, err
+	}
+
+	return &v, r, nil
 }
 
+// TODO: Do searchids work in APIv2?
 func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, error) {
-	v := &locationListResponse{}
-	err := l.client.DoRequest("GET", fmt.Sprintf("%s?searchIds=%s", locationsPath, strings.Join(searchIds, ",")), v)
+	v := &LocationListResponse{}
+	_, err := l.client.DoRequest("GET", fmt.Sprintf("%s?searchIds=%s", locationsPath, strings.Join(searchIds, ",")), v)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +143,7 @@ func (l *LocationService) HydrateLocations(locs []*Location) ([]*Location, error
 
 func validateCustomFields(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
-		if !customFieldKeyRegex.Match([]byte(k)) {
+		if !customFieldKeyRegex.MatchString(k) {
 			return errors.New(fmt.Sprintf("custom fields must be specified by their id, not name: %s", k))
 		}
 	}

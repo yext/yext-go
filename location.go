@@ -4,7 +4,6 @@ package yext
 // * Need better custom field accessors and helpers
 // * The API will accept some things and return them in a different format - this makes diff'ing difficult:
 // ** Phone: Send in 540-444-4444, get back 5404444444
-// ** Custom Field Multi-Option: Send in options ["3", "2", "1"], get back ["1", "2", "3"]
 
 import (
 	"encoding/json"
@@ -18,13 +17,14 @@ type Location struct {
 	Name                   *string                `json:"locationName,omitempty"`
 	LocationType           *string                `json:"locationType,omitempty"`
 	FirstName              *string                `json:"firstName,omitempty"`
+	MiddleName             *string                `json:"middleName,omitempty"`
 	LastName               *string                `json:"lastName,omitempty"`
 	NPI                    *string                `json:"npi,omitempty"`
-	Lists                  []ECL                  `json:"lists,omitempty"`
+	Lists                  []List                 `json:"lists,omitempty"`
 	Keywords               *[]string              `json:"keywords,omitempty"`
 	Associations           *[]string              `json:"associations,omitempty"`
 	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
-	CustomerId             *string                `json:"customerId,omitempty"`
+	AccountId              *string                `json:"accountId,omitempty"`
 	Address                *string                `json:"address,omitempty"`
 	Address2               *string                `json:"address2,omitempty"`
 	SuppressAddress        *bool                  `json:"suppressAddress,omitempty"`
@@ -104,6 +104,13 @@ func (y Location) GetFirstName() string {
 	return ""
 }
 
+func (y Location) GetMiddleName() string {
+	if y.MiddleName != nil {
+		return *y.MiddleName
+	}
+	return ""
+}
+
 func (y Location) GetLastName() string {
 	if y.LastName != nil {
 		return *y.LastName
@@ -118,9 +125,9 @@ func (y Location) GetNPI() string {
 	return ""
 }
 
-func (y Location) GetCustomerId() string {
-	if y.CustomerId != nil {
-		return *y.CustomerId
+func (y Location) GetAccountId() string {
+	if y.AccountId != nil {
+		return *y.AccountId
 	}
 	return ""
 }
