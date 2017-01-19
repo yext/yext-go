@@ -2,6 +2,10 @@ package yext
 
 import "reflect"
 
+type Comparable interface {
+	Equal(Comparable) bool
+}
+
 // Diff calculates the differences between a base Location (a) and a proposed set of changes
 // represented by a second Location (b).  The diffing logic will ignore fields in the proposed
 // Location that aren't set (nil).  This characteristic makes the function ideal for
@@ -53,11 +57,11 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 
 		aI, bI := valA.Interface(), valB.Interface()
 
-		unorderedA, aOk := aI.(*UnorderedStrings)
-		unorderedB, bOk := bI.(*UnorderedStrings)
+		comparableA, aOk := aI.(Comparable)
+		comparableB, bOk := bI.(Comparable)
 
 		if aOk && bOk {
-			if !unorderedA.Equal(unorderedB) {
+			if !comparableA.Equal(comparableB) {
 				diff = true
 				reflect.ValueOf(d).Elem().FieldByName(nameA).Set(valB)
 			}

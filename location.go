@@ -472,10 +472,10 @@ type HolidayHours struct {
 type UnorderedStrings []string
 
 // Equal implements compares UnorderedStrings
-func (a *UnorderedStrings) Equal(b *UnorderedStrings) bool {
+func (a *UnorderedStrings) Equal(b Comparable) bool {
 	var (
 		u = []string(*a)
-		s = []string(*b)
+		s = []string(*b.(*UnorderedStrings))
 	)
 	if len(u) != len(s) {
 		return false
