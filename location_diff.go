@@ -51,7 +51,17 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if !reflect.DeepEqual(valA.Interface(), valB.Interface()) {
+		aI, bI := valA.Interface(), valB.Interface()
+
+		unorderedA, aOk := aI.(*UnorderedStrings)
+		unorderedB, bOk := bI.(*UnorderedStrings)
+
+		if aOk && bOk {
+			if !unorderedA.Equal(unorderedB) {
+				diff = true
+				reflect.ValueOf(d).Elem().FieldByName(nameA).Set(valB)
+			}
+		} else if !reflect.DeepEqual(aI, bI) {
 			if nameA == "CustomFields" {
 				// deal with case where left is nil and right is empty
 				if y.CustomFields == nil && b.CustomFields != nil {
