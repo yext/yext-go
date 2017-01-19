@@ -471,7 +471,7 @@ type HolidayHours struct {
 // UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
 type UnorderedStrings []string
 
-// Equal implements Reflect.Equal interface for UnorderedStrings
+// Equal implements compares UnorderedStrings
 func (a *UnorderedStrings) Equal(b *UnorderedStrings) bool {
 	var (
 		u = []string(*a)
