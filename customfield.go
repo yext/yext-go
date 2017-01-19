@@ -100,7 +100,7 @@ func (s *SingleOption) IsOptionIdSet(id string) bool {
 	return *s == SingleOption(id)
 }
 
-type MultiOption []string
+type MultiOption UnorderedStrings
 
 func (m MultiOption) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_MULTIOPTION
@@ -111,18 +111,9 @@ func (m MultiOption) Equal(c CustomFieldValueComparable) bool {
 	if len(m) != len(n) {
 		return false
 	}
-	for i := 0; i < len(m); i++ {
-		found := false
-		for j := 0; j < len(n); j++ {
-			if m[i] == n[j] {
-				found = true
-			}
-		}
-		if !found {
-			return false
-		}
-	}
-	return true
+	a := UnorderedStrings(m)
+	b := UnorderedStrings(n)
+	return (&a).Equal(&b)
 }
 
 func (m *MultiOption) SetOptionId(id string) {
