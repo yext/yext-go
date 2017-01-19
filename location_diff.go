@@ -75,8 +75,8 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 				for field, value := range b.CustomFields {
 					if aValue, ok := y.CustomFields[field]; ok {
 						var valueDiff bool
-						if v, ok := aValue.(CustomFieldValueComparable); ok {
-							valueDiff = !v.Equal(value.(CustomFieldValueComparable))
+						if v, ok := aValue.(Comparable); ok {
+							valueDiff = !v.Equal(value.(Comparable))
 						} else if !reflect.DeepEqual(aValue, value) {
 							valueDiff = true
 						}

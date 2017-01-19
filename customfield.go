@@ -33,10 +33,6 @@ type CustomFieldValue interface {
 	CustomFieldTag() string
 }
 
-type CustomFieldValueComparable interface {
-	Equal(CustomFieldValueComparable) bool
-}
-
 type YesNo bool
 
 func (y YesNo) CustomFieldTag() string {
@@ -106,7 +102,7 @@ func (m MultiOption) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_MULTIOPTION
 }
 
-func (m MultiOption) Equal(c CustomFieldValueComparable) bool {
+func (m MultiOption) Equal(c Comparable) bool {
 	n := c.(MultiOption)
 	if len(m) != len(n) {
 		return false
