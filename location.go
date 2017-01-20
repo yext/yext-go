@@ -410,6 +410,15 @@ func (y Location) GetLabelIds() (v UnorderedStrings) {
 	return v
 }
 
+func (y Location) SetLabelIds(v []string) {
+	l := UnorderedStrings(v)
+	y.SetLabelIdsWithUnorderedStrings(l)
+}
+
+func (y Location) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
+	y.LabelIds = &v
+}
+
 func (y Location) GetCategoryIds() (v []string) {
 	if y.CategoryIds != nil {
 		v = *y.CategoryIds
