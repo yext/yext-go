@@ -64,7 +64,7 @@ type Location struct {
 	Brands                 *[]string              `json:"brands,omitempty"`
 	Languages              *[]string              `json:"languages,omitempty"`
 	FolderId               *string                `json:"folderId,omitempty"`
-	LabelIds               *[]string              `json:"labelIds,omitempty"`
+	LabelIds               *UnorderedStrings      `json:"labelIds,omitempty"`
 	FacebookCoverPhoto     *LocationPhoto         `json:"facebookCoverPhoto,omitempty"`
 	FacebookProfilePicture *LocationPhoto         `json:"facebookProfilePicture,omitempty"`
 	Logo                   *LocationPhoto         `json:"logo,omitempty"`
@@ -473,4 +473,31 @@ func (l LocationClosed) String() string {
 type HolidayHours struct {
 	Date  string `json:"date"`
 	Hours string `json:"hours"`
+}
+
+// UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
+type UnorderedStrings []string
+
+// Equal compares UnorderedStrings
+func (a *UnorderedStrings) Equal(b Comparable) bool {
+	var (
+		u = []string(*a)
+		s = []string(*b.(*UnorderedStrings))
+	)
+	if len(u) != len(s) {
+		return false
+	}
+
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i] == s[j] {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
