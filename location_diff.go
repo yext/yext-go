@@ -2,6 +2,10 @@ package yext
 
 import "reflect"
 
+type Comparable interface {
+	Equal(Comparable) bool
+}
+
 // Diff calculates the differences between a base Location (a) and a proposed set of changes
 // represented by a second Location (b).  The diffing logic will ignore fields in the proposed
 // Location that aren't set (nil).  This characteristic makes the function ideal for
@@ -51,7 +55,17 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if !reflect.DeepEqual(valA.Interface(), valB.Interface()) {
+		aI, bI := valA.Interface(), valB.Interface()
+
+		comparableA, aOk := aI.(Comparable)
+		comparableB, bOk := bI.(Comparable)
+
+		if aOk && bOk {
+			if !comparableA.Equal(comparableB) {
+				diff = true
+				reflect.ValueOf(d).Elem().FieldByName(nameA).Set(valB)
+			}
+		} else if !reflect.DeepEqual(aI, bI) {
 			if nameA == "CustomFields" {
 				// deal with case where left is nil and right is empty
 				if y.CustomFields == nil && b.CustomFields != nil {
@@ -61,8 +75,8 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 				for field, value := range b.CustomFields {
 					if aValue, ok := y.CustomFields[field]; ok {
 						var valueDiff bool
-						if v, ok := aValue.(CustomFieldValueComparable); ok {
-							valueDiff = !v.Equal(value.(CustomFieldValueComparable))
+						if v, ok := aValue.(Comparable); ok {
+							valueDiff = !v.Equal(value.(Comparable))
 						} else if !reflect.DeepEqual(aValue, value) {
 							valueDiff = true
 						}
