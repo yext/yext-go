@@ -410,7 +410,7 @@ func (y Location) GetLanguages() (v []string) {
 	return v
 }
 
-func (y Location) GetLabelIds() (v []string) {
+func (y Location) GetLabelIds() (v UnorderedStrings) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
 	}
