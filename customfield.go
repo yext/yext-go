@@ -1,5 +1,7 @@
 package yext
 
+import "fmt"
+
 type CustomFieldType string
 
 const (
@@ -27,6 +29,10 @@ type CustomField struct {
 	Id      string            `json:"id"`
 	Options map[string]string `json:"options"` // Only present for multi-option custom fields
 	Type    string            `json:"type"`
+}
+
+func (c CustomField) String() string {
+	return fmt.Sprintf("%s:%s:%s", c.Name, c.Id, c.Type)
 }
 
 type CustomFieldValue interface {

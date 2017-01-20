@@ -18,6 +18,7 @@ type Location struct {
 	Name                   *string                `json:"locationName,omitempty"`
 	LocationType           *string                `json:"locationType,omitempty"`
 	FirstName              *string                `json:"firstName,omitempty"`
+	MiddleName             *string                `json:"middleName,omitempty"`
 	LastName               *string                `json:"lastName,omitempty"`
 	NPI                    *string                `json:"npi,omitempty"`
 	Lists                  []ECL                  `json:"lists,omitempty"`
@@ -100,6 +101,13 @@ func (y Location) GetName() string {
 func (y Location) GetFirstName() string {
 	if y.FirstName != nil {
 		return *y.FirstName
+	}
+	return ""
+}
+
+func (y Location) GetMiddleName() string {
+	if y.MiddleName != nil {
+		return *y.MiddleName
 	}
 	return ""
 }
