@@ -482,6 +482,17 @@ type UnorderedStrings []string
 
 // Equal compares UnorderedStrings
 func (a *UnorderedStrings) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
 	var (
 		u = []string(*a)
 		s = []string(*b.(*UnorderedStrings))
