@@ -418,6 +418,15 @@ func (y Location) GetLabelIds() (v UnorderedStrings) {
 	return v
 }
 
+func (y Location) SetLabelIds(v []string) {
+	l := UnorderedStrings(v)
+	y.SetLabelIdsWithUnorderedStrings(l)
+}
+
+func (y Location) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
+	y.LabelIds = &v
+}
+
 func (y Location) GetCategoryIds() (v []string) {
 	if y.CategoryIds != nil {
 		v = *y.CategoryIds
@@ -481,6 +490,17 @@ type UnorderedStrings []string
 
 // Equal compares UnorderedStrings
 func (a *UnorderedStrings) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
 	var (
 		u = []string(*a)
 		s = []string(*b.(*UnorderedStrings))
