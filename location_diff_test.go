@@ -204,7 +204,7 @@ var baseLocation Location = Location{
 	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 	Lists:                  []List{exampleList},
 	Closed: &LocationClosed{
-		IsClosed: "false",
+		IsClosed: false,
 	},
 	CustomFields: map[string]interface{}{
 		"1234": "ding",
@@ -262,7 +262,7 @@ func TestDiffIdentical(t *testing.T) {
 		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 		Lists:                  []List{exampleList},
 		Closed: &LocationClosed{
-			IsClosed: "false",
+			IsClosed: false,
 		},
 		CustomFields: map[string]interface{}{
 			"1234": "ding",
@@ -973,22 +973,22 @@ var closedTests = []closedTest{
 	{
 		nil,
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		false,
@@ -996,7 +996,7 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		nil,
@@ -1005,31 +1005,31 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   "false",
+			IsClosed:   false,
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		&LocationClosed{
-			IsClosed:   "false",
+			IsClosed:   false,
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2002",
 		},
 		true,
 		&LocationClosed{
-			IsClosed:   "true",
+			IsClosed:   true,
 			ClosedDate: "1/1/2002",
 		},
 	},
