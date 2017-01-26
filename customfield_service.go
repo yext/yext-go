@@ -60,11 +60,15 @@ func (c *CustomFieldManager) IsOptionSet(fieldName string, optionName string, lo
 	case MultiOption:
 		mo := field.(MultiOption)
 		of = &mo
+	case *MultiOption:
+		of = field.(*MultiOption)
 	case SingleOption:
 		so := field.(SingleOption)
 		of = &so
+	case *SingleOption:
+		of = field.(*SingleOption)
 	default:
-		return false, fmt.Errorf("'%s' is not an OptionField custom field", fieldName)
+		return false, fmt.Errorf("'%s' is not an OptionField custom field, is type %T", fieldName, field)
 	}
 
 	if id, err = c.CustomFieldOptionId(fieldName, optionName); err != nil {
