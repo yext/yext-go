@@ -12,16 +12,6 @@ var examplePhoto = LocationPhoto{
 	Description: "An example image",
 }
 
-var exampleList = List{
-	Id:       String("ding"),
-	Name:     String("ding"),
-	Title:    String("ding"),
-	Type:     String("ding"),
-	Publish:  Bool(false),
-	Currency: String("ding"),
-	Sections: []*ListSection{},
-}
-
 var complexOne = &Location{
 	Id:   String("lock206"),
 	Name: String("Farmers Insurance - Stephen Lockhart "),
@@ -172,8 +162,8 @@ var baseLocation Location = Location{
 	MobilePhone:            String("ding"),
 	TollFreePhone:          String("ding"),
 	TtyPhone:               String("ding"),
-	SpecialOffer:           String("ding"),
-	SpecialOfferUrl:        String("ding"),
+	FeaturedMessage:        String("ding"),
+	FeaturedMessageUrl:     String("ding"),
 	WebsiteUrl:             String("ding"),
 	DisplayWebsiteUrl:      String("ding"),
 	ReservationUrl:         String("ding"),
@@ -202,7 +192,7 @@ var baseLocation Location = Location{
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
 	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-	Lists:                  []List{exampleList},
+	ProductListIds:         &[]string{"1234", "5678"},
 	Closed: &LocationClosed{
 		IsClosed: false,
 	},
@@ -230,8 +220,8 @@ func TestDiffIdentical(t *testing.T) {
 		MobilePhone:            String("ding"),
 		TollFreePhone:          String("ding"),
 		TtyPhone:               String("ding"),
-		SpecialOffer:           String("ding"),
-		SpecialOfferUrl:        String("ding"),
+		FeaturedMessage:        String("ding"),
+		FeaturedMessageUrl:     String("ding"),
 		WebsiteUrl:             String("ding"),
 		DisplayWebsiteUrl:      String("ding"),
 		ReservationUrl:         String("ding"),
@@ -260,7 +250,7 @@ func TestDiffIdentical(t *testing.T) {
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
 		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-		Lists:                  []List{exampleList},
+		ProductListIds:         &[]string{"1234", "5678"},
 		Closed: &LocationClosed{
 			IsClosed: false,
 		},
@@ -580,212 +570,8 @@ type listTest struct {
 	expectedFieldValue []List
 }
 
-var listTests = []listTest{
-	{nil, []List{}, false, nil},
-	{[]List{}, nil, false, nil},
-	{nil, nil, false, nil},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		false,
-		nil,
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("Dang"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
-}
-
 func (t listTest) formatErrorBase(index int) string {
 	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'", index, t.baseValue, t.newValue)
-}
-
-func TestListDiffs(t *testing.T) {
-	a, b := *new(Location), new(Location)
-	for i, data := range listTests {
-		a.Lists, b.Lists = data.baseValue, data.newValue
-		d, isDiff := a.Diff(b)
-		if isDiff != data.isDiff {
-			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
-		}
-		if d == nil && data.expectedFieldValue == nil {
-			continue
-		} else if d == nil && data.expectedFieldValue != nil {
-			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
-		} else if len(d.Lists) != len(data.expectedFieldValue) {
-			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
-		} else {
-			for i := 0; i < len(d.Lists); i++ {
-				good := true
-				dL, eL := d.Lists[i], data.expectedFieldValue[i]
-				if dL.GetId() != eL.GetId() {
-					good = false
-				} else if dL.GetName() != eL.GetName() {
-					good = false
-				} else if dL.GetTitle() != eL.GetTitle() {
-					good = false
-				} else if dL.GetType() != eL.GetType() {
-					good = false
-				} else if dL.GetCurrency() != eL.GetCurrency() {
-					good = false
-				} else if len(dL.Sections) != len(eL.Sections) {
-					good = false
-				} else {
-					for j := 0; j < len(dL.Sections); j++ {
-						dS, eS := dL.Sections[j], eL.Sections[i]
-						if dS.GetId() != eS.GetId() {
-							good = false
-						} else if dS.GetName() != eS.GetName() {
-							good = false
-						} else if dS.GetDescription() != eS.GetDescription() {
-							good = false
-						}
-					}
-				}
-
-				if !good {
-					t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
-				}
-			}
-		}
-	}
 }
 
 type customFieldsTest struct {
