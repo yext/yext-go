@@ -13,67 +13,148 @@ import (
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
-	Id                     *string                `json:"id,omitempty"`
-	Name                   *string                `json:"locationName,omitempty"`
-	LocationType           *string                `json:"locationType,omitempty"`
-	FirstName              *string                `json:"firstName,omitempty"`
-	MiddleName             *string                `json:"middleName,omitempty"`
-	LastName               *string                `json:"lastName,omitempty"`
-	NPI                    *string                `json:"npi,omitempty"`
-	Lists                  []List                 `json:"lists,omitempty"`
-	Keywords               *[]string              `json:"keywords,omitempty"`
-	Associations           *[]string              `json:"associations,omitempty"`
-	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
-	AccountId              *string                `json:"accountId,omitempty"`
-	Address                *string                `json:"address,omitempty"`
-	Address2               *string                `json:"address2,omitempty"`
-	SuppressAddress        *bool                  `json:"suppressAddress,omitempty"`
-	DisplayAddress         *string                `json:"displayAddress,omitempty"`
-	City                   *string                `json:"city,omitempty"`
-	State                  *string                `json:"state,omitempty"`
-	Zip                    *string                `json:"zip,omitempty"`
-	CountryCode            *string                `json:"countryCode,omitempty"`
-	Phone                  *string                `json:"phone,omitempty"`
-	IsPhoneTracked         *bool                  `json:"isPhoneTracked,omitempty"`
-	LocalPhone             *string                `json:"localPhone,omitempty"`
-	AlternatePhone         *string                `json:"alternatePhone,omitempty"`
-	FaxPhone               *string                `json:"faxPhone,omitempty"`
-	MobilePhone            *string                `json:"mobilePhone,omitempty"`
-	TollFreePhone          *string                `json:"tollFreePhone,omitempty"`
-	TtyPhone               *string                `json:"ttyPhone,omitempty"`
-	SpecialOffer           *string                `json:"specialOffer,omitempty"`
-	SpecialOfferUrl        *string                `json:"specialOfferUrl,omitempty"`
-	WebsiteUrl             *string                `json:"websiteUrl,omitempty"`
-	DisplayWebsiteUrl      *string                `json:"displayWebsiteUrl,omitempty"`
-	ReservationUrl         *string                `json:"reservationUrl,omitempty"`
-	Hours                  *string                `json:"hours,omitempty"` // A concrete type would be nice for this
-	AdditionalHoursText    *string                `json:"additionalHoursText,omitempty"`
-	Description            *string                `json:"description,omitempty"`
-	PaymentOptions         *[]string              `json:"paymentOptions,omitempty"`
-	VideoUrls              *[]string              `json:"videoUrls,omitempty"`
-	TwitterHandle          *string                `json:"twitterHandle,omitempty"`
-	FacebookPageUrl        *string                `json:"facebookPageUrl,omitempty"`
-	YearEstablished        *string                `json:"yearEstablished,omitempty"`
-	DisplayLat             *float64               `json:"displayLat,omitempty"`
-	DisplayLng             *float64               `json:"displayLng,omitempty"`
-	RoutableLat            *float64               `json:"routableLat,omitempty"`
-	RoutableLng            *float64               `json:"routableLng,omitempty"`
-	Emails                 *[]string              `json:"emails,omitempty"`
-	Specialties            *[]string              `json:"specialties,omitempty"`
-	Services               *[]string              `json:"services,omitempty"`
-	Brands                 *[]string              `json:"brands,omitempty"`
-	Languages              *[]string              `json:"languages,omitempty"`
-	FolderId               *string                `json:"folderId,omitempty"`
-	LabelIds               *[]string              `json:"labelIds,omitempty"`
-	FacebookCoverPhoto     *LocationPhoto         `json:"facebookCoverPhoto,omitempty"`
-	FacebookProfilePicture *LocationPhoto         `json:"facebookProfilePicture,omitempty"`
-	Logo                   *LocationPhoto         `json:"logo,omitempty"`
-	Photos                 []LocationPhoto        `json:"photos,omitempty"`
-	Closed                 *LocationClosed        `json:"closed,omitempty"`
-	CategoryIds            *[]string              `json:"categoryIds,omitempty"`
-	HolidayHours           []HolidayHours         `json:"holidayHours,omitempty"`
-	AdmittingHospitals     *[]string              `json:"admittingHospitals,omitempty"`
-	hydrated               bool
+	// Admin
+	Id           *string                `json:"id,omitempty"`
+	AccountId    *string                `json:"accountId,omitempty"`
+	LocationType *string                `json:"locationType,omitempty"`
+	FolderId     *string                `json:"folderId,omitempty"`
+	LabelIds     *[]string              `json:"labelIds,omitempty"`
+	CategoryIds  *[]string              `json:"categoryIds,omitempty"`
+	Closed       *LocationClosed        `json:"closed,omitempty"`
+	Keywords     *[]string              `json:"keywords,omitempty"`
+	Language     *string                `json:"language,omitempty"`
+	CustomFields map[string]interface{} `json:"customFields,omitempty"`
+
+	hydrated bool
+
+	// Address Fields
+	Name            *string `json:"locationName,omitempty"`
+	Address         *string `json:"address,omitempty"`
+	Address2        *string `json:"address2,omitempty"`
+	DisplayAddress  *string `json:"displayAddress,omitempty"`
+	City            *string `json:"city,omitempty"`
+	State           *string `json:"state,omitempty"`
+	Sublocality     *string `json:"sublocality,omitempty"`
+	Zip             *string `json:"zip,omitempty"`
+	CountryCode     *string `json:"countryCode,omitempty"`
+	SuppressAddress *bool   `json:"suppressAddress,omitempty"`
+
+	// Other Contact Info
+	AlternatePhone *string   `json:"alternatePhone,omitempty"`
+	FaxPhone       *string   `json:"faxPhone,omitempty"`
+	LocalPhone     *string   `json:"localPhone,omitempty"`
+	MobilePhone    *string   `json:"mobilePhone,omitempty"`
+	Phone          *string   `json:"phone,omitempty"`
+	TollFreePhone  *string   `json:"tollFreePhone,omitempty"`
+	TtyPhone       *string   `json:"ttyPhone,omitempty"`
+	IsPhoneTracked *bool     `json:"isPhoneTracked,omitempty"`
+	Emails         *[]string `json:"emails,omitempty"`
+
+	// HealthCare fields
+	FirstName            *string        `json:"firstName,omitempty"`
+	MiddleName           *string        `json:"middleName,omitempty"`
+	LastName             *string        `json:"lastName,omitempty"`
+	Gender               *string        `json:"gender,omitempty"`
+	Headshot             *LocationPhoto `json:"headshot,omitempty"`
+	AcceptingNewPatients *bool          `json:"acceptingNewPatients,omitempty"`
+	AdmittingHospitals   *[]string      `json:"admittingHospitals,omitempty"`
+	ConditionsTreated    *[]string      `json:"conditionsTreated,omitempty"`
+	InsuranceAccepted    *[]string      `json:"insuranceAccepted,omitempty"`
+	NPI                  *string        `json:"npi,omitempty"`
+	OfficeName           *string        `json:"officeName,omitempty"`
+
+	// Location Info
+	Description         *string        `json:"description,omitempty"`
+	HolidayHours        []HolidayHours `json:"holidayHours,omitempty"`
+	Hours               *string        `json:"hours,omitempty"`
+	AdditionalHoursText *string        `json:"additionalHoursText,omitempty"`
+	YearEstablished     *string        `json:"yearEstablished,omitempty"`
+	Associations        *[]string      `json:"associations,omitempty"`
+	Certifications      *[]string      `json:"certifications,omitempty"`
+	Brands              *[]string      `json:"brands,omitempty"`
+	Products            *[]string      `json:"products,omitempty"`
+	Services            *[]string      `json:"services,omitempty"`
+	Specialties         *[]string      `json:"specialties,omitempty"`
+	Languages           *[]string      `json:"languages,omitempty"`
+	Logo                *LocationPhoto `json:"logo,omitempty"`
+	PaymentOptions      *[]string      `json:"paymentOptions,omitempty"`
+
+	// Lats & Lngs
+	DisplayLat  *float64 `json:"displayLat,omitempty"`
+	DisplayLng  *float64 `json:"displayLng,omitempty"`
+	DropoffLat  *float64 `json:"dropoffLat,omitempty"`
+	DropoffLng  *float64 `json:"dropoffLng,omitempty"`
+	WalkableLat *float64 `json:"walkableLat,omitempty"`
+	WalkableLng *float64 `json:"walkableLng,omitempty"`
+	RoutableLat *float64 `json:"routableLat,omitempty"`
+	RoutableLng *float64 `json:"routableLng,omitempty"`
+	PickupLat   *float64 `json:"pickupLat,omitempty"`
+	PickupLng   *float64 `json:"pickupLng,omitempty"`
+
+	// ECLS
+	BioListIds        *[]string `json:"bioListIds,omitempty"`
+	BioListsLabel     *string   `json:"bioListsLabel,omitempty"`
+	EventListIds      *[]string `json:"eventListIds,omitempty"`
+	EventListsLabel   *string   `json:"eventListsLabel,omitempty"`
+	MenusLabel        *string   `json:"menusLabel,omitempty"`
+	MenuIds           *[]string `json:"menuIds,omitempty"`
+	ProductListIds    *[]string `json:"productListIds,omitempty"`
+	ProductListsLabel *string   `json:"productListsLabel,omitempty"`
+
+	// Urls
+	MenuUrl               *string `json:"menuUrl,omitempty"`
+	DisplayMenuUrl        *string `json:"displayMenuUrl,omitempty"`
+	OrderUrl              *string `json:"orderUrl,omitempty"`
+	DisplayOrderUrl       *string `json:"displayOrderUrl,omitempty"`
+	ReservationUrl        *string `json:"reservationUrl,omitempty"`
+	DisplayReservationUrl *string `json:"displayReservationUrl,omitempty"`
+	DisplayWebsiteUrl     *string `json:"displayWebsiteUrl,omitempty"`
+	WebsiteUrl            *string `json:"websiteUrl,omitempty"`
+	FeaturedMessage       *string `json:"featuredMessage,omitempty"`
+	FeaturedMessageUrl    *string `json:"featuredMessageUrl,omitempty"`
+
+	// Uber
+	UberClientId         *string `json:"uberClientId,omitempty"`
+	UberLinkText         *string `json:"uberLinkText,omitempty"`
+	UberLinkType         *string `json:"uberLinkType,omitempty"`
+	UberTripBrandingText *string `json:"uberTripBrandingText,omitempty"`
+	UberTripBrandingUrl  *string `json:"uberTripBrandingUrl,omitempty"`
+
+	// Social Media
+	FacebookCoverPhoto     *LocationPhoto `json:"facebookCoverPhoto,omitempty"`
+	FacebookPageUrl        *string        `json:"facebookPageUrl,omitempty"`
+	FacebookProfilePicture *LocationPhoto `json:"facebookProfilePicture,omitempty"`
+
+	GoogleCoverPhoto      *LocationPhoto `json:"googleCoverPhoto,omitempty"`
+	GooglePreferredPhoto  *string        `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto    *LocationPhoto `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride *string        `json:"googleWebsiteOverride,omitempty"`
+
+	InstagramHandle *string `json:"instagramHandle,omitempty"`
+	TwitterHandle   *string `json:"twitterHandle,omitempty"`
+
+	Photos    []LocationPhoto `json:"photos,omitempty"`
+	VideoUrls *[]string       `json:"videoUrls,omitempty"`
+
+	/** TODO(bmcginnis) add the following fields:
+
+	   ServiceArea       struct {
+	 		Places *[]string `json:"places,omitempty"`
+	 		Radius *int      `json:"radius,omitempty"`
+	 		Unit   *string   `json:"unit,omitempty"`
+	 	} `json:"serviceArea,omitempty"`
+
+	  EducationList         []struct {
+			InstitutionName *string `json:"institutionName,omitempty"`
+			Type            *string `json:"type,omitempty"`
+			YearCompleted   *string `json:"yearCompleted,omitempty"`
+		} `json:"educationList,omitempty"`
+
+	  GoogleAttributes   []struct {
+	    Id        *string   `json:"id,omitempty"`
+	    OptionIds *[]string `json:"optionIds,omitempty"`
+	  } `json:"googleAttributes,omitempty"`
+	*/
 }
 
 func (y Location) GetId() string {
@@ -244,16 +325,16 @@ func (y Location) GetTtyPhone() string {
 	return ""
 }
 
-func (y Location) GetSpecialOffer() string {
-	if y.SpecialOffer != nil {
-		return *y.SpecialOffer
+func (y Location) GetFeaturedMessage() string {
+	if y.FeaturedMessage != nil {
+		return *y.FeaturedMessage
 	}
 	return ""
 }
 
-func (y Location) GetSpecialOfferUrl() string {
-	if y.SpecialOfferUrl != nil {
-		return *y.SpecialOfferUrl
+func (y Location) GetFeaturedMessageUrl() string {
+	if y.FeaturedMessageUrl != nil {
+		return *y.FeaturedMessageUrl
 	}
 	return ""
 }
@@ -445,12 +526,13 @@ func (y Location) GetAdmittingHospitals() (v []string) {
 	return v
 }
 
-// Photo represents a photo associated with a Location in Yext Location Manager.
+// LocationPhoto represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
 	Url             string `json:"url,omitempty"`
 	Description     string `json:"description,omitempty"`
-	ClickThroughURL string `json:"clickthroughUrl,omitempty"`
+	AlternateText   string `json:"alternateText"`
+	ClickThroughUrl string `json:"clickthroughUrl,omitempty"`
 }
 
 func (l Photo) String() string {
