@@ -20,7 +20,10 @@ type Location struct {
 	MiddleName             *string                `json:"middleName,omitempty"`
 	LastName               *string                `json:"lastName,omitempty"`
 	NPI                    *string                `json:"npi,omitempty"`
-	Lists                  []List                 `json:"lists,omitempty"`
+	MenuIDs                *[]string              `json:"menuIds,omitempty"`
+	BioListIDs             *[]string              `json:"bioListIds,omitempty"`
+	ProductListIDs         *[]string              `json:"productListIds,omitempty"`
+	EventListIDs           *[]string              `json:"eventListIds,omitempty"`
 	Keywords               *[]string              `json:"keywords,omitempty"`
 	Associations           *[]string              `json:"associations,omitempty"`
 	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
@@ -41,8 +44,8 @@ type Location struct {
 	MobilePhone            *string                `json:"mobilePhone,omitempty"`
 	TollFreePhone          *string                `json:"tollFreePhone,omitempty"`
 	TtyPhone               *string                `json:"ttyPhone,omitempty"`
-	SpecialOffer           *string                `json:"specialOffer,omitempty"`
-	SpecialOfferUrl        *string                `json:"specialOfferUrl,omitempty"`
+	SpecialOffer           *string                `json:"featuredMessage,omitempty"`
+	SpecialOfferUrl        *string                `json:"featuredMessageUrl,omitempty"`
 	WebsiteUrl             *string                `json:"websiteUrl,omitempty"`
 	DisplayWebsiteUrl      *string                `json:"displayWebsiteUrl,omitempty"`
 	ReservationUrl         *string                `json:"reservationUrl,omitempty"`
@@ -62,6 +65,7 @@ type Location struct {
 	Specialties            *[]string              `json:"specialties,omitempty"`
 	Services               *[]string              `json:"services,omitempty"`
 	Brands                 *[]string              `json:"brands,omitempty"`
+	Language               *string                `json:"language,omitempty"`
 	Languages              *[]string              `json:"languages,omitempty"`
 	FolderId               *string                `json:"folderId,omitempty"`
 	LabelIds               *[]string              `json:"labelIds,omitempty"`
