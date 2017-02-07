@@ -162,8 +162,8 @@ var baseLocation Location = Location{
 	MobilePhone:            String("ding"),
 	TollFreePhone:          String("ding"),
 	TtyPhone:               String("ding"),
-	SpecialOffer:           String("ding"),
-	SpecialOfferUrl:        String("ding"),
+	FeaturedMessage:        String("ding"),
+	FeaturedMessageUrl:     String("ding"),
 	WebsiteUrl:             String("ding"),
 	DisplayWebsiteUrl:      String("ding"),
 	ReservationUrl:         String("ding"),
@@ -192,7 +192,7 @@ var baseLocation Location = Location{
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
 	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-	ProductListIDs:         &[]string{"1234", "5678"},
+	ProductListIds:         &[]string{"1234", "5678"},
 	Closed: &LocationClosed{
 		IsClosed: false,
 	},
@@ -220,8 +220,8 @@ func TestDiffIdentical(t *testing.T) {
 		MobilePhone:            String("ding"),
 		TollFreePhone:          String("ding"),
 		TtyPhone:               String("ding"),
-		SpecialOffer:           String("ding"),
-		SpecialOfferUrl:        String("ding"),
+		FeaturedMessage:        String("ding"),
+		FeaturedMessageUrl:     String("ding"),
 		WebsiteUrl:             String("ding"),
 		DisplayWebsiteUrl:      String("ding"),
 		ReservationUrl:         String("ding"),
@@ -250,7 +250,7 @@ func TestDiffIdentical(t *testing.T) {
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
 		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-		ProductListIDs:         &[]string{"1234", "5678"},
+		ProductListIds:         &[]string{"1234", "5678"},
 		Closed: &LocationClosed{
 			IsClosed: false,
 		},
@@ -568,159 +568,6 @@ type listTest struct {
 	newValue           []List
 	isDiff             bool
 	expectedFieldValue []List
-}
-
-var listTests = []listTest{
-	{nil, []List{}, false, nil},
-	{[]List{}, nil, false, nil},
-	{nil, nil, false, nil},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		false,
-		nil,
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("Dang"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
-	{
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-		true,
-		[]List{
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-			List{
-				Id:       String("1"),
-				Name:     String("ding"),
-				Title:    String("dong"),
-				Type:     String("EVENTS"),
-				Currency: String("USD"),
-				Sections: []*ListSection{},
-			},
-		},
-	},
 }
 
 func (t listTest) formatErrorBase(index int) string {
