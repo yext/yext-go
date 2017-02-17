@@ -18,7 +18,7 @@ type Location struct {
 	AccountId    *string                `json:"accountId,omitempty"`
 	LocationType *string                `json:"locationType,omitempty"`
 	FolderId     *string                `json:"folderId,omitempty"`
-	LabelIds     *[]string              `json:"labelIds,omitempty"`
+	LabelIds     *UnorderedStrings      `json:"labelIds,omitempty"`
 	CategoryIds  *[]string              `json:"categoryIds,omitempty"`
 	Closed       *LocationClosed        `json:"closed,omitempty"`
 	Keywords     *[]string              `json:"keywords,omitempty"`
@@ -491,11 +491,20 @@ func (y Location) GetLanguages() (v []string) {
 	return v
 }
 
-func (y Location) GetLabelIds() (v []string) {
+func (y Location) GetLabelIds() (v UnorderedStrings) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
 	}
 	return v
+}
+
+func (y Location) SetLabelIds(v []string) {
+	l := UnorderedStrings(v)
+	y.SetLabelIdsWithUnorderedStrings(l)
+}
+
+func (y Location) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
+	y.LabelIds = &v
 }
 
 func (y Location) GetCategoryIds() (v []string) {
@@ -556,3 +565,40 @@ type HolidayHours struct {
 	Date  string `json:"date"`
 	Hours string `json:"hours"`
 }
+
+// UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
+type UnorderedStrings []string
+
+// Equal compares UnorderedStrings
+func (a *UnorderedStrings) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = []string(*a)
+		s = []string(*b.(*UnorderedStrings))
+	)
+	if len(u) != len(s) {
+		return false
+	}
+
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i] == s[j] {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
