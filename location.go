@@ -462,6 +462,10 @@ func (y Location) GetLists() (v []ECL) {
 	return v
 }
 
+func ECLs(ecls []ECL) *[]ECL {
+	return &ecls
+}
+
 // Photo represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
