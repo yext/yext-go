@@ -40,7 +40,7 @@ func (s *CategoryService) List(opts *CategoryListOptions) ([]*Category, error) {
 		u.RawQuery = q.Encode()
 	}
 
-	v := []*Category{}
+	v := &[]*Category{}
 	_, err = s.client.DoRootRequest("GET", u.String(), v)
-	return v, err
+	return *v, err
 }
