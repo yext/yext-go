@@ -202,7 +202,7 @@ var baseLocation Location = Location{
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
 	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-	Lists:                  []ECL{exampleECL},
+	Lists:                  &[]ECL{exampleECL},
 	Closed: &LocationClosed{
 		IsClosed: "false",
 	},
@@ -260,7 +260,7 @@ func TestDiffIdentical(t *testing.T) {
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
 		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
-		Lists:                  []ECL{exampleECL},
+		Lists:                  &[]ECL{exampleECL},
 		Closed: &LocationClosed{
 			IsClosed: "false",
 		},
@@ -581,7 +581,7 @@ type eclTest struct {
 }
 
 var eclTests = []eclTest{
-	{nil, []ECL{}, false, nil},
+	{nil, []ECL{}, true, []ECL{}},
 	{[]ECL{}, nil, false, nil},
 	{nil, nil, false, nil},
 	{
@@ -738,9 +738,14 @@ func (t eclTest) formatErrorBase(index int) string {
 }
 
 func TestECLDiffs(t *testing.T) {
-	a, b := *new(Location), new(Location)
 	for i, data := range eclTests {
-		a.Lists, b.Lists = data.baseValue, data.newValue
+		a, b := *new(Location), new(Location)
+		if data.baseValue != nil {
+			a.Lists = &data.baseValue
+		}
+		if data.newValue != nil {
+			b.Lists = &data.newValue
+		}
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -749,12 +754,12 @@ func TestECLDiffs(t *testing.T) {
 			continue
 		} else if d == nil && data.expectedFieldValue != nil {
 			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
-		} else if len(d.Lists) != len(data.expectedFieldValue) {
+		} else if len(d.GetLists()) != len(data.expectedFieldValue) {
 			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 		} else {
-			for i := 0; i < len(d.Lists); i++ {
+			for i := 0; i < len(d.GetLists()); i++ {
 				good := true
-				dL, eL := d.Lists[i], data.expectedFieldValue[i]
+				dL, eL := d.GetLists()[i], data.expectedFieldValue[i]
 				if dL.GetId() != eL.GetId() {
 					good = false
 				} else if dL.GetName() != eL.GetName() {
