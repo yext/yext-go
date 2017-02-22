@@ -21,7 +21,7 @@ type Location struct {
 	MiddleName             *string                `json:"middleName,omitempty"`
 	LastName               *string                `json:"lastName,omitempty"`
 	NPI                    *string                `json:"npi,omitempty"`
-	Lists                  []ECL                  `json:"lists,omitempty"`
+	Lists                  *[]ECL                 `json:"lists,omitempty"`
 	Keywords               *[]string              `json:"keywords,omitempty"`
 	Associations           *[]string              `json:"associations,omitempty"`
 	CustomFields           map[string]interface{} `json:"customFields,omitempty"`
@@ -451,6 +451,13 @@ func (y Location) GetVideoUrls() (v []string) {
 func (y Location) GetAdmittingHospitals() (v []string) {
 	if y.AdmittingHospitals != nil {
 		v = *y.AdmittingHospitals
+	}
+	return v
+}
+
+func (y Location) GetLists() (v []ECL) {
+	if y.Lists != nil {
+		v = *y.Lists
 	}
 	return v
 }
