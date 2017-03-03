@@ -430,6 +430,27 @@ func (y Location) GetRoutableLng() float64 {
 	return 0
 }
 
+func (y Location) GetBioListIds() (v []string) {
+	if y.BioListIds != nil {
+		v = *y.BioListIds
+	}
+	return v
+}
+
+func (y Location) GetEventListIds() (v []string) {
+	if y.EventListIds != nil {
+		v = *y.EventListIds
+	}
+	return v
+}
+
+func (y Location) GetProductListIds() (v []string) {
+	if y.ProductListIds != nil {
+		v = *y.ProductListIds
+	}
+	return v
+}
+
 func (y Location) GetFolderId() string {
 	if y.FolderId != nil {
 		return *y.FolderId
