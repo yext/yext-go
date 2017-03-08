@@ -1,5 +1,7 @@
 package yext
 
+import "fmt"
+
 type CustomFieldType string
 
 const (
@@ -107,7 +109,15 @@ func (m MultiOption) CustomFieldTag() string {
 }
 
 func (m MultiOption) Equal(c Comparable) bool {
-	n := c.(MultiOption)
+	var n MultiOption
+	switch v := c.(type) {
+	case MultiOption:
+		n = v
+	case *MultiOption:
+		n = *v
+	default:
+		panic(fmt.Errorf("%v is not a MultiOption is %T", c, c))
+	}
 	if len(m) != len(n) {
 		return false
 	}
