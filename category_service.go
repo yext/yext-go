@@ -23,10 +23,6 @@ type CategoryListOptions struct {
 	Country  *string
 }
 
-type categoryListResponse struct {
-	Categories []*Category `json:"categories"`
-}
-
 func (s *CategoryService) List(opts *CategoryListOptions) ([]*Category, error) {
 	u, err := url.Parse(categoryPath)
 	if err != nil {
@@ -44,7 +40,7 @@ func (s *CategoryService) List(opts *CategoryListOptions) ([]*Category, error) {
 		u.RawQuery = q.Encode()
 	}
 
-	v := &categoryListResponse{}
+	v := &[]*Category{}
 	_, err = s.client.DoRootRequest("GET", u.String(), v)
-	return v.Categories, err
+	return *v, err
 }

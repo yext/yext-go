@@ -919,3 +919,68 @@ func TestSetCustomFields(t *testing.T) {
 		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
 	}
 }
+
+type Scenario struct {
+	A         *Location
+	B         *Location
+	WantDelta *Location
+	WantDiff  bool
+}
+
+func TestLabels(t *testing.T) {
+	var (
+		one   = UnorderedStrings([]string{"One", "Two", "Three"})
+		two   = UnorderedStrings([]string{"One", "Two", "Three"})
+		three = UnorderedStrings([]string{"Three", "One", "Two"})
+		four  = UnorderedStrings([]string{"One", "Two"})
+		tests = []Scenario{
+			Scenario{
+				A: &Location{
+					Id:       String("1"),
+					LabelIds: &one,
+				},
+				B: &Location{
+					Id:       String("1"),
+					LabelIds: &two,
+				},
+				WantDelta: nil,
+				WantDiff:  false,
+			},
+			Scenario{
+				A: &Location{
+					Id:       String("1"),
+					LabelIds: &one,
+				},
+				B: &Location{
+					Id:       String("1"),
+					LabelIds: &three,
+				},
+				WantDelta: nil,
+				WantDiff:  false,
+			},
+			Scenario{
+				A: &Location{
+					Id:       String("1"),
+					LabelIds: &one,
+				},
+				B: &Location{
+					Id:       String("1"),
+					LabelIds: &four,
+				},
+				WantDelta: &Location{
+					Id:       String("1"),
+					LabelIds: &four,
+				},
+				WantDiff: true,
+			},
+		}
+	)
+
+	for i, test := range tests {
+		test.A.hydrated = true
+		test.B.hydrated = true
+		if delta, diff := test.A.Diff(test.B); diff != test.WantDiff {
+			t.Errorf("Test %d:\n\tA:\t%+v\n\tB:\t%+v\n\tDelta:\t%+v\n\tWanted:%+v\n\tDiff was: %t wanted %t", i, test.A, test.B, delta, test.WantDelta, diff, test.WantDiff)
+		}
+	}
+}

@@ -27,3 +27,8 @@ func Int(v int) *int {
 func Strings(v []string) *[]string {
 	return &v
 }
+
+func ToUnorderedStrings(v []string) *UnorderedStrings {
+	u := UnorderedStrings(v)
+	return &u
+}

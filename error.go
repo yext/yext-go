@@ -19,15 +19,15 @@ type Error struct {
 	Type    string `json:"type"`
 }
 
-func (e *Error) Error() string {
+func (e Error) Error() string {
 	return fmt.Sprintf("type: %s code: %d message: %s", e.Type, e.Code, e.Message)
 }
 
-func (e *Error) IsError() bool {
+func (e Error) IsError() bool {
 	return e.Type == ErrorTypeFatal || e.Type == ErrorTypeNonFatal
 }
 
-func (e *Error) IsWarning() bool {
+func (e Error) IsWarning() bool {
 	return e.Type == ErrorTypeWarning
 }
 
@@ -61,4 +61,19 @@ func (e Errors) Warnings() []Error {
 		}
 	}
 	return warnings
+}
+
+func IsNotFoundError(err error) bool {
+	if e, ok := err.(Errors); ok {
+		for _, innerError := range e {
+			if IsNotFoundError(innerError) {
+				return true
+			}
+		}
+	} else if e, ok := err.(Error); ok {
+		if e.Code == 2000 || e.Code == 6004 {
+			return true
+		}
+	}
+	return false
 }
