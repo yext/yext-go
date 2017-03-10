@@ -5,8 +5,8 @@ import (
 )
 
 type Role struct {
-	Id   int     `json:"id,omitempty"`
-	Name *string `json:"name,omitempty"`
+	Id   *string `json:"roleId,omitempty"`
+	Name *string `json:"roleName,omitempty"`
 }
 
 func (r *Role) GetName() string {

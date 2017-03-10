@@ -3,7 +3,7 @@ package yext_test
 import (
 	"testing"
 
-	"github.com/yext/yext-go"
+	yext "gopkg.in/yext/yext-go.v2"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 		ACLs: []yext.ACL{
 			yext.ACL{
 				Role: yext.Role{
-					Id:   3,
+					Id:   yext.String("3"),
 					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
@@ -80,7 +80,7 @@ func TestStringChanges(t *testing.T) {
 func TestAppendACL(t *testing.T) {
 	expectACL := yext.ACL{
 		Role: yext.Role{
-			Id:   123,
+			Id:   yext.String("123"),
 			Name: yext.String("Crazy Role"),
 		},
 		On:       "123456",
