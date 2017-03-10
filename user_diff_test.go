@@ -39,8 +39,8 @@ func TestDiffIdenticalUser(t *testing.T) {
 func TestStringChanges(t *testing.T) {
 	secondUser = exampleUser.Copy()
 	secondUser.UserName = String("someotherdang")
-	secondUser.FirstName = String("dang")
-	secondUser.LastName = String("danggg")
+	secondUser.FirstName = String("john")
+	secondUser.LastName = String("dang")
 	secondUser.PhoneNumber = String("5555555555")
 	secondUser.EmailAddress = String("ding@ding.com")
 	secondUser.Password = String("someotherpassword")
