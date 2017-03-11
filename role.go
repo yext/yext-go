@@ -9,6 +9,13 @@ type Role struct {
 	Name *string `json:"roleName,omitempty"`
 }
 
+func (r *Role) GetId() string {
+	if r.Id == nil {
+		return ""
+	}
+	return *r.Id
+}
+
 func (r *Role) GetName() string {
 	if r.Name == nil {
 		return ""

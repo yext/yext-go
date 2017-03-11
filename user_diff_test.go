@@ -1,6 +1,9 @@
 package yext
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 var (
 	exampleUser = &User{
@@ -24,17 +27,6 @@ var (
 	}
 	secondUser *User
 )
-
-func TestDiffIdenticalUser(t *testing.T) {
-	secondUser = exampleUser.Copy()
-	d, isDiff := exampleUser.Diff(secondUser)
-	if isDiff {
-		t.Errorf("Expected diff to be false but was true, diff result: %v", d)
-	}
-	if d != nil {
-		t.Errorf("Expected empty diff, but got %v", d)
-	}
-}
 
 func TestStringChanges(t *testing.T) {
 	secondUser = exampleUser.Copy()
@@ -152,6 +144,96 @@ func TestModifyACL(t *testing.T) {
 
 		if d.ACLs[0].On != acl.On {
 			t.Errorf("Expected ACL On to be modified, got %v, diff result: %v", d.ACLs, d)
+		}
+	}
+}
+
+func TestDiff(t *testing.T) {
+	type test struct {
+		A, B   *User
+		IsDiff bool
+		Diff   *User
+	}
+
+	tests := []test{
+		test{
+			A:      &User{},
+			B:      &User{},
+			IsDiff: false,
+			Diff:   nil,
+		},
+		test{
+			A:      &User{},
+			B:      &User{},
+			IsDiff: false,
+			Diff:   nil,
+		},
+		test{
+			A:      &User{ACLs: []ACL{}},
+			B:      &User{ACLs: []ACL{}},
+			IsDiff: false,
+			Diff:   nil,
+		},
+		test{
+			A:      &User{ACLs: []ACL{ACL{On: "foo", AccessOn: ACCESS_LOCATION, AccountId: "123"}}},
+			B:      &User{ACLs: []ACL{ACL{On: "foo", AccessOn: "LOCATION", AccountId: "123"}}},
+			IsDiff: false,
+			Diff:   nil,
+		},
+		test{
+			A:      &User{ACLs: []ACL{ACL{Role: Role{Id: String("228"), Name: String("Farmers Agent Basic Users")}}}},
+			B:      &User{ACLs: []ACL{ACL{Role: Role{Id: String("228"), Name: String("Farmers Agent Basic Users")}}}},
+			IsDiff: false,
+			Diff:   nil,
+		},
+		test{
+			A: &User{
+				Id:           String("jdoe@yext.com"),
+				FirstName:    String("jane"),
+				LastName:     String("doe"),
+				PhoneNumber:  String("2025562637"),
+				EmailAddress: String("jdoe@yext.com"),
+				UserName:     String("jdoe@yext.com"),
+				Password:     String("sekret"),
+				ACLs: []ACL{
+					ACL{
+						Role: Role{
+							Id:   String("3"),
+							Name: String("Example Role"),
+						},
+						On:       "12345",
+						AccessOn: ACCESS_FOLDER,
+					},
+				},
+			},
+			B: &User{
+				Id:           String("jdoe@yext.com"),
+				FirstName:    String("jane"),
+				LastName:     String("doe"),
+				PhoneNumber:  String("2025562637"),
+				EmailAddress: String("jdoe@yext.com"),
+				UserName:     String("jdoe@yext.com"),
+				Password:     String("sekret"),
+				ACLs: []ACL{
+					ACL{
+						Role: Role{
+							Id:   String("3"),
+							Name: String("Example Role"),
+						},
+						On:       "12345",
+						AccessOn: ACCESS_FOLDER,
+					},
+				},
+			},
+			IsDiff: false,
+			Diff:   nil,
+		},
+	}
+
+	for _, tst := range tests {
+		diff, isDiff := tst.A.Diff(tst.B)
+		if isDiff != tst.IsDiff || !reflect.DeepEqual(diff, tst.Diff) {
+			t.Errorf("\nA: %s\nB: %s\nWanted:%s\nGot:   %s", tst.A, tst.B, tst.Diff, diff)
 		}
 	}
 }
