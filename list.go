@@ -144,12 +144,12 @@ type Calories struct {
 	RangeTo int    `json:"rangeTo,omitempty"`
 }
 
-type EventsList struct {
+type EventList struct {
 	List
-	Sections []*EventsListSection `json:"sections,omitempty"`
+	Sections []*EventListSection `json:"sections,omitempty"`
 }
 
-type EventsListSection struct {
+type EventListSection struct {
 	ListSection
 	Items []*Event `json:"items,omitempty"` // max 100 items
 }
@@ -163,12 +163,12 @@ type Event struct {
 	Url    string       `json:"url,omitempty"`
 }
 
-type ProductsList struct {
+type ProductList struct {
 	List
-	Sections []*ProductsListSection `json:"sections,omitempty"`
+	Sections []*ProductListSection `json:"sections,omitempty"`
 }
 
-type ProductsListSection struct {
+type ProductListSection struct {
 	ListSection
 	Items []*Product `json:"items,omitempty"` // max 100 items
 }
@@ -182,12 +182,12 @@ type Product struct {
 	Url    string       `json:"url,omitempty"`
 }
 
-type MenusList struct {
+type MenuList struct {
 	List
-	Sections []*MenusListSection `json:"sections,omitempty"`
+	Sections []*MenuListSection `json:"sections,omitempty"`
 }
 
-type MenusListSection struct {
+type MenuListSection struct {
 	ListSection
 	Items []*Menu `json:"items,omitempty"` // max 100 items
 }
@@ -199,12 +199,12 @@ type Menu struct {
 	Calories *Calories  `json:"calories,omitempty"`
 }
 
-type BiosList struct {
+type BioList struct {
 	List
-	Sections []*BiosListSection `json:"sections,omitempty"`
+	Sections []*BioListSection `json:"sections,omitempty"`
 }
 
-type BiosListSection struct {
+type BioListSection struct {
 	ListSection
 	Items []*Bio `json:"items,omitempty"` // max 100 items
 }
