@@ -138,6 +138,12 @@ type CostOptions struct {
 	Calorie int    `json:"calorie,omitempty"`
 }
 
+type Calories struct {
+	Type    string `json:"type,omitempty"`
+	Calorie int    `json:"calorie,omitempty"`
+	RangeTo int    `json:"rangeTo,omitempty"`
+}
+
 type EventsList struct {
 	List
 	Sections []*EventsListSection `json:"sections,omitempty"`
@@ -174,6 +180,23 @@ type Product struct {
 	Photos []*ListPhoto `json:"photos,omitempty"`
 	Video  string       `json:"video,omitempty"`
 	Url    string       `json:"url,omitempty"`
+}
+
+type MenusList struct {
+	List
+	Sections []*MenusListSection `json:"sections,omitempty"`
+}
+
+type MenusListSection struct {
+	ListSection
+	Items []*Menu `json:"items,omitempty"` // max 100 items
+}
+
+type Menu struct {
+	ListItem
+	Cost     *Cost      `json:"cost,omitempty"`
+	Photo    *ListPhoto `json:"photo,omitempty"`
+	Calories *Calories  `json:"calories,omitempty"`
 }
 
 type BiosList struct {

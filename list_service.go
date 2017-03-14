@@ -3,7 +3,7 @@ package yext
 import "fmt"
 
 const (
-	menusPath    = "menus" // TODO: implement support for menus
+	menusPath    = "menus"
 	biosPath     = "bios"
 	productsPath = "products"
 	eventsPath   = "events"
@@ -30,6 +30,11 @@ type BioListsResponse struct {
 type EventListsResponse struct {
 	Count      int           `json:"count"`
 	EventLists []*EventsList `json:"events"`
+}
+
+type MenuListsResponse struct {
+	Count     int          `json:"count"`
+	MenuLists []*MenusList `json:"menus"`
 }
 
 // TODO: Genericize the List[type]Lists/ListAll[type]Lists endpoints in this
@@ -131,6 +136,38 @@ func (e *ListService) ListEventLists(opts *ListOptions) (*EventListsResponse, *R
 	return v, r, nil
 }
 
+func (e *ListService) ListAllMenuLists() ([]*MenusList, error) {
+	var menuLists []*MenusList
+	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
+		plr, _, err := e.ListMenuLists(opts)
+		if err != nil {
+			return 0, 0, err
+		}
+		menuLists = append(menuLists, plr.MenuLists...)
+		return len(plr.MenuLists), plr.Count, err
+	}
+
+	if err := listHelper(lr, ListListMaxLimit); err != nil {
+		return nil, err
+	} else {
+		return menuLists, nil
+	}
+}
+
+func (e *ListService) ListMenuLists(opts *ListOptions) (*MenuListsResponse, *Response, error) {
+	requrl, err := addListOptions(menusPath, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := &MenuListsResponse{}
+	r, err := e.client.DoRequest("GET", requrl, v)
+	if err != nil {
+		return nil, r, err
+	}
+	return v, r, nil
+}
+
 func (e *ListService) CreateProductList(y *ProductsList) (*Response, error) {
 	return e.client.DoRequestJSON("POST", fmt.Sprintf("%s", productsPath), y, nil)
 }
@@ -141,6 +178,10 @@ func (e *ListService) CreateBioList(y *BiosList) (*Response, error) {
 
 func (e *ListService) CreateEventList(y *EventsList) (*Response, error) {
 	return e.client.DoRequestJSON("POST", fmt.Sprintf("%s", eventsPath), y, nil)
+}
+
+func (e *ListService) CreateMenuList(y *MenusList) (*Response, error) {
+	return e.client.DoRequestJSON("POST", fmt.Sprintf("%s", menusPath), y, nil)
 }
 
 func (e *ListService) EditProductList(y *ProductsList) (*ProductsList, *Response, error) {
@@ -170,6 +211,15 @@ func (e *ListService) EditEventList(y *EventsList) (*EventsList, *Response, erro
 	return &v, r, nil
 }
 
+func (e *ListService) EditMenuList(y *MenusList) (*MenusList, *Response, error) {
+	var v MenusList
+	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", menusPath, y.GetId()), y, &v)
+	if err != nil {
+		return nil, r, err
+	}
+	return &v, r, nil
+}
+
 func (e *ListService) GetProductList(id string) (*ProductsList, *Response, error) {
 	var v ProductsList
 	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", productsPath, id), &v)
@@ -191,6 +241,15 @@ func (e *ListService) GetEventList(id string) (*EventsList, *Response, error) {
 func (e *ListService) GetBioList(id string) (*BiosList, *Response, error) {
 	var v BiosList
 	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", biosPath, id), &v)
+	if err != nil {
+		return nil, r, err
+	}
+	return &v, r, nil
+}
+
+func (e *ListService) GetMenuList(id string) (*MenusList, *Response, error) {
+	var v MenusList
+	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", menusPath, id), &v)
 	if err != nil {
 		return nil, r, err
 	}
