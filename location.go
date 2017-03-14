@@ -96,8 +96,8 @@ type Location struct {
 	BioListsLabel     *string   `json:"bioListsLabel,omitempty"`
 	EventListIds      *[]string `json:"eventListIds,omitempty"`
 	EventListsLabel   *string   `json:"eventListsLabel,omitempty"`
-	MenusLabel        *string   `json:"menusLabel,omitempty"`
-	MenuIds           *[]string `json:"menuIds,omitempty"`
+	MenuListsLabel    *string   `json:"menusLabel,omitempty"`
+	MenuListIds       *[]string `json:"menuIds,omitempty"`
 	ProductListIds    *[]string `json:"productListIds,omitempty"`
 	ProductListsLabel *string   `json:"productListsLabel,omitempty"`
 
@@ -447,6 +447,13 @@ func (y Location) GetEventListIds() (v []string) {
 func (y Location) GetProductListIds() (v []string) {
 	if y.ProductListIds != nil {
 		v = *y.ProductListIds
+	}
+	return v
+}
+
+func (y Location) GetMenuListIds() (v []string) {
+	if y.MenuListIds != nil {
+		v = *y.MenuListIds
 	}
 	return v
 }

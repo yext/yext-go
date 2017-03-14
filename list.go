@@ -138,12 +138,18 @@ type CostOptions struct {
 	Calorie int    `json:"calorie,omitempty"`
 }
 
-type EventsList struct {
-	List
-	Sections []*EventsListSection `json:"sections,omitempty"`
+type Calories struct {
+	Type    string `json:"type,omitempty"`
+	Calorie int    `json:"calorie,omitempty"`
+	RangeTo int    `json:"rangeTo,omitempty"`
 }
 
-type EventsListSection struct {
+type EventList struct {
+	List
+	Sections []*EventListSection `json:"sections,omitempty"`
+}
+
+type EventListSection struct {
 	ListSection
 	Items []*Event `json:"items,omitempty"` // max 100 items
 }
@@ -157,12 +163,12 @@ type Event struct {
 	Url    string       `json:"url,omitempty"`
 }
 
-type ProductsList struct {
+type ProductList struct {
 	List
-	Sections []*ProductsListSection `json:"sections,omitempty"`
+	Sections []*ProductListSection `json:"sections,omitempty"`
 }
 
-type ProductsListSection struct {
+type ProductListSection struct {
 	ListSection
 	Items []*Product `json:"items,omitempty"` // max 100 items
 }
@@ -176,12 +182,29 @@ type Product struct {
 	Url    string       `json:"url,omitempty"`
 }
 
-type BiosList struct {
+type MenuList struct {
 	List
-	Sections []*BiosListSection `json:"sections,omitempty"`
+	Sections []*MenuListSection `json:"sections,omitempty"`
 }
 
-type BiosListSection struct {
+type MenuListSection struct {
+	ListSection
+	Items []*Menu `json:"items,omitempty"` // max 100 items
+}
+
+type Menu struct {
+	ListItem
+	Cost     *Cost      `json:"cost,omitempty"`
+	Photo    *ListPhoto `json:"photo,omitempty"`
+	Calories *Calories  `json:"calories,omitempty"`
+}
+
+type BioList struct {
+	List
+	Sections []*BioListSection `json:"sections,omitempty"`
+}
+
+type BioListSection struct {
 	ListSection
 	Items []*Bio `json:"items,omitempty"` // max 100 items
 }
