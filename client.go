@@ -144,6 +144,11 @@ func (c *Client) DoRootRequestJSON(method string, path string, obj interface{}, 
 	return c.Do(req, v)
 }
 
+func getHeaderInt(r *http.Response, header string) int {
+	v, _ := strconv.Atoi(r.Header.Get(header))
+	return v
+}
+
 func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	// drain and cache the request body
 	originalRequestBody, err := ioutil.ReadAll(req.Body)
@@ -155,6 +160,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		resultError    error
 		resultResponse *Response
 		retries        = 3
+		hitRateLimit   = false
 	)
 
 	if c.Config.RetryCount != nil {
@@ -180,7 +186,12 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		}
 		defer resp.Body.Close()
 
-		resultResponse = &Response{}
+		resultResponse = &Response{
+			RateLimitLimit:     getHeaderInt(resp, "Rate-Limit-Limit"),
+			RateLimitRemaining: getHeaderInt(resp, "Rate-Limit-Remaining"),
+			RateLimitReset:     getHeaderInt(resp, "Rate-Limit-Reset"),
+		}
+
 		decodeError := json.NewDecoder(resp.Body).Decode(resultResponse)
 
 		var responseData []byte
@@ -188,6 +199,25 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 			responseData = *resultResponse.ResponseRaw
 		}
 		resultResponse.ResponseRaw = nil
+
+		if resp.StatusCode == http.StatusTooManyRequests && c.Config.RateLimitRetry {
+			if !hitRateLimit {
+				rateLimitWait := int64(resultResponse.RateLimitReset) - c.Config.Clock.Now().Unix()
+				attempt--
+				hitRateLimit = true
+				if rateLimitWait > 0 {
+					if c.Config.Logger != nil {
+						c.Config.Logger.Log(fmt.Sprintf("rate limit hit, waiting for %d seconds", rateLimitWait))
+					}
+					c.Config.Clock.Sleep(time.Duration(rateLimitWait+1) * time.Second)
+				}
+				continue
+			} else {
+				if c.Config.Logger != nil {
+					c.Config.Logger.Log("rate limit error persisted after waiting")
+				}
+			}
+		}
 
 		if resp.StatusCode >= 500 {
 			if decodeError != nil {

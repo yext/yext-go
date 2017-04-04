@@ -6,8 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
+
+	"github.com/jonboulle/clockwork"
 )
 
 func TestResponseDeserialzation(t *testing.T) {
@@ -249,5 +253,65 @@ func TestNoRetryOnDeserError(t *testing.T) {
 
 	if requests != 1 {
 		t.Errorf("Expected 1 net attempts when %s encountered, got %d", err.Error(), requests)
+	}
+}
+
+func TestRateLimitParsing(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Rate-Limit-Limit", "5000")
+		w.Header().Set("Rate-Limit-Remaining", "4000")
+		w.Header().Set("Rate-Limit-Reset", "1490799600")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	resp, err := client.DoRequest("GET", "", nil)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if v := resp.RateLimitLimit; v != 5000 {
+		t.Errorf("Expected RateLimitLimit of 5000, got %d", v)
+	}
+
+	if v := resp.RateLimitRemaining; v != 4000 {
+		t.Errorf("Expected RateLimitRemaining of 4000, got %d", v)
+	}
+
+	if v := resp.RateLimitReset; v != 1490799600 {
+		t.Errorf("Expected RateLimitReset of 1490799600, got %d", v)
+	}
+}
+
+func TestRateLimitWaiting(t *testing.T) {
+	conf := setup().WithRateLimitRetry().WithMockClock()
+	defer teardown()
+	fClock := conf.Clock.(clockwork.FakeClock)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		resetTime := strconv.FormatInt(fClock.Now().Unix()+1, 10)
+		w.Header().Set("Rate-Limit-Limit", "5000")
+		w.Header().Set("Rate-Limit-Remaining", "4000")
+		w.Header().Set("Rate-Limit-Reset", resetTime)
+		w.WriteHeader(http.StatusTooManyRequests)
+		w.Write([]byte(`{"meta": {"errors": [{"message": "", "code": 1}], "uuid": ""}}`))
+	})
+
+	timeBefore := fClock.Now()
+	go func() {
+		client.DoRequest("GET", "", nil)
+	}()
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		fClock.Advance(time.Hour)
+		fClock.Sleep(time.Hour)
+	}()
+	fClock.BlockUntil(1)
+	if fClock.Since(timeBefore) < time.Minute {
+		return
+	} else {
+		t.Errorf("No sleep initiated after waiting .5 seconds")
 	}
 }

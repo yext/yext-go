@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/jonboulle/clockwork"
 )
 
 const (
@@ -20,8 +22,10 @@ type Config struct {
 	AccountId  string
 	Version    string
 
-	RetryCount *int
+	RetryCount     *int
+	RateLimitRetry bool
 
+	Clock  clockwork.Clock
 	Logger Logger
 }
 
@@ -30,6 +34,7 @@ func NewConfig() *Config {
 		HTTPClient: http.DefaultClient,
 		AccountId:  AccountId,
 		Version:    Version,
+		Clock:      clockwork.NewRealClock(),
 	}
 }
 
@@ -99,5 +104,15 @@ func (c *Config) WithLogger(l Logger) *Config {
 
 func (c *Config) WithStdLogger() *Config {
 	c.Logger = NewStdLogger()
+	return c
+}
+
+func (c *Config) WithRateLimitRetry() *Config {
+	c.RateLimitRetry = true
+	return c
+}
+
+func (c *Config) WithMockClock() *Config {
+	c.Clock = clockwork.NewFakeClock()
 	return c
 }
