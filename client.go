@@ -69,6 +69,7 @@ func (c *Client) NewRootRequest(method string, path string) (*http.Request, erro
 
 func (c *Client) NewRequestJSON(method string, path string, obj interface{}) (*http.Request, error) {
 	json, err := json.Marshal(obj)
+
 	if err != nil {
 		return nil, err
 	}

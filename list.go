@@ -2,6 +2,15 @@ package yext
 
 import "reflect"
 
+type ListType string
+
+const (
+	BIO     ListType = "BIOS"
+	MENU    ListType = "MENU"
+	PRODUCT ListType = "PRODUCTS"
+	EVENT   ListType = "EVENTS"
+)
+
 // Generic base of a list
 type List struct {
 	Id       *string        `json:"id"`
@@ -118,9 +127,10 @@ func (e ListItem) GetDescription() string {
 }
 
 type ListPhoto struct {
-	Url    string `json:"url"`
-	Height int    `json:"height,omitempty"`
-	Width  int    `json:"width,omitempty"`
+	Url           string `json:"url"`
+	Height        int    `json:"height,omitempty"`
+	Width         int    `json:"width,omitempty"`
+	AlternateText string `json:"alternateText,omitempty"`
 }
 
 type Cost struct {
