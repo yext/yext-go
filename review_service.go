@@ -43,10 +43,18 @@ type ReviewListResponse struct {
 	Reviews       []*Review `json:"reviews"`
 }
 
-func (l *ReviewService) ListAll() ([]*Review, error) {
-	var reviews []*Review
+func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review, error) {
+	var (
+		reviews []*Review
+		lo      = rlOpts
+	)
+	if lo == nil {
+		lo = &ReviewListOptions{}
+	}
+
 	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
-		llr, _, err := l.List(&ReviewListOptions{ListOptions: *opts})
+		lo.ListOptions = *opts
+		llr, _, err := l.List(lo)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -59,6 +67,10 @@ func (l *ReviewService) ListAll() ([]*Review, error) {
 	} else {
 		return reviews, nil
 	}
+}
+
+func (l *ReviewService) ListAll() ([]*Review, error) {
+	return l.ListAllWithOptions(nil)
 }
 
 func addReviewListOptions(requrl string, opts *ReviewListOptions) (string, error) {
