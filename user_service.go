@@ -34,7 +34,7 @@ func (u *UserService) ListAll() ([]*User, error) {
 		return len(ulr.Users), ulr.Count, err
 	}
 
-	if err := listHelper(lr, UserListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: UserListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return users, nil

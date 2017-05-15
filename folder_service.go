@@ -34,7 +34,7 @@ func (s *FolderService) ListAll() ([]*Folder, error) {
 		return len(flr.Folders), flr.Count, err
 	}
 
-	if err := listHelper(lg, FolderListMaxLimit); err != nil {
+	if err := listHelper(lg, &ListOptions{Limit: FolderListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return folders, nil

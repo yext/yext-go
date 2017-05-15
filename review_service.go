@@ -52,6 +52,8 @@ func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review
 		lo = &ReviewListOptions{}
 	}
 
+	lo.ListOptions = ListOptions{Limit: ReviewListMaxLimit, DisableCountValidation: true}
+
 	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
 		lo.ListOptions = *opts
 		llr, _, err := l.List(lo)
@@ -62,7 +64,7 @@ func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review
 		return len(llr.Reviews), llr.Count, err
 	}
 
-	if err := listHelper(lg, ReviewListMaxLimit); err != nil {
+	if err := listHelper(lg, &lo.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return reviews, nil

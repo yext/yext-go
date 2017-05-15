@@ -17,8 +17,9 @@ const (
 )
 
 type ListOptions struct {
-	Limit  int
-	Offset int
+	Limit                  int
+	Offset                 int
+	DisableCountValidation bool
 }
 
 type Client struct {
@@ -258,9 +259,8 @@ type listRetriever func(*ListOptions) (int, int, error)
 
 // listHelper handles all the generic work of making paged requests up until
 // we've recieved the last page of results.
-func listHelper(lr listRetriever, limit int) error {
+func listHelper(lr listRetriever, opts *ListOptions) error {
 	var (
-		opts                                         = &ListOptions{Limit: limit}
 		found, firstReportedTotal, lastReportedTotal int
 	)
 	for {
@@ -284,7 +284,7 @@ func listHelper(lr listRetriever, limit int) error {
 	}
 
 	// Safety check
-	if firstReportedTotal != found || lastReportedTotal != found {
+	if !opts.DisableCountValidation && (firstReportedTotal != found || lastReportedTotal != found) {
 		return fmt.Errorf("got %d elements total, first response indicated %d, last response indicated %d", found, firstReportedTotal, lastReportedTotal)
 	}
 

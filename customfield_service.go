@@ -267,7 +267,7 @@ func (s *CustomFieldService) ListAll() ([]*CustomField, error) {
 		return len(cfr.CustomFields), cfr.Count, err
 	}
 
-	if err := listHelper(lr, CustomFieldListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: CustomFieldListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return customFields, nil

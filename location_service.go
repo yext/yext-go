@@ -36,7 +36,7 @@ func (l *LocationService) ListAll() ([]*Location, error) {
 		return len(llr.Locations), llr.Count, err
 	}
 
-	if err := listHelper(lg, LocationListMaxLimit); err != nil {
+	if err := listHelper(lg, &ListOptions{Limit: LocationListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return locations, nil

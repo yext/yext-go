@@ -51,7 +51,7 @@ func (e *ListService) ListAllProductLists() ([]*ProductList, error) {
 		return len(plr.ProductLists), plr.Count, err
 	}
 
-	if err := listHelper(lr, ListListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: ListListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return productLists, nil
@@ -83,7 +83,7 @@ func (e *ListService) ListAllBioLists() ([]*BioList, error) {
 		return len(plr.BioLists), plr.Count, err
 	}
 
-	if err := listHelper(lr, ListListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: ListListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return bioLists, nil
@@ -115,7 +115,7 @@ func (e *ListService) ListAllEventLists() ([]*EventList, error) {
 		return len(plr.EventLists), plr.Count, err
 	}
 
-	if err := listHelper(lr, ListListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: ListListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return eventLists, nil
@@ -147,7 +147,7 @@ func (e *ListService) ListAllMenuLists() ([]*MenuList, error) {
 		return len(plr.MenuLists), plr.Count, err
 	}
 
-	if err := listHelper(lr, ListListMaxLimit); err != nil {
+	if err := listHelper(lr, &ListOptions{Limit: ListListMaxLimit}); err != nil {
 		return nil, err
 	} else {
 		return menuLists, nil
