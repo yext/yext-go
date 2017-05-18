@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/yext/yext-go"
+	"gopkg.in/yext/yext-go.v2"
 )
 
 func main() {
