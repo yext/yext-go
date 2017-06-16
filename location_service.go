@@ -58,8 +58,10 @@ func (l *LocationService) List(llopts *LocationListOptions) (*LocationListRespon
 		err    error
 	)
 
+	requrl = locationsPath
+
 	if llopts != nil {
-		requrl, err = addLocationListOptions(reviewsPath, llopts)
+		requrl, err = addLocationListOptions(requrl, llopts)
 		if err != nil {
 			return nil, nil, err
 		}

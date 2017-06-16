@@ -17,19 +17,19 @@ func main() {
 	fatalif(err)
 	log.Println(printllr(llr))
 
-	llr, _, err = client.LocationService.List(&yext.ListOptions{})
+	llr, _, err = client.LocationService.List(&yext.LocationListOptions{})
 	fatalif(err)
 	log.Println(printllr(llr))
 
-	llr, _, err = client.LocationService.List(&yext.ListOptions{Limit: 2})
+	llr, _, err = client.LocationService.List(&yext.LocationListOptions{ListOptions: yext.ListOptions{Limit: 2}})
 	fatalif(err)
 	log.Println(printllr(llr))
 
-	llr, _, err = client.LocationService.List(&yext.ListOptions{Offset: 1})
+	llr, _, err = client.LocationService.List(&yext.LocationListOptions{ListOptions: yext.ListOptions{Offset: 1}})
 	fatalif(err)
 	log.Println(printllr(llr))
 
-	llr, _, err = client.LocationService.List(&yext.ListOptions{Offset: 5})
+	llr, _, err = client.LocationService.List(&yext.LocationListOptions{ListOptions: yext.ListOptions{Offset: 5}})
 	fatalif(err)
 	log.Println(printllr(llr))
 
