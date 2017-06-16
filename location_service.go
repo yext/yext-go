@@ -3,6 +3,7 @@ package yext
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -20,6 +21,11 @@ type LocationService struct {
 	CustomFields []*CustomField
 }
 
+type LocationListOptions struct {
+	ListOptions
+	SearchIDs []string
+}
+
 type LocationListResponse struct {
 	Count     int         `json:"count"`
 	Locations []*Location `json:"locations"`
@@ -27,8 +33,11 @@ type LocationListResponse struct {
 
 func (l *LocationService) ListAll() ([]*Location, error) {
 	var locations []*Location
+	var llo = &LocationListOptions{}
+	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
 	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
-		llr, _, err := l.List(opts)
+		llo.ListOptions = *opts
+		llr, _, err := l.List(llo)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -36,17 +45,31 @@ func (l *LocationService) ListAll() ([]*Location, error) {
 		return len(llr.Locations), llr.Count, err
 	}
 
-	if err := listHelper(lg, &ListOptions{Limit: LocationListMaxLimit}); err != nil {
+	if err := listHelper(lg, &llo.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return locations, nil
 	}
 }
 
-func (l *LocationService) List(opts *ListOptions) (*LocationListResponse, *Response, error) {
-	requrl, err := addListOptions(locationsPath, opts)
-	if err != nil {
-		return nil, nil, err
+func (l *LocationService) List(llopts *LocationListOptions) (*LocationListResponse, *Response, error) {
+	var (
+		requrl string
+		err    error
+	)
+
+	if llopts != nil {
+		requrl, err = addLocationListOptions(reviewsPath, llopts)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	if llopts != nil {
+		requrl, err = addListOptions(requrl, &llopts.ListOptions)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	v := &LocationListResponse{}
@@ -60,6 +83,25 @@ func (l *LocationService) List(opts *ListOptions) (*LocationListResponse, *Respo
 	}
 
 	return v, r, nil
+}
+
+func addLocationListOptions(requrl string, opts *LocationListOptions) (string, error) {
+	if opts == nil {
+		return requrl, nil
+	}
+
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return "", err
+	}
+
+	q := u.Query()
+	if opts.SearchIDs != nil {
+		q.Add("searchIds", strings.Join(opts.SearchIDs, ","))
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
 }
 
 func (l *LocationService) Edit(y *Location) (*Response, error) {
@@ -100,14 +142,25 @@ func (l *LocationService) Get(id string) (*Location, *Response, error) {
 	return &v, r, nil
 }
 
-// TODO: Do searchids work in APIv2?
 func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, error) {
-	v := &LocationListResponse{}
-	_, err := l.client.DoRequest("GET", fmt.Sprintf("%s?searchIds=%s", locationsPath, strings.Join(searchIds, ",")), v)
-	if err != nil {
-		return nil, err
+	var locations []*Location
+	var llo = &LocationListOptions{SearchIDs: searchIds}
+	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
+	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
+		llo.ListOptions = *opts
+		llr, _, err := l.List(llo)
+		if err != nil {
+			return 0, 0, err
+		}
+		locations = append(locations, llr.Locations...)
+		return len(llr.Locations), llr.Count, err
 	}
-	return l.HydrateLocations(v.Locations)
+
+	if err := listHelper(lg, &llo.ListOptions); err != nil {
+		return nil, err
+	} else {
+		return locations, nil
+	}
 }
 
 func (l *LocationService) HydrateLocation(loc *Location) (*Location, error) {
