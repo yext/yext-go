@@ -73,6 +73,9 @@ var (
 		"description": "An example caption for a video",
 		"url":         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 	}
+	dailyTimes = map[string]interface{}{
+		"dailyTimes": "2:7:00,3:7:00,4:7:00,5:7:00,6:7:00,7:7:00,1:7:00",
+	}
 	parseTests = []customFieldParseTest{
 		customFieldParseTest{"BOOLEAN", false, reflect.TypeOf(YesNo(false))},
 		customFieldParseTest{"BOOLEAN", "false", reflect.TypeOf(YesNo(false))},
@@ -90,6 +93,7 @@ var (
 		customFieldParseTest{"GALLERY", []interface{}{customPhoto}, reflect.TypeOf(Gallery{})},
 		customFieldParseTest{"VIDEO", video, reflect.TypeOf(Video{})},
 		customFieldParseTest{"HOURS", hours, reflect.TypeOf(Hours{})},
+		customFieldParseTest{"DAILY_TIMES", dailyTimes, reflect.TypeOf(DailyTimes{})},
 	}
 )
 

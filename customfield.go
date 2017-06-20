@@ -18,7 +18,7 @@ const (
 	CUSTOMFIELDTYPE_GALLERY        = "GALLERY"
 	CUSTOMFIELDTYPE_VIDEO          = "VIDEO"
 	CUSTOMFIELDTYPE_HOURS          = "HOURS"
-	// not sure what to do with "DAILYTIMES", omitting
+	CUSTOMFIELDTYPE_DAILYTIMES     = "DAILY_TIMES"
 )
 
 type CustomFieldOption struct {
@@ -199,4 +199,12 @@ type Hours struct {
 
 func (h *Hours) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
+}
+
+type DailyTimes struct {
+	DailyTimes string `json:"dailyTimes,omitempty"`
+}
+
+func (d DailyTimes) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_DAILYTIMES
 }
