@@ -20,6 +20,7 @@ type ListOptions struct {
 	Limit                  int
 	Offset                 int
 	DisableCountValidation bool
+	PageToken              string
 }
 
 type Client struct {
@@ -262,6 +263,7 @@ type listRetriever func(*ListOptions) (int, int, error)
 func listHelper(lr listRetriever, opts *ListOptions) error {
 	var (
 		found, firstReportedTotal, lastReportedTotal int
+		hasPrevPageToken                             bool
 	)
 	for {
 		els, reportedtotal, err := lr(opts)
@@ -270,17 +272,21 @@ func listHelper(lr listRetriever, opts *ListOptions) error {
 		}
 
 		found += els
-
 		if firstReportedTotal == 0 {
 			firstReportedTotal = reportedtotal
 		}
 		lastReportedTotal = reportedtotal
 
-		if reportedtotal <= opts.Offset+opts.Limit {
+		if opts.PageToken != "" {
+			hasPrevPageToken = true
+		} else if hasPrevPageToken {
 			break
+		} else {
+			if reportedtotal <= opts.Offset+opts.Limit {
+				break
+			}
+			opts.Offset += opts.Limit
 		}
-
-		opts.Offset += opts.Limit
 	}
 
 	// Safety check
@@ -307,6 +313,9 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	}
 	if opts.Offset != 0 {
 		q.Add("offset", strconv.Itoa(opts.Offset))
+	}
+	if opts.PageToken != "" {
+		q.Add("pageToken", opts.PageToken)
 	}
 	u.RawQuery = q.Encode()
 

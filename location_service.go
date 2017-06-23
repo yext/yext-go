@@ -27,8 +27,9 @@ type LocationListOptions struct {
 }
 
 type LocationListResponse struct {
-	Count     int         `json:"count"`
-	Locations []*Location `json:"locations"`
+	Count         int         `json:"count"`
+	Locations     []*Location `json:"locations"`
+	NextPageToken string      `json:"nextPageToken"`
 }
 
 func (l *LocationService) ListAll() ([]*Location, error) {
@@ -38,6 +39,7 @@ func (l *LocationService) ListAll() ([]*Location, error) {
 	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
 		llo.ListOptions = *opts
 		llr, _, err := l.List(llo)
+		llo.ListOptions.PageToken = llr.NextPageToken
 		if err != nil {
 			return 0, 0, err
 		}
