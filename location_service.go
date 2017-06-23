@@ -27,25 +27,26 @@ type LocationListOptions struct {
 }
 
 type LocationListResponse struct {
-	Count     int         `json:"count"`
-	Locations []*Location `json:"locations"`
+	Count         int         `json:"count"`
+	Locations     []*Location `json:"locations"`
+	NextPageToken string      `json:"nextPageToken"`
 }
 
 func (l *LocationService) ListAll() ([]*Location, error) {
 	var locations []*Location
 	var llo = &LocationListOptions{}
 	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
-	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
+	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
 		llo.ListOptions = *opts
 		llr, _, err := l.List(llo)
 		if err != nil {
-			return 0, 0, err
+			return "", err
 		}
 		locations = append(locations, llr.Locations...)
-		return len(llr.Locations), llr.Count, err
+		return llr.NextPageToken, err
 	}
 
-	if err := listHelper(lg, &llo.ListOptions); err != nil {
+	if err := tokenListHelper(lg, &llo.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return locations, nil
@@ -148,17 +149,17 @@ func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, erro
 	var locations []*Location
 	var llo = &LocationListOptions{SearchIDs: searchIds}
 	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
-	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
+	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
 		llo.ListOptions = *opts
 		llr, _, err := l.List(llo)
 		if err != nil {
-			return 0, 0, err
+			return "", err
 		}
 		locations = append(locations, llr.Locations...)
-		return len(llr.Locations), llr.Count, err
+		return llr.NextPageToken, err
 	}
 
-	if err := listHelper(lg, &llo.ListOptions); err != nil {
+	if err := tokenListHelper(lg, &llo.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return locations, nil

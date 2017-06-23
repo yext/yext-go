@@ -218,9 +218,9 @@ func TestReviewList(t *testing.T) {
 			w.Write(data)
 		})
 
-		client.LocationService.ListAll()
+		client.ReviewService.ListAll()
 		if reqs < len(test.reqs) {
-			t.Errorf("Too few requests sent to location list - got %d, expected %d", reqs, len(test.reqs))
+			t.Errorf("Too few requests sent to review list - got %d, expected %d", reqs, len(test.reqs))
 		}
 
 		teardown()

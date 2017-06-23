@@ -20,6 +20,7 @@ type ListOptions struct {
 	Limit                  int
 	Offset                 int
 	DisableCountValidation bool
+	PageToken              string
 }
 
 type Client struct {
@@ -270,7 +271,6 @@ func listHelper(lr listRetriever, opts *ListOptions) error {
 		}
 
 		found += els
-
 		if firstReportedTotal == 0 {
 			firstReportedTotal = reportedtotal
 		}
@@ -279,13 +279,33 @@ func listHelper(lr listRetriever, opts *ListOptions) error {
 		if reportedtotal <= opts.Offset+opts.Limit {
 			break
 		}
-
 		opts.Offset += opts.Limit
 	}
 
 	// Safety check
 	if !opts.DisableCountValidation && (firstReportedTotal != found || lastReportedTotal != found) {
 		return fmt.Errorf("got %d elements total, first response indicated %d, last response indicated %d", found, firstReportedTotal, lastReportedTotal)
+	}
+
+	return nil
+}
+
+type tokenListRetriever func(*ListOptions) (string, error)
+
+// tokenListHelper handles all the generic work of making paged requests up until
+// we've recieved the last page of results via page token.
+func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
+	for {
+		nextpagetoken, err := lr(opts)
+		if err != nil {
+			return err
+		}
+
+		if nextpagetoken != "" {
+			opts.PageToken = nextpagetoken
+		} else {
+			break
+		}
 	}
 
 	return nil
@@ -305,7 +325,9 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	if opts.Limit != 0 {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
-	if opts.Offset != 0 {
+	if opts.PageToken != "" {
+		q.Add("pageToken", opts.PageToken)
+	} else if opts.Offset != 0 {
 		q.Add("offset", strconv.Itoa(opts.Offset))
 	}
 	u.RawQuery = q.Encode()

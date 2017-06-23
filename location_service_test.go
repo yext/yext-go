@@ -11,45 +11,44 @@ func TestListOptions(t *testing.T) {
 	tests := []struct {
 		opts      *LocationListOptions
 		limit     string
-		offset    string
+		token     string
 		searchIDs string
 	}{
 		{
 			opts:      nil,
 			limit:     "",
-			offset:    "",
+			token:     "",
 			searchIDs: "",
 		},
 		{
 			// The values are technically 0,0, but that doesn't make any sense in the context of a list request
 			opts:      &LocationListOptions{ListOptions: ListOptions{}},
 			limit:     "",
-			offset:    "",
+			token:     "",
 			searchIDs: "",
 		},
 		{
 			opts:      &LocationListOptions{ListOptions: ListOptions{Limit: 10}},
 			limit:     "10",
-			offset:    "",
+			token:     "",
 			searchIDs: "",
 		},
 		{
-			opts:      &LocationListOptions{ListOptions: ListOptions{Offset: 10}},
+			opts:      &LocationListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
 			limit:     "",
-			offset:    "10",
+			token:     "qwerty1234",
 			searchIDs: "",
 		},
 		{
-			opts:      &LocationListOptions{ListOptions: ListOptions{Limit: 42, Offset: 33}},
+			opts:      &LocationListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
 			limit:     "42",
-			offset:    "33",
+			token:     "asdfgh4321",
 			searchIDs: "",
 		},
-
 		{
-			opts:      &LocationListOptions{SearchIDs: []string{"1234"}, ListOptions: ListOptions{Limit: 42, Offset: 33}},
+			opts:      &LocationListOptions{SearchIDs: []string{"1234"}, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
 			limit:     "42",
-			offset:    "33",
+			token:     "asdfgh4321",
 			searchIDs: "1234",
 		},
 	}
@@ -60,9 +59,8 @@ func TestListOptions(t *testing.T) {
 			if v := r.URL.Query().Get("limit"); v != test.limit {
 				t.Errorf("Wanted limit %s, got %s", test.limit, v)
 			}
-
-			if v := r.URL.Query().Get("offset"); v != test.offset {
-				t.Errorf("Wanted offset %s, got %s", test.offset, v)
+			if v := r.URL.Query().Get("pageToken"); v != test.token {
+				t.Errorf("Wanted token %s, got %s", test.token, v)
 			}
 			if v := r.URL.Query().Get("searchIds"); v != test.searchIDs {
 				t.Errorf("Wanted searchId %s, got %s", test.searchIDs, v)
@@ -85,33 +83,32 @@ func makeLocs(n int) []*Location {
 	return locs
 }
 
-func TestListAll(t *testing.T) {
+func TestListBySearchIds(t *testing.T) {
 	maxLimit := strconv.Itoa(LocationListMaxLimit)
 
-	type req struct {
-		limit  string
-		offset string
-	}
-
 	tests := []struct {
-		count int
-		reqs  []req
+		limit                 string
+		tokenResponses        []string
+		expectedTokenRequests []string
+		searchIds             []string
 	}{
 		{
-			count: 0,
-			reqs:  []req{{limit: maxLimit, offset: ""}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{""},
+			expectedTokenRequests: []string{""},
+			searchIds:             []string{"1234"},
 		},
 		{
-			count: 50,
-			reqs:  []req{{limit: maxLimit, offset: ""}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token"},
+			expectedTokenRequests: []string{"", "first_token"},
+			searchIds:             []string{"1234", "1234"},
 		},
 		{
-			count: 51,
-			reqs:  []req{{limit: maxLimit, offset: ""}, {limit: maxLimit, offset: "50"}},
-		},
-		{
-			count: 100,
-			reqs:  []req{{limit: maxLimit, offset: ""}, {limit: maxLimit, offset: "50"}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token", "second_token", "third_token"},
+			expectedTokenRequests: []string{"", "first_token", "second_token", "third_token"},
+			searchIds:             []string{"1234", "1234", "1234", "1234"},
 		},
 	}
 
@@ -120,90 +117,67 @@ func TestListAll(t *testing.T) {
 		reqs := 0
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			reqs++
-			if reqs > len(test.reqs) {
-				t.Errorf("Too many requests sent to location list - got %d, expected %d", reqs, len(test.reqs))
+			if reqs > len(test.expectedTokenRequests) {
+				t.Errorf("Too many requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 			}
 
-			expectedreq := test.reqs[reqs-1]
+			expectedreq := test.expectedTokenRequests[reqs-1]
+			tokenresp := ""
+			if reqs <= len(test.tokenResponses) {
+				tokenresp = test.tokenResponses[reqs-1]
+			}
+			searchId := test.searchIds[reqs-1]
 
-			if v := r.URL.Query().Get("limit"); v != expectedreq.limit {
-				t.Errorf("Wanted limit %s, got %s", expectedreq.limit, v)
+			if v := r.URL.Query().Get("searchIds"); v != searchId {
+				t.Errorf("Wanted searchId %s, got %s", searchId, v)
 			}
 
-			if v := r.URL.Query().Get("offset"); v != expectedreq.offset {
-				t.Errorf("Wanted offset %s, got %s", expectedreq.offset, v)
+			if v := r.URL.Query().Get("limit"); v != test.limit {
+				t.Errorf("Wanted limit %s, got %s", test.limit, v)
 			}
 
-			locs := []*Location{}
-			remaining := test.count - ((reqs - 1) * LocationListMaxLimit)
-			if remaining > 0 {
-				if remaining > LocationListMaxLimit {
-					remaining = LocationListMaxLimit
-				}
-				locs = makeLocs(remaining)
+			if v := r.URL.Query().Get("pageToken"); v != expectedreq {
+				t.Errorf("Wanted offset %s, got %s", expectedreq, v)
 			}
 
-			v := &mockResponse{Response: &LocationListResponse{Count: test.count, Locations: locs}}
-			data, _ := json.Marshal(v)
-			w.Write(data)
+			if tokenresp != "" {
+				v := &mockResponse{Response: &LocationListResponse{NextPageToken: tokenresp}}
+				data, _ := json.Marshal(v)
+				w.Write(data)
+			}
 		})
 
-		client.LocationService.ListAll()
-		if reqs < len(test.reqs) {
-			t.Errorf("Too few requests sent to location list - got %d, expected %d", reqs, len(test.reqs))
+		client.LocationService.ListBySearchIds([]string{"1234"})
+		if reqs < len(test.expectedTokenRequests) {
+			t.Errorf("Too few requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 		}
 
 		teardown()
 	}
 }
 
-func TestListMismatchCount(t *testing.T) {
-	setup()
-	defer teardown()
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		v := &mockResponse{Response: &LocationListResponse{Count: 25, Locations: makeLocs(24)}}
-		data, _ := json.Marshal(v)
-		w.Write(data)
-	})
-
-	llr, err := client.LocationService.ListAll()
-	if llr != nil {
-		t.Error("Expected response to be nil when recieving mismatched count and number of locations")
-	}
-	if err == nil {
-		t.Error("Expected error to be present when recieving mismatched count and number of locations")
-	}
-}
-
-func TestListBySearchIds(t *testing.T) {
+func TestTokenListAll(t *testing.T) {
 	maxLimit := strconv.Itoa(LocationListMaxLimit)
 
-	type req struct {
-		limit     string
-		offset    string
-		searchIds string
-	}
-
 	tests := []struct {
-		count int
-		reqs  []req
+		limit                 string
+		tokenResponses        []string
+		expectedTokenRequests []string
 	}{
 		{
-			count: 0,
-			reqs:  []req{{limit: maxLimit, offset: "", searchIds: "1234"}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{""},
+			expectedTokenRequests: []string{""},
 		},
 		{
-			count: 50,
-			reqs:  []req{{limit: maxLimit, offset: "", searchIds: "1234"}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token"},
+			expectedTokenRequests: []string{"", "first_token"},
 		},
 		{
-			count: 51,
-			reqs:  []req{{limit: maxLimit, offset: "", searchIds: "1234"}, {limit: maxLimit, offset: "50", searchIds: "1234"}},
-		},
-		{
-			count: 100,
-			reqs:  []req{{limit: maxLimit, offset: "", searchIds: "1234"}, {limit: maxLimit, offset: "50", searchIds: "1234"}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token", "second_token", "third_token"},
+			expectedTokenRequests: []string{"", "first_token", "second_token", "third_token"},
 		},
 	}
 
@@ -212,41 +186,34 @@ func TestListBySearchIds(t *testing.T) {
 		reqs := 0
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			reqs++
-			if reqs > len(test.reqs) {
-				t.Errorf("Too many requests sent to location list - got %d, expected %d", reqs, len(test.reqs))
+			if reqs > len(test.expectedTokenRequests) {
+				t.Errorf("Too many requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 			}
 
-			expectedreq := test.reqs[reqs-1]
-
-			if v := r.URL.Query().Get("searchIds"); v != expectedreq.searchIds {
-				t.Errorf("Wanted searchId %s, got %s", expectedreq.searchIds, v)
+			expectedreq := test.expectedTokenRequests[reqs-1]
+			tokenresp := ""
+			if reqs <= len(test.tokenResponses) {
+				tokenresp = test.tokenResponses[reqs-1]
 			}
 
-			if v := r.URL.Query().Get("limit"); v != expectedreq.limit {
-				t.Errorf("Wanted limit %s, got %s", expectedreq.limit, v)
+			if v := r.URL.Query().Get("limit"); v != test.limit {
+				t.Errorf("Wanted limit %s, got %s", test.limit, v)
 			}
 
-			if v := r.URL.Query().Get("offset"); v != expectedreq.offset {
-				t.Errorf("Wanted offset %s, got %s", expectedreq.offset, v)
+			if v := r.URL.Query().Get("pageToken"); v != expectedreq {
+				t.Errorf("Wanted token %s, got %s", expectedreq, v)
 			}
 
-			locs := []*Location{}
-			remaining := test.count - ((reqs - 1) * LocationListMaxLimit)
-			if remaining > 0 {
-				if remaining > LocationListMaxLimit {
-					remaining = LocationListMaxLimit
-				}
-				locs = makeLocs(remaining)
+			if tokenresp != "" {
+				v := &mockResponse{Response: &LocationListResponse{NextPageToken: tokenresp}}
+				data, _ := json.Marshal(v)
+				w.Write(data)
 			}
-
-			v := &mockResponse{Response: &LocationListResponse{Count: test.count, Locations: locs}}
-			data, _ := json.Marshal(v)
-			w.Write(data)
 		})
 
-		client.LocationService.ListBySearchIds([]string{"1234"})
-		if reqs < len(test.reqs) {
-			t.Errorf("Too few requests sent to location list - got %d, expected %d", reqs, len(test.reqs))
+		client.LocationService.ListAll()
+		if reqs != len(test.expectedTokenRequests) {
+			t.Errorf("Wrong number of requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 		}
 
 		teardown()
