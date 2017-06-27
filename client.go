@@ -295,9 +295,6 @@ type tokenListRetriever func(*ListOptions) (string, error)
 // tokenListHelper handles all the generic work of making paged requests up until
 // we've recieved the last page of results via page token.
 func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
-	var (
-		hasPrevPageToken bool
-	)
 	for {
 		nextpagetoken, err := lr(opts)
 		if err != nil {
@@ -306,8 +303,7 @@ func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
 
 		if nextpagetoken != "" {
 			opts.PageToken = nextpagetoken
-			hasPrevPageToken = true
-		} else if hasPrevPageToken {
+		} else {
 			break
 		}
 	}

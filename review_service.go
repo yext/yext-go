@@ -56,12 +56,12 @@ func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review
 
 	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
 		lo.ListOptions = *opts
-		llr, _, err := l.List(lo)
+		rlr, _, err := l.List(lo)
 		if err != nil {
 			return 0, 0, err
 		}
-		reviews = append(reviews, llr.Reviews...)
-		return len(llr.Reviews), llr.Count, err
+		reviews = append(reviews, rlr.Reviews...)
+		return len(rlr.Reviews), rlr.Count, err
 	}
 
 	if err := listHelper(lg, &lo.ListOptions); err != nil {
