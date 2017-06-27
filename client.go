@@ -263,7 +263,6 @@ type listRetriever func(*ListOptions) (int, int, error)
 func listHelper(lr listRetriever, opts *ListOptions) error {
 	var (
 		found, firstReportedTotal, lastReportedTotal int
-		hasPrevPageToken                             bool
 	)
 	for {
 		els, reportedtotal, err := lr(opts)
@@ -277,21 +276,40 @@ func listHelper(lr listRetriever, opts *ListOptions) error {
 		}
 		lastReportedTotal = reportedtotal
 
-		if opts.PageToken != "" {
-			hasPrevPageToken = true
-		} else if hasPrevPageToken {
+		if reportedtotal <= opts.Offset+opts.Limit {
 			break
-		} else {
-			if reportedtotal <= opts.Offset+opts.Limit {
-				break
-			}
-			opts.Offset += opts.Limit
 		}
+		opts.Offset += opts.Limit
 	}
 
 	// Safety check
 	if !opts.DisableCountValidation && (firstReportedTotal != found || lastReportedTotal != found) {
 		return fmt.Errorf("got %d elements total, first response indicated %d, last response indicated %d", found, firstReportedTotal, lastReportedTotal)
+	}
+
+	return nil
+}
+
+type tokenListRetriever func(*ListOptions) (string, error)
+
+// tokenListHelper handles all the generic work of making paged requests up until
+// we've recieved the last page of results via page token.
+func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
+	var (
+		hasPrevPageToken bool
+	)
+	for {
+		nextpagetoken, err := lr(opts)
+		if err != nil {
+			return err
+		}
+
+		if nextpagetoken != "" {
+			opts.PageToken = nextpagetoken
+			hasPrevPageToken = true
+		} else if hasPrevPageToken {
+			break
+		}
 	}
 
 	return nil
@@ -311,11 +329,10 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	if opts.Limit != 0 {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
-	if opts.Offset != 0 {
-		q.Add("offset", strconv.Itoa(opts.Offset))
-	}
 	if opts.PageToken != "" {
 		q.Add("pageToken", opts.PageToken)
+	} else if opts.Offset != 0 {
+		q.Add("offset", strconv.Itoa(opts.Offset))
 	}
 	u.RawQuery = q.Encode()
 
