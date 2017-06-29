@@ -9,47 +9,47 @@ import (
 
 func TestListOptions(t *testing.T) {
 	tests := []struct {
-		opts      *LocationListOptions
-		limit     string
-		token     string
-		searchIDs string
+		opts     *LocationListOptions
+		limit    string
+		token    string
+		searchID string
 	}{
 		{
-			opts:      nil,
-			limit:     "",
-			token:     "",
-			searchIDs: "",
+			opts:     nil,
+			limit:    "",
+			token:    "",
+			searchID: "",
 		},
 		{
 			// The values are technically 0,0, but that doesn't make any sense in the context of a list request
-			opts:      &LocationListOptions{ListOptions: ListOptions{}},
-			limit:     "",
-			token:     "",
-			searchIDs: "",
+			opts:     &LocationListOptions{ListOptions: ListOptions{}},
+			limit:    "",
+			token:    "",
+			searchID: "",
 		},
 		{
-			opts:      &LocationListOptions{ListOptions: ListOptions{Limit: 10}},
-			limit:     "10",
-			token:     "",
-			searchIDs: "",
+			opts:     &LocationListOptions{ListOptions: ListOptions{Limit: 10}},
+			limit:    "10",
+			token:    "",
+			searchID: "",
 		},
 		{
-			opts:      &LocationListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
-			limit:     "",
-			token:     "qwerty1234",
-			searchIDs: "",
+			opts:     &LocationListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
+			limit:    "",
+			token:    "qwerty1234",
+			searchID: "",
 		},
 		{
-			opts:      &LocationListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
-			limit:     "42",
-			token:     "asdfgh4321",
-			searchIDs: "",
+			opts:     &LocationListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
+			limit:    "42",
+			token:    "asdfgh4321",
+			searchID: "",
 		},
 		{
-			opts:      &LocationListOptions{SearchIDs: []string{"1234"}, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
-			limit:     "42",
-			token:     "asdfgh4321",
-			searchIDs: "1234",
+			opts:     &LocationListOptions{SearchID: "1234", ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
+			limit:    "42",
+			token:    "asdfgh4321",
+			searchID: "1234",
 		},
 	}
 
@@ -62,8 +62,8 @@ func TestListOptions(t *testing.T) {
 			if v := r.URL.Query().Get("pageToken"); v != test.token {
 				t.Errorf("Wanted token %s, got %s", test.token, v)
 			}
-			if v := r.URL.Query().Get("searchIds"); v != test.searchIDs {
-				t.Errorf("Wanted searchId %s, got %s", test.searchIDs, v)
+			if v := r.URL.Query().Get("searchId"); v != test.searchID {
+				t.Errorf("Wanted searchId %s, got %s", test.searchID, v)
 			}
 		})
 
@@ -83,32 +83,32 @@ func makeLocs(n int) []*Location {
 	return locs
 }
 
-func TestListBySearchIds(t *testing.T) {
+func TestListBySearchId(t *testing.T) {
 	maxLimit := strconv.Itoa(LocationListMaxLimit)
 
 	tests := []struct {
 		limit                 string
 		tokenResponses        []string
 		expectedTokenRequests []string
-		searchIds             []string
+		searchId              string
 	}{
 		{
 			limit:                 maxLimit,
 			tokenResponses:        []string{""},
 			expectedTokenRequests: []string{""},
-			searchIds:             []string{"1234"},
+			searchId:              "1234",
 		},
 		{
 			limit:                 maxLimit,
 			tokenResponses:        []string{"first_token"},
 			expectedTokenRequests: []string{"", "first_token"},
-			searchIds:             []string{"1234", "1234"},
+			searchId:              "1234",
 		},
 		{
 			limit:                 maxLimit,
 			tokenResponses:        []string{"first_token", "second_token", "third_token"},
 			expectedTokenRequests: []string{"", "first_token", "second_token", "third_token"},
-			searchIds:             []string{"1234", "1234", "1234", "1234"},
+			searchId:              "1234",
 		},
 	}
 
@@ -126,9 +126,9 @@ func TestListBySearchIds(t *testing.T) {
 			if reqs <= len(test.tokenResponses) {
 				tokenresp = test.tokenResponses[reqs-1]
 			}
-			searchId := test.searchIds[reqs-1]
+			searchId := test.searchId
 
-			if v := r.URL.Query().Get("searchIds"); v != searchId {
+			if v := r.URL.Query().Get("searchId"); v != searchId {
 				t.Errorf("Wanted searchId %s, got %s", searchId, v)
 			}
 
@@ -147,7 +147,7 @@ func TestListBySearchIds(t *testing.T) {
 			}
 		})
 
-		client.LocationService.ListBySearchIds([]string{"1234"})
+		client.LocationService.ListBySearchId("1234")
 		if reqs < len(test.expectedTokenRequests) {
 			t.Errorf("Too few requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 		}
