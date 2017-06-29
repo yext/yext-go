@@ -100,7 +100,7 @@ func addLocationListOptions(requrl string, opts *LocationListOptions) (string, e
 
 	q := u.Query()
 	if opts.SearchIDs != nil {
-		q.Add("searchIds", strings.Join(opts.SearchIDs, ","))
+		q.Add("searchId", strings.Join(opts.SearchIDs, ","))
 	}
 	u.RawQuery = q.Encode()
 
