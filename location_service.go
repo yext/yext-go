@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"regexp"
-	"strings"
 )
 
 const locationsPath = "locations"
@@ -23,7 +22,7 @@ type LocationService struct {
 
 type LocationListOptions struct {
 	ListOptions
-	SearchIDs []string
+	SearchID string
 }
 
 type LocationListResponse struct {
@@ -99,8 +98,8 @@ func addLocationListOptions(requrl string, opts *LocationListOptions) (string, e
 	}
 
 	q := u.Query()
-	if opts.SearchIDs != nil {
-		q.Add("searchId", strings.Join(opts.SearchIDs, ","))
+	if opts.SearchID != "" {
+		q.Add("searchId", opts.SearchID)
 	}
 	u.RawQuery = q.Encode()
 
@@ -145,9 +144,9 @@ func (l *LocationService) Get(id string) (*Location, *Response, error) {
 	return &v, r, nil
 }
 
-func (l *LocationService) ListBySearchIds(searchIds []string) ([]*Location, error) {
+func (l *LocationService) ListBySearchId(searchId string) ([]*Location, error) {
 	var locations []*Location
-	var llo = &LocationListOptions{SearchIDs: searchIds}
+	var llo = &LocationListOptions{SearchID: searchId}
 	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
 	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
 		llo.ListOptions = *opts
