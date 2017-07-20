@@ -14,6 +14,25 @@ type CustomFieldManager struct {
 	CustomFields []*CustomField
 }
 
+func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
+	asJson, err := json.Marshal(cf)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJson, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap, "id")
+	delete(asMap, "type")
+	r, err := s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.Id), asMap, nil)
+	if err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
 func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
 	if loc == nil || loc.CustomFields == nil {
 		return nil, nil
