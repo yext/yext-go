@@ -373,6 +373,104 @@ func TestBoolDiffs(t *testing.T) {
 	}
 }
 
+type googleAttributesTest struct {
+	baseValue          *GoogleAttributes
+	newValue           *GoogleAttributes
+	isDiff             bool
+	expectedFieldValue []*GoogleAttribute
+}
+
+var googleAttributesTests = []googleAttributesTest{
+	{nil, nil, false, nil},
+	{
+		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+		isDiff:             true,
+		expectedFieldValue: []*GoogleAttribute{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{ // this is 4
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})},
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff: true,
+		expectedFieldValue: GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff: true,
+		expectedFieldValue: GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+}
+
+func (t googleAttributesTest) formatErrorBase(index int) string {
+	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'\n", index, t.baseValue, t.newValue)
+}
+
+func TestGoogleAttributesDiffs(t *testing.T) {
+	a, b := *new(Location), new(Location)
+	for i, data := range googleAttributesTests {
+		a.GoogleAttributes, b.GoogleAttributes = data.baseValue, data.newValue
+		d, isDiff := a.Diff(b)
+		if isDiff != data.isDiff {
+			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
+		}
+		if d == nil && data.expectedFieldValue == nil {
+			continue
+		} else if d == nil && data.expectedFieldValue != nil {
+			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
+		} else if len(d.GetGoogleAttributes()) != len(data.expectedFieldValue) {
+			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
+		}
+	}
+}
+
 type stringArrayTest struct {
 	baseValue          *[]string
 	newValue           *[]string

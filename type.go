@@ -32,3 +32,8 @@ func ToUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
 }
+
+func ToGoogleAttributes(v []*GoogleAttribute) *GoogleAttributes {
+	u := GoogleAttributes(v)
+	return &u
+}
