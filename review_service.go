@@ -9,6 +9,8 @@ import (
 
 const reviewsPath = "reviews"
 
+const reviewInvitePath = "reviewinvites"
+
 var (
 	ReviewListMaxLimit = 50
 )
@@ -41,6 +43,18 @@ type ReviewListResponse struct {
 	Count         int       `json:"count"`
 	AverageRating float64   `json:"averageRating"`
 	Reviews       []*Review `json:"reviews"`
+}
+
+type ReviewCreateInvitationResponse struct {
+	Id         string `json:"id"`
+	LocationId string `json:"locationId"`
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	Contact    string `json:"contact"`
+	Image      bool   `json:"image"`
+	TemplateId string `json:"templateId"`
+	Status     string `json:"status"`
+	Details    string `json:"details"`
 }
 
 func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review, error) {
@@ -170,4 +184,14 @@ func (l *ReviewService) Get(id int) (*Review, *Response, error) {
 	}
 
 	return &v, r, nil
+}
+
+func (l *ReviewService) CreateInvitation(jsonData []Reviewer) (*[]ReviewCreateInvitationResponse, *Response, error) {
+	v := &[]ReviewCreateInvitationResponse{}
+	r, err := l.client.DoRequestJSON("POST", reviewInvitePath, jsonData, v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return v, r, nil
 }
