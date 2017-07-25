@@ -136,6 +136,8 @@ type Location struct {
 	Photos    []LocationPhoto `json:"photos,omitempty"`
 	VideoUrls *[]string       `json:"videoUrls,omitempty"`
 
+	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
+
 	/** TODO(bmcginnis) add the following fields:
 
 	   ServiceArea       struct {
@@ -149,11 +151,6 @@ type Location struct {
 			Type            *string `json:"type,omitempty"`
 			YearCompleted   *string `json:"yearCompleted,omitempty"`
 		} `json:"educationList,omitempty"`
-
-	  GoogleAttributes   []struct {
-	    Id        *string   `json:"id,omitempty"`
-	    OptionIds *[]string `json:"optionIds,omitempty"`
-	  } `json:"googleAttributes,omitempty"`
 	*/
 }
 
@@ -563,6 +560,13 @@ func (y Location) GetAdmittingHospitals() (v []string) {
 	return v
 }
 
+func (y Location) GetGoogleAttributes() []*GoogleAttribute {
+	if y.GoogleAttributes != nil {
+		return *y.GoogleAttributes
+	}
+	return nil
+}
+
 // LocationPhoto represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
@@ -622,6 +626,76 @@ func (a *UnorderedStrings) Equal(b Comparable) bool {
 		var found bool
 		for j := 0; j < len(s); j++ {
 			if u[i] == s[j] {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+type GoogleAttribute struct {
+	Id        *string   `json:"id,omitempty"`
+	OptionIds *[]string `json:"optionIds,omitempty"`
+}
+
+// Equal compares GoogleAttribute
+func (a *GoogleAttribute) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = GoogleAttribute(*a)
+		s = GoogleAttribute(*b.(*GoogleAttribute))
+	)
+	if *u.Id != *s.Id {
+		return false
+	}
+	for i := range *u.OptionIds {
+		if (*u.OptionIds)[i] != (*s.OptionIds)[i] {
+			return false
+		}
+	}
+	return true
+}
+
+type GoogleAttributes []*GoogleAttribute
+
+// Equal compares GoogleAttributes
+func (a *GoogleAttributes) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = []*GoogleAttribute(*a)
+		s = []*GoogleAttribute(*b.(*GoogleAttributes))
+	)
+	if len(u) != len(s) {
+		return false
+	}
+
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i].Equal(s[j]) {
 				found = true
 			}
 		}
