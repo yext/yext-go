@@ -560,7 +560,7 @@ func (y Location) GetAdmittingHospitals() (v []string) {
 	return v
 }
 
-func (y Location) GetGoogleAttributes() []*GoogleAttribute {
+func (y Location) GetGoogleAttributes() GoogleAttributes {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
 	}
@@ -661,6 +661,11 @@ func (a *GoogleAttribute) Equal(b Comparable) bool {
 	if *u.Id != *s.Id {
 		return false
 	}
+
+	if len(*u.OptionIds) != len(*s.OptionIds) {
+		return false
+	}
+
 	for i := range *u.OptionIds {
 		if (*u.OptionIds)[i] != (*s.OptionIds)[i] {
 			return false
