@@ -2,6 +2,7 @@ package yext
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -477,4 +478,13 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 	}
 
 	return parsed, nil
+}
+
+func validateCustomFields(cfs map[string]interface{}) error {
+	for k, _ := range cfs {
+		if !customFieldKeyRegex.MatchString(k) {
+			return errors.New(fmt.Sprintf("custom fields must be specified by their id, not name: %s", k))
+		}
+	}
+	return nil
 }

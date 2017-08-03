@@ -26,13 +26,14 @@ type ListOptions struct {
 type Client struct {
 	Config *Config
 
-	LocationService    *LocationService
-	ListService        *ListService
-	CustomFieldService *CustomFieldService
-	FolderService      *FolderService
-	CategoryService    *CategoryService
-	UserService        *UserService
-	ReviewService      *ReviewService
+	LocationService        *LocationService
+	ListService            *ListService
+	CustomFieldService     *CustomFieldService
+	FolderService          *FolderService
+	CategoryService        *CategoryService
+	UserService            *UserService
+	ReviewService          *ReviewService
+	LanguageProfileService *LanguageProfileService
 }
 
 func NewClient(config *Config) *Client {
@@ -45,6 +46,7 @@ func NewClient(config *Config) *Client {
 	c.CategoryService = &CategoryService{client: c}
 	c.UserService = &UserService{client: c}
 	c.ReviewService = &ReviewService{client: c}
+	c.LanguageProfileService = &LanguageProfileService{client: c}
 
 	return c
 }
