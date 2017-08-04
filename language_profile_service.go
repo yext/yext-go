@@ -6,10 +6,6 @@ import (
 
 const profilesPath = "profiles"
 
-type LanguageProfile struct {
-	Location
-}
-
 type LanguageProfileService struct {
 	client       *Client
 	CustomFields []*CustomField
