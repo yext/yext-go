@@ -137,7 +137,7 @@ func (l *LocationService) Get(id string) (*Location, *Response, error) {
 		return nil, r, err
 	}
 
-	if _, err := l.HydrateLocation(&v); err != nil {
+	if _, err := HydrateLocation(&v, l.CustomFields); err != nil {
 		return nil, r, err
 	}
 
@@ -165,29 +165,13 @@ func (l *LocationService) ListBySearchId(searchId string) ([]*Location, error) {
 	}
 }
 
-func (l *LocationService) HydrateLocation(loc *Location) (*Location, error) {
-	if loc == nil || loc.CustomFields == nil || l.CustomFields == nil {
-		return loc, nil
-	}
-
-	hydrated, err := ParseCustomFields(loc.CustomFields, l.CustomFields)
-	if err != nil {
-		return loc, fmt.Errorf("hydration failure: location: '%v' %v", loc.String(), err)
-	}
-
-	loc.CustomFields = hydrated
-	loc.hydrated = true
-
-	return loc, nil
-}
-
 func (l *LocationService) HydrateLocations(locs []*Location) ([]*Location, error) {
 	if l.CustomFields == nil {
 		return locs, nil
 	}
 
 	for _, loc := range locs {
-		_, err := l.HydrateLocation(loc)
+		_, err := HydrateLocation(loc, l.CustomFields)
 		if err != nil {
 			return locs, err
 		}
