@@ -34,6 +34,7 @@ type Client struct {
 	UserService            *UserService
 	ReviewService          *ReviewService
 	LanguageProfileService *LanguageProfileService
+	AssetService           *AssetService
 }
 
 func NewClient(config *Config) *Client {
@@ -47,6 +48,7 @@ func NewClient(config *Config) *Client {
 	c.UserService = &UserService{client: c}
 	c.ReviewService = &ReviewService{client: c}
 	c.LanguageProfileService = &LanguageProfileService{client: c}
+	c.AssetService = &AssetService{client: c}
 
 	return c
 }
