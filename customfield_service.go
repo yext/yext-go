@@ -16,12 +16,12 @@ type CustomFieldManager struct {
 }
 
 func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
-	asJson, err := json.Marshal(cf)
+	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
 	}
 	var asMap map[string]interface{}
-	err = json.Unmarshal(asJson, &asMap)
+	err = json.Unmarshal(asJSON, &asMap)
 	if err != nil {
 		return nil, err
 	}
@@ -394,80 +394,91 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 				return nil, fmt.Errorf("parse custom fields failure: could not parse '%v' as date field, expected string got %T", v, v)
 			}
 		case CUSTOMFIELDTYPE_TEXTLIST:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Text List Field %v", v, err)
 			}
 			var cf TextList
-			err = json.Unmarshal(asJson, &cf)
+			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Text List Field %v", v, err)
 			}
 			newval = cf
 		case CUSTOMFIELDTYPE_MULTIOPTION:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Multi-Option Field %v", v, err)
 			}
 			var cf MultiOption
-			err = json.Unmarshal(asJson, &cf)
+			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Multi-Option Field %v", v, err)
 			}
 			newval = cf
 		case CUSTOMFIELDTYPE_PHOTO:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Photo Field %v", v, err)
 			}
 			var cfp Photo
-			err = json.Unmarshal(asJson, &cfp)
+			err = json.Unmarshal(asJSON, &cfp)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Photo Field %v", v, err)
 			}
 			newval = cfp
 		case CUSTOMFIELDTYPE_GALLERY:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Photo Gallery Field %v", v, err)
 			}
 			var g Gallery
-			err = json.Unmarshal(asJson, &g)
+			err = json.Unmarshal(asJSON, &g)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Photo Gallery Field %v", v, err)
 			}
 			newval = g
 		case CUSTOMFIELDTYPE_VIDEO:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Video Field %v", v, err)
 			}
 			var cf Video
-			err = json.Unmarshal(asJson, &cf)
+			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Video Field %v", v, err)
 			}
 			newval = cf
 		case CUSTOMFIELDTYPE_HOURS:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Hours Field %v", v, err)
 			}
 			var cf Hours
-			err = json.Unmarshal(asJson, &cf)
+			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Hours Field %v", v, err)
 			}
 			newval = cf
 		case CUSTOMFIELDTYPE_DAILYTIMES:
-			asJson, err := json.Marshal(v)
+			asJSON, err := json.Marshal(v)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for DailyT imes Field %v", v, err)
 			}
 			var cf DailyTimes
-			err = json.Unmarshal(asJson, &cf)
+			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Daily Times Field %v", v, err)
+			}
+			newval = cf
+		case CUSTOMFIELDTYPE_LOCATIONLIST:
+			asJSON, err := json.Marshal(v)
+			if err != nil {
+				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Location List Field %v", v, err)
+			}
+			var cf LocationList
+			err = json.Unmarshal(asJSON, &cf)
+			if err != nil {
+				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Location List Field %v", v, err)
 			}
 			newval = cf
 		default:

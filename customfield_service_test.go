@@ -97,6 +97,7 @@ var (
 		customFieldParseTest{"VIDEO", video, reflect.TypeOf(Video{})},
 		customFieldParseTest{"HOURS", hours, reflect.TypeOf(Hours{})},
 		customFieldParseTest{"DAILY_TIMES", dailyTimes, reflect.TypeOf(DailyTimes{})},
+		customFieldParseTest{"LOCATION_LIST", []string{"a", "b", "c"}, reflect.TypeOf(LocationList([]string{}))},
 	}
 )
 

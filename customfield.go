@@ -19,6 +19,8 @@ const (
 	CUSTOMFIELDTYPE_VIDEO          = "VIDEO"
 	CUSTOMFIELDTYPE_HOURS          = "HOURS"
 	CUSTOMFIELDTYPE_DAILYTIMES     = "DAILY_TIMES"
+	CUSTOMFIELDTYPE_LOCATIONLIST   = "LOCATION_LIST"
+	// not sure what to do with "DAILYTIMES", omitting
 )
 
 type CustomFieldOption struct {
@@ -164,6 +166,12 @@ type TextList []string
 
 func (t TextList) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_TEXTLIST
+}
+
+type LocationList UnorderedStrings
+
+func (l LocationList) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_LOCATIONLIST
 }
 
 type Photo struct {
