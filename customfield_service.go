@@ -499,3 +499,68 @@ func validateCustomFields(cfs map[string]interface{}) error {
 	}
 	return nil
 }
+
+// GetStringAliasCustomField returns the string value from a string type alias
+// custom field. It will return an error if the field is not a string type.
+func (c *CustomFieldManager) GetStringAliasCustomField(fieldName string, loc *Location) (string, error) {
+	fv, err := c.Get(fieldName, loc)
+	if err != nil {
+		return "", err
+	}
+	if fv == nil {
+		return "", nil
+	}
+	switch fv.(type) {
+	case SingleLineText:
+		return string(fv.(SingleLineText)), nil
+	case MultiLineText:
+		return string(fv.(MultiLineText)), nil
+	case Url:
+		return string(fv.(Url)), nil
+	case Date:
+		return string(fv.(Date)), nil
+	case Number:
+		return string(fv.(Number)), nil
+	case SingleOption:
+		return string(fv.(SingleOption)), nil
+	case *SingleLineText:
+		return string(*fv.(*SingleLineText)), nil
+	case *MultiLineText:
+		return string(*fv.(*MultiLineText)), nil
+	case *Url:
+		return string(*fv.(*Url)), nil
+	case *Date:
+		return string(*fv.(*Date)), nil
+	case *Number:
+		return string(*fv.(*Number)), nil
+	case *SingleOption:
+		return string(*fv.(*SingleOption)), nil
+	default:
+		return "", fmt.Errorf("%s is not a string custom field type, is %T", fieldName, fv)
+	}
+}
+
+// GetStringArrayAliasCustomField returns the string array value from a string array
+// type alias custom field. It will return an error if the field is not a string
+// array type.
+func (c *CustomFieldManager) GetStringArrayAliasCustomField(fieldName string, loc *Location) ([]string, error) {
+	fv, err := c.Get(fieldName, loc)
+	if err != nil {
+		return nil, err
+	}
+	if fv == nil {
+		return nil, nil
+	}
+	switch fv.(type) {
+	case UnorderedStrings:
+		return []string(fv.(UnorderedStrings)), nil
+	case TextList:
+		return []string(fv.(TextList)), nil
+	case *UnorderedStrings:
+		return []string(*fv.(*UnorderedStrings)), nil
+	case *TextList:
+		return []string(*fv.(*TextList)), nil
+	default:
+		return nil, fmt.Errorf("%s is not a string array custom field type, is %T", fieldName, fv)
+	}
+}
