@@ -174,6 +174,24 @@ func (l LocationList) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_LOCATIONLIST
 }
 
+func (m LocationList) Equal(c Comparable) bool {
+	var n LocationList
+	switch v := c.(type) {
+	case LocationList:
+		n = v
+	case *LocationList:
+		n = *v
+	default:
+		panic(fmt.Errorf("%v is not a LocationList is %T", c, c))
+	}
+	if len(m) != len(n) {
+		return false
+	}
+	a := UnorderedStrings(m)
+	b := UnorderedStrings(n)
+	return (&a).Equal(&b)
+}
+
 type Photo struct {
 	Url             string `json:"url,omitempty"`
 	Description     string `json:"description,omitempty"`
