@@ -52,11 +52,11 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageP
 	return &v, r, nil
 }
 
-func (l *LanguageProfileService) Upsert(y *LanguageProfile, languageCode string) (*Response, error) {
+func (l *LanguageProfileService) Upsert(y *LanguageProfile, id, languageCode string) (*Response, error) {
 	if err := validateCustomFields(y.CustomFields); err != nil {
 		return nil, err
 	}
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, y.GetId(), profilesPath, languageCode), y, nil)
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), y, nil)
 	if err != nil {
 		return r, err
 	}

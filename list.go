@@ -19,6 +19,7 @@ type List struct {
 	Type     *string        `json:"type,omitempty"`  // one of MENU, BIOS, PRODUCTS, EVENTS
 	Size     *int           `json:"size,omitempty"`  // read only
 	Publish  *bool          `json:"publish"`
+	Language *string        `json:"language,omitempty"`
 	Currency *string        `json:"currency,omitempty"` // ISO Code for currency
 	Sections []*ListSection `json:"sections,omitempty"`
 }
@@ -63,6 +64,13 @@ func (e List) GetPublish() bool {
 		return *e.Publish
 	}
 	return false
+}
+
+func (e List) GetLanguage() string {
+	if e.Language != nil {
+		return *e.Language
+	}
+	return ""
 }
 
 func (e List) GetCurrency() string {

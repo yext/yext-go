@@ -474,6 +474,13 @@ func (y Location) GetKeywords() (v []string) {
 	return v
 }
 
+func (y Location) GetLanguage() (v string) {
+	if y.Language != nil {
+		v = *y.Language
+	}
+	return v
+}
+
 func (y Location) GetAssociations() (v []string) {
 	if y.Associations != nil {
 		v = *y.Associations
