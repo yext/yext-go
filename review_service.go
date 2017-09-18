@@ -43,6 +43,7 @@ type ReviewListResponse struct {
 	Count         int       `json:"count"`
 	AverageRating float64   `json:"averageRating"`
 	Reviews       []*Review `json:"reviews"`
+	NextPageToken string    `json:"nextPageToken"`
 }
 
 type ReviewCreateInvitationResponse struct {
@@ -68,17 +69,17 @@ func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review
 
 	lo.ListOptions = ListOptions{Limit: ReviewListMaxLimit, DisableCountValidation: true}
 
-	var lg listRetriever = func(opts *ListOptions) (int, int, error) {
+	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
 		lo.ListOptions = *opts
 		rlr, _, err := l.List(lo)
 		if err != nil {
-			return 0, 0, err
+			return "", err
 		}
 		reviews = append(reviews, rlr.Reviews...)
-		return len(rlr.Reviews), rlr.Count, err
+		return rlr.NextPageToken, err
 	}
 
-	if err := listHelper(lg, &lo.ListOptions); err != nil {
+	if err := tokenListHelper(lg, &lo.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return reviews, nil

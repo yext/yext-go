@@ -17,6 +17,7 @@ func TestReviewListOptions(t *testing.T) {
 			want: map[string]string{
 				"limit":                 "",
 				"offset":                "",
+				"pageToken":             "",
 				"LocationIds":           "",
 				"FolderId":              "",
 				"Countries":             "",
@@ -41,6 +42,7 @@ func TestReviewListOptions(t *testing.T) {
 			want: map[string]string{
 				"limit":                 "",
 				"offset":                "",
+				"pageToken":             "",
 				"LocationIds":           "",
 				"FolderId":              "",
 				"Countries":             "",
@@ -60,12 +62,20 @@ func TestReviewListOptions(t *testing.T) {
 			},
 		},
 		{
+			opts: &ReviewListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
+			want: map[string]string{"pageToken": "qwerty1234"},
+		},
+		{
 			opts: &ReviewListOptions{ListOptions: ListOptions{Limit: 10}},
 			want: map[string]string{"limit": "10"},
 		},
 		{
 			opts: &ReviewListOptions{ListOptions: ListOptions{Offset: 10}},
 			want: map[string]string{"offset": "10"},
+		},
+		{
+			opts: &ReviewListOptions{ListOptions: ListOptions{PageToken: "qwerty1234", Offset: 10}},
+			want: map[string]string{"pageToken": "qwerty1234", "offset": ""},
 		},
 		{
 			opts: &ReviewListOptions{FolderId: "124"},
@@ -134,7 +144,7 @@ func TestReviewListOptions(t *testing.T) {
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			for opt, val := range test.want {
 				if v := r.URL.Query().Get(opt); v != val {
-					t.Errorf("Wanted limit %s, got %s", val, v)
+					t.Errorf("Wanted %s %s, got %s", opt, val, v)
 				}
 			}
 		})
@@ -164,24 +174,24 @@ func TestReviewList(t *testing.T) {
 	}
 
 	tests := []struct {
-		count int
-		reqs  []req
+		limit                 string
+		tokenResponses        []string
+		expectedTokenRequests []string
 	}{
 		{
-			count: 0,
-			reqs:  []req{{limit: maxLimit, offset: ""}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{""},
+			expectedTokenRequests: []string{""},
 		},
 		{
-			count: 50,
-			reqs:  []req{{limit: maxLimit, offset: ""}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token"},
+			expectedTokenRequests: []string{"", "first_token"},
 		},
 		{
-			count: 51,
-			reqs:  []req{{limit: maxLimit, offset: ""}, {limit: maxLimit, offset: "50"}},
-		},
-		{
-			count: 100,
-			reqs:  []req{{limit: maxLimit, offset: ""}, {limit: maxLimit, offset: "50"}},
+			limit:                 maxLimit,
+			tokenResponses:        []string{"first_token", "second_token", "third_token"},
+			expectedTokenRequests: []string{"", "first_token", "second_token", "third_token"},
 		},
 	}
 
@@ -190,37 +200,34 @@ func TestReviewList(t *testing.T) {
 		reqs := 0
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			reqs++
-			if reqs > len(test.reqs) {
-				t.Errorf("Too many requests sent to review list - got %d, expected %d", reqs, len(test.reqs))
+			if reqs > len(test.expectedTokenRequests) {
+				t.Errorf("Too many requests sent to review list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 			}
 
-			expectedreq := test.reqs[reqs-1]
-
-			if v := r.URL.Query().Get("limit"); v != expectedreq.limit {
-				t.Errorf("Wanted limit %s, got %s", expectedreq.limit, v)
+			expectedreq := test.expectedTokenRequests[reqs-1]
+			tokenresp := ""
+			if reqs <= len(test.tokenResponses) {
+				tokenresp = test.tokenResponses[reqs-1]
 			}
 
-			if v := r.URL.Query().Get("offset"); v != expectedreq.offset {
-				t.Errorf("Wanted offset %s, got %s", expectedreq.offset, v)
+			if v := r.URL.Query().Get("limit"); v != test.limit {
+				t.Errorf("Wanted limit %s, got %s", test.limit, v)
 			}
 
-			revs := []*Review{}
-			remaining := test.count - ((reqs - 1) * ReviewListMaxLimit)
-			if remaining > 0 {
-				if remaining > ReviewListMaxLimit {
-					remaining = ReviewListMaxLimit
-				}
-				revs = makeRevs(remaining)
+			if v := r.URL.Query().Get("pageToken"); v != expectedreq {
+				t.Errorf("Wanted token %s, got %s", expectedreq, v)
 			}
 
-			v := &mockResponse{Response: &ReviewListResponse{Count: test.count, Reviews: revs}}
-			data, _ := json.Marshal(v)
-			w.Write(data)
+			if tokenresp != "" {
+				v := &mockResponse{Response: &LocationListResponse{NextPageToken: tokenresp}}
+				data, _ := json.Marshal(v)
+				w.Write(data)
+			}
 		})
 
 		client.ReviewService.ListAll()
-		if reqs < len(test.reqs) {
-			t.Errorf("Too few requests sent to review list - got %d, expected %d", reqs, len(test.reqs))
+		if reqs < len(test.expectedTokenRequests) {
+			t.Errorf("Too few requests sent to review list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 		}
 
 		teardown()
