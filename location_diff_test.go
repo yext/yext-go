@@ -270,17 +270,21 @@ type stringTest struct {
 	baseValue          *string
 	newValue           *string
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue *string
 }
 
 var stringTests = []stringTest{
-	stringTest{String("ding"), String("ding"), false, nil},
-	stringTest{String("ding"), String("dong"), true, String("dong")},
-	stringTest{nil, String("dong"), true, String("dong")},
-	stringTest{nil, String(""), true, String("")},
-	stringTest{String(""), nil, false, nil},
-	stringTest{String(""), String("dong"), true, String("dong")},
-	{nil, nil, false, nil},
+	stringTest{String("ding"), String("ding"), false, false, nil},
+	stringTest{String("ding"), String("dong"), true, false, String("dong")},
+	stringTest{nil, String("dong"), true, false, String("dong")},
+	stringTest{nil, String(""), true, false, String("")},
+	stringTest{nil, String(""), false, true, nil},
+	stringTest{String(""), String(""), false, false, nil},
+	stringTest{String(""), nil, false, false, nil},
+	stringTest{String(""), nil, false, true, nil},
+	stringTest{String(""), String("dong"), true, false, String("dong")},
+	{nil, nil, false, false, nil},
 }
 
 func formatStringPtr(s *string) string {
@@ -304,6 +308,8 @@ func TestStringDiffs(t *testing.T) {
 
 	for i, data := range stringTests {
 		a.Name, b.Name = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
+
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -324,19 +330,22 @@ type boolTest struct {
 	baseValue          *bool
 	newValue           *bool
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue *bool
 }
 
 var boolTests = []boolTest{
-	{Bool(false), Bool(false), false, nil},
-	{Bool(true), Bool(true), false, nil},
-	{Bool(false), Bool(true), true, Bool(true)},
-	{Bool(true), Bool(false), true, Bool(false)},
-	{nil, Bool(false), true, Bool(false)},
-	{nil, Bool(true), true, Bool(true)},
-	{Bool(false), nil, false, nil},
-	{Bool(true), nil, false, nil},
-	{nil, nil, false, nil},
+	{Bool(false), Bool(false), false, false, nil},
+	{Bool(true), Bool(true), false, false, nil},
+	{Bool(false), Bool(true), true, false, Bool(true)},
+	{Bool(true), Bool(false), true, false, Bool(false)},
+	{nil, Bool(false), true, false, Bool(false)},
+	{nil, Bool(false), false, true, nil},
+	{nil, Bool(true), true, false, Bool(true)},
+	{Bool(false), nil, false, false, nil},
+	{Bool(false), nil, false, true, nil},
+	{Bool(true), nil, false, false, nil},
+	{nil, nil, false, false, nil},
 }
 
 func formatBoolPtr(b *bool) string {
@@ -357,6 +366,7 @@ func TestBoolDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range boolTests {
 		a.SuppressAddress, b.SuppressAddress = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%v\nExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -377,21 +387,52 @@ type googleAttributesTest struct {
 	baseValue          *GoogleAttributes
 	newValue           *GoogleAttributes
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue []*GoogleAttribute
 }
 
 var googleAttributesTests = []googleAttributesTest{
-	{nil, nil, false, nil},
+	{nil, nil, false, false, nil},
+	{
+		baseValue:          nil,
+		newValue:           &GoogleAttributes{},
+		isDiff:             true,
+		nilIsEmpty:         false,
+		expectedFieldValue: GoogleAttributes{},
+	},
+	{
+		baseValue:          nil,
+		newValue:           &GoogleAttributes{},
+		isDiff:             false,
+		nilIsEmpty:         true,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          &GoogleAttributes{},
+		newValue:           nil,
+		isDiff:             false,
+		nilIsEmpty:         true,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          &GoogleAttributes{},
+		newValue:           nil,
+		isDiff:             false,
+		nilIsEmpty:         false,
+		expectedFieldValue: nil,
+	},
 	{
 		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
 		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
 		isDiff:             false,
+		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
 		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
 		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 		isDiff:             true,
+		nilIsEmpty:         false,
 		expectedFieldValue: []*GoogleAttribute{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 	},
 	{
@@ -404,6 +445,7 @@ var googleAttributesTests = []googleAttributesTest{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
+		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{ // this is 4
@@ -416,6 +458,7 @@ var googleAttributesTests = []googleAttributesTest{
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
+		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
@@ -427,7 +470,8 @@ var googleAttributesTests = []googleAttributesTest{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
-		isDiff: true,
+		isDiff:     true,
+		nilIsEmpty: false,
 		expectedFieldValue: GoogleAttributes{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
@@ -441,7 +485,8 @@ var googleAttributesTests = []googleAttributesTest{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
-		isDiff: true,
+		isDiff:     true,
+		nilIsEmpty: false,
 		expectedFieldValue: GoogleAttributes{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
@@ -457,6 +502,7 @@ func TestGoogleAttributesDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range googleAttributesTests {
 		a.GoogleAttributes, b.GoogleAttributes = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -475,20 +521,23 @@ type stringArrayTest struct {
 	baseValue          *[]string
 	newValue           *[]string
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue []string
 }
 
 var stringArrayTests = []stringArrayTest{
-	{&[]string{"ding", "dong"}, &[]string{"ding", "dong"}, false, nil},
-	{&[]string{"ding", "dong"}, &[]string{"ding", "dong", "dang"}, true, []string{"ding", "dong", "dang"}},
-	{&[]string{"ding", "dong", "dang"}, &[]string{"ding", "dong"}, true, []string{"ding", "dong"}},
-	{&[]string{}, &[]string{}, false, nil},
-	{&[]string{}, &[]string{"ding"}, true, []string{"ding"}},
-	{&[]string{}, nil, false, nil},
-	{nil, &[]string{}, true, []string{}},
-	{nil, nil, false, nil},
-	{&[]string{"ding"}, &[]string{}, true, []string{}},
-	{&[]string{"ding"}, nil, false, nil},
+	{&[]string{"ding", "dong"}, &[]string{"ding", "dong"}, false, false, nil},
+	{&[]string{"ding", "dong"}, &[]string{"ding", "dong", "dang"}, true, false, []string{"ding", "dong", "dang"}},
+	{&[]string{"ding", "dong", "dang"}, &[]string{"ding", "dong"}, true, false, []string{"ding", "dong"}},
+	{&[]string{}, &[]string{}, false, false, nil},
+	{&[]string{}, &[]string{"ding"}, true, false, []string{"ding"}},
+	{&[]string{}, nil, false, false, nil},
+	{&[]string{}, nil, false, true, nil},
+	{nil, &[]string{}, true, false, []string{}},
+	{nil, &[]string{}, false, true, nil},
+	{nil, nil, false, false, nil},
+	{&[]string{"ding"}, &[]string{}, true, false, []string{}},
+	{&[]string{"ding"}, nil, false, false, nil},
 }
 
 func (t stringArrayTest) formatErrorBase(index int) string {
@@ -499,6 +548,7 @@ func TestStringArrayDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range stringArrayTests {
 		a.PaymentOptions, b.PaymentOptions = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -523,19 +573,21 @@ type floatTest struct {
 	baseValue          *float64
 	newValue           *float64
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue *float64
 }
 
 var floatTests = []floatTest{
-	{Float(1234.0), Float(1234.0), false, nil},
-	{Float(1234.0), nil, false, nil},
-	{Float(0), nil, false, nil},
-	{nil, nil, false, nil},
-	{Float(0), Float(0), false, nil},
-	{Float(0), Float(9876.0), true, Float(9876.0)},
-	{Float(1234.0), Float(9876.0), true, Float(9876.0)},
-	{nil, Float(9876.0), true, Float(9876.0)},
-	{nil, Float(0), true, Float(0)},
+	{Float(1234.0), Float(1234.0), false, false, nil},
+	{Float(1234.0), nil, false, false, nil},
+	{Float(0), nil, false, false, nil},
+	{nil, nil, false, false, nil},
+	{Float(0), Float(0), false, false, nil},
+	{Float(0), Float(9876.0), true, false, Float(9876.0)},
+	{Float(1234.0), Float(9876.0), true, false, Float(9876.0)},
+	{nil, Float(9876.0), true, false, Float(9876.0)},
+	{nil, Float(0), true, false, Float(0)},
+	{nil, Float(0), true, true, Float(0)},
 }
 
 func formatFloatPtr(b *float64) string {
@@ -554,6 +606,7 @@ func TestFloatDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range floatTests {
 		a.DisplayLat, b.DisplayLat = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -574,6 +627,7 @@ type photoTest struct {
 	baseValue          *LocationPhoto
 	newValue           *LocationPhoto
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue *LocationPhoto
 }
 
@@ -590,17 +644,22 @@ func (t photoTest) formatErrorBase(index int) string {
 }
 
 var photoTests = []photoTest{
-	{&LocationPhoto{Url: "ding", Description: "dong"}, &LocationPhoto{Url: "ding", Description: "dong"}, false, nil},
-	{&LocationPhoto{Url: "ding", Description: "dong"}, nil, false, nil},
-	{nil, &LocationPhoto{Url: "ding", Description: "dong"}, true, &LocationPhoto{Url: "ding", Description: "dong"}},
-	{&LocationPhoto{Url: "ding"}, &LocationPhoto{Url: "ding", Description: "dong"}, true, &LocationPhoto{Url: "ding", Description: "dong"}},
-	{&LocationPhoto{Description: "dong"}, &LocationPhoto{Url: "ding", Description: "dong"}, true, &LocationPhoto{Url: "ding", Description: "dong"}},
+	{&LocationPhoto{Url: "ding", Description: "dong"}, &LocationPhoto{Url: "ding", Description: "dong"}, false, false, nil},
+	{&LocationPhoto{Url: "ding", Description: "dong"}, nil, false, false, nil},
+	{&LocationPhoto{}, nil, false, false, nil},
+	{&LocationPhoto{}, nil, false, true, nil},
+	{nil, &LocationPhoto{}, true, false, &LocationPhoto{}},
+	{nil, &LocationPhoto{}, false, true, nil},
+	{nil, &LocationPhoto{Url: "ding", Description: "dong"}, true, false, &LocationPhoto{Url: "ding", Description: "dong"}},
+	{&LocationPhoto{Url: "ding"}, &LocationPhoto{Url: "ding", Description: "dong"}, true, false, &LocationPhoto{Url: "ding", Description: "dong"}},
+	{&LocationPhoto{Description: "dong"}, &LocationPhoto{Url: "ding", Description: "dong"}, true, false, &LocationPhoto{Url: "ding", Description: "dong"}},
 }
 
 func TestPhotoDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range photoTests {
 		a.FacebookCoverPhoto, b.FacebookCoverPhoto = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -621,16 +680,20 @@ type photoArrayTest struct {
 	baseValue          []LocationPhoto
 	newValue           []LocationPhoto
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue []LocationPhoto
 }
 
 var photoArrayTests = []photoArrayTest{
-	{nil, []LocationPhoto{}, false, nil},
-	{nil, nil, false, nil},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{}, true, []LocationPhoto{}},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, nil, false, nil},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}, true, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}, true, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}},
+	{nil, []LocationPhoto{}, false, false, nil},
+	{nil, []LocationPhoto{}, false, true, nil},
+	{[]LocationPhoto{}, nil, false, false, nil},
+	{[]LocationPhoto{}, nil, false, true, nil},
+	{nil, nil, false, false, nil},
+	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{}, true, false, []LocationPhoto{}},
+	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, nil, false, false, nil},
+	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}, true, false, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}},
+	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}, true, false, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}},
 }
 
 func (t photoArrayTest) formatErrorBase(index int) string {
@@ -641,6 +704,7 @@ func TestPhotoArrayDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range photoArrayTests {
 		a.Photos, b.Photos = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -676,6 +740,7 @@ type customFieldsTest struct {
 	baseValue          map[string]interface{}
 	newValue           map[string]interface{}
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue map[string]interface{}
 }
 
@@ -800,22 +865,24 @@ var (
 )
 
 var customFieldsTests = []customFieldsTest{
-	{nil, nil, false, nil},
-	{map[string]interface{}{}, nil, false, nil},
-	{map[string]interface{}{}, map[string]interface{}{}, false, nil},
-	{nil, map[string]interface{}{}, false, nil},
-	{baseCustomFields, copyOfBase, false, nil},
-	{baseCustomFields, appendedCF, true, map[string]interface{}{"guy": "random junk"}},
-	{baseCustomFields, trimmedCF, false, nil},
-	{baseCustomFields, modifiedCF, true, map[string]interface{}{"62153": "This is a\r\nMODIFIED multi\r\nline\r\ntext"}},
-	{baseCustomFields, differentOptionOrderCF, false, nil},
+	{nil, nil, false, false, nil},
+	{map[string]interface{}{}, nil, false, false, nil},
+	{map[string]interface{}{}, nil, false, true, nil},
+	{map[string]interface{}{}, map[string]interface{}{}, false, false, nil},
+	{nil, map[string]interface{}{}, false, false, nil},
+	{nil, map[string]interface{}{}, false, true, nil},
+	{baseCustomFields, copyOfBase, false, false, nil},
+	{baseCustomFields, appendedCF, true, false, map[string]interface{}{"guy": "random junk"}},
+	{baseCustomFields, trimmedCF, false, false, nil},
+	{baseCustomFields, modifiedCF, true, false, map[string]interface{}{"62153": "This is a\r\nMODIFIED multi\r\nline\r\ntext"}},
+	{baseCustomFields, differentOptionOrderCF, false, false, nil},
 }
 
 func addZeroTests() {
 	for key, val := range baseCustomFields {
 		z := zeroCFKEy(baseCustomFields, key)
 		zeroForKey := reflect.Zero(reflect.TypeOf(val)).Interface()
-		test := customFieldsTest{baseCustomFields, z, true, map[string]interface{}{key: zeroForKey}}
+		test := customFieldsTest{baseCustomFields, z, true, false, map[string]interface{}{key: zeroForKey}}
 		customFieldsTests = append(customFieldsTests, test)
 	}
 }
@@ -829,6 +896,7 @@ func TestCustomFieldsDiff(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range customFieldsTests {
 		a.CustomFields, b.CustomFields = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -847,13 +915,17 @@ type closedTest struct {
 	baseValue          *LocationClosed
 	newValue           *LocationClosed
 	isDiff             bool
+	nilIsEmpty         bool
 	expectedFieldValue *LocationClosed
 }
 
 var closedTests = []closedTest{
-	{nil, nil, false, nil},
-	{&LocationClosed{}, nil, false, nil},
-	{&LocationClosed{}, &LocationClosed{}, false, nil},
+	{nil, nil, false, false, nil},
+	{&LocationClosed{}, nil, false, false, nil},
+	{&LocationClosed{}, nil, false, true, nil},
+	{&LocationClosed{}, &LocationClosed{}, false, false, nil},
+	{nil, &LocationClosed{}, true, false, &LocationClosed{}},
+	{nil, &LocationClosed{}, false, true, nil},
 	{
 		nil,
 		&LocationClosed{
@@ -861,6 +933,7 @@ var closedTests = []closedTest{
 			ClosedDate: "1/1/2001",
 		},
 		true,
+		false,
 		&LocationClosed{
 			IsClosed:   true,
 			ClosedDate: "1/1/2001",
@@ -876,6 +949,7 @@ var closedTests = []closedTest{
 			ClosedDate: "1/1/2001",
 		},
 		false,
+		false,
 		nil,
 	},
 	{
@@ -884,6 +958,7 @@ var closedTests = []closedTest{
 			ClosedDate: "1/1/2001",
 		},
 		nil,
+		false,
 		false,
 		nil,
 	},
@@ -897,6 +972,7 @@ var closedTests = []closedTest{
 			ClosedDate: "1/1/2001",
 		},
 		true,
+		false,
 		&LocationClosed{
 			IsClosed:   false,
 			ClosedDate: "1/1/2001",
@@ -912,6 +988,7 @@ var closedTests = []closedTest{
 			ClosedDate: "1/1/2002",
 		},
 		true,
+		false,
 		&LocationClosed{
 			IsClosed:   true,
 			ClosedDate: "1/1/2002",
@@ -935,6 +1012,7 @@ func TestClosedDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range closedTests {
 		a.Closed, b.Closed = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
 			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
@@ -1080,5 +1158,23 @@ func TestLabels(t *testing.T) {
 		if delta, diff := test.A.Diff(test.B); diff != test.WantDiff {
 			t.Errorf("Test %d:\n\tA:\t%+v\n\tB:\t%+v\n\tDelta:\t%+v\n\tWanted:%+v\n\tDiff was: %t wanted %t", i, test.A, test.B, delta, test.WantDelta, diff, test.WantDiff)
 		}
+	}
+}
+
+// Designed to test nilIsTrue of Location
+// Location without any fields should be equal to Location with fields that are there but are zero values
+// Float 0 is possible so nilIsTrue does not affect that
+func TestLocationNils(t *testing.T) {
+	a, b := *new(Location), new(Location)
+	b.Name = String("")
+	b.Emails = &[]string{}
+	b.Headshot = &LocationPhoto{}
+	b.GoogleAttributes = &GoogleAttributes{}
+
+	a.nilIsEmpty, b.nilIsEmpty = true, true
+	d, isDiff := a.Diff(b)
+
+	if isDiff != false {
+		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
 	}
 }

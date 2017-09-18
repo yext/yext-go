@@ -1,6 +1,8 @@
 package yext
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type Comparable interface {
 	Equal(Comparable) bool
@@ -54,6 +56,13 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
+		if y.nilIsEmpty && valA.IsNil() {
+			valA = GetZeroOf(valA)
+		}
+		if b.nilIsEmpty && valB.IsNil() {
+			valB = GetZeroOf(valB)
+		}
+
 		aI, bI := valA.Interface(), valB.Interface()
 
 		comparableA, aOk := aI.(Comparable)
@@ -100,4 +109,24 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 	}
 
 	return d, diff
+}
+
+func GetZeroOf(val reflect.Value) reflect.Value {
+	switch val.Type() {
+	case reflect.PtrTo(reflect.TypeOf("")):
+		return reflect.New(reflect.TypeOf(""))
+	case reflect.PtrTo(reflect.TypeOf(false)):
+		return reflect.New(reflect.TypeOf(false))
+	case reflect.TypeOf(&[]string{}):
+		return reflect.ValueOf(&[]string{})
+	case reflect.TypeOf(&GoogleAttributes{}):
+		return reflect.ValueOf(&GoogleAttributes{})
+	case reflect.TypeOf(&LocationPhoto{}):
+		return reflect.ValueOf(&LocationPhoto{})
+	case reflect.TypeOf(&[]LocationPhoto{}):
+		return reflect.ValueOf(&[]LocationPhoto{})
+	case reflect.TypeOf(&LocationClosed{}):
+		return reflect.ValueOf(&LocationClosed{})
+	}
+	return reflect.Zero(val.Type())
 }
