@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -52,11 +53,26 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageP
 	return &v, r, nil
 }
 
-func (l *LanguageProfileService) Upsert(y *LanguageProfile, id, languageCode string) (*Response, error) {
+func (l *LanguageProfileService) Upsert(y *LanguageProfile, languageCode string) (*Response, error) {
+	id := y.GetId()
+	if id == "" {
+		return nil, fmt.Errorf("language profile service: upsert: profile object had no id")
+	}
+	asJSON, err := json.Marshal(y)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap, "id")
+
 	if err := validateCustomFields(y.CustomFields); err != nil {
 		return nil, err
 	}
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), y, nil)
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), asMap, nil)
 	if err != nil {
 		return r, err
 	}
