@@ -206,13 +206,15 @@ func (c *CustomFieldManager) MustSet(name string, value CustomFieldValue, loc *L
 }
 
 func (c *CustomFieldManager) CustomField(name string) (*CustomField, error) {
+	names := []string{}
 	for _, cf := range c.CustomFields {
 		if name == cf.Name {
 			return cf, nil
 		}
+		names = append(names, cf.Name)
 	}
 
-	return nil, fmt.Errorf("Unable to find custom field with name %s, available field: %v", name, c.CustomFields)
+	return nil, fmt.Errorf("Unable to find custom field with name %s, available fields: %v", name, names)
 }
 
 func (c *CustomFieldManager) MustCustomField(name string) *CustomField {
