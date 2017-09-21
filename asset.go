@@ -27,7 +27,7 @@ type Asset struct {
 	Details         string       `json:"details"`         // Type:Photo
 	ClickthroughUrl string       `json:"clickthroughUrl"` // Type:Photo
 	AlternateText   string       `json:"alternateText"`   // Type:Photo
-	videoUrl        string       `json:"videoUrl"`        // Type:Video
+	VideoUrl        string       `json:"videoUrl"`        // Type:Video
 }
 
 type ForLocations struct {
