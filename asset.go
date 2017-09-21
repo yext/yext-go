@@ -16,18 +16,18 @@ const (
 )
 
 type Asset struct {
-	Id                     string       `json:"id"`
-	Name                   string       `json:"name"`
-	Type                   AssetType    `json:"type"`
-	ForLocations           ForLocations `json:"forLocations"`
-	Description            string       `json:"description"`
-	Labels                 []string     `json:"labels"`
-	Contents               []Content    `json:"contents"`
-	AssetTypePhotoUrl      string       `json:"AssetTypePhotoUrl"` // TODO: Is this right? Check documentation
-	Details                string       `json:"details"`
-	ClickthroughUrl        string       `json:"clickthroughUrl"`
-	AlternateAssetTypeText string       `json:"alternateAssetTypeText"` // TODO: Is this right? Check documentation
-	AssetTypeVideoUrl      string       `json:"AssetTypeVideoUrl"`      // TODO: Is this right? Check documentation
+	Id              string       `json:"id"`
+	Name            string       `json:"name"`
+	Type            AssetType    `json:"type"`
+	ForLocations    ForLocations `json:"forLocations"`
+	Description     string       `json:"description"`
+	Labels          []string     `json:"labels"`
+	Contents        []Content    `json:"contents"`        // Type:Text
+	PhotoUrl        string       `json:"photoUrl"`        // Type:Photo
+	Details         string       `json:"details"`         // Type:Photo
+	ClickthroughUrl string       `json:"clickthroughUrl"` // Type:Photo
+	AlternateText   string       `json:"alternateText"`   // Type:Photo
+	videoUrl        string       `json:"videoUrl"`        // Type:Video
 }
 
 type ForLocations struct {
