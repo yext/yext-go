@@ -502,10 +502,38 @@ func validateCustomFields(cfs map[string]interface{}) error {
 	return nil
 }
 
+func (c *CustomFieldManager) GetBool(name string, loc *Location) (bool, error) {
+	value, err := c.Get(name, loc)
+	if err != nil {
+		return false, err
+	}
+
+	if value == nil {
+		return false, nil
+	}
+
+	switch t := value.(type) {
+	case YesNo:
+		return bool(value.(YesNo)), nil
+	case *YesNo:
+		return bool(*value.(*YesNo)), nil
+	default:
+		return false, fmt.Errorf("GetBool failure: Field '%v' is not of a YesNo type", t)
+	}
+}
+
+func (c *CustomFieldManager) MustGetBool(name string, loc *Location) bool {
+	if ret, err := c.GetBool(name, loc); err != nil {
+		panic(err)
+	} else {
+		return ret
+	}
+}
+
 // GetStringAliasCustomField returns the string value from a string type alias
 // custom field. It will return an error if the field is not a string type.
-func (c *CustomFieldManager) GetStringAliasCustomField(fieldName string, loc *Location) (string, error) {
-	fv, err := c.Get(fieldName, loc)
+func (c *CustomFieldManager) GetString(name string, loc *Location) (string, error) {
+	fv, err := c.Get(name, loc)
 	if err != nil {
 		return "", err
 	}
@@ -538,15 +566,23 @@ func (c *CustomFieldManager) GetStringAliasCustomField(fieldName string, loc *Lo
 	case *SingleOption:
 		return string(*fv.(*SingleOption)), nil
 	default:
-		return "", fmt.Errorf("%s is not a string custom field type, is %T", fieldName, fv)
+		return "", fmt.Errorf("%s is not a string custom field type, is %T", name, fv)
+	}
+}
+
+func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
+	if ret, err := c.GetString(name, loc); err != nil {
+		panic(err)
+	} else {
+		return ret
 	}
 }
 
 // GetStringArrayAliasCustomField returns the string array value from a string array
 // type alias custom field. It will return an error if the field is not a string
 // array type.
-func (c *CustomFieldManager) GetStringArrayAliasCustomField(fieldName string, loc *Location) ([]string, error) {
-	fv, err := c.Get(fieldName, loc)
+func (c *CustomFieldManager) GetStringSlice(name string, loc *Location) ([]string, error) {
+	fv, err := c.Get(name, loc)
 	if err != nil {
 		return nil, err
 	}
@@ -558,11 +594,114 @@ func (c *CustomFieldManager) GetStringArrayAliasCustomField(fieldName string, lo
 		return []string(fv.(UnorderedStrings)), nil
 	case TextList:
 		return []string(fv.(TextList)), nil
+	case LocationList:
+		return []string(fv.(LocationList)), nil
 	case *UnorderedStrings:
 		return []string(*fv.(*UnorderedStrings)), nil
 	case *TextList:
 		return []string(*fv.(*TextList)), nil
+	case *LocationList:
+		return []string(*fv.(*LocationList)), nil
 	default:
-		return nil, fmt.Errorf("%s is not a string array custom field type, is %T", fieldName, fv)
+		return nil, fmt.Errorf("%s is not a string array custom field type, is %T", name, fv)
+	}
+}
+
+func (c *CustomFieldManager) MustGetStringSlice(name string, loc *Location) []string {
+	if ret, err := c.GetStringSlice(name, loc); err != nil {
+		panic(err)
+	} else {
+		return ret
+	}
+}
+
+func (c *CustomFieldManager) SetBool(name string, value bool, loc *Location) error {
+	field, err := c.CustomField(name)
+	if err != nil {
+		return err
+	}
+
+	if field.Type != CUSTOMFIELDTYPE_YESNO {
+		return fmt.Errorf("SetBool failure: custom field '%v' is of type '%v' and not boolean", name, field.Type)
+	}
+
+	loc.CustomFields[field.Id] = YesNo(value)
+	return nil
+}
+
+func (c *CustomFieldManager) MustSetBool(name string, value bool, loc *Location) {
+	if err := c.SetBool(name, value, loc); err != nil {
+		panic(err)
+	} else {
+		return
+	}
+}
+
+func (c *CustomFieldManager) SetStringSlice(name string, value []string, loc *Location) error {
+	field, err := c.CustomField(name)
+	if err != nil {
+		return err
+	}
+
+	switch field.Type {
+	case CUSTOMFIELDTYPE_MULTIOPTION:
+		for _, element := range value {
+			c.MustSetOption(name, element, loc)
+		}
+		return nil
+	case CUSTOMFIELDTYPE_TEXTLIST:
+		loc.CustomFields[field.Id] = TextList(value)
+		return nil
+	case CUSTOMFIELDTYPE_LOCATIONLIST:
+		loc.CustomFields[field.Id] = UnorderedStrings(value)
+		return nil
+	default:
+		return fmt.Errorf("SetStringSlice failure: custom field '%v' is of type '%v' and can not take a string slice", name, field.Type)
+	}
+}
+
+func (c *CustomFieldManager) MustSetStringSlice(name string, value []string, loc *Location) {
+	if err := c.SetStringSlice(name, value, loc); err != nil {
+		panic(err)
+	} else {
+		return
+	}
+}
+
+func (c *CustomFieldManager) SetString(name string, value string, loc *Location) error {
+	field, err := c.CustomField(name)
+	if err != nil {
+		return err
+	}
+
+	switch field.Type {
+	case CUSTOMFIELDTYPE_SINGLEOPTION:
+		c.MustSetOption(name, value, loc)
+		return nil
+	case CUSTOMFIELDTYPE_SINGLELINETEXT:
+		loc.CustomFields[field.Id] = SingleLineText(value)
+		return nil
+	case CUSTOMFIELDTYPE_MULTILINETEXT:
+		loc.CustomFields[field.Id] = MultiLineText(value)
+		return nil
+	case CUSTOMFIELDTYPE_URL:
+		loc.CustomFields[field.Id] = Url(value)
+		return nil
+	case CUSTOMFIELDTYPE_DATE:
+		loc.CustomFields[field.Id] = Date(value)
+		return nil
+	case CUSTOMFIELDTYPE_NUMBER:
+		loc.CustomFields[field.Id] = Number(value)
+		return nil
+	default:
+		return fmt.Errorf("SetString failure: custom field '%v' is of type '%v' and can not take a string", name, field.Type)
+	}
+}
+
+func (c *CustomFieldManager) MustSetString(name string, value string, loc *Location) {
+	if err := c.SetString(name, value, loc); err != nil {
+		panic(err)
+	} else {
+		return
 	}
 }
