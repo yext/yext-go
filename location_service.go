@@ -21,7 +21,8 @@ type LocationService struct {
 
 type LocationListOptions struct {
 	ListOptions
-	SearchID string
+	SearchID            string
+	ResolvePlaceholders bool
 }
 
 type LocationListResponse struct {
@@ -100,6 +101,28 @@ func addLocationListOptions(requrl string, opts *LocationListOptions) (string, e
 	if opts.SearchID != "" {
 		q.Add("searchId", opts.SearchID)
 	}
+	if opts.ResolvePlaceholders {
+		q.Add("resolvePlaceholders", "true")
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
+
+func addGetOptions(requrl string, opts *LocationListOptions) (string, error) {
+	if opts == nil {
+		return requrl, nil
+	}
+
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return "", err
+	}
+
+	q := u.Query()
+	if opts.ResolvePlaceholders {
+		q.Add("resolvePlaceholders", "true")
+	}
 	u.RawQuery = q.Encode()
 
 	return u.String(), nil
@@ -132,6 +155,31 @@ func (l *LocationService) Create(y *Location) (*Response, error) {
 func (l *LocationService) Get(id string) (*Location, *Response, error) {
 	var v Location
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", locationsPath, id), &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	if _, err := HydrateLocation(&v, l.CustomFields); err != nil {
+		return nil, r, err
+	}
+
+	return &v, r, nil
+}
+
+func (l *LocationService) GetWithOptions(id string, llopts *LocationListOptions) (*Location, *Response, error) {
+	var (
+		requrl string
+		err    error
+		v      Location
+	)
+	requrl = fmt.Sprintf("%s/%s", locationsPath, id)
+	if llopts != nil {
+		requrl, err = addGetOptions(requrl, llopts)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+	r, err := l.client.DoRequest("GET", requrl, &v)
 	if err != nil {
 		return nil, r, err
 	}
