@@ -9,10 +9,11 @@ import (
 
 func TestListOptions(t *testing.T) {
 	tests := []struct {
-		opts     *LocationListOptions
-		limit    string
-		token    string
-		searchID string
+		opts                *LocationListOptions
+		limit               string
+		token               string
+		searchID            string
+		resolvePlaceholders bool
 	}{
 		{
 			opts:     nil,
@@ -51,6 +52,12 @@ func TestListOptions(t *testing.T) {
 			token:    "asdfgh4321",
 			searchID: "1234",
 		},
+		{
+			opts:                &LocationListOptions{ResolvePlaceholders: true, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
+			limit:               "42",
+			token:               "asdfgh4321",
+			resolvePlaceholders: true,
+		},
 	}
 
 	for _, test := range tests {
@@ -64,6 +71,10 @@ func TestListOptions(t *testing.T) {
 			}
 			if v := r.URL.Query().Get("searchId"); v != test.searchID {
 				t.Errorf("Wanted searchId %s, got %s", test.searchID, v)
+			}
+			v := r.URL.Query().Get("resolvePlaceholders")
+			if v == "true" && !test.resolvePlaceholders || v == "" && test.resolvePlaceholders || v == "false" && test.resolvePlaceholders {
+				t.Errorf("Wanted resolvePlaceholders %t, got %s", test.resolvePlaceholders, v)
 			}
 		})
 
