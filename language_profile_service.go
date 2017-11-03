@@ -16,7 +16,15 @@ type LanguageProfileListResponse struct {
 	LanguageProfiles []*LanguageProfile `json:"languageProfiles"`
 }
 
-func (l *LanguageProfileService) List(id string) (*LanguageProfileListResponse, *Response, error) {
+func (l *LanguageProfileListResponse) ResponseAsLocations() []*Location {
+	languageProfilesAsLocs := []*Location{}
+	for _, lp := range l.LanguageProfiles {
+		languageProfilesAsLocs = append(languageProfilesAsLocs, &lp.Location)
+	}
+	return languageProfilesAsLocs
+}
+
+func (l *LanguageProfileService) GetAll(id string) (*LanguageProfileListResponse, *Response, error) {
 	var v LanguageProfileListResponse
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s/%s", locationsPath, id, profilesPath), &v)
 	if err != nil {
@@ -28,15 +36,6 @@ func (l *LanguageProfileService) List(id string) (*LanguageProfileListResponse, 
 	}
 
 	return &v, r, nil
-}
-
-func (l *LanguageProfileService) ListAll(id string) ([]*LanguageProfile, error) {
-	lplr, _, err := l.List(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return lplr.LanguageProfiles, nil
 }
 
 func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageProfile, *Response, error) {
