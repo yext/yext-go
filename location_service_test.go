@@ -222,7 +222,7 @@ func TestTokenListAll(t *testing.T) {
 			}
 		})
 
-		client.LocationService.ListAll()
+		client.LocationService.ListAll(nil)
 		if reqs != len(test.expectedTokenRequests) {
 			t.Errorf("Wrong number of requests sent to location list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
 		}
