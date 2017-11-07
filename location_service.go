@@ -31,13 +31,15 @@ type LocationListResponse struct {
 	NextPageToken string      `json:"nextPageToken"`
 }
 
-func (l *LocationService) ListAll() ([]*Location, error) {
+func (l *LocationService) ListAll(llopts *LocationListOptions) ([]*Location, error) {
 	var locations []*Location
-	var llo = &LocationListOptions{}
-	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
+	if llopts == nil {
+		llopts = &LocationListOptions{}
+	}
+	llopts.ListOptions = ListOptions{Limit: LocationListMaxLimit}
 	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
-		llo.ListOptions = *opts
-		llr, _, err := l.List(llo)
+		llopts.ListOptions = *opts
+		llr, _, err := l.List(llopts)
 		if err != nil {
 			return "", err
 		}
@@ -45,7 +47,7 @@ func (l *LocationService) ListAll() ([]*Location, error) {
 		return llr.NextPageToken, err
 	}
 
-	if err := tokenListHelper(lg, &llo.ListOptions); err != nil {
+	if err := tokenListHelper(lg, &llopts.ListOptions); err != nil {
 		return nil, err
 	} else {
 		return locations, nil
