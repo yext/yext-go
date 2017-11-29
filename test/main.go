@@ -33,7 +33,7 @@ func main() {
 	fatalif(err)
 	log.Println(printllr(llr))
 
-	locs, err := client.LocationService.ListAll()
+	locs, err := client.LocationService.ListAll(nil)
 	fatalif(err)
 	log.Println(printlocs(locs))
 
