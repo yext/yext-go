@@ -34,6 +34,7 @@ func TestReviewListOptions(t *testing.T) {
 				"MinNonOwnerComments":   "",
 				"ReviewerName":          "",
 				"ReviewerEmail":         "",
+				"Status":                "",
 			},
 		},
 		{
@@ -59,6 +60,7 @@ func TestReviewListOptions(t *testing.T) {
 				"MinNonOwnerComments":   "",
 				"ReviewerName":          "",
 				"ReviewerEmail":         "",
+				"Status":                "",
 			},
 		},
 		{
@@ -136,6 +138,10 @@ func TestReviewListOptions(t *testing.T) {
 		{
 			opts: &ReviewListOptions{ReviewerEmail: "jump@too.high"},
 			want: map[string]string{"reviewerEmail": "jump@too.high"},
+		},
+		{
+			opts: &ReviewListOptions{Status: "LIVE"},
+			want: map[string]string{"status": "LIVE"},
 		},
 	}
 

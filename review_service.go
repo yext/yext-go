@@ -37,6 +37,7 @@ type ReviewListOptions struct {
 	MinNonOwnerComments   int
 	ReviewerName          string
 	ReviewerEmail         string
+	Status                string
 }
 
 type ReviewListResponse struct {
@@ -148,6 +149,9 @@ func addReviewListOptions(requrl string, opts *ReviewListOptions) (string, error
 	}
 	if opts.ReviewerEmail != "" {
 		q.Add("reviewerEmail", opts.ReviewerEmail)
+	}
+	if opts.Status != "" {
+		q.Add("status", opts.Status)
 	}
 	u.RawQuery = q.Encode()
 
