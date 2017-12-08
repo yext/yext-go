@@ -448,7 +448,7 @@ var googleAttributesTests = []googleAttributesTest{
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
-	{ // this is 4
+	{
 		baseValue: &GoogleAttributes{
 			&GoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
@@ -490,6 +490,56 @@ var googleAttributesTests = []googleAttributesTest{
 		expectedFieldValue: GoogleAttributes{
 			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:             false,
+		nilIsEmpty:         false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: GoogleAttributes{
+			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 		},
 	},
 }

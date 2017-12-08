@@ -677,6 +677,15 @@ func (a *GoogleAttribute) Equal(b Comparable) bool {
 		return false
 	}
 
+	if u.OptionIds == nil || s.OptionIds == nil {
+		if u.OptionIds == nil && s.OptionIds != nil {
+			return false
+		} else if u.OptionIds != nil && s.OptionIds == nil {
+			return false
+		}
+		return true
+	}
+
 	if len(*u.OptionIds) != len(*s.OptionIds) {
 		return false
 	}
