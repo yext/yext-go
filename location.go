@@ -575,6 +575,13 @@ func (y Location) GetGoogleAttributes() GoogleAttributes {
 	return nil
 }
 
+func (y Location) IsClosed() bool {
+	if y.Closed != nil && y.Closed.IsClosed {
+		return true
+	}
+	return false
+}
+
 // LocationPhoto represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
