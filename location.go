@@ -65,20 +65,20 @@ type Location struct {
 	OfficeName           *string        `json:"officeName,omitempty"`
 
 	// Location Info
-	Description         *string        `json:"description,omitempty"`
-	HolidayHours        []HolidayHours `json:"holidayHours,omitempty"`
-	Hours               *string        `json:"hours,omitempty"`
-	AdditionalHoursText *string        `json:"additionalHoursText,omitempty"`
-	YearEstablished     *string        `json:"yearEstablished,omitempty"`
-	Associations        *[]string      `json:"associations,omitempty"`
-	Certifications      *[]string      `json:"certifications,omitempty"`
-	Brands              *[]string      `json:"brands,omitempty"`
-	Products            *[]string      `json:"products,omitempty"`
-	Services            *[]string      `json:"services,omitempty"`
-	Specialties         *[]string      `json:"specialties,omitempty"`
-	Languages           *[]string      `json:"languages,omitempty"`
-	Logo                *LocationPhoto `json:"logo,omitempty"`
-	PaymentOptions      *[]string      `json:"paymentOptions,omitempty"`
+	Description         *string         `json:"description,omitempty"`
+	HolidayHours        *[]HolidayHours `json:"holidayHours,omitempty"`
+	Hours               *string         `json:"hours,omitempty"`
+	AdditionalHoursText *string         `json:"additionalHoursText,omitempty"`
+	YearEstablished     *string         `json:"yearEstablished,omitempty"`
+	Associations        *[]string       `json:"associations,omitempty"`
+	Certifications      *[]string       `json:"certifications,omitempty"`
+	Brands              *[]string       `json:"brands,omitempty"`
+	Products            *[]string       `json:"products,omitempty"`
+	Services            *[]string       `json:"services,omitempty"`
+	Specialties         *[]string       `json:"specialties,omitempty"`
+	Languages           *[]string       `json:"languages,omitempty"`
+	Logo                *LocationPhoto  `json:"logo,omitempty"`
+	PaymentOptions      *[]string       `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs
 	DisplayLat  *float64 `json:"displayLat,omitempty"`
@@ -571,6 +571,13 @@ func (y Location) GetAdmittingHospitals() (v []string) {
 func (y Location) GetGoogleAttributes() GoogleAttributes {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
+	}
+	return nil
+}
+
+func (y Location) GetHolidayHours() []HolidayHours {
+	if y.HolidayHours != nil {
+		return *y.HolidayHours
 	}
 	return nil
 }

@@ -37,3 +37,7 @@ func ToGoogleAttributes(v []*GoogleAttribute) *GoogleAttributes {
 	u := GoogleAttributes(v)
 	return &u
 }
+
+func ToHolidayHours(v []HolidayHours) *[]HolidayHours {
+	return &v
+}
