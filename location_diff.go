@@ -28,11 +28,6 @@ type Comparable interface {
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	// TODO (bjm): remove this once the ETL is upgraded to use hydration
-	if (!y.hydrated || !b.hydrated) && y.String() == b.String() {
-		return nil, false
-	}
-
 	d = &Location{Id: String(y.GetId())}
 
 	var (
@@ -56,11 +51,8 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if y.nilIsEmpty && valA.IsNil() {
-			valA = GetZeroOf(valA)
-		}
-		if b.nilIsEmpty && valB.IsNil() {
-			valB = GetZeroOf(valB)
+		if isZeroValue(valA, y.nilIsEmpty) && isZeroValue(valB, b.nilIsEmpty) {
+			continue
 		}
 
 		aI, bI := valA.Interface(), valB.Interface()
@@ -122,22 +114,33 @@ func getUnderlyingValue(v interface{}) interface{} {
 	return rv.Interface()
 }
 
-func GetZeroOf(val reflect.Value) reflect.Value {
-	switch val.Type() {
-	case reflect.PtrTo(reflect.TypeOf("")):
-		return reflect.New(reflect.TypeOf(""))
-	case reflect.PtrTo(reflect.TypeOf(false)):
-		return reflect.New(reflect.TypeOf(false))
-	case reflect.TypeOf(&[]string{}):
-		return reflect.ValueOf(&[]string{})
-	case reflect.TypeOf(&GoogleAttributes{}):
-		return reflect.ValueOf(&GoogleAttributes{})
-	case reflect.TypeOf(&LocationPhoto{}):
-		return reflect.ValueOf(&LocationPhoto{})
-	case reflect.TypeOf(&[]LocationPhoto{}):
-		return reflect.ValueOf(&[]LocationPhoto{})
-	case reflect.TypeOf(&LocationClosed{}):
-		return reflect.ValueOf(&LocationClosed{})
+func isZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
+	if !v.IsValid() {
+		return true
 	}
-	return reflect.Zero(val.Type())
+
+	switch v.Kind() {
+	case reflect.Slice, reflect.Map:
+		return v.Len() == 0
+	case reflect.Bool:
+		return v.Bool() == false
+	case reflect.String:
+		return v.String() == ""
+	case reflect.Float64:
+		return v.Float() == 0.0
+	case reflect.Ptr, reflect.Interface:
+		if v.IsNil() && !interpretNilAsZeroValue {
+			return false
+		}
+		return isZeroValue(v.Elem(), interpretNilAsZeroValue)
+	case reflect.Struct:
+		for i, n := 0, v.NumField(); i < n; i++ {
+			if !isZeroValue(v.Field(i), interpretNilAsZeroValue) {
+				return false
+			}
+		}
+		return true
+	default:
+		return v.IsNil() && interpretNilAsZeroValue
+	}
 }

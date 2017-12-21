@@ -636,8 +636,9 @@ var floatTests = []floatTest{
 	{Float(0), Float(9876.0), true, false, Float(9876.0)},
 	{Float(1234.0), Float(9876.0), true, false, Float(9876.0)},
 	{nil, Float(9876.0), true, false, Float(9876.0)},
+	{nil, Float(9876.0), true, true, Float(9876.0)},
 	{nil, Float(0), true, false, Float(0)},
-	{nil, Float(0), true, true, Float(0)},
+	{nil, Float(0), false, true, nil},
 }
 
 func formatFloatPtr(b *float64) string {
@@ -1123,29 +1124,6 @@ func TestUnmarshal(t *testing.T) {
 	}
 }
 
-func TestSetCustomFields(t *testing.T) {
-	var one, two = new(Location), new(Location)
-	err := json.Unmarshal([]byte(jsonData), one)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-
-	err = json.Unmarshal([]byte(jsonData), two)
-	if err != nil {
-		t.Errorf(err.Error())
-	}
-
-	two.CustomFields["7256"] = []string{"phai514"}
-
-	delta, isDiff := one.Diff(two)
-	if isDiff {
-		t.Errorf("Expected false but was true, delta was:\n%v\n", delta)
-	}
-	if delta != nil {
-		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
-	}
-}
-
 type Scenario struct {
 	A         *Location
 	B         *Location
@@ -1257,5 +1235,40 @@ func TestCustomFieldPointerComparison(t *testing.T) {
 
 	if isDiff != false {
 		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
+	}
+}
+
+func TestZeroValuesAndNilDiffing(t *testing.T) {
+	tests := []Scenario{
+		Scenario{
+			A:         &Location{SuppressAddress: nil},
+			B:         &Location{SuppressAddress: nil},
+			WantDelta: nil,
+			WantDiff:  false,
+		},
+		Scenario{
+			A:         &Location{SuppressAddress: Bool(false)},
+			B:         &Location{SuppressAddress: nil},
+			WantDelta: nil,
+			WantDiff:  false,
+		},
+		Scenario{
+			A:         &Location{SuppressAddress: nil},
+			B:         &Location{SuppressAddress: Bool(false)},
+			WantDelta: &Location{SuppressAddress: Bool(false)},
+			WantDiff:  true,
+		},
+		Scenario{
+			A:         &Location{nilIsEmpty: true, SuppressAddress: nil},
+			B:         &Location{SuppressAddress: Bool(false)},
+			WantDelta: nil,
+			WantDiff:  false,
+		},
+	}
+
+	for i, test := range tests {
+		if delta, diff := test.A.Diff(test.B); diff != test.WantDiff {
+			t.Errorf("Test %d:\n\tA:\t%+v\n\tB:\t%+v\n\tDelta:\t%+v\n\tWanted:%+v\n\tDiff was: %t wanted %t", i, test.A, test.B, delta, test.WantDelta, diff, test.WantDiff)
+		}
 	}
 }
