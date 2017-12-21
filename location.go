@@ -594,7 +594,7 @@ func (y Location) IsClosed() bool {
 type LocationPhoto struct {
 	Url             string `json:"url,omitempty"`
 	Description     string `json:"description,omitempty"`
-	AlternateText   string `json:"alternateText"`
+	AlternateText   string `json:"alternateText,omitempty"`
 	ClickThroughUrl string `json:"clickthroughUrl,omitempty"`
 }
 
