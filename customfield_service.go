@@ -379,7 +379,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			}
 		case CUSTOMFIELDTYPE_SINGLEOPTION:
 			if typedVal, ok := v.(string); ok {
-				newval = SingleOption(typedVal)
+				newval = GetSingleOptionPointer(SingleOption(typedVal))
 			} else {
 				return nil, fmt.Errorf("parse custom fields failure: could not parse '%v' as single-option field, expected string got %T", v, v)
 			}
@@ -704,4 +704,8 @@ func (c *CustomFieldManager) MustSetString(name string, value string, loc *Locat
 	} else {
 		return
 	}
+}
+
+func GetSingleOptionPointer(option SingleOption) *SingleOption {
+	return &option
 }

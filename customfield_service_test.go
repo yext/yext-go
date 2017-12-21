@@ -85,7 +85,7 @@ var (
 		customFieldParseTest{"NUMBER", "12345", reflect.TypeOf(Number(""))},
 		customFieldParseTest{"TEXT", "foo", reflect.TypeOf(SingleLineText(""))},
 		customFieldParseTest{"MULTILINE_TEXT", "foo", reflect.TypeOf(MultiLineText(""))},
-		customFieldParseTest{"SINGLE_OPTION", "foo", reflect.TypeOf(SingleOption(""))},
+		customFieldParseTest{"SINGLE_OPTION", "foo", reflect.TypeOf(GetSingleOptionPointer(SingleOption("")))},
 		customFieldParseTest{"URL", "foo", reflect.TypeOf(Url(""))},
 		customFieldParseTest{"DATE", "foo", reflect.TypeOf(Date(""))},
 		customFieldParseTest{"TEXT_LIST", []string{"a", "b", "c"}, reflect.TypeOf(TextList([]string{}))},
