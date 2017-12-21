@@ -214,6 +214,7 @@ func (l *LocationService) ListBySearchId(searchId string) ([]*Location, error) {
 	}
 }
 
+// TODO: This mutates the locations, no need to return them
 func (l *LocationService) HydrateLocations(locs []*Location) ([]*Location, error) {
 	if l.CustomFields == nil {
 		return locs, nil
