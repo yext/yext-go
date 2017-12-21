@@ -230,3 +230,39 @@ func TestTokenListAll(t *testing.T) {
 		teardown()
 	}
 }
+
+func TestNilIsEmptyGet(t *testing.T) {
+	setup()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		v := &mockResponse{Response: &Location{}}
+		data, _ := json.Marshal(v)
+		w.Write(data)
+	})
+
+	l, _, err := client.LocationService.Get("")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !l.nilIsEmpty {
+		t.Errorf("Expected nilIsEmpty==true")
+	}
+	teardown()
+}
+
+func TestNilIsEmptyList(t *testing.T) {
+	setup()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		v := &mockResponse{Response: &LocationListResponse{Locations: []*Location{&Location{}}}}
+		data, _ := json.Marshal(v)
+		w.Write(data)
+	})
+
+	llr, _, err := client.LocationService.List(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !llr.Locations[0].nilIsEmpty {
+		t.Errorf("Expected nilIsEmpty==true")
+	}
+	teardown()
+}

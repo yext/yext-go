@@ -86,6 +86,10 @@ func (l *LocationService) List(llopts *LocationListOptions) (*LocationListRespon
 		return nil, r, err
 	}
 
+	for _, l := range v.Locations {
+		l.nilIsEmpty = true
+	}
+
 	return v, r, nil
 }
 
@@ -164,6 +168,8 @@ func (l *LocationService) Get(id string) (*Location, *Response, error) {
 	if _, err := HydrateLocation(&v, l.CustomFields); err != nil {
 		return nil, r, err
 	}
+
+	v.nilIsEmpty = true
 
 	return &v, r, nil
 }
