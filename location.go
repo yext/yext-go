@@ -197,9 +197,30 @@ func (y Location) GetLastName() string {
 	return ""
 }
 
+func (y Location) GetGender() string {
+	if y.Gender != nil {
+		return *y.Gender
+	}
+	return ""
+}
+
+func (y Location) GetAcceptingNewPatients() bool {
+	if y.AcceptingNewPatients != nil {
+		return *y.AcceptingNewPatients
+	}
+	return false
+}
+
 func (y Location) GetNPI() string {
 	if y.NPI != nil {
 		return *y.NPI
+	}
+	return ""
+}
+
+func (y Location) GetOfficeName() string {
+	if y.OfficeName != nil {
+		return *y.OfficeName
 	}
 	return ""
 }
