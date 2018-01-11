@@ -139,6 +139,10 @@ type Location struct {
 
 	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
 
+	// Reviews
+	ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
+	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
+
 	/** TODO(bmcginnis) add the following fields:
 
 	   ServiceArea       struct {
@@ -480,6 +484,20 @@ func (y Location) GetMenuListIds() (v []string) {
 func (y Location) GetFolderId() string {
 	if y.FolderId != nil {
 		return *y.FolderId
+	}
+	return ""
+}
+
+func (y Location) GetReviewBalancingURL() string {
+	if y.ReviewBalancingURL != nil {
+		return *y.ReviewBalancingURL
+	}
+	return ""
+}
+
+func (y Location) GetFirstPartyReviewPage() string {
+	if y.FirstPartyReviewPage != nil {
+		return *y.FirstPartyReviewPage
 	}
 	return ""
 }
