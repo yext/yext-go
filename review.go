@@ -23,6 +23,7 @@ type Review struct {
 	LastYextUpdateDate *int       `json:"lastYextUpdateDate"`
 	Status             *string    `json:"status"`
 	Comments           *[]Comment `json:"comments"`
+	LabelIds           *[]int     `json:"labelIds"`
 }
 
 type Comment struct {
@@ -120,6 +121,20 @@ func (y Review) GetStatus() string {
 	return ""
 }
 
+func (y Review) GetLabelIds() (v []int) {
+	if y.LabelIds != nil {
+		v = *y.LabelIds
+	}
+	return v
+}
+
+func (y Review) GetComments() (v []Comment) {
+	if y.Comments != nil {
+		v = *y.Comments
+	}
+	return v
+}
+
 func (y Comment) GetId() int {
 	if y.Id != nil {
 		return *y.Id
@@ -128,14 +143,14 @@ func (y Comment) GetId() int {
 }
 
 func (y Comment) GetParentId() int {
-	if y.Id != nil {
+	if y.ParentId != nil {
 		return *y.ParentId
 	}
 	return 0
 }
 
 func (y Comment) GetPublisherDate() int {
-	if y.Id != nil {
+	if y.PublisherDate != nil {
 		return *y.PublisherDate
 	}
 	return 0
