@@ -75,10 +75,6 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			}
 		} else if !reflect.DeepEqual(aI, bI) {
 			if nameA == "CustomFields" {
-				// deal with case where left is nil and right is empty
-				if y.CustomFields == nil && b.CustomFields != nil {
-					diff = true
-				}
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
 					if aValue, ok := y.CustomFields[field]; ok {

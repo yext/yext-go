@@ -1228,3 +1228,16 @@ func TestLocationNils(t *testing.T) {
 		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
 	}
 }
+
+func TestLocationCustomFieldEmptyComparision(t *testing.T) {
+	a, b := *new(Location), new(Location)
+	a.Id = String("blah")
+	b.CustomFields = map[string]interface{}{}
+
+	a.hydrated, b.hydrated = true, true
+	d, isDiff := a.Diff(b)
+
+	if isDiff != false {
+		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
+	}
+}
