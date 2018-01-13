@@ -191,7 +191,7 @@ var baseLocation Location = Location{
 	Logo:                   &examplePhoto,
 	FacebookCoverPhoto:     &examplePhoto,
 	FacebookProfilePicture: &examplePhoto,
-	Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
+	Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 	ProductListIds:         &[]string{"1234", "5678"},
 	Closed: &LocationClosed{
 		IsClosed: false,
@@ -249,7 +249,7 @@ func TestDiffIdentical(t *testing.T) {
 		Logo:                   &examplePhoto,
 		FacebookCoverPhoto:     &examplePhoto,
 		FacebookProfilePicture: &examplePhoto,
-		Photos:                 []LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
+		Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 		ProductListIds:         &[]string{"1234", "5678"},
 		Closed: &LocationClosed{
 			IsClosed: false,
@@ -727,23 +727,23 @@ func TestPhotoDiffs(t *testing.T) {
 }
 
 type photoArrayTest struct {
-	baseValue          []LocationPhoto
-	newValue           []LocationPhoto
+	baseValue          *[]LocationPhoto
+	newValue           *[]LocationPhoto
 	isDiff             bool
 	nilIsEmpty         bool
-	expectedFieldValue []LocationPhoto
+	expectedFieldValue *[]LocationPhoto
 }
 
 var photoArrayTests = []photoArrayTest{
-	{nil, []LocationPhoto{}, false, false, nil},
-	{nil, []LocationPhoto{}, false, true, nil},
-	{[]LocationPhoto{}, nil, false, false, nil},
-	{[]LocationPhoto{}, nil, false, true, nil},
+	{nil, &[]LocationPhoto{}, true, false, &[]LocationPhoto{}},
+	{nil, &[]LocationPhoto{}, false, true, nil},
+	{&[]LocationPhoto{}, nil, false, false, nil},
+	{&[]LocationPhoto{}, nil, false, true, nil},
 	{nil, nil, false, false, nil},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{}, true, false, []LocationPhoto{}},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, nil, false, false, nil},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}, true, false, []LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}},
-	{[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}, true, false, []LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}},
+	{&[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, &[]LocationPhoto{}, true, false, &[]LocationPhoto{}},
+	{&[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, nil, false, false, nil},
+	{&[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, &[]LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}, true, false, &[]LocationPhoto{LocationPhoto{Url: "dong", Description: "ding"}}},
+	{&[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}}, &[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}, true, false, &[]LocationPhoto{LocationPhoto{Url: "ding", Description: "dong"}, LocationPhoto{Url: "ding", Description: "dong"}}},
 }
 
 func (t photoArrayTest) formatErrorBase(index int) string {
@@ -763,11 +763,11 @@ func TestPhotoArrayDiffs(t *testing.T) {
 			continue
 		} else if d == nil && data.expectedFieldValue != nil {
 			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
-		} else if len(d.Photos) != len(data.expectedFieldValue) {
+		} else if len(*d.Photos) != len(*data.expectedFieldValue) {
 			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 		} else {
-			for i := 0; i < len(d.Photos); i++ {
-				if d.Photos[i] != data.expectedFieldValue[i] {
+			for i := 0; i < len(*d.Photos); i++ {
+				if (*d.Photos)[i] != (*data.expectedFieldValue)[i] {
 					t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 				}
 			}

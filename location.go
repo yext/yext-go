@@ -134,8 +134,8 @@ type Location struct {
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
 
-	Photos    []LocationPhoto `json:"photos,omitempty"`
-	VideoUrls *[]string       `json:"videoUrls,omitempty"`
+	Photos    *[]LocationPhoto `json:"photos,omitempty"`
+	VideoUrls *[]string        `json:"videoUrls,omitempty"`
 
 	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
 
