@@ -77,7 +77,9 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			if nameA == "CustomFields" {
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
+					value = getUnderlyingValue(value)
 					if aValue, ok := y.CustomFields[field]; ok {
+						aValue = getUnderlyingValue(aValue)
 						var valueDiff bool
 						if v, ok := aValue.(Comparable); ok {
 							valueDiff = !v.Equal(value.(Comparable))
@@ -105,6 +107,19 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 	}
 
 	return d, diff
+}
+
+// getUnderlyingValue unwraps a pointer/interface to get the underlying value.
+// If the value is already unwrapped, it returns it as is.
+func getUnderlyingValue(v interface{}) interface{} {
+	rv := reflect.ValueOf(v)
+
+	switch rv.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		rv = rv.Elem()
+	}
+
+	return rv.Interface()
 }
 
 func GetZeroOf(val reflect.Value) reflect.Value {

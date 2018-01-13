@@ -1241,3 +1241,21 @@ func TestLocationCustomFieldEmptyComparision(t *testing.T) {
 		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
 	}
 }
+
+func TestCustomFieldPointerComparison(t *testing.T) {
+	a, b := *new(Location), new(Location)
+	a.Id = String("blah")
+	a.CustomFields = map[string]interface{}{
+		"1": Hours{Hours: "1:09:00:18:00"},
+	}
+	b.CustomFields = map[string]interface{}{
+		"1": &Hours{Hours: "1:09:00:18:00"},
+	}
+
+	a.hydrated, b.hydrated = true, true
+	d, isDiff := a.Diff(b)
+
+	if isDiff != false {
+		t.Errorf("Expected diff to be false but was %v\ndiff struct was %v\n", isDiff, d)
+	}
+}
