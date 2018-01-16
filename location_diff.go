@@ -47,7 +47,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if valB.IsNil() || nameA == "Id" {
+		if valB.IsNil() || isNil(getUnderlyingValue(valB)) || nameA == "Id" {
 			continue
 		}
 
@@ -69,9 +69,9 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			if nameA == "CustomFields" {
 				d.CustomFields = make(map[string]interface{})
 				for field, value := range b.CustomFields {
-					value = getUnderlyingValue(value)
+					value = getUnderlyingValue(reflect.ValueOf(value))
 					if aValue, ok := y.CustomFields[field]; ok {
-						aValue = getUnderlyingValue(aValue)
+						aValue = getUnderlyingValue(reflect.ValueOf(aValue))
 						var valueDiff bool
 						if v, ok := aValue.(Comparable); ok {
 							valueDiff = !v.Equal(value.(Comparable))
@@ -101,11 +101,18 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 	return d, diff
 }
 
+// isNil determines if an interface's underlying data is nil
+func isNil(a interface{}) bool {
+	switch value := reflect.ValueOf(a); value.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		return value.IsNil()
+	}
+	return a == nil
+}
+
 // getUnderlyingValue unwraps a pointer/interface to get the underlying value.
 // If the value is already unwrapped, it returns it as is.
-func getUnderlyingValue(v interface{}) interface{} {
-	rv := reflect.ValueOf(v)
-
+func getUnderlyingValue(rv reflect.Value) interface{} {
 	switch rv.Kind() {
 	case reflect.Ptr, reflect.Interface:
 		rv = rv.Elem()
