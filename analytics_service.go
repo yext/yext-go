@@ -47,7 +47,7 @@ type AnalyticsFilters struct {
 	FacebookStoryType          *[]string `json:"facebookStoryType"`
 }
 
-type AnalyticsReportBody struct {
+type AnalyticsReportRequest struct {
 	Metrics    []string          `json:"metrics"`
 	Dimensions []string          `json:"dimensions"`
 	Filters    *AnalyticsFilters `json:"filters"`
@@ -58,12 +58,12 @@ type AnalyticsReportResponse struct {
 	Id   int              `json:"id"`
 }
 
-func (l *AnalyticsService) Create(jsonData *AnalyticsReportBody) (*AnalyticsReportResponse, *Response, error) {
-	v := &AnalyticsReportResponse{}
-	r, err := l.client.DoRequestJSON("POST", analyticsPath, jsonData, v)
+func (a *AnalyticsService) Create(req *AnalyticsReportRequest) (*AnalyticsReportResponse, *Response, error) {
+	arr := &AnalyticsReportResponse{}
+	r, err := a.client.DoRequestJSON("POST", analyticsPath, req, arr)
 	if err != nil {
 		return nil, r, err
 	}
 
-	return v, r, nil
+	return arr, r, nil
 }
