@@ -51,6 +51,12 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
+		if nameA == "Hours" {
+			if HoursAreEquivalent(getUnderlyingValue(valA).(string), getUnderlyingValue(valB).(string)) {
+				continue
+			}
+		}
+
 		if isZeroValue(valA, y.nilIsEmpty) && isZeroValue(valB, b.nilIsEmpty) {
 			continue
 		}
@@ -150,4 +156,16 @@ func isZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 	default:
 		return v.IsNil() && interpretNilAsZeroValue
 	}
+}
+
+var closedHoursEquivalents = map[string]struct{}{
+	"": struct{}{},
+	"1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed": struct{}{},
+}
+
+func HoursAreEquivalent(a, b string) bool {
+	_, aIsClosed := closedHoursEquivalents[a]
+	_, bIsClosed := closedHoursEquivalents[b]
+
+	return a == b || aIsClosed && bIsClosed
 }
