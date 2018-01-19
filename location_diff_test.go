@@ -1279,3 +1279,79 @@ func TestZeroValuesAndNilDiffing(t *testing.T) {
 		}
 	}
 }
+
+var hoursTests = []struct {
+	A, B string
+	Want bool
+}{
+	{
+		A:    "",
+		B:    "",
+		Want: true,
+	},
+	{
+		A:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
+		B:    "",
+		Want: true,
+	},
+	// This might seem odd, but we're still working out hours semantics with Product, so I'd rather err on the side
+	// of a limited set of 'closed' equivalencies for now:
+	{
+		A:    "1:closed",
+		B:    "",
+		Want: false,
+	},
+	{
+		A:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
+		B:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
+		Want: true,
+	},
+	{
+		A:    "1:11:00",
+		B:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
+		Want: false,
+	},
+	{
+		A:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
+		B:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
+		Want: true,
+	},
+	{
+		A:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
+		B:    "1:11:01:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
+		Want: false,
+	},
+	{
+		A:    "1:11:00:20:00",
+		B:    "1:11:00:20:00",
+		Want: true,
+	},
+	{
+		A:    "1:11:00:20:00",
+		B:    "1:11:01:20:00",
+		Want: false,
+	},
+}
+
+func TestHoursAreEquivalent(t *testing.T) {
+	for _, test := range hoursTests {
+		if got := HoursAreEquivalent(test.A, test.B); got != test.Want {
+			t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.A, test.B, got, test.Want)
+		}
+		if got := HoursAreEquivalent(test.B, test.A); got != test.Want {
+			t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.B, test.A, got, test.Want)
+		}
+	}
+}
+
+func TestHoursAreEquivalentDiff(t *testing.T) {
+	for _, test := range hoursTests {
+		a := &Location{Hours: String(test.A)}
+		b := &Location{Hours: String(test.B)}
+
+		// Note the negation of test.Want - if the hours are equivalent, we expected the there *not* to be a diff.
+		if _, isDiff := a.Diff(b); isDiff != !test.Want {
+			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, test.A, test.B, isDiff, test.Want)
+		}
+	}
+}
