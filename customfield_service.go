@@ -310,6 +310,10 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 	return v, r, nil
 }
 
+func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
+	return s.client.DoRequest("POST", customFieldPath, cf)
+}
+
 func (s *CustomFieldService) CacheCustomFields() error {
 	cfs, err := s.ListAll()
 	if err != nil {
