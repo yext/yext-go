@@ -1239,14 +1239,7 @@ func TestCustomFieldPointerComparison(t *testing.T) {
 }
 
 func TestZeroValuesAndNilDiffing(t *testing.T) {
-	var nilslice []string
 	tests := []Scenario{
-		Scenario{
-			A:         &Location{ProductListIds: nil},
-			B:         &Location{ProductListIds: Strings(nilslice)},
-			WantDelta: nil,
-			WantDiff:  false,
-		},
 		Scenario{
 			A:         &Location{SuppressAddress: nil},
 			B:         &Location{SuppressAddress: nil},
