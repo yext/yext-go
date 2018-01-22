@@ -31,13 +31,20 @@ type CustomFieldOption struct {
 // CustomField is the representation of a Custom Field definition in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Custom_Fields.htm
 type CustomField struct {
-	Id                         string              `json:"id"`
+	Id                         *string             `json:"id,omitempty"`
 	Type                       string              `json:"type"`
 	Name                       string              `json:"name"`
-	Options                    []CustomFieldOption `json:"options"` // Only present for multi-option custom fields
+	Options                    []CustomFieldOption `json:"options,omitempty"` // Only present for multi-option custom fields
 	Group                      string              `json:"group"`
 	Description                string              `json:"description"`
 	AlternateLanguageBehaviour string              `json:"alternateLanguageBehavior"`
+}
+
+func (c CustomField) GetId() string {
+	if c.Id == nil {
+		return ""
+	}
+	return *c.Id
 }
 
 type CustomFieldValue interface {

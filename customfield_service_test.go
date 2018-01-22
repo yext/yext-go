@@ -11,7 +11,7 @@ import (
 func parseAs(cftype string, rawval interface{}) (interface{}, error) {
 	cfs := []*CustomField{
 		&CustomField{
-			Id:   "123",
+			Id:   String("123"),
 			Type: cftype,
 		},
 	}
@@ -105,7 +105,7 @@ func makeCustomFields(n int) []*CustomField {
 	var cfs []*CustomField
 
 	for i := 0; i < n; i++ {
-		new := &CustomField{Id: strconv.Itoa(i)}
+		new := &CustomField{Id: String(strconv.Itoa(i))}
 		cfs = append(cfs, new)
 	}
 
