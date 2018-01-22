@@ -25,9 +25,7 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	delete(asMap, "id")
-	delete(asMap, "type")
-	r, err := s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.Id), asMap, nil)
+	r, err := s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 	if err != nil {
 		return r, err
 	}
@@ -48,7 +46,7 @@ func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error
 		return nil, err
 	}
 
-	return loc.CustomFields[field.Id], nil
+	return loc.CustomFields[field.GetId()], nil
 }
 
 func (c *CustomFieldManager) MustGet(name string, loc *Location) interface{} {
@@ -193,7 +191,7 @@ func (c *CustomFieldManager) Set(name string, value CustomFieldValue, loc *Locat
 	if err != nil {
 		return loc, err
 	}
-	loc.CustomFields[field.Id] = value
+	loc.CustomFields[field.GetId()] = value
 	return loc, nil
 }
 
@@ -229,7 +227,7 @@ func (c *CustomFieldManager) CustomFieldId(name string) (string, error) {
 	if cf, err := c.CustomField(name); err != nil {
 		return "", err
 	} else {
-		return cf.Id, nil
+		return cf.GetId(), nil
 	}
 }
 
@@ -311,7 +309,7 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 }
 
 func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
-	return s.client.DoRequest("POST", customFieldPath, cf)
+	return s.client.DoRequestJSON("POST", customFieldPath, cf, nil)
 }
 
 func (s *CustomFieldService) CacheCustomFields() error {
@@ -333,7 +331,7 @@ func (s *CustomFieldService) MustCacheCustomFields() {
 func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[string]interface{}, error) {
 	typefor := func(id string) string {
 		for _, cf := range cfs {
-			if cf.Id == id {
+			if cf.GetId() == id {
 				return cf.Type
 			}
 		}
@@ -629,7 +627,7 @@ func (c *CustomFieldManager) SetBool(name string, value bool, loc *Location) err
 		return fmt.Errorf("SetBool failure: custom field '%v' is of type '%v' and not boolean", name, field.Type)
 	}
 
-	loc.CustomFields[field.Id] = YesNo(value)
+	loc.CustomFields[field.GetId()] = YesNo(value)
 	return nil
 }
 
@@ -654,10 +652,10 @@ func (c *CustomFieldManager) SetStringSlice(name string, value []string, loc *Lo
 		}
 		return nil
 	case CUSTOMFIELDTYPE_TEXTLIST:
-		loc.CustomFields[field.Id] = TextList(value)
+		loc.CustomFields[field.GetId()] = TextList(value)
 		return nil
 	case CUSTOMFIELDTYPE_LOCATIONLIST:
-		loc.CustomFields[field.Id] = UnorderedStrings(value)
+		loc.CustomFields[field.GetId()] = UnorderedStrings(value)
 		return nil
 	default:
 		return fmt.Errorf("SetStringSlice failure: custom field '%v' is of type '%v' and can not take a string slice", name, field.Type)
@@ -683,19 +681,19 @@ func (c *CustomFieldManager) SetString(name string, value string, loc *Location)
 		c.MustSetOption(name, value, loc)
 		return nil
 	case CUSTOMFIELDTYPE_SINGLELINETEXT:
-		loc.CustomFields[field.Id] = SingleLineText(value)
+		loc.CustomFields[field.GetId()] = SingleLineText(value)
 		return nil
 	case CUSTOMFIELDTYPE_MULTILINETEXT:
-		loc.CustomFields[field.Id] = MultiLineText(value)
+		loc.CustomFields[field.GetId()] = MultiLineText(value)
 		return nil
 	case CUSTOMFIELDTYPE_URL:
-		loc.CustomFields[field.Id] = Url(value)
+		loc.CustomFields[field.GetId()] = Url(value)
 		return nil
 	case CUSTOMFIELDTYPE_DATE:
-		loc.CustomFields[field.Id] = Date(value)
+		loc.CustomFields[field.GetId()] = Date(value)
 		return nil
 	case CUSTOMFIELDTYPE_NUMBER:
-		loc.CustomFields[field.Id] = Number(value)
+		loc.CustomFields[field.GetId()] = Number(value)
 		return nil
 	default:
 		return fmt.Errorf("SetString failure: custom field '%v' is of type '%v' and can not take a string", name, field.Type)
