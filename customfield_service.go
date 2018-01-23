@@ -15,6 +15,20 @@ type CustomFieldManager struct {
 	CustomFields []*CustomField
 }
 
+func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
+	asJSON, err := json.Marshal(cf)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap, "id")
+	return s.client.DoRequestJSON("POST", customFieldPath, asMap, nil)
+}
+
 func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
@@ -25,11 +39,9 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	r, err := s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
-	if err != nil {
-		return r, err
-	}
-	return r, nil
+	delete(asMap, "id")
+	delete(asMap, "type")
+	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 }
 
 func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
@@ -306,10 +318,6 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 		return nil, r, err
 	}
 	return v, r, nil
-}
-
-func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
-	return s.client.DoRequestJSON("POST", customFieldPath, cf, nil)
 }
 
 func (s *CustomFieldService) CacheCustomFields() error {
