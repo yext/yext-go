@@ -52,7 +52,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 		}
 
 		if nameA == "Hours" {
-			if HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
+			if !valA.IsNil() && !valB.IsNil() && HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
 				continue
 			}
 		}

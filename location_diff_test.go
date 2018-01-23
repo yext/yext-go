@@ -1274,77 +1274,112 @@ func TestZeroValuesAndNilDiffing(t *testing.T) {
 }
 
 var hoursTests = []struct {
-	A, B string
-	Want bool
+	A, B                     *string
+	WantEquivalent, WantDiff bool
 }{
 	{
-		A:    "",
-		B:    "",
-		Want: true,
+		A:              String(""),
+		B:              String(""),
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 	{
-		A:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
-		B:    "",
-		Want: true,
+		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		B:              String(""),
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 	// This might seem odd, but we're still working out hours semantics with Product, so I'd rather err on the side
 	// of a limited set of 'closed' equivalencies for now:
 	{
-		A:    "1:closed",
-		B:    "",
-		Want: false,
+		A:              String("1:closed"),
+		B:              String(""),
+		WantEquivalent: false,
+		WantDiff:       true,
 	},
 	{
-		A:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
-		B:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
-		Want: true,
+		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 	{
-		A:    "1:11:00",
-		B:    "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed",
-		Want: false,
+		A:              String("1:11:00"),
+		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		WantEquivalent: false,
+		WantDiff:       true,
 	},
 	{
-		A:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
-		B:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
-		Want: true,
+		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		B:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 	{
-		A:    "1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
-		B:    "1:11:01:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00",
-		Want: false,
+		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		B:              String("1:11:01:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
 	},
 	{
-		A:    "1:11:00:20:00",
-		B:    "1:11:00:20:00",
-		Want: true,
+		A:              String("1:11:00:20:00"),
+		B:              String("1:11:00:20:00"),
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 	{
-		A:    "1:11:00:20:00",
-		B:    "1:11:01:20:00",
-		Want: false,
+		A:              String("1:11:00:20:00"),
+		B:              String("1:11:01:20:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              nil,
+		B:              String("1:11:01:20:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              String("1:11:01:20:00"),
+		B:              nil,
+		WantEquivalent: false,
+		WantDiff:       false,
+	},
+	{
+		A:              nil,
+		B:              nil,
+		WantEquivalent: true,
+		WantDiff:       false,
 	},
 }
 
 func TestHoursAreEquivalent(t *testing.T) {
 	for _, test := range hoursTests {
-		if got := HoursAreEquivalent(test.A, test.B); got != test.Want {
-			t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.A, test.B, got, test.Want)
-		}
-		if got := HoursAreEquivalent(test.B, test.A); got != test.Want {
-			t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.B, test.A, got, test.Want)
+		if test.A != nil && test.B != nil {
+			if got := HoursAreEquivalent(*test.A, *test.B); got != test.WantEquivalent {
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.A, test.B, got, test.WantEquivalent)
+			}
+			if got := HoursAreEquivalent(*test.B, *test.A); got != test.WantEquivalent {
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.B, test.A, got, test.WantEquivalent)
+			}
 		}
 	}
 }
 
+func stringify(v *string) string {
+	if v != nil {
+		return *v
+	}
+	return "nil"
+}
+
 func TestHoursAreEquivalentDiff(t *testing.T) {
 	for _, test := range hoursTests {
-		a := &Location{Hours: String(test.A)}
-		b := &Location{Hours: String(test.B)}
+		a := &Location{Hours: test.A}
+		b := &Location{Hours: test.B}
 
-		// Note the negation of test.Want - if the hours are equivalent, we expected the there *not* to be a diff.
-		if _, isDiff := a.Diff(b); isDiff != !test.Want {
-			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, test.A, test.B, isDiff, test.Want)
+		if _, isDiff := a.Diff(b); isDiff != test.WantDiff {
+			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), isDiff, test.WantDiff)
 		}
 	}
 }
