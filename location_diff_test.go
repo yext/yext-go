@@ -1357,10 +1357,10 @@ func TestHoursAreEquivalent(t *testing.T) {
 	for _, test := range hoursTests {
 		if test.A != nil && test.B != nil {
 			if got := HoursAreEquivalent(*test.A, *test.B); got != test.WantEquivalent {
-				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.A, test.B, got, test.WantEquivalent)
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), got, test.WantEquivalent)
 			}
 			if got := HoursAreEquivalent(*test.B, *test.A); got != test.WantEquivalent {
-				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, test.B, test.A, got, test.WantEquivalent)
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.B), stringify(test.A), got, test.WantEquivalent)
 			}
 		}
 	}
