@@ -233,7 +233,7 @@ type Hours struct {
 	HolidayHours   []HolidayHours `json:"holidayHours,omitempty"`
 }
 
-func (h *Hours) CustomFieldTag() string {
+func (h Hours) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
 }
 
