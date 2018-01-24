@@ -907,6 +907,12 @@ func zeroCFKEy(cf map[string]interface{}, key string) map[string]interface{} {
 	return n
 }
 
+func modified(base map[string]interface{}, key string, value interface{}) map[string]interface{} {
+	n := copyCustomFields(base)
+	n[key] = value
+	return n
+}
+
 var (
 	copyOfBase             = copyCustomFields(baseCustomFields)
 	appendedCF             = appendJunkToCustomFields(baseCustomFields)
@@ -927,6 +933,8 @@ var customFieldsTests = []customFieldsTest{
 	{baseCustomFields, trimmedCF, false, false, nil},
 	{baseCustomFields, modifiedCF, true, false, map[string]interface{}{"62153": "This is a\r\nMODIFIED multi\r\nline\r\ntext"}},
 	{baseCustomFields, differentOptionOrderCF, false, false, nil},
+	{modified(baseCustomFields, "photo", &Photo{}), modified(baseCustomFields, "photo", (*Photo)(nil)), true, false, map[string]interface{}{"photo": (*Photo)(nil)}},
+	{modified(baseCustomFields, "photo", &Photo{Url: "test"}), modified(baseCustomFields, "photo", (*Photo)(nil)), true, false, map[string]interface{}{"photo": (*Photo)(nil)}},
 }
 
 func addZeroTests() {

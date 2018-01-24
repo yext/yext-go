@@ -114,6 +114,9 @@ func getUnderlyingValue(v interface{}) interface{} {
 
 	switch rv.Kind() {
 	case reflect.Ptr, reflect.Interface:
+		if rv.IsNil() && reflect.TypeOf(v) != reflect.TypeOf(nil) {
+			return rv.Interface()
+		}
 		rv = rv.Elem()
 	}
 
