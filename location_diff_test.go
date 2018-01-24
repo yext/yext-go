@@ -1391,3 +1391,19 @@ func TestHoursAreEquivalentDiff(t *testing.T) {
 		}
 	}
 }
+
+func TestGetUnderlyingValue(t *testing.T) {
+	tests := []struct{
+		A, B interface{}
+		wantEqual bool
+	}{
+		{getUnderlyingValue((*Photo)(nil)), (*Photo)(nil), true},
+		{nil, (*Photo)(nil), false},
+		{getUnderlyingValue((*Photo)(nil)), nil, false},
+	}
+	for i, test := range tests {
+		if eq := reflect.DeepEqual(test.A, test.B); eq != test.wantEqual {
+			t.Errorf("test %d expected %t to be 'true'", i+1, eq)
+		}
+	}
+}
