@@ -203,6 +203,24 @@ func TestListMismatchCount(t *testing.T) {
 	}
 }
 
+func TestMustCache(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		v := &mockResponse{Response: &CustomFieldResponse{Count: 24, CustomFields: makeCustomFields(24)}}
+		data, _ := json.Marshal(v)
+		w.Write(data)
+	})
+	m := client.CustomFieldService.MustCacheCustomFields()
+	n := makeCustomFields(24)
+	for i := 0; i < 24; i++ {
+		if m[i].Id != n[i].Id {
+			t.Error("Must Cache Custom fields should return the same custom field slice as makeCustomFields")
+		}
+	}
+}
+
 func TestParsing(t *testing.T) {
 	for i, testData := range parseTests {
 		runParseTest(t, i, testData)

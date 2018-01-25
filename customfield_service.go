@@ -330,10 +330,11 @@ func (s *CustomFieldService) CacheCustomFields() error {
 	return nil
 }
 
-func (s *CustomFieldService) MustCacheCustomFields() {
+func (s *CustomFieldService) MustCacheCustomFields() []*CustomField {
 	if err := s.CacheCustomFields(); err != nil {
 		panic(err)
 	}
+	return s.client.CustomFieldService.CustomFieldManager.CustomFields
 }
 
 func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[string]interface{}, error) {
