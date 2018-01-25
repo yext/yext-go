@@ -320,18 +320,18 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 	return v, r, nil
 }
 
-func (s *CustomFieldService) CacheCustomFields() (error, []*CustomField) {
+func (s *CustomFieldService) CacheCustomFields() ([]*CustomField, error) {
 	cfs, err := s.ListAll()
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
-	return nil, s.CustomFieldManager.CustomFields
+	return s.CustomFieldManager.CustomFields, nil
 }
 
 func (s *CustomFieldService) MustCacheCustomFields() []*CustomField {
-	err, slice := s.CacheCustomFields()
+	slice, err := s.CacheCustomFields()
 	if err != nil {
 		panic(err)
 	}
