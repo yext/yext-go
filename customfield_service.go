@@ -320,21 +320,22 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 	return v, r, nil
 }
 
-func (s *CustomFieldService) CacheCustomFields() error {
+func (s *CustomFieldService) CacheCustomFields() (error, []*CustomField) {
 	cfs, err := s.ListAll()
 	if err != nil {
-		return err
+		return err, nil
 	}
 
 	s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
-	return nil
+	return nil, s.CustomFieldManager.CustomFields
 }
 
 func (s *CustomFieldService) MustCacheCustomFields() []*CustomField {
-	if err := s.CacheCustomFields(); err != nil {
+	err, slice := s.CacheCustomFields()
+	if err != nil {
 		panic(err)
 	}
-	return s.client.CustomFieldService.CustomFieldManager.CustomFields
+	return slice
 }
 
 func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[string]interface{}, error) {
