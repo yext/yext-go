@@ -215,7 +215,7 @@ func TestMustCache(t *testing.T) {
 	m := client.CustomFieldService.MustCacheCustomFields()
 	n := makeCustomFields(24)
 	for i := 0; i < 24; i++ {
-		if m[i].Id != n[i].Id {
+		if m[i].GetId() != n[i].GetId() {
 			t.Error("Must Cache Custom fields should return the same custom field slice as makeCustomFields")
 		}
 	}
