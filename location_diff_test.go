@@ -907,12 +907,6 @@ func zeroCFKEy(cf map[string]interface{}, key string) map[string]interface{} {
 	return n
 }
 
-func modified(base map[string]interface{}, key string, value interface{}) map[string]interface{} {
-	n := copyCustomFields(base)
-	n[key] = value
-	return n
-}
-
 var (
 	copyOfBase             = copyCustomFields(baseCustomFields)
 	appendedCF             = appendJunkToCustomFields(baseCustomFields)
@@ -933,8 +927,6 @@ var customFieldsTests = []customFieldsTest{
 	{baseCustomFields, trimmedCF, false, false, nil},
 	{baseCustomFields, modifiedCF, true, false, map[string]interface{}{"62153": "This is a\r\nMODIFIED multi\r\nline\r\ntext"}},
 	{baseCustomFields, differentOptionOrderCF, false, false, nil},
-	{modified(baseCustomFields, "photo", &Photo{}), modified(baseCustomFields, "photo", (*Photo)(nil)), true, false, map[string]interface{}{"photo": (*Photo)(nil)}},
-	{modified(baseCustomFields, "photo", &Photo{Url: "test"}), modified(baseCustomFields, "photo", (*Photo)(nil)), true, false, map[string]interface{}{"photo": (*Photo)(nil)}},
 }
 
 func addZeroTests() {
@@ -1388,22 +1380,6 @@ func TestHoursAreEquivalentDiff(t *testing.T) {
 
 		if _, isDiff := a.Diff(b); isDiff != test.WantDiff {
 			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), isDiff, test.WantDiff)
-		}
-	}
-}
-
-func TestGetUnderlyingValue(t *testing.T) {
-	tests := []struct{
-		A, B interface{}
-		wantEqual bool
-	}{
-		{getUnderlyingValue((*Photo)(nil)), (*Photo)(nil), true},
-		{nil, (*Photo)(nil), false},
-		{getUnderlyingValue((*Photo)(nil)), nil, false},
-	}
-	for i, test := range tests {
-		if eq := reflect.DeepEqual(test.A, test.B); eq != test.wantEqual {
-			t.Errorf("test %d expected %t to be 'true'", i+1, eq)
 		}
 	}
 }
