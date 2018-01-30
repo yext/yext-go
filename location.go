@@ -159,10 +159,6 @@ type Location struct {
 	*/
 }
 
-func (y Location) GetNilIsEmpty() bool {
-	return y.nilIsEmpty
-}
-
 func (y Location) GetId() string {
 	if y.Id != nil {
 		return *y.Id

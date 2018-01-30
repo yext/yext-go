@@ -88,7 +88,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 							diff = true
 							d.CustomFields[field] = value
 						}
-					} else if !(isZeroValue(reflect.ValueOf(value), b.GetNilIsEmpty()) && y.nilIsEmpty) {
+					} else if !(isZeroValue(reflect.ValueOf(value), b.nilIsEmpty) && y.nilIsEmpty) {
 						d.CustomFields[field] = value
 						diff = true
 					}
