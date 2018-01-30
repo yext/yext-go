@@ -962,6 +962,105 @@ func TestCustomFieldsDiff(t *testing.T) {
 	}
 }
 
+type customFieldsNilIsEmptyTest struct {
+	baseValue          map[string]interface{}
+	baseNilIsEmpty     bool
+	newValue           map[string]interface{}
+	newNilIsEmpty      bool
+	isDiff             bool
+	expectedFieldValue map[string]interface{}
+}
+
+var customFieldsNilIsEmptyTests = []customFieldsNilIsEmptyTest{
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     true,
+		newValue:           map[string]interface{}{"65": ""},
+		newNilIsEmpty:      false,
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     false,
+		newValue:           map[string]interface{}{"65": ""},
+		newNilIsEmpty:      false,
+		isDiff:             true,
+		expectedFieldValue: map[string]interface{}{"65": ""},
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     true,
+		newValue:           map[string]interface{}{"65": "yext"},
+		newNilIsEmpty:      false,
+		isDiff:             true,
+		expectedFieldValue: map[string]interface{}{"65": "yext"},
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     true,
+		newValue:           map[string]interface{}{"65": []string{}},
+		newNilIsEmpty:      false,
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     false,
+		newValue:           map[string]interface{}{"65": []string{}},
+		newNilIsEmpty:      false,
+		isDiff:             true,
+		expectedFieldValue: map[string]interface{}{"65": []string{}},
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     false,
+		newValue:           map[string]interface{}{"65": []string{"ding"}},
+		newNilIsEmpty:      false,
+		isDiff:             true,
+		expectedFieldValue: map[string]interface{}{"65": []string{"ding"}},
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     true,
+		newValue:           map[string]interface{}{"65": nil},
+		newNilIsEmpty:      false,
+		isDiff:             false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue:          map[string]interface{}{},
+		baseNilIsEmpty:     false,
+		newValue:           map[string]interface{}{"65": nil},
+		newNilIsEmpty:      false,
+		isDiff:             true,
+		expectedFieldValue: map[string]interface{}{"65": nil},
+	},
+}
+
+func (t customFieldsNilIsEmptyTest) formatErrorBase(index int) string {
+	return fmt.Sprintf("Failure with example %v:\n\tbase: '%v'\n\tnew: '%v'", index, t.baseValue, t.newValue)
+}
+
+func TestCustomFieldsNilIsEmptyDiff(t *testing.T) {
+	a, b := *new(Location), new(Location)
+	for i, data := range customFieldsNilIsEmptyTests {
+		a.CustomFields, b.CustomFields = data.baseValue, data.newValue
+		a.nilIsEmpty, b.nilIsEmpty = data.baseNilIsEmpty, data.newNilIsEmpty
+		d, isDiff := a.Diff(b)
+		if isDiff != data.isDiff {
+			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
+		}
+		if d == nil && data.expectedFieldValue == nil {
+			continue
+		} else if d == nil && data.expectedFieldValue != nil {
+			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
+		} else if !reflect.DeepEqual(data.expectedFieldValue, d.CustomFields) {
+			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
+		}
+	}
+}
+
 type closedTest struct {
 	baseValue          *LocationClosed
 	newValue           *LocationClosed
