@@ -88,7 +88,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 							diff = true
 							d.CustomFields[field] = value
 						}
-					} else {
+					} else if !(isZeroValue(reflect.ValueOf(value), b.nilIsEmpty) && y.nilIsEmpty) {
 						d.CustomFields[field] = value
 						diff = true
 					}
@@ -110,6 +110,10 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 // getUnderlyingValue unwraps a pointer/interface to get the underlying value.
 // If the value is already unwrapped, it returns it as is.
 func getUnderlyingValue(v interface{}) interface{} {
+	if v == nil {
+		return nil
+	}
+
 	rv := reflect.ValueOf(v)
 
 	switch rv.Kind() {
