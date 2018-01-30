@@ -52,21 +52,21 @@ func (e Errors) Error() string {
 	return fmt.Sprintf("%s; request uuid: %s", strings.Join(errs, "; "), uuid)
 }
 
-func (e Errors) Errors() []Error {
-	var errors []Error
+func (e Errors) Errors() []*Error {
+	var errors []*Error
 	for _, err := range e {
 		if err.IsError() {
-			errors = append(errors, *err)
+			errors = append(errors, err)
 		}
 	}
 	return errors
 }
 
-func (e Errors) Warnings() []Error {
-	var warnings []Error
+func (e Errors) Warnings() []*Error {
+	var warnings []*Error
 	for _, err := range e {
 		if err.IsWarning() {
-			warnings = append(warnings, *err)
+			warnings = append(warnings, err)
 		}
 	}
 	return warnings
