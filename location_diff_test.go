@@ -1044,19 +1044,19 @@ func (t customFieldsNilIsEmptyTest) formatErrorBase(index int) string {
 
 func TestCustomFieldsNilIsEmptyDiff(t *testing.T) {
 	a, b := *new(Location), new(Location)
-	for i, data := range customFieldsNilIsEmptyTests {
-		a.CustomFields, b.CustomFields = data.baseValue, data.newValue
-		a.nilIsEmpty, b.nilIsEmpty = data.baseNilIsEmpty, data.newNilIsEmpty
+	for i, test := range customFieldsNilIsEmptyTests {
+		a.CustomFields, b.CustomFields = test.baseValue, test.newValue
+		a.nilIsEmpty, b.nilIsEmpty = test.baseNilIsEmpty, test.newNilIsEmpty
 		d, isDiff := a.Diff(b)
-		if isDiff != data.isDiff {
-			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", data.formatErrorBase(i), data.isDiff, isDiff, d)
+		if isDiff != test.isDiff {
+			t.Errorf("%vExpected diff to be %v\nbut was %v\ndiff struct was %v\n", test.formatErrorBase(i), test.isDiff, isDiff, d)
 		}
-		if d == nil && data.expectedFieldValue == nil {
+		if d == nil && test.expectedFieldValue == nil {
 			continue
-		} else if d == nil && data.expectedFieldValue != nil {
-			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), data.expectedFieldValue)
-		} else if !reflect.DeepEqual(data.expectedFieldValue, d.CustomFields) {
-			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
+		} else if d == nil && test.expectedFieldValue != nil {
+			t.Errorf("%v\ndelta was nil but expected %v\n", test.formatErrorBase(i), test.expectedFieldValue)
+		} else if !reflect.DeepEqual(test.expectedFieldValue, d.CustomFields) {
+			t.Errorf("%v\ndiff was%v\n", test.formatErrorBase(i), d)
 		}
 	}
 }
