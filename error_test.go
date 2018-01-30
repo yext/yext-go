@@ -9,12 +9,12 @@ func TestIsNotFoundError(t *testing.T) {
 	}{
 		{
 			Err: Errors{
-				Error{
+				&Error{
 					Type:    "NON_FATAL_ERROR",
 					Code:    202,
 					Message: "Some message",
 				},
-				Error{
+				&Error{
 					Type:    "FATAL_ERROR",
 					Code:    6004,
 					Message: "Some message",
@@ -23,7 +23,7 @@ func TestIsNotFoundError(t *testing.T) {
 			Want: true,
 		},
 		{
-			Err: Error{
+			Err: &Error{
 				Type:    "FATAL_ERROR",
 				Code:    6004,
 				Message: "Some message",
@@ -31,7 +31,7 @@ func TestIsNotFoundError(t *testing.T) {
 			Want: true,
 		},
 		{
-			Err: Error{
+			Err: &Error{
 				Type:    "FATAL_ERROR",
 				Code:    2000,
 				Message: "Some message",
@@ -39,7 +39,7 @@ func TestIsNotFoundError(t *testing.T) {
 			Want: true,
 		},
 		{
-			Err: Error{
+			Err: &Error{
 				Type:    "NON_FATAL_ERROR",
 				Code:    202,
 				Message: "Some message",

@@ -30,10 +30,27 @@ func TestResponseDeserialzation(t *testing.T) {
 			want: &Response{
 				Meta: Meta{
 					Errors: Errors{
-						Error{
+						&Error{
 							Code:    9,
 							Type:    ErrorTypeFatal,
 							Message: "We had a problem with our software. Please contact support!",
+						}}}},
+		},
+		{
+			data: `{"meta": {"errors": [{
+		  "message": "We had a problem with our software. Please contact support!",
+		  "code": 9,
+			"type": "FATAL_ERROR"
+		}], "uuid": "abcd-1234"}}`,
+			want: &Response{
+				Meta: Meta{
+					UUID: "abcd-1234",
+					Errors: Errors{
+						&Error{
+							Code:        9,
+							Type:        ErrorTypeFatal,
+							Message:     "We had a problem with our software. Please contact support!",
+							RequestUUID: "abcd-1234",
 						}}}},
 		},
 		{

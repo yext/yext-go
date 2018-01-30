@@ -211,6 +211,10 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		}
 		resultResponse.ResponseRaw = nil
 
+		for _, e := range resultResponse.Meta.Errors {
+			e.RequestUUID = resultResponse.Meta.UUID
+		}
+
 		if resp.StatusCode == http.StatusTooManyRequests && c.Config.RateLimitRetry {
 			if !hitRateLimit {
 				rateLimitWait := int64(resultResponse.RateLimitReset) - c.Config.Clock.Now().Unix()
