@@ -1363,6 +1363,24 @@ func TestZeroValuesAndNilDiffing(t *testing.T) {
 			WantDelta: nil,
 			WantDiff:  false,
 		},
+		Scenario{
+			A:         &Location{},
+			B:         &Location{CustomFields: map[string]interface{}{"1": UnsetPhotoValue}},
+			WantDelta: &Location{CustomFields: map[string]interface{}{"1": UnsetPhotoValue}},
+			WantDiff:  true,
+		},
+		Scenario{
+			A:         &Location{nilIsEmpty: true},
+			B:         &Location{CustomFields: map[string]interface{}{"1": UnsetPhotoValue}},
+			WantDelta: nil,
+			WantDiff:  false,
+		},
+		Scenario{
+			A:         &Location{CustomFields: map[string]interface{}{"1": UnsetPhotoValue}},
+			B:         &Location{CustomFields: map[string]interface{}{"1": UnsetPhotoValue}},
+			WantDelta: nil,
+			WantDiff:  false,
+		},
 	}
 
 	for i, test := range tests {

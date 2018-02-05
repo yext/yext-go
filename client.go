@@ -344,3 +344,9 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 
 	return u.String(), nil
 }
+
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

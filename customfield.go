@@ -23,6 +23,10 @@ const (
 	// not sure what to do with "DAILYTIMES", omitting
 )
 
+var (
+	UnsetPhotoValue = (*Photo)(nil)
+)
+
 type CustomFieldOption struct {
 	Key   string `json:"key,omitempty"`
 	Value string `json:"value"`

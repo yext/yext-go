@@ -198,6 +198,8 @@ func (c *CustomFieldManager) MustUnsetOption(fieldName string, optionName string
 	}
 }
 
+// TODO: Why does this return a location?
+// TODO: Should we validate the the type we received matches the type of the field?  Probably.
 func (c *CustomFieldManager) Set(name string, value CustomFieldValue, loc *Location) (*Location, error) {
 	field, err := c.CustomField(name)
 	if err != nil {
@@ -434,7 +436,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Photo Field %v", v, err)
 			}
-			var cfp Photo
+			var cfp *Photo
 			err = json.Unmarshal(asJSON, &cfp)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Photo Field %v", v, err)
@@ -505,7 +507,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 	return parsed, nil
 }
 
-func validateCustomFields(cfs map[string]interface{}) error {
+func validateCustomFieldsKeys(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
 		if !customFieldKeyRegex.MatchString(k) {
 			return errors.New(fmt.Sprintf("custom fields must be specified by their id, not name: %s", k))
@@ -711,11 +713,16 @@ func (c *CustomFieldManager) SetString(name string, value string, loc *Location)
 }
 
 func (c *CustomFieldManager) MustSetString(name string, value string, loc *Location) {
-	if err := c.SetString(name, value, loc); err != nil {
-		panic(err)
-	} else {
-		return
-	}
+	Must(c.SetString(name, value, loc))
+}
+
+func (c *CustomFieldManager) SetPhoto(name string, v *Photo, loc *Location) error {
+	_, err := c.Set(name, v, loc)
+	return err
+}
+
+func (c *CustomFieldManager) UnsetPhoto(name string, loc *Location) error {
+	return c.SetPhoto(name, UnsetPhotoValue, loc)
 }
 
 func GetSingleOptionPointer(option SingleOption) *SingleOption {
