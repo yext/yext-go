@@ -12,7 +12,7 @@ const (
 	SandboxHost    string = "api-sandbox.yext.com"
 	ProductionHost string = "api.yext.com"
 	AccountId      string = "me"
-	Version        string = "20170101"
+	Version        string = "20180226"
 )
 
 type Config struct {
