@@ -616,6 +616,8 @@ func (c *CustomFieldManager) GetStringSlice(name string, loc *Location) ([]strin
 		return []string(*fv.(*TextList)), nil
 	case *LocationList:
 		return []string(*fv.(*LocationList)), nil
+	case MultiOption:
+		return []string(fv.(MultiOption)), nil
 	default:
 		return nil, fmt.Errorf("%s is not a string array custom field type, is %T", name, fv)
 	}

@@ -10,11 +10,6 @@ import (
 	"fmt"
 )
 
-const (
-	HoursClosedAllWeek = "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"
-	HoursOpenAllDay    = "00:00:00:00"
-)
-
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
