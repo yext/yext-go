@@ -24,6 +24,7 @@ type Review struct {
 	Status             *string    `json:"status"`
 	Comments           *[]Comment `json:"comments"`
 	LabelIds           *[]int     `json:"labelIds"`
+	ExternalId         *string    `json:"externalId"`
 }
 
 type Comment struct {
@@ -126,6 +127,13 @@ func (y Review) GetLabelIds() (v []int) {
 		v = *y.LabelIds
 	}
 	return v
+}
+
+func (y Review) GetExternalId() string {
+	if y.ExternalId != nil {
+		return *y.ExternalId
+	}
+	return ""
 }
 
 func (y Review) GetComments() (v []Comment) {
