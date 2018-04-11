@@ -25,9 +25,9 @@ func parseAs(cftype string, rawval interface{}) (interface{}, error) {
 }
 
 type customFieldParseTest struct {
-	TypeName     string
-	Raw          interface{}
-	Expected     interface{}
+	TypeName string
+	Raw      interface{}
+	Expected interface{}
 }
 
 func runParseTest(t *testing.T, index int, c customFieldParseTest) {
@@ -37,7 +37,7 @@ func runParseTest(t *testing.T, index int, c customFieldParseTest) {
 		return
 	}
 	var (
-		cfType = reflect.TypeOf(cf).String()
+		cfType     = reflect.TypeOf(cf).String()
 		expectType = reflect.TypeOf(c.Expected).String()
 	)
 
@@ -45,14 +45,14 @@ func runParseTest(t *testing.T, index int, c customFieldParseTest) {
 		t.Errorf("test #%d (%s) failed: expected type %s, got type %s", index, c.TypeName, expectType, cfType)
 	}
 
-	if !reflect.DeepEqual(cf, c.Expected){
+	if !reflect.DeepEqual(cf, c.Expected) {
 		t.Errorf("test #%d (%s) failed: expected value %v, got value %v", index, c.TypeName, c.Expected, cf)
 	}
 }
 
 var (
 	customPhotoRaw = map[string]interface{}{
-		"details":           "A great picture",
+		"details":         "A great picture",
 		"description":     "This is a picture of an awesome event",
 		"clickthroughUrl": "https://yext.com/event",
 		"url":             "https://mktgcdn.com/awesome.jpg",
@@ -92,34 +92,34 @@ var (
 		customFieldParseTest{"MULTI_OPTION", []string{"a", "b", "c"}, MultiOption([]string{"a", "b", "c"})},
 		customFieldParseTest{"MULTI_OPTION", []interface{}{"a", "b", "c"}, MultiOption([]string{"a", "b", "c"})},
 		customFieldParseTest{"PHOTO", customPhotoRaw, &Photo{
-			Url: "https://mktgcdn.com/awesome.jpg",
-			Description: "This is a picture of an awesome event",
-			Details: "A great picture",
-			ClickThroughURL:"https://yext.com/event",
+			Url:             "https://mktgcdn.com/awesome.jpg",
+			Description:     "This is a picture of an awesome event",
+			Details:         "A great picture",
+			ClickThroughURL: "https://yext.com/event",
 		}},
 		customFieldParseTest{"PHOTO", nil, (*Photo)(nil)},
 		customFieldParseTest{"GALLERY", []interface{}{customPhotoRaw}, Gallery{
 			&Photo{
-				Url: "https://mktgcdn.com/awesome.jpg",
-				Description: "This is a picture of an awesome event",
-				Details: "A great picture",
-				ClickThroughURL:"https://yext.com/event",
+				Url:             "https://mktgcdn.com/awesome.jpg",
+				Description:     "This is a picture of an awesome event",
+				Details:         "A great picture",
+				ClickThroughURL: "https://yext.com/event",
 			},
 		}},
 		customFieldParseTest{"VIDEO", videoRaw, Video{
-			Url: "http://www.youtube.com/watch?v=M80FTIcEgZM",
+			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},
 		customFieldParseTest{"HOURS", hoursRaw, Hours{
 			AdditionalText: "This is an example of extra hours info",
-			Hours: "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
+			Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
 			HolidayHours: []HolidayHours{
 				HolidayHours{
-					Date: "2016-05-30",
+					Date:  "2016-05-30",
 					Hours: "",
 				},
 				HolidayHours{
-					Date: "2016-05-31",
+					Date:  "2016-05-31",
 					Hours: "9:00:17:00",
 				},
 			},
@@ -266,5 +266,159 @@ func TestParseLeaveUnknownTypes(t *testing.T) {
 
 	if _, ok := cf.(peanut); !ok {
 		t.Errorf("Expected type peanut, got type %T", cf)
+	}
+}
+
+func TestGetString(t *testing.T) {
+	var cfManager = &CustomFieldManager{
+		CustomFields: []*CustomField{
+			&CustomField{
+				Name: "Single Line Text",
+				Id:   String("SingleLineText"),
+				Type: CUSTOMFIELDTYPE_SINGLELINETEXT,
+			},
+			&CustomField{
+				Name: "Multi Line Text",
+				Id:   String("MultiLineText"),
+				Type: CUSTOMFIELDTYPE_MULTILINETEXT,
+			},
+			&CustomField{
+				Name: "Date",
+				Id:   String("Date"),
+				Type: CUSTOMFIELDTYPE_DATE,
+			},
+			&CustomField{
+				Name: "Number",
+				Id:   String("Number"),
+				Type: CUSTOMFIELDTYPE_NUMBER,
+			},
+			&CustomField{
+				Name: "Single Option",
+				Id:   String("SingleOption"),
+				Type: CUSTOMFIELDTYPE_SINGLEOPTION,
+				Options: []CustomFieldOption{
+					CustomFieldOption{
+						Key:   "SingleOptionOneKey",
+						Value: "Single Option One Value",
+					},
+				},
+			},
+			&CustomField{
+				Name: "Url",
+				Id:   String("Url"),
+				Type: CUSTOMFIELDTYPE_URL,
+			},
+		},
+	}
+
+	loc := &Location{
+		CustomFields: map[string]interface{}{
+			cfManager.MustCustomFieldId("Single Line Text"): SingleLineText("Single Line Text Value"),
+			cfManager.MustCustomFieldId("Multi Line Text"):  SingleLineText("Multi Line Text Value"),
+			cfManager.MustCustomFieldId("Date"):             Date("04/16/2018"),
+			cfManager.MustCustomFieldId("Number"):           Number("2"),
+			cfManager.MustCustomFieldId("Single Option"):    GetSingleOptionPointer(SingleOption(cfManager.MustCustomFieldOptionId("Single Option", "Single Option One Value"))),
+			cfManager.MustCustomFieldId("Url"):              Url("www.url.com"),
+		},
+	}
+
+	tests := []struct {
+		CFName string
+		Want   string
+	}{
+		{
+			CFName: "Single Line Text",
+			Want:   "Single Line Text Value",
+		},
+		{
+			CFName: "Multi Line Text",
+			Want:   "Multi Line Text Value",
+		},
+		{
+			CFName: "Single Option",
+			Want:   "Single Option One Value",
+		},
+		{
+			CFName: "Date",
+			Want:   "04/16/2018",
+		},
+		{
+			CFName: "Number",
+			Want:   "2",
+		},
+		{
+			CFName: "Url",
+			Want:   "www.url.com",
+		},
+	}
+
+	for _, test := range tests {
+		if got, err := cfManager.GetString(test.CFName, loc); err != nil {
+			t.Errorf("Get String: got err for custom field %s", test.CFName)
+		} else if got != test.Want {
+			t.Errorf("Get String: got %s, wanted %s for custom field %s", got, test.Want, test.CFName)
+		}
+	}
+}
+
+func TestGetStringSlice(t *testing.T) {
+	var cfManager = &CustomFieldManager{
+		CustomFields: []*CustomField{
+			&CustomField{
+				Name: "Text List",
+				Id:   String("TextList"),
+				Type: CUSTOMFIELDTYPE_TEXTLIST,
+			},
+			&CustomField{
+				Name: "Location List",
+				Id:   String("LocationList"),
+				Type: CUSTOMFIELDTYPE_LOCATIONLIST,
+			},
+			&CustomField{
+				Name: "Multi Option",
+				Id:   String("MultiOption"),
+				Type: CUSTOMFIELDTYPE_MULTIOPTION,
+			},
+		},
+	}
+
+	loc := &Location{
+		CustomFields: map[string]interface{}{
+			cfManager.MustCustomFieldId("Text List"):     TextList([]string{"A", "B", "C"}),
+			cfManager.MustCustomFieldId("Location List"): LocationList(UnorderedStrings([]string{"1", "2", "3"})),
+			cfManager.MustCustomFieldId("Multi Option"):  MultiOption(UnorderedStrings([]string{"a", "b", "c"})),
+		},
+	}
+
+	tests := []struct {
+		CFName string
+		Want   []string
+	}{
+		{
+			CFName: "Text List",
+			Want:   []string{"A", "B", "C"},
+		},
+		{
+			CFName: "Location List",
+			Want:   []string{"1", "2", "3"},
+		},
+		{
+			CFName: "Multi Option",
+			Want:   []string{"a", "b", "c"},
+		},
+	}
+
+	for _, test := range tests {
+		if got, err := cfManager.GetStringSlice(test.CFName, loc); err != nil {
+			t.Errorf("Get String Slice: got err for custom field %s", test.CFName)
+		} else if got == nil && test.Want != nil || got != nil && test.Want == nil {
+			t.Errorf("Get String Slice: got %v, wanted %v for custom field %s", got, test.Want, test.CFName)
+		} else {
+			for i, _ := range got {
+				if got[i] != test.Want[i] {
+					t.Errorf("Get String Slice: got %v, wanted %v for custom field %s", got, test.Want, test.CFName)
+				}
+			}
+		}
 	}
 }

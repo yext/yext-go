@@ -44,6 +44,10 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 }
 
+func (s *CustomFieldService) Delete(customFieldId string) (*Response, error) {
+	return s.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", customFieldPath, customFieldId), nil)
+}
+
 func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
 	if loc == nil || loc.CustomFields == nil {
 		return nil, nil
@@ -578,10 +582,23 @@ func (c *CustomFieldManager) GetString(name string, loc *Location) (string, erro
 	case *Number:
 		return string(*fv.(*Number)), nil
 	case *SingleOption:
-		return string(*fv.(*SingleOption)), nil
+		return c.CustomFieldOptionName(name, string(*fv.(*SingleOption)))
 	default:
 		return "", fmt.Errorf("%s is not a string custom field type, is %T", name, fv)
 	}
+}
+
+func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
+	cf, err := c.CustomField(cfName)
+	if err != nil {
+		return "", err
+	}
+	for _, option := range cf.Options {
+		if option.Key == optionId {
+			return option.Value, nil
+		}
+	}
+	return "", fmt.Errorf("Unable to find option for key %s for custom field %s", optionId, cfName)
 }
 
 func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
