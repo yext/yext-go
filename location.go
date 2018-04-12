@@ -215,6 +215,13 @@ func (y Location) GetAcceptingNewPatients() bool {
 	return false
 }
 
+func (y Location) GetCertifications() []string {
+	if y.Certifications != nil {
+		return *y.Certifications
+	}
+	return nil
+}
+
 func (y Location) GetNPI() string {
 	if y.NPI != nil {
 		return *y.NPI
