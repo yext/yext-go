@@ -44,6 +44,10 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 }
 
+func (s *CustomFieldService) Delete(customFieldId string) (*Response, error) {
+	return s.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", customFieldPath, customFieldId), nil)
+}
+
 func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
 	if loc == nil || loc.CustomFields == nil {
 		return nil, nil
@@ -557,31 +561,44 @@ func (c *CustomFieldManager) GetString(name string, loc *Location) (string, erro
 	switch fv.(type) {
 	case SingleLineText:
 		return string(fv.(SingleLineText)), nil
-	case MultiLineText:
-		return string(fv.(MultiLineText)), nil
-	case Url:
-		return string(fv.(Url)), nil
-	case Date:
-		return string(fv.(Date)), nil
-	case Number:
-		return string(fv.(Number)), nil
-	case SingleOption:
-		return string(fv.(SingleOption)), nil
 	case *SingleLineText:
 		return string(*fv.(*SingleLineText)), nil
+	case MultiLineText:
+		return string(fv.(MultiLineText)), nil
 	case *MultiLineText:
 		return string(*fv.(*MultiLineText)), nil
+	case Url:
+		return string(fv.(Url)), nil
 	case *Url:
 		return string(*fv.(*Url)), nil
+	case Date:
+		return string(fv.(Date)), nil
 	case *Date:
 		return string(*fv.(*Date)), nil
+	case Number:
+		return string(fv.(Number)), nil
 	case *Number:
 		return string(*fv.(*Number)), nil
+	case SingleOption:
+		return c.CustomFieldOptionName(name, string(fv.(SingleOption)))
 	case *SingleOption:
-		return string(*fv.(*SingleOption)), nil
+		return c.CustomFieldOptionName(name, string(*fv.(*SingleOption)))
 	default:
 		return "", fmt.Errorf("%s is not a string custom field type, is %T", name, fv)
 	}
+}
+
+func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
+	cf, err := c.CustomField(cfName)
+	if err != nil {
+		return "", err
+	}
+	for _, option := range cf.Options {
+		if option.Key == optionId {
+			return option.Value, nil
+		}
+	}
+	return "", fmt.Errorf("Unable to find option for key %s for custom field %s", optionId, cfName)
 }
 
 func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
@@ -606,23 +623,35 @@ func (c *CustomFieldManager) GetStringSlice(name string, loc *Location) ([]strin
 	switch fv.(type) {
 	case UnorderedStrings:
 		return []string(fv.(UnorderedStrings)), nil
-	case TextList:
-		return []string(fv.(TextList)), nil
-	case LocationList:
-		return []string(fv.(LocationList)), nil
 	case *UnorderedStrings:
 		return []string(*fv.(*UnorderedStrings)), nil
-	case *TextList:
-		return []string(*fv.(*TextList)), nil
+	case LocationList:
+		return []string(fv.(LocationList)), nil
 	case *LocationList:
 		return []string(*fv.(*LocationList)), nil
+	case TextList:
+		return []string(fv.(TextList)), nil
+	case *TextList:
+		return []string(*fv.(*TextList)), nil
 	case MultiOption:
-		return []string(fv.(MultiOption)), nil
+		return c.CustomFieldOptionNames(name, []string(fv.(MultiOption)))
 	case *MultiOption:
-		return []string(*fv.(*MultiOption)), nil
+		return c.CustomFieldOptionNames(name, []string(*fv.(*MultiOption)))
 	default:
 		return nil, fmt.Errorf("%s is not a string array custom field type, is %T", name, fv)
 	}
+}
+
+func (c *CustomFieldManager) CustomFieldOptionNames(cfName string, optionIds []string) ([]string, error) {
+	var optionNames = []string{}
+	for _, optionId := range optionIds {
+		optionName, err := c.CustomFieldOptionName(cfName, optionId)
+		if err != nil {
+			return nil, err
+		}
+		optionNames = append(optionNames, optionName)
+	}
+	return optionNames, nil
 }
 
 func (c *CustomFieldManager) MustGetStringSlice(name string, loc *Location) []string {
