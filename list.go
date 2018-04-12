@@ -1,6 +1,9 @@
 package yext
 
-import "reflect"
+import (
+	"encoding/json"
+	"reflect"
+)
 
 type ListType string
 
@@ -167,6 +170,11 @@ type EventList struct {
 	Sections []*EventListSection `json:"sections,omitempty"`
 }
 
+func (e EventList) String() string {
+	l, _ := json.Marshal(e)
+	return string(l)
+}
+
 type EventListSection struct {
 	ListSection
 	Items []*Event `json:"items,omitempty"` // max 100 items
@@ -184,6 +192,11 @@ type Event struct {
 type ProductList struct {
 	List
 	Sections []*ProductListSection `json:"sections,omitempty"`
+}
+
+func (p ProductList) String() string {
+	l, _ := json.Marshal(p)
+	return string(l)
 }
 
 type ProductListSection struct {
@@ -205,6 +218,11 @@ type MenuList struct {
 	Sections []*MenuListSection `json:"sections,omitempty"`
 }
 
+func (m MenuList) String() string {
+	l, _ := json.Marshal(m)
+	return string(l)
+}
+
 type MenuListSection struct {
 	ListSection
 	Items []*Menu `json:"items,omitempty"` // max 100 items
@@ -220,6 +238,11 @@ type Menu struct {
 type BioList struct {
 	List
 	Sections []*BioListSection `json:"sections,omitempty"`
+}
+
+func (b BioList) String() string {
+	l, _ := json.Marshal(b)
+	return string(l)
 }
 
 type BioListSection struct {

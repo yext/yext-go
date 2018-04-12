@@ -255,3 +255,19 @@ func (e *ListService) GetMenuList(id string) (*MenuList, *Response, error) {
 	}
 	return &v, r, nil
 }
+
+func (e *ListService) DeleteProductList(id string) (*Response, error) {
+	return e.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", productsPath, id), nil)
+}
+
+func (e *ListService) DeleteBioList(id string) (*Response, error) {
+	return e.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", biosPath, id), nil)
+}
+
+func (e *ListService) DeleteEventList(id string) (*Response, error) {
+	return e.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", eventsPath, id), nil)
+}
+
+func (e *ListService) DeleteMenuList(id string) (*Response, error) {
+	return e.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", menusPath, id), nil)
+}
