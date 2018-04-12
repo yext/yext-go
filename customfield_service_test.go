@@ -314,7 +314,7 @@ func TestGetString(t *testing.T) {
 	loc := &Location{
 		CustomFields: map[string]interface{}{
 			cfManager.MustCustomFieldId("Single Line Text"): SingleLineText("Single Line Text Value"),
-			cfManager.MustCustomFieldId("Multi Line Text"):  SingleLineText("Multi Line Text Value"),
+			cfManager.MustCustomFieldId("Multi Line Text"):  MultiLineText("Multi Line Text Value"),
 			cfManager.MustCustomFieldId("Date"):             Date("04/16/2018"),
 			cfManager.MustCustomFieldId("Number"):           Number("2"),
 			cfManager.MustCustomFieldId("Single Option"):    GetSingleOptionPointer(SingleOption(cfManager.MustCustomFieldOptionId("Single Option", "Single Option One Value"))),
@@ -378,6 +378,20 @@ func TestGetStringSlice(t *testing.T) {
 				Name: "Multi Option",
 				Id:   String("MultiOption"),
 				Type: CUSTOMFIELDTYPE_MULTIOPTION,
+				Options: []CustomFieldOption{
+					CustomFieldOption{
+						Key:   "MultiOptionOneKey",
+						Value: "Multi Option One Value",
+					},
+					CustomFieldOption{
+						Key:   "MultiOptionTwoKey",
+						Value: "Multi Option Two Value",
+					},
+					CustomFieldOption{
+						Key:   "MultiOptionThreeKey",
+						Value: "Multi Option Three Value",
+					},
+				},
 			},
 		},
 	}
@@ -386,7 +400,7 @@ func TestGetStringSlice(t *testing.T) {
 		CustomFields: map[string]interface{}{
 			cfManager.MustCustomFieldId("Text List"):     TextList([]string{"A", "B", "C"}),
 			cfManager.MustCustomFieldId("Location List"): LocationList(UnorderedStrings([]string{"1", "2", "3"})),
-			cfManager.MustCustomFieldId("Multi Option"):  MultiOption(UnorderedStrings([]string{"a", "b", "c"})),
+			cfManager.MustCustomFieldId("Multi Option"):  MultiOption(UnorderedStrings([]string{"MultiOptionOneKey", "MultiOptionTwoKey", "MultiOptionThreeKey"})),
 		},
 	}
 
@@ -404,13 +418,13 @@ func TestGetStringSlice(t *testing.T) {
 		},
 		{
 			CFName: "Multi Option",
-			Want:   []string{"a", "b", "c"},
+			Want:   []string{"Multi Option One Value", "Multi Option Two Value", "Multi Option Three Value"},
 		},
 	}
 
 	for _, test := range tests {
 		if got, err := cfManager.GetStringSlice(test.CFName, loc); err != nil {
-			t.Errorf("Get String Slice: got err for custom field %s", test.CFName)
+			t.Errorf("Get String Slice: got err for custom field %s: %s", test.CFName, err)
 		} else if got == nil && test.Want != nil || got != nil && test.Want == nil {
 			t.Errorf("Get String Slice: got %v, wanted %v for custom field %s", got, test.Want, test.CFName)
 		} else {
