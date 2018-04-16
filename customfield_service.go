@@ -580,8 +580,14 @@ func (c *CustomFieldManager) GetString(name string, loc *Location) (string, erro
 	case *Number:
 		return string(*fv.(*Number)), nil
 	case SingleOption:
+		if string(fv.(SingleOption)) == "" {
+			return "", nil
+		}
 		return c.CustomFieldOptionName(name, string(fv.(SingleOption)))
 	case *SingleOption:
+		if string(*fv.(*SingleOption)) == "" {
+			return "", nil
+		}
 		return c.CustomFieldOptionName(name, string(*fv.(*SingleOption)))
 	default:
 		return "", fmt.Errorf("%s is not a string custom field type, is %T", name, fv)
