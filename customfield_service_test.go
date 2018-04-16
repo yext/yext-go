@@ -322,41 +322,89 @@ func TestGetString(t *testing.T) {
 		},
 	}
 
+	blankLoc := &Location{
+		CustomFields: map[string]interface{}{
+			cfManager.MustCustomFieldId("Single Line Text"): SingleLineText(""),
+			cfManager.MustCustomFieldId("Multi Line Text"):  MultiLineText(""),
+			cfManager.MustCustomFieldId("Date"):             Date(""),
+			cfManager.MustCustomFieldId("Number"):           Number(""),
+			cfManager.MustCustomFieldId("Single Option"):    GetSingleOptionPointer(SingleOption("")),
+			cfManager.MustCustomFieldId("Url"):              Url(""),
+		},
+	}
+
 	tests := []struct {
 		CFName string
+		Loc    *Location
 		Want   string
 	}{
 		{
 			CFName: "Single Line Text",
+			Loc:    loc,
 			Want:   "Single Line Text Value",
 		},
 		{
 			CFName: "Multi Line Text",
+			Loc:    loc,
 			Want:   "Multi Line Text Value",
 		},
 		{
 			CFName: "Single Option",
+			Loc:    loc,
 			Want:   "Single Option One Value",
 		},
 		{
 			CFName: "Date",
+			Loc:    loc,
 			Want:   "04/16/2018",
 		},
 		{
 			CFName: "Number",
+			Loc:    loc,
 			Want:   "2",
 		},
 		{
 			CFName: "Url",
+			Loc:    loc,
 			Want:   "www.url.com",
+		},
+		{
+			CFName: "Single Line Text",
+			Loc:    blankLoc,
+			Want:   "",
+		},
+		{
+			CFName: "Multi Line Text",
+			Loc:    blankLoc,
+			Want:   "",
+		},
+		{
+			CFName: "Single Option",
+			Loc:    blankLoc,
+			Want:   "",
+		},
+		{
+			CFName: "Date",
+			Loc:    blankLoc,
+			Want:   "",
+		},
+		{
+			CFName: "Number",
+			Loc:    blankLoc,
+			Want:   "",
+		},
+		{
+			CFName: "Url",
+			Loc:    blankLoc,
+			Want:   "",
 		},
 	}
 
 	for _, test := range tests {
-		if got, err := cfManager.GetString(test.CFName, loc); err != nil {
-			t.Errorf("Get String: got err for custom field %s", test.CFName)
+		if got, err := cfManager.GetString(test.CFName, test.Loc); err != nil {
+			t.Errorf("Get String: got err for custom field %s: %s", test.CFName, err)
 		} else if got != test.Want {
-			t.Errorf("Get String: got %s, wanted %s for custom field %s", got, test.Want, test.CFName)
+			t.Errorf("Get String: got '%s', wanted '%s' for custom field %s", got, test.Want, test.CFName)
 		}
 	}
 }
@@ -404,26 +452,53 @@ func TestGetStringSlice(t *testing.T) {
 		},
 	}
 
+	blankLoc := &Location{
+		CustomFields: map[string]interface{}{
+			cfManager.MustCustomFieldId("Text List"):     TextList([]string{}),
+			cfManager.MustCustomFieldId("Location List"): LocationList(UnorderedStrings([]string{})),
+			cfManager.MustCustomFieldId("Multi Option"):  MultiOption(UnorderedStrings([]string{})),
+		},
+	}
+
 	tests := []struct {
 		CFName string
+		Loc    *Location
 		Want   []string
 	}{
 		{
 			CFName: "Text List",
+			Loc:    loc,
 			Want:   []string{"A", "B", "C"},
 		},
 		{
 			CFName: "Location List",
+			Loc:    loc,
 			Want:   []string{"1", "2", "3"},
 		},
 		{
 			CFName: "Multi Option",
+			Loc:    loc,
 			Want:   []string{"Multi Option One Value", "Multi Option Two Value", "Multi Option Three Value"},
+		},
+		{
+			CFName: "Text List",
+			Loc:    blankLoc,
+			Want:   []string{},
+		},
+		{
+			CFName: "Location List",
+			Loc:    blankLoc,
+			Want:   []string{},
+		},
+		{
+			CFName: "Multi Option",
+			Loc:    blankLoc,
+			Want:   []string{},
 		},
 	}
 
 	for _, test := range tests {
-		if got, err := cfManager.GetStringSlice(test.CFName, loc); err != nil {
+		if got, err := cfManager.GetStringSlice(test.CFName, test.Loc); err != nil {
 			t.Errorf("Get String Slice: got err for custom field %s: %s", test.CFName, err)
 		} else if got == nil && test.Want != nil || got != nil && test.Want == nil {
 			t.Errorf("Get String Slice: got %v, wanted %v for custom field %s", got, test.Want, test.CFName)
