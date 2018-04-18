@@ -63,6 +63,7 @@ type Location struct {
 	InsuranceAccepted    *[]string      `json:"insuranceAccepted,omitempty"`
 	NPI                  *string        `json:"npi,omitempty"`
 	OfficeName           *string        `json:"officeName,omitempty"`
+	Degrees              *[]string      `json:"degrees,omitempty"`
 
 	// Location Info
 	Description         *string         `json:"description,omitempty"`
@@ -234,6 +235,13 @@ func (y Location) GetOfficeName() string {
 		return *y.OfficeName
 	}
 	return ""
+}
+
+func (y Location) GetDegrees() []string {
+	if y.Degrees != nil {
+		return *y.Degrees
+	}
+	return nil
 }
 
 func (y Location) GetAccountId() string {
