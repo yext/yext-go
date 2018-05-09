@@ -178,6 +178,38 @@ func (h *HoursHelper) SerializeDay(weekday Weekday) string {
 	return strings.Join(hoursStrings, ",")
 }
 
+func (h *HoursHelper) ConvertHoursStringToStringSlice() ([]string, error) {
+	var hoursStringSlice = make([][]string, 7)
+	for i := range hoursStringSlice {
+		weekday := Weekday(i + 1)
+		if h.HoursAreClosed(weekday) {
+			hoursStringSlice[i] = []string{"Closed"}
+		} else if h.HoursAreOpen24Hours(weekday) {
+			hoursStringSlice[i] = []string{"24hr"}
+		} else {
+			hours := h.GetHours(weekday)
+			for _, h := range hours {
+				open, close, err := ParseOpenAndCloseHoursFromString(h)
+				if err != nil {
+					return nil, err
+				}
+				if open, err = ConvertBetweenFormats(open, "15:04", "3:04pm"); err != nil {
+					return nil, err
+				}
+				if close, err = ConvertBetweenFormats(close, "15:04", "3:04pm"); err != nil {
+					return nil, err
+				}
+				hoursStringSlice[i] = append(hoursStringSlice[i], fmt.Sprintf("%s - %s", open, close))
+			}
+		}
+	}
+	var hoursSlice = make([]string, 7)
+	for i, h := range hoursStringSlice {
+		hoursSlice[i] = strings.Join(h, ",")
+	}
+	return hoursSlice, nil
+}
+
 func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if len(str) == 0 {
 		return -1, "", fmt.Errorf("Error parsing weekday and hours from string: string has 0 length")
