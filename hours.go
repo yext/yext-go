@@ -82,6 +82,14 @@ func HoursHelperFromString(str string) (*HoursHelper, error) {
 	return hoursHelper, nil
 }
 
+func MustHoursHelperFromString(str string) *HoursHelper {
+	hoursHelper, err := HoursHelperFromString(str)
+	if err != nil {
+		panic(err)
+	}
+	return hoursHelper
+}
+
 func (h *HoursHelper) SetHours(weekday Weekday, hours []string) {
 	switch weekday {
 	case Sunday:
@@ -178,7 +186,7 @@ func (h *HoursHelper) SerializeDay(weekday Weekday) string {
 	return strings.Join(hoursStrings, ",")
 }
 
-func (h *HoursHelper) ConvertHoursStringToStringSlice() ([]string, error) {
+func (h *HoursHelper) ToStringSlice() ([]string, error) {
 	var hoursStringSlice = make([][]string, 7)
 	for i := range hoursStringSlice {
 		weekday := Weekday(i + 1)
@@ -208,6 +216,14 @@ func (h *HoursHelper) ConvertHoursStringToStringSlice() ([]string, error) {
 		hoursSlice[i] = strings.Join(h, ",")
 	}
 	return hoursSlice, nil
+}
+
+func (h *HoursHelper) MustToStringSlice() []string {
+	hoursStringSlice, err := h.ToStringSlice()
+	if err != nil {
+		panic(err)
+	}
+	return hoursStringSlice
 }
 
 func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {

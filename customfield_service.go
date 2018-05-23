@@ -257,6 +257,26 @@ func (c *CustomFieldManager) MustCustomFieldId(name string) string {
 	}
 }
 
+func (c *CustomFieldManager) CustomFieldName(id string) (string, error) {
+	ids := []string{}
+	for _, cf := range c.CustomFields {
+		if id == cf.GetId() {
+			return cf.Name, nil
+		}
+		ids = append(ids, cf.GetId())
+	}
+
+	return "", fmt.Errorf("Unable to find custom field with Id %s, available Ids: %v", id, ids)
+}
+
+func (c *CustomFieldManager) MustCustomFieldName(id string) string {
+	if id, err := c.CustomFieldName(id); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
+}
+
 func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (string, error) {
 	cf, err := c.CustomField(fieldName)
 	if err != nil {
@@ -605,6 +625,14 @@ func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId strin
 		}
 	}
 	return "", fmt.Errorf("Unable to find option for key %s for custom field %s", optionId, cfName)
+}
+
+func (c *CustomFieldManager) MustCustomFieldOptionName(fieldName, optionId string) string {
+	if id, err := c.CustomFieldOptionName(fieldName, optionId); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
 }
 
 func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
