@@ -270,10 +270,10 @@ func (c *CustomFieldManager) CustomFieldName(id string) (string, error) {
 }
 
 func (c *CustomFieldManager) MustCustomFieldName(id string) string {
-	if id, err := c.CustomFieldName(id); err != nil {
+	if name, err := c.CustomFieldName(id); err != nil {
 		panic(err)
 	} else {
-		return id
+		return name
 	}
 }
 
