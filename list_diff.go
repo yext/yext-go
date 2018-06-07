@@ -2,18 +2,18 @@ package yext
 
 import "reflect"
 
-func (a *BioList) Diff(b *BioList) bool {
+func (a *BioList) Equal(b *BioList) bool {
 	return !reflect.DeepEqual(a, b)
 }
 
-func (a *MenuList) Diff(b *MenuList) bool {
+func (a *MenuList) Equal(b *MenuList) bool {
 	return !reflect.DeepEqual(a, b)
 }
 
-func (a *ProductList) Diff(b *ProductList) bool {
+func (a *ProductList) Equal(b *ProductList) bool {
 	return !reflect.DeepEqual(a, b)
 }
 
-func (a *EventList) Diff(b *EventList) bool {
+func (a *EventList) Equal(b *EventList) bool {
 	return !reflect.DeepEqual(a, b)
 }

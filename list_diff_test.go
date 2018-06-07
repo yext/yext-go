@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestListDiff(t *testing.T) {
+func TestListEqual(t *testing.T) {
 	type test struct {
 		A, B   *BioList
 		IsDiff bool
@@ -119,7 +119,7 @@ func TestListDiff(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if isDiff := test.A.Diff(test.B); isDiff != test.IsDiff {
+		if isDiff := test.A.Equal(test.B); isDiff != test.IsDiff {
 			t.Errorf("\nA: %s\nB: %s\nWanted:%t\nGot:   %t", test.A, test.B, test.IsDiff, isDiff)
 		}
 	}
