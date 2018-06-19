@@ -86,3 +86,18 @@ func IsNotFoundError(err error) bool {
 	}
 	return false
 }
+
+func IsErrorCode(err error, code int) bool {
+	if e, ok := err.(Errors); ok {
+		for _, innerError := range e {
+			if IsErrorCode(innerError, code) {
+				return true
+			}
+		}
+	} else if e, ok := err.(*Error); ok {
+		if e.Code == code {
+			return true
+		}
+	}
+	return false
+}
