@@ -63,6 +63,10 @@ func TestErrorsFromString(t *testing.T) {
 		Want         []*Error
 	}{
 		{
+			ErrorMessage: "",
+			Want:         nil,
+		},
+		{
 			ErrorMessage: "type: FATAL_ERROR code: 2015 message: Unknown folder; request uuid: 7199948d-9f0d-4649-9625-495b33ad4940",
 			Want: []*Error{
 				&Error{
