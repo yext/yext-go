@@ -103,11 +103,13 @@ func IsErrorCode(err error, code int) bool {
 	return false
 }
 
-func SplitStrAtWord(str string, word string) (string, string) {
-	words := strings.Split(str, " ")
-	found := false
-	before := ""
-	after := ""
+func splitStrAtWord(str string, word string) (string, string) {
+	var (
+		words  = strings.Split(str, " ")
+		found  = false
+		before = ""
+		after  = ""
+	)
 	for _, w := range words {
 		if w == word {
 			found = true
@@ -126,22 +128,28 @@ func SplitStrAtWord(str string, word string) (string, string) {
 	return before, after
 }
 
-func StrToError(str string) *Error {
+func errorFromString(str string) (*Error, error) {
 	strRemaining := strings.TrimLeft(str, "type: ")
-	typ, strRemaining := SplitStrAtWord(strRemaining, "code:")
-	code, message := SplitStrAtWord(strRemaining, "message:")
-	codeInt, _ := strconv.Atoi(code)
-	return &Error{Type: typ, Code: codeInt, Message: message}
+	typ, strRemaining := splitStrAtWord(strRemaining, "code:")
+	code, message := splitStrAtWord(strRemaining, "message:")
+	codeInt, errConv := strconv.Atoi(code)
+	if errConv != nil {
+		return nil, errConv
+	}
+	return &Error{Type: typ, Code: codeInt, Message: message}, nil
 }
 
-func ParseErrorStr(errorStr string) []*Error {
+func ErrorsFromString(errorStr string) ([]*Error, error) {
 	errStrList := strings.Split(errorStr, "; ")
 	var errors []*Error
 	uuid := strings.TrimLeft(errStrList[len(errStrList)-1], "request uuid: ")
 	for i := 0; i < len(errStrList)-1; i++ {
-		err := StrToError(errStrList[i])
-		err.RequestUUID = uuid
-		errors = append(errors, err)
+		errObj, err := errorFromString(errStrList[i])
+		if err != nil {
+			return nil, err
+		}
+		errObj.RequestUUID = uuid
+		errors = append(errors, errObj)
 	}
-	return errors
+	return errors, nil
 }
