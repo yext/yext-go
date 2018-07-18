@@ -1,10 +1,5 @@
 package yext
 
-import (
-	"encoding/json"
-	"fmt"
-)
-
 type EntityType string
 
 type Entity interface {
@@ -22,41 +17,4 @@ type EntityMeta struct {
 	CategoryIds *[]string         `json:"categoryIds,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 	CountryCode *string           `json:"countryCode,omitempty"`
-}
-
-type EntityList []Entity
-
-func (e *EntityList) UnmarshalJSON(b []byte) error {
-	var raw []json.RawMessage
-	err := json.Unmarshal(b, &raw)
-	if err != nil {
-		return err
-	}
-
-	for _, r := range raw {
-		var obj map[string]interface{}
-		err := json.Unmarshal(r, &obj)
-		if err != nil {
-			return err
-		}
-
-		var entityType string
-		if t, ok := obj["entityType"].(string); ok {
-			entityType = t
-		}
-
-		typedEntity, ok := YextEntityRegistry[EntityType(entityType)]
-		if !ok {
-			return fmt.Errorf("Entity type %s is not in the registry", entityType)
-		}
-
-		err = json.Unmarshal(r, typedEntity)
-		if err != nil {
-			return err
-		}
-		*e = append(*e, typedEntity)
-
-	}
-	return nil
-
 }

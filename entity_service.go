@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 const entityPath = "entities"
@@ -30,9 +32,9 @@ type EntityListOptions struct {
 }
 
 type EntityListResponse struct {
-	Count         int        `json:"count"`
-	Entities      EntityList `json:"entities"`
-	NextPageToken string     `json:"nextPageToken"`
+	Count         int           `json:"count"`
+	Entities      []interface{} `json:"entities"`
+	NextPageToken string        `json:"nextPageToken"`
 }
 
 func (e *EntityService) RegisterEntity(entityType EntityType, entity Entity) {
@@ -71,7 +73,26 @@ func (e *EntityService) ListTest() ([]Entity, error) {
 	if err != nil {
 		return nil, err
 	}
-	return resp.Entities, nil
+
+	var entities = []Entity{}
+	for _, entity := range resp.Entities {
+		var entityValsByKey = entity.(map[string]interface{})
+		entityType, ok := entityValsByKey["entityType"]
+		if !ok {
+			return nil, fmt.Errorf("Unable to find enityType attribute in %v", entityValsByKey)
+		}
+
+		entityObj, err := e.LookupEntity(EntityType(entityType.(string)))
+		if err != nil {
+			return nil, err
+		}
+		err = mapstructure.Decode(entityValsByKey, entityObj)
+		if err != nil {
+			return nil, fmt.Errorf("Error decoding entity: %s", err)
+		}
+		entities = append(entities, entityObj)
+	}
+	return entities, nil
 }
 
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
