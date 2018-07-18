@@ -1,11 +1,8 @@
 package yext
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
-	"os"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -57,42 +54,34 @@ func (e *EntityService) PathName(entityType EntityType) (string, error) {
 	return entity.PathName(), nil
 }
 
-func (e *EntityService) ListTest() ([]Entity, error) {
-	jsonFile, err := os.Open("entitiesList.json")
-	if err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
-
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	var resp EntityListResponse
-	err = json.Unmarshal(byteValue, &resp)
-	if err != nil {
-		return nil, err
-	}
-
+func (e *EntityService) toEntityTypes(entityInterfaces []interface{}) ([]Entity, error) {
 	var entities = []Entity{}
-	for _, entity := range resp.Entities {
-		var entityValsByKey = entity.(map[string]interface{})
-		entityType, ok := entityValsByKey["entityType"]
-		if !ok {
-			return nil, fmt.Errorf("Unable to find enityType attribute in %v", entityValsByKey)
-		}
-
-		entityObj, err := e.LookupEntity(EntityType(entityType.(string)))
+	for _, entityInterface := range entityInterfaces {
+		entity, err := e.toEntityType(entityInterface)
 		if err != nil {
 			return nil, err
 		}
-		err = mapstructure.Decode(entityValsByKey, entityObj)
-		if err != nil {
-			return nil, fmt.Errorf("Error decoding entity: %s", err)
-		}
-		entities = append(entities, entityObj)
+		entities = append(entities, entity)
 	}
 	return entities, nil
+}
+
+func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error) {
+	var entityValsByKey = entityInterface.(map[string]interface{})
+	entityType, ok := entityValsByKey["entityType"]
+	if !ok {
+		return nil, fmt.Errorf("Unable to find enityType attribute in %v", entityValsByKey)
+	}
+
+	entityObj, err := e.LookupEntity(EntityType(entityType.(string)))
+	if err != nil {
+		return nil, err
+	}
+	err = mapstructure.Decode(entityValsByKey, entityObj)
+	if err != nil {
+		return nil, fmt.Errorf("Error decoding entity: %s", err)
+	}
+	return entityObj, nil
 }
 
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
@@ -107,9 +96,14 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		if err != nil {
 			return "", err
 		}
-		// for _, entity := range resp.Entities {
-		// 	entities = append(entities, entity)
-		// }
+
+		typedEntities, err := e.toEntityTypes(resp.Entities)
+		if err != nil {
+			return "", err
+		}
+		for _, entity := range typedEntities {
+			entities = append(entities, entity)
+		}
 		return resp.NextPageToken, err
 	}
 
@@ -140,12 +134,19 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		}
 	}
 
-	v := &EntityListResponse{}
-	r, err := e.client.DoRequest("GET", requrl, v)
+	// TODO: use once we no longer have to fake the response
+	// v := &EntityListResponse{}
+	// r, err := e.client.DoRequest("GET", requrl, v)
+	// if err != nil {
+	// 	return nil, r, err
+	// }
+
+	v, err := fakeEntityListResponse()
 	if err != nil {
-		return nil, r, err
+		return nil, nil, err
 	}
 
+	// TODO: handle hyrdation and nil is empty
 	// if _, err := e.HydrateLocations(v.Locations); err != nil {
 	// 	return nil, r, err
 	// }
@@ -154,9 +155,10 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 	// 	l.nilIsEmpty = true
 	// }
 
-	return v, r, nil
+	return v, nil, nil
 }
 
+// TODO: This function is a stub
 func (e *EntityService) ListAllOfType(opts *EntityListOptions, entityType EntityType) ([]Entity, error) {
 	var entities []Entity
 	if opts == nil {
@@ -214,6 +216,7 @@ func (e *EntityService) ListOfType(opts *EntityListOptions, entityType EntityTyp
 		return nil, r, err
 	}
 
+	// TODO: handle hydration and nil is empty
 	// if _, err := e.HydrateLocations(v.Locations); err != nil {
 	// 	return nil, r, err
 	// }
@@ -243,7 +246,7 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 		q.Add("resolvePlaceholders", "true")
 	}
 	if opts.EntityTypes != nil && len(opts.EntityTypes) > 0 {
-		// TODO: does this want a list?
+		// TODO: add entity types
 	}
 	u.RawQuery = q.Encode()
 
@@ -260,6 +263,7 @@ func (e *EntityService) Get(id string, entityType EntityType) (Entity, *Response
 		return nil, r, err
 	}
 
+	// TODO: handle hydration and nil is empty
 	// if _, err := HydrateLocation(&v, l.CustomFields); err != nil {
 	// 	return nil, r, err
 	// }
@@ -270,6 +274,7 @@ func (e *EntityService) Get(id string, entityType EntityType) (Entity, *Response
 }
 
 func (e *EntityService) Create(y Entity) (*Response, error) {
+	// TODO: custom field validation
 	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
 	// 	return nil, err
 	// }
@@ -282,6 +287,7 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 }
 
 func (e *EntityService) Edit(y Entity) (*Response, error) {
+	// TODO: custom field validation
 	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
 	// 	return nil, err
 	// }
@@ -292,24 +298,3 @@ func (e *EntityService) Edit(y Entity) (*Response, error) {
 
 	return r, nil
 }
-
-// func (e *EntityService) ListEntitiesBySearchId(searchId string, entityType EntityType) ([]Entity, error) {
-// 	//var locations []*Location
-// 	var llo = &LocationListOptions{SearchID: searchId}
-// 	llo.ListOptions = ListOptions{Limit: LocationListMaxLimit}
-// 	var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
-// 		llo.ListOptions = *opts
-// 		llr, _, err := l.List(llo)
-// 		if err != nil {
-// 			return "", err
-// 		}
-// 		entities = append(entities, llr.Locations...)
-// 		return llr.NextPageToken, err
-// 	}
-//
-// 	if err := tokenListHelper(lg, &llo.ListOptions); err != nil {
-// 		return nil, err
-// 	} else {
-// 		return entities, nil
-// 	}
-// }

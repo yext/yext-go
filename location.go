@@ -182,12 +182,12 @@ func (y Location) GetId() string {
 	return ""
 }
 
-// func (y Location) GetLocationType() string {
-// 	if y.LocationType != nil {
-// 		return *y.LocationType
-// 	}
-// 	return ""
-// }
+func (y Location) GetEntityType() string {
+	if y.EntityType != nil {
+		return *y.EntityType
+	}
+	return ""
+}
 
 func (y Location) GetName() string {
 	if y.Name != nil {
