@@ -36,6 +36,7 @@ type Client struct {
 	LanguageProfileService *LanguageProfileService
 	AssetService           *AssetService
 	AnalyticsService       *AnalyticsService
+	EntityService          *EntityService
 }
 
 func NewClient(config *Config) *Client {
@@ -51,6 +52,7 @@ func NewClient(config *Config) *Client {
 	c.LanguageProfileService = &LanguageProfileService{client: c}
 	c.AssetService = &AssetService{client: c}
 	c.AnalyticsService = &AnalyticsService{client: c}
+	c.EntityService = &EntityService{client: c, registry: YextEntityRegistry}
 
 	return c
 }
