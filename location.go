@@ -10,13 +10,15 @@ import (
 	"fmt"
 )
 
+const ENTITYTYPE_LOCATION EntityType = "LOCATION"
+
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
 	// Admin
 	Id           *string                `json:"id,omitempty"`
 	AccountId    *string                `json:"accountId,omitempty"`
-	LocationType *string                `json:"locationType,omitempty"`
+	EntityType   *string                `json:"entityType,omitempty"`
 	FolderId     *string                `json:"folderId,omitempty"`
 	LabelIds     *UnorderedStrings      `json:"labelIds,omitempty"`
 	CategoryIds  *[]string              `json:"categoryIds,omitempty"`
@@ -160,6 +162,18 @@ type Location struct {
 	*/
 }
 
+func (y *Location) EntityId() string {
+	return y.GetId()
+}
+
+func (y *Location) Type() EntityType {
+	return ENTITYTYPE_LOCATION
+}
+
+func (y *Location) PathName() string {
+	return locationsPath
+}
+
 func (y Location) GetId() string {
 	if y.Id != nil {
 		return *y.Id
@@ -167,12 +181,12 @@ func (y Location) GetId() string {
 	return ""
 }
 
-func (y Location) GetLocationType() string {
-	if y.LocationType != nil {
-		return *y.LocationType
-	}
-	return ""
-}
+// func (y Location) GetLocationType() string {
+// 	if y.LocationType != nil {
+// 		return *y.LocationType
+// 	}
+// 	return ""
+// }
 
 func (y Location) GetName() string {
 	if y.Name != nil {
