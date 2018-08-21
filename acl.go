@@ -20,6 +20,8 @@ type ACL struct {
 	AccountId string   `json:"accountId"`
 }
 
+type ACLList []ACL
+
 func (a ACL) String() string {
 	b, _ := json.Marshal(a)
 	return string(b)
