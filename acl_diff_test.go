@@ -85,7 +85,7 @@ func TestDiffIdenticalACL(t *testing.T) {
 	}
 
 	if d != blankACL {
-		t.Errorf("Expected empty diff, but got %v", d)
+		t.Errorf("Expected %v, but got %v", yext.ACL{}, d)
 	}
 }
 
@@ -103,7 +103,7 @@ func TestDiffRoleACL(t *testing.T) {
 	}
 
 	if d != expectedDiffACL {
-		t.Errorf("Expected diff in role, but got %v", d)
+		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
 	}
 }
 
@@ -118,7 +118,7 @@ func TestDiffOnACL(t *testing.T) {
 	}
 
 	if d != expectedDiffACL {
-		t.Errorf("Expected diff in values, but got %v", d)
+		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
 	}
 }
 
@@ -133,7 +133,7 @@ func TestDiffAccessOnACL(t *testing.T) {
 	}
 
 	if d != expectedDiffACL {
-		t.Errorf("Expected diff in values, but got %v", d)
+		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
 	}
 }
 
@@ -145,7 +145,7 @@ func TestDiffIdenticalACLList(t *testing.T) {
 	}
 
 	if d != nil {
-		t.Errorf("Expected nil diff, but got %v", d)
+		t.Errorf("Expected %v, but got %v", nil, d)
 	}
 }
 
@@ -157,7 +157,7 @@ func TestDiffIdenticalWithMultipleItemsACLList(t *testing.T) {
 	}
 
 	if d != nil {
-		t.Errorf("Expected nil diff, but got %v", d)
+		t.Errorf("Expected %v, but got %v", nil, d)
 	}
 }
 
@@ -169,7 +169,7 @@ func TestDiffItemACLList(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(d, differentItemACLList) {
-		t.Errorf("Expected diff to be second ACLList, but got %v", d)
+		t.Errorf("Expected %v, but got %v", differentItemACLList, d)
 	}
 }
 
@@ -181,6 +181,6 @@ func TestDiffLenACLList(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(d, differentLenACLList) {
-		t.Errorf("Expected diff to be second ACLList, but got %v", d)
+		t.Errorf("Expected %v, but got %v", differentLenACLList, d)
 	}
 }

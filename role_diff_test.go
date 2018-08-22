@@ -37,7 +37,7 @@ func TestDiffIdenticalRole(t *testing.T) {
 	}
 
 	if d != blankRole {
-		t.Errorf("Expected empty diff, but got %v", d)
+		t.Errorf("Expected %v, but got %v", yext.Role{}, d)
 	}
 }
 
@@ -67,6 +67,6 @@ func TestDiffNameRole(t *testing.T) {
 	}
 
 	if d != expectedDiffRole {
-		t.Errorf("Expected a diff in name, but got %v", d)
+		t.Errorf("Expected %v, but got %v", expectedDiffRole, d)
 	}
 }
