@@ -340,6 +340,88 @@ func TestACLList_Diff(t *testing.T) {
 			},
 			wantDiff: true,
 		},
+		{
+			name: "Some Identical and Some Different Items in ACLLists",
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
+					},
+					On:       "1234567",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
+					},
+					On:       "1234567",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDiff: true,
+		},
 	}
 
 	for _, test := range tests {
