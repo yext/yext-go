@@ -1,72 +1,69 @@
 package yext_test
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/yext/yext-go"
 )
 
-var (
-	blankRole = yext.Role{}
-
-	exampleRole = yext.Role{
-		Id:   yext.String("3"),
-		Name: yext.String("Example Role"),
+func TestRole_Diff(t *testing.T) {
+	tests := []struct {
+		name      string
+		roleA     yext.Role
+		roleB     yext.Role
+		wantDelta yext.Role
+		wantDiff  bool
+	}{
+		{
+			name: "Identical Roles",
+			roleA: yext.Role{
+				Id:   yext.String("3"),
+				Name: yext.String("Example Role"),
+			},
+			roleB: yext.Role{
+				Id:   yext.String("3"),
+				Name: yext.String("Example Role"),
+			},
+			wantDelta: yext.Role{},
+			wantDiff:  false,
+		},
+		{
+			name: "Different 'Id' params in Roles",
+			roleA: yext.Role{
+				Id:   yext.String("3"),
+				Name: yext.String("Example Role"),
+			},
+			roleB: yext.Role{
+				Id:   yext.String("4"),
+				Name: yext.String("Example Role"),
+			},
+			wantDelta: yext.Role{
+				Id: yext.String("4"),
+			},
+			wantDiff: true,
+		},
+		{
+			name: "Different 'Name' params in Roles",
+			roleA: yext.Role{
+				Id:   yext.String("3"),
+				Name: yext.String("Example Role"),
+			},
+			roleB: yext.Role{
+				Id:   yext.String("3"),
+				Name: yext.String("Example Role Two"),
+			},
+			wantDelta: yext.Role{
+				Name: yext.String("Example Role Two"),
+			},
+			wantDiff: true,
+		},
 	}
 
-	identicalRole = yext.Role{
-		Id:   yext.String("3"),
-		Name: yext.String("Example Role"),
-	}
-
-	differentIdRole = yext.Role{
-		Id:   yext.String("4"),
-		Name: yext.String("Example Role"),
-	}
-
-	differentNameRole = yext.Role{
-		Id:   yext.String("3"),
-		Name: yext.String("Example Role Two"),
-	}
-)
-
-func TestDiffIdenticalRole(t *testing.T) {
-	d, isDiff := exampleRole.Diff(identicalRole)
-	if isDiff {
-		t.Errorf("Expected diff to be false but was true, diff result: %v", d)
-	}
-
-	if d != blankRole {
-		t.Errorf("Expected %v, but got %v", yext.Role{}, d)
-	}
-}
-
-func TestDiffIdRole(t *testing.T) {
-	d, isDiff := exampleRole.Diff(differentIdRole)
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	expectedDiffRole := yext.Role{
-		Id: differentIdRole.Id,
-	}
-
-	if d != expectedDiffRole {
-		t.Errorf("Expected %v, but got %v", expectedDiffRole, d)
-	}
-}
-
-func TestDiffNameRole(t *testing.T) {
-	d, isDiff := exampleRole.Diff(differentNameRole)
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	expectedDiffRole := yext.Role{
-		Name: differentNameRole.Name,
-	}
-
-	if d != expectedDiffRole {
-		t.Errorf("Expected %v, but got %v", expectedDiffRole, d)
+	for _, test := range tests {
+		if gotDelta, gotDiff := test.roleA.Diff(test.roleB); !reflect.DeepEqual(test.wantDelta, gotDelta) || test.wantDiff != gotDiff {
+			t.Error(fmt.Sprintf("test '%s' failed, got diff: %t, wanted diff: %t, got delta: %+v, wanted delta: %+v", test.name, test.wantDiff, gotDiff, test.wantDelta, gotDelta))
+		}
 	}
 }

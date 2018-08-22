@@ -1,186 +1,350 @@
 package yext_test
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/yext/yext-go"
 )
 
-var (
-	blankACL = yext.ACL{}
-
-	exampleACL = yext.ACL{
-		Role: yext.Role{
-			Id:   yext.String("3"),
-			Name: yext.String("Example Role"),
+func TestACL_Diff(t *testing.T) {
+	tests := []struct {
+		name      string
+		aclA      yext.ACL
+		aclB      yext.ACL
+		wantDelta *yext.ACL
+		wantDiff  bool
+	}{
+		{
+			name: "Identical ACLs",
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			wantDelta: nil,
+			wantDiff:  false,
 		},
-		On:       "12345",
-		AccessOn: yext.ACCESS_FOLDER,
-	}
-
-	identicalACL = yext.ACL{
-		Role: yext.Role{
-			Id:   yext.String("3"),
-			Name: yext.String("Example Role"),
+		{
+			name: "Different Roles in ACL",
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("4"),
+					Name: yext.String("Example Role Two"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			wantDelta: &yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("4"),
+					Name: yext.String("Example Role Two"),
+				},
+			},
+			wantDiff: true,
 		},
-		On:       "12345",
-		AccessOn: yext.ACCESS_FOLDER,
-	}
-
-	differentRoleACL = yext.ACL{
-		Role: yext.Role{
-			Id:   yext.String("4"),
-			Name: yext.String("Example Role Two"),
+		{
+			name: "Different 'On' params in ACL",
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "123456",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			wantDelta: &yext.ACL{
+				On: "123456",
+			},
+			wantDiff: true,
 		},
-		On:       "12345",
-		AccessOn: yext.ACCESS_FOLDER,
-	}
-
-	differentOnACL = yext.ACL{
-		Role: yext.Role{
-			Id:   yext.String("3"),
-			Name: yext.String("Example Role"),
-		},
-		On:       "123456",
-		AccessOn: yext.ACCESS_FOLDER,
-	}
-
-	differentAccessOnACL = yext.ACL{
-		Role: yext.Role{
-			Id:   yext.String("3"),
-			Name: yext.String("Example Role"),
-		},
-		On:       "12345",
-		AccessOn: yext.ACCESS_LOCATION,
-	}
-
-	exampleACLList = yext.ACLList{
-		exampleACL,
-	}
-
-	identicalACLList = yext.ACLList{
-		exampleACL,
-	}
-
-	differentItemACLList = yext.ACLList{
-		differentRoleACL,
-	}
-
-	differentLenACLList = yext.ACLList{
-		exampleACL,
-		identicalACL,
-	}
-
-	differentLenIdenticalACLList = yext.ACLList{
-		exampleACL,
-		identicalACL,
-	}
-)
-
-func TestDiffIdenticalACL(t *testing.T) {
-	d, isDiff := exampleACL.Diff(identicalACL)
-	if isDiff {
-		t.Errorf("Expected diff to be false but was true, diff result: %v", d)
-	}
-
-	if d != blankACL {
-		t.Errorf("Expected %v, but got %v", yext.ACL{}, d)
-	}
-}
-
-func TestDiffRoleACL(t *testing.T) {
-	d, isDiff := exampleACL.Diff(differentRoleACL)
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	expectedDiffACL := yext.ACL{
-		Role: yext.Role{
-			Id:   differentRoleACL.Id,
-			Name: differentRoleACL.Name,
+		{
+			name: "Different 'AccessOn' params in ACL",
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_FOLDER,
+			},
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
+				},
+				On:       "12345",
+				AccessOn: yext.ACCESS_LOCATION,
+			},
+			wantDelta: &yext.ACL{
+				AccessOn: yext.ACCESS_LOCATION,
+			},
+			wantDiff: true,
 		},
 	}
 
-	if d != expectedDiffACL {
-		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
+	for _, test := range tests {
+		if gotDelta, gotDiff := test.aclA.Diff(test.aclB); !reflect.DeepEqual(test.wantDelta, gotDelta) || test.wantDiff != gotDiff {
+			t.Error(fmt.Sprintf("test '%s' failed, got diff: %t, wanted diff: %t, got delta: %+v, wanted delta: %+v", test.name, test.wantDiff, gotDiff, test.wantDelta, gotDelta))
+		}
 	}
 }
 
-func TestDiffOnACL(t *testing.T) {
-	d, isDiff := exampleACL.Diff(differentOnACL)
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
+func TestACLList_Diff(t *testing.T) {
+	tests := []struct {
+		name      string
+		aclListA  yext.ACLList
+		aclListB  yext.ACLList
+		wantDelta yext.ACLList
+		wantDiff  bool
+	}{
+		{
+			name: "Identical ACLLists",
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDelta: nil,
+			wantDiff:  false,
+		},
+		{
+			name: "Identical ACLs in ACLLists",
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+			},
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+			},
+			wantDelta: nil,
+			wantDiff:  false,
+		},
+		{
+			name: "Different Length in ACLLists",
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
+					},
+					On:       "1234567",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
+					},
+					On:       "1234567",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDiff: true,
+		},
+		{
+			name: "Different Items in ACLLists",
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("33"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("44"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("33"),
+						Name: yext.String("Example Role"),
+					},
+					On:       "12345",
+					AccessOn: yext.ACCESS_FOLDER,
+				},
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("44"),
+						Name: yext.String("Example Role Two"),
+					},
+					On:       "123456",
+					AccessOn: yext.ACCESS_LOCATION,
+				},
+			},
+			wantDiff: true,
+		},
 	}
 
-	expectedDiffACL := yext.ACL{
-		On: "123456",
-	}
-
-	if d != expectedDiffACL {
-		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
-	}
-}
-
-func TestDiffAccessOnACL(t *testing.T) {
-	d, isDiff := exampleACL.Diff(differentAccessOnACL)
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	expectedDiffACL := yext.ACL{
-		AccessOn: yext.ACCESS_LOCATION,
-	}
-
-	if d != expectedDiffACL {
-		t.Errorf("Expected %v, but got %v", expectedDiffACL, d)
-	}
-}
-
-func TestDiffIdenticalACLList(t *testing.T) {
-	d, isDiff := exampleACLList.Diff(identicalACLList)
-
-	if isDiff {
-		t.Errorf("Expected diff to be false but was true, diff result: %v", d)
-	}
-
-	if d != nil {
-		t.Errorf("Expected %v, but got %v", nil, d)
-	}
-}
-
-func TestDiffIdenticalWithMultipleItemsACLList(t *testing.T) {
-	d, isDiff := differentLenACLList.Diff(differentLenIdenticalACLList)
-
-	if isDiff {
-		t.Errorf("Expected diff to be false but was true, diff result: %v", d)
-	}
-
-	if d != nil {
-		t.Errorf("Expected %v, but got %v", nil, d)
-	}
-}
-
-func TestDiffItemACLList(t *testing.T) {
-	d, isDiff := exampleACLList.Diff(differentItemACLList)
-
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	if !reflect.DeepEqual(d, differentItemACLList) {
-		t.Errorf("Expected %v, but got %v", differentItemACLList, d)
-	}
-}
-
-func TestDiffLenACLList(t *testing.T) {
-	d, isDiff := exampleACLList.Diff(differentLenACLList)
-
-	if !isDiff {
-		t.Errorf("Expected diff to be true but was false, diff result: %v", d)
-	}
-
-	if !reflect.DeepEqual(d, differentLenACLList) {
-		t.Errorf("Expected %v, but got %v", differentLenACLList, d)
+	for _, test := range tests {
+		if gotDelta, gotDiff := test.aclListA.Diff(test.aclListB); !reflect.DeepEqual(test.wantDelta, gotDelta) || test.wantDiff != gotDiff {
+			t.Error(fmt.Sprintf("test '%s' failed, got diff: %t, wanted diff: %t, got delta: %+v, wanted delta: %+v", test.name, test.wantDiff, gotDiff, test.wantDelta, gotDelta))
+		}
 	}
 }

@@ -2,13 +2,13 @@ package yext
 
 // Diff calculates the differences between a base ACL (a) and a second ACL (b).
 // The result returned is an ACL object with only parameters that are strictly different.
-func (a ACL) Diff(b ACL) (delta ACL, diff bool) {
+func (a ACL) Diff(b ACL) (delta *ACL, diff bool) {
 	roleDelta, roleDiff := a.Role.Diff(b.Role)
 	if !roleDiff && a.On == b.On && a.AccessOn == b.AccessOn {
-		return ACL{}, false
+		return nil, false
 	}
 
-	delta = ACL{}
+	delta = &ACL{}
 
 	if roleDiff {
 		delta.Role = roleDelta
@@ -33,16 +33,27 @@ func (a ACLList) Diff(b ACLList) (delta ACLList, diff bool) {
 	}
 
 	for _, aclA := range a {
-		for idxB, aclB := range b {
-			_, hasDelta := aclA.Diff(aclB)
-
-			if !hasDelta {
-				break
+		var found bool
+		for _, aclB := range b {
+			if _, hasDelta := aclA.Diff(aclB); !hasDelta {
+				found = true
 			}
+		}
+		if !found {
+			return b, true
+		}
+	}
 
-			if idxB == len(b)-1 {
-				return b, true
+	// Handle vice-versa for true equality
+	for _, aclB := range b {
+		var found bool
+		for _, aclA := range a {
+			if _, hasDelta := aclB.Diff(aclA); !hasDelta {
+				found = true
 			}
+		}
+		if !found {
+			return b, true
 		}
 	}
 
