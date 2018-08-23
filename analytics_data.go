@@ -52,6 +52,7 @@ type AnalyticsData struct {
 	IstLocalPackShareOfSearch             *float64 `json:"Ist Local Pack Share Of Search"`
 	IstShareOfIntelligentSearch           *float64 `json:"Ist Share Of Intelligent Search"`
 	LocationId                            *string  `json:"location_id"`
+	Month                                 *string  `json:"month"`
 }
 
 func (y AnalyticsData) GetProfileViews() int {
@@ -407,6 +408,13 @@ func (y AnalyticsData) GetIstShareOfIntelligentSearch() float64 {
 func (y AnalyticsData) GetLocationId() string {
 	if y.LocationId != nil {
 		return *y.LocationId
+	}
+	return ""
+}
+
+func (y AnalyticsData) GetMonth() string {
+	if y.Month != nil {
+		return *y.Month
 	}
 	return ""
 }
