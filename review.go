@@ -10,21 +10,22 @@ type Reviewer struct {
 }
 
 type Review struct {
-	Id                 *int       `json:"id"`
-	LocationId         *string    `json:"locationId"`
-	PublisherId        *string    `json:"publisherId"`
-	Rating             *float64   `json:"rating"`
-	Title              *string    `json:"title"`
-	Content            *string    `json:"content"`
-	AuthorName         *string    `json:"authorName"`
-	AuthorEmail        *string    `json:"authorEmail"`
-	URL                *string    `json:"url"`
-	PublisherDate      *int       `json:"publisherDate"`
-	LastYextUpdateDate *int       `json:"lastYextUpdateDate"`
-	Status             *string    `json:"status"`
-	Comments           *[]Comment `json:"comments"`
-	LabelIds           *[]int     `json:"labelIds"`
-	ExternalId         *string    `json:"externalId"`
+	Id                 *int           `json:"id"`
+	LocationId         *string        `json:"locationId"`
+	PublisherId        *string        `json:"publisherId"`
+	Rating             *float64       `json:"rating"`
+	Title              *string        `json:"title"`
+	Content            *string        `json:"content"`
+	AuthorName         *string        `json:"authorName"`
+	AuthorEmail        *string        `json:"authorEmail"`
+	URL                *string        `json:"url"`
+	PublisherDate      *int           `json:"publisherDate"`
+	LastYextUpdateDate *int           `json:"lastYextUpdateDate"`
+	Status             *string        `json:"status"`
+	Comments           *[]Comment     `json:"comments"`
+	LabelIds           *[]int         `json:"labelIds"`
+	ExternalId         *string        `json:"externalId"`
+	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
 }
 
 type Comment struct {
@@ -36,6 +37,11 @@ type Comment struct {
 	AuthorRole    *string `json:"authorRole"`
 	Content       *string `json:"content"`
 	Visibility    *string `json:"visibility"`
+}
+
+type ReviewLabel struct {
+	Id   *int    `json:"id"`
+	Name *string `json:"name"`
 }
 
 func (y Review) GetId() int {
@@ -195,6 +201,20 @@ func (y Comment) GetContent() string {
 func (y Comment) GetVisibility() string {
 	if y.Visibility != nil {
 		return *y.Visibility
+	}
+	return ""
+}
+
+func (y ReviewLabel) GetId() int {
+	if y.Id != nil {
+		return *y.Id
+	}
+	return 0
+}
+
+func (y ReviewLabel) GetName() string {
+	if y.Name != nil {
+		return *y.Name
 	}
 	return ""
 }
