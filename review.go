@@ -142,6 +142,13 @@ func (y Review) GetExternalId() string {
 	return ""
 }
 
+func (y Review) GetReviewLabels() (v []ReviewLabel) {
+	if y.ReviewLabels != nil {
+		v = *y.ReviewLabels
+	}
+	return v
+}
+
 func (y Review) GetComments() (v []Comment) {
 	if y.Comments != nil {
 		v = *y.Comments
