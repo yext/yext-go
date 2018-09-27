@@ -6,6 +6,7 @@ type Entity interface {
 	EntityId() string // Would this be necessary if it's always in the Core?
 	Type() EntityType
 	PathName() string
+	Copy() Entity
 }
 
 type EntityMeta struct {

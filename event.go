@@ -1,6 +1,10 @@
 package yext
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/mohae/deepcopy"
+)
 
 const (
 	ENTITYTYPE_EVENT     EntityType = "EVENT"
@@ -28,6 +32,10 @@ func (e *EventEntity) Type() EntityType {
 
 func (e *EventEntity) PathName() string {
 	return EntityPathNameEvents
+}
+
+func (y *EventEntity) Copy() Entity {
+	return deepcopy.Copy(y).(*EventEntity)
 }
 
 func (e *EventEntity) String() string {

@@ -1,10 +1,11 @@
 package yext
 
 import (
+	"bytes"
+	"encoding/gob"
+	"encoding/json"
 	"fmt"
 	"net/url"
-
-	"github.com/mitchellh/mapstructure"
 )
 
 const entityPath = "entities"
@@ -29,9 +30,9 @@ type EntityListOptions struct {
 }
 
 type EntityListResponse struct {
-	Count         int           `json:"count"`
-	Entities      []interface{} `json:"entities"`
-	NextPageToken string        `json:"nextPageToken"`
+	Count     int           `json:"count"`
+	Entities  []interface{} `json:"entities"`
+	PageToken string        `json:"nextPageToken"`
 }
 
 func (e *EntityService) RegisterEntity(entityType EntityType, entity Entity) {
@@ -43,7 +44,8 @@ func (e *EntityService) LookupEntity(entityType EntityType) (Entity, error) {
 	if !ok {
 		return nil, fmt.Errorf("Unable to find entity type %s in entity registry %v", entityType, e.registry)
 	}
-	return entity, nil
+	// This "Copy" is pretty hacky...but works for now
+	return entity.Copy(), nil
 }
 
 func (e *EntityService) PathName(entityType EntityType) (string, error) {
@@ -52,6 +54,16 @@ func (e *EntityService) PathName(entityType EntityType) (string, error) {
 		return "", err
 	}
 	return entity.PathName(), nil
+}
+
+func GetBytes(key interface{}) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(key)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 func (e *EntityService) toEntityTypes(entityInterfaces []interface{}) ([]Entity, error) {
@@ -68,18 +80,30 @@ func (e *EntityService) toEntityTypes(entityInterfaces []interface{}) ([]Entity,
 
 func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error) {
 	var entityValsByKey = entityInterface.(map[string]interface{})
-	entityType, ok := entityValsByKey["entityType"]
+	meta, ok := entityValsByKey["meta"]
 	if !ok {
-		return nil, fmt.Errorf("Unable to find enityType attribute in %v", entityValsByKey)
+		return nil, fmt.Errorf("Unable to find meta attribute in %v", entityValsByKey)
+	}
+
+	var metaByKey = meta.(map[string]interface{})
+	entityType, ok := metaByKey["entityType"]
+	if !ok {
+		return nil, fmt.Errorf("Unable to find entityType attribute in %v", metaByKey)
 	}
 
 	entityObj, err := e.LookupEntity(EntityType(entityType.(string)))
 	if err != nil {
 		return nil, err
 	}
-	err = mapstructure.Decode(entityValsByKey, entityObj)
+
+	entityJSON, err := json.Marshal(entityValsByKey)
 	if err != nil {
-		return nil, fmt.Errorf("Error decoding entity: %s", err)
+		return nil, fmt.Errorf("Error marshaling entity to JSON: %s", err)
+	}
+
+	err = json.Unmarshal(entityJSON, entityObj)
+	if err != nil {
+		return nil, fmt.Errorf("Error unmarshaling entity JSON: %s", err)
 	}
 	return entityObj, nil
 }
@@ -104,7 +128,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		for _, entity := range typedEntities {
 			entities = append(entities, entity)
 		}
-		return resp.NextPageToken, err
+		return resp.PageToken, err
 	}
 
 	if err := tokenListHelper(lg, &opts.ListOptions); err != nil {
@@ -134,16 +158,10 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		}
 	}
 
-	// TODO: use once we no longer have to fake the response
-	// v := &EntityListResponse{}
-	// r, err := e.client.DoRequest("GET", requrl, v)
-	// if err != nil {
-	// 	return nil, r, err
-	// }
-
-	v, err := fakeEntityListResponse()
+	v := &EntityListResponse{}
+	r, err := e.client.DoRequest("GET", requrl, v)
 	if err != nil {
-		return nil, nil, err
+		return nil, r, err
 	}
 
 	// TODO: handle hyrdation and nil is empty
@@ -174,7 +192,7 @@ func (e *EntityService) ListAllOfType(opts *EntityListOptions, entityType Entity
 		// for _, entity := range resp.Entities {
 		// 	entities = append(entities, entity)
 		// }
-		return resp.NextPageToken, err
+		return resp.PageToken, err
 	}
 
 	if err := tokenListHelper(lg, &opts.ListOptions); err != nil {

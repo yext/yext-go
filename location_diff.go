@@ -28,7 +28,8 @@ type Comparable interface {
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	d = &Location{Id: String(y.GetId())}
+	d = &Location{EntityMeta: EntityMeta{
+		Id: String(y.GetId())}}
 
 	var (
 		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b).Elem()
@@ -47,14 +48,17 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if valB.IsNil() || nameA == "Id" {
+		// Issue here because EntityMeta is an embedded struct
+		if nameA == "Id" || nameA == "EntityMeta" || valB.IsNil() {
 			continue
 		}
 
 		if nameA == "Hours" {
-			if !valA.IsNil() && !valB.IsNil() && HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
-				continue
-			}
+			// TODO: need to re-enable
+			continue
+			// if !valA.IsNil() && !valB.IsNil() && HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
+			// 	continue
+			// }
 		}
 
 		if isZeroValue(valA, y.nilIsEmpty) && isZeroValue(valB, b.nilIsEmpty) {
@@ -163,9 +167,11 @@ var closedHoursEquivalents = map[string]struct{}{
 	HoursClosedAllWeek: struct{}{},
 }
 
+// TODO: need to re-enable
 func HoursAreEquivalent(a, b string) bool {
-	_, aIsClosed := closedHoursEquivalents[a]
-	_, bIsClosed := closedHoursEquivalents[b]
-
-	return a == b || aIsClosed && bIsClosed
+	return false
+	// _, aIsClosed := closedHoursEquivalents[a]
+	// _, bIsClosed := closedHoursEquivalents[b]
+	//
+	// return a == b || aIsClosed && bIsClosed
 }

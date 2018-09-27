@@ -338,6 +338,7 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
 	if opts.PageToken != "" {
+		// TODO: this is not compatible with the old parameter name
 		q.Add("pageToken", opts.PageToken)
 	} else if opts.Offset != 0 {
 		q.Add("offset", strconv.Itoa(opts.Offset))
