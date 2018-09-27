@@ -232,9 +232,17 @@ func (v *VideoGallery) CustomFieldTag() string {
 }
 
 type Hours struct {
+	// TODO: Check how AdditonalText and HolidayHours are represented
 	AdditionalText string         `json:"additionalHoursText,omitempty"`
-	Hours          string         `json:"hours,omitempty"`
 	HolidayHours   []HolidayHours `json:"holidayHours,omitempty"`
+	Hours          string         `json:"holidayHours,omitempty"`
+	// Monday         []*DayHours    `json:"monday,omitempty"`
+	// Tuesday        []*DayHours    `json:"tuesday,omitempty"`
+	// Wednesday      []*DayHours    `json:"wednesday,omitempty"`
+	// Thursday       []*DayHours    `json:"thursday,omitempty"`
+	// Friday         []*DayHours    `json:"friday,omitempty"`
+	// Saturday       []*DayHours    `json:"saturday,omitempty"`
+	// Sunday         []*DayHours    `json:"sunday,omitempty"`
 }
 
 func (h Hours) CustomFieldTag() string {
