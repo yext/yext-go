@@ -28,7 +28,7 @@ type Comparable interface {
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	d = &Location{EntityMeta: EntityMeta{
+	d = &Location{EntityMeta: &EntityMeta{
 		Id: String(y.GetId())}}
 
 	var (

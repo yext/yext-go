@@ -17,7 +17,7 @@ const ENTITYTYPE_LOCATION EntityType = "LOCATION"
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
-	EntityMeta
+	EntityMeta *EntityMeta `json:"meta,omitempty"`
 
 	// Admin
 	FolderId     *string                `json:"folderId,omitempty"`
@@ -49,7 +49,7 @@ type Location struct {
 	FaxPhone       *string   `json:"faxPhone,omitempty"`
 	LocalPhone     *string   `json:"localPhone,omitempty"`
 	MobilePhone    *string   `json:"mobilePhone,omitempty"`
-	Phone          *string   `json:"phone,omitempty"`
+	MainPhone      *string   `json:"mainPhone,omitempty"`
 	TollFreePhone  *string   `json:"tollFreePhone,omitempty"`
 	TtyPhone       *string   `json:"ttyPhone,omitempty"`
 	IsPhoneTracked *bool     `json:"isPhoneTracked,omitempty"`
@@ -70,20 +70,19 @@ type Location struct {
 	Degrees              *[]string      `json:"degrees,omitempty"`
 
 	// Location Info
-	Description         *string         `json:"description,omitempty"`
-	HolidayHours        *[]HolidayHours `json:"holidayHours,omitempty"`
-	Hours               *ProfileHours   `json:"hours,omitempty"`
-	AdditionalHoursText *string         `json:"additionalHoursText,omitempty"`
-	YearEstablished     *float64        `json:"yearEstablished,omitempty"`
-	Associations        *[]string       `json:"associations,omitempty"`
-	Certifications      *[]string       `json:"certifications,omitempty"`
-	Brands              *[]string       `json:"brands,omitempty"`
-	Products            *[]string       `json:"products,omitempty"`
-	Services            *[]string       `json:"services,omitempty"`
-	Specialties         *[]string       `json:"specialties,omitempty"`
-	Languages           *[]string       `json:"languages,omitempty"`
-	Logo                *LocationPhoto  `json:"logo,omitempty"`
-	PaymentOptions      *[]string       `json:"paymentOptions,omitempty"`
+	Description         *string        `json:"description,omitempty"`
+	Hours               *Hours         `json:"hours,omitempty"`
+	AdditionalHoursText *string        `json:"additionalHoursText,omitempty"`
+	YearEstablished     *float64       `json:"yearEstablished,omitempty"`
+	Associations        *[]string      `json:"associations,omitempty"`
+	Certifications      *[]string      `json:"certifications,omitempty"`
+	Brands              *[]string      `json:"brands,omitempty"`
+	Products            *[]string      `json:"products,omitempty"`
+	Services            *[]string      `json:"services,omitempty"`
+	Specialties         *[]string      `json:"specialties,omitempty"`
+	Languages           *[]string      `json:"languages,omitempty"`
+	Logo                *LocationPhoto `json:"logo,omitempty"`
+	PaymentOptions      *[]string      `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate *Coordinate `json:"yextDisplayCoordinate,omitempty"`
@@ -183,27 +182,28 @@ type Coordinate struct {
 	Longitude *float64 `json:"longitude,omitempty"`
 }
 
-// TODO: Need to rename
-type ProfileHours struct {
-	Monday    []*DayHours `json:"monday,omitempty"`
-	Tuesday   []*DayHours `json:"tuesday,omitempty"`
-	Wednesday []*DayHours `json:"wednesday,omitempty"`
-	Thursday  []*DayHours `json:"thursday,omitempty"`
-	Friday    []*DayHours `json:"friday,omitempty"`
-	Saturday  []*DayHours `json:"saturday,omitempty"`
-	Sunday    []*DayHours `json:"sunday,omitempty"`
+type Hours struct {
+	Monday       []*Times        `json:"monday,omitempty"`
+	Tuesday      []*Times        `json:"tuesday,omitempty"`
+	Wednesday    []*Times        `json:"wednesday,omitempty"`
+	Thursday     []*Times        `json:"thursday,omitempty"`
+	Friday       []*Times        `json:"friday,omitempty"`
+	Saturday     []*Times        `json:"saturday,omitempty"`
+	Sunday       []*Times        `json:"sunday,omitempty"`
+	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
 }
 
-type DayHours struct {
-	Start *string `json:"start,omitempty"`
-	End   *string `json:"end,omitempty"`
+// TODO: This will become OpenIntervals
+type Times struct {
+	Start string `json:"start,omitempty"`
+	End   string `json:"end,omitempty"`
 }
 
-func (y *Location) EntityId() string {
+func (y *Location) GetEntityId() string {
 	return y.GetId()
 }
 
-func (y *Location) Type() EntityType {
+func (y *Location) GetEntityType() EntityType {
 	return ENTITYTYPE_LOCATION
 }
 
@@ -216,8 +216,8 @@ func (y *Location) Copy() Entity {
 }
 
 func (y Location) GetId() string {
-	if y.Id != nil {
-		return *y.Id
+	if y.EntityMeta != nil && y.EntityMeta.Id != nil {
+		return *y.EntityMeta.Id
 	}
 	return ""
 }
@@ -300,8 +300,8 @@ func (y Location) GetDegrees() []string {
 }
 
 func (y Location) GetAccountId() string {
-	if y.AccountId != nil {
-		return *y.AccountId
+	if y.EntityMeta.AccountId != nil {
+		return *y.EntityMeta.AccountId
 	}
 	return ""
 }
@@ -369,9 +369,9 @@ func (y Location) GetCountryCode() string {
 	return ""
 }
 
-func (y Location) GetPhone() string {
-	if y.Phone != nil {
-		return *y.Phone
+func (y Location) GetMainPhone() string {
+	if y.MainPhone != nil {
+		return *y.MainPhone
 	}
 	return ""
 }
@@ -685,8 +685,8 @@ func (y Location) GetGoogleAttributes() GoogleAttributes {
 }
 
 func (y Location) GetHolidayHours() []HolidayHours {
-	if y.HolidayHours != nil {
-		return *y.HolidayHours
+	if y.Hours != nil && y.Hours.HolidayHours != nil {
+		return *y.Hours.HolidayHours
 	}
 	return nil
 }
@@ -725,8 +725,8 @@ func (l LocationClosed) String() string {
 // HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.
 // For details see
 type HolidayHours struct {
-	Date  string `json:"date"`
-	Hours string `json:"hours"`
+	Date  string   `json:"date"`
+	Hours []*Times `json:"hours"`
 }
 
 // UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds

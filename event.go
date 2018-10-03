@@ -19,14 +19,14 @@ type EventEntity struct { // TODO: rename
 	EntityType  EntityType `json:"entityType,omitempty"`
 }
 
-func (e *EventEntity) EntityId() string {
+func (e *EventEntity) GetEntityId() string {
 	if e.Id != nil {
 		return *e.Id
 	}
 	return ""
 }
 
-func (e *EventEntity) Type() EntityType {
+func (e *EventEntity) GetEntityType() EntityType {
 	return ENTITYTYPE_EVENT
 }
 
