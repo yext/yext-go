@@ -326,7 +326,7 @@ func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
 func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	u, err := url.Parse(requrl)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	if opts == nil {

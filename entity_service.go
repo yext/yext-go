@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 )
 
@@ -26,13 +27,12 @@ type EntityListOptions struct {
 	ListOptions
 	SearchID            string
 	ResolvePlaceholders bool
-	EntityTypes         []EntityType
 }
 
 type EntityListResponse struct {
 	Count     int           `json:"count"`
 	Entities  []interface{} `json:"entities"`
-	PageToken string        `json:"nextPageToken"`
+	PageToken string        `json:"pageToken"`
 }
 
 func (e *EntityService) RegisterEntity(entityType EntityType, entity Entity) {
@@ -44,16 +44,9 @@ func (e *EntityService) LookupEntity(entityType EntityType) (Entity, error) {
 	if !ok {
 		return nil, fmt.Errorf("Unable to find entity type %s in entity registry %v", entityType, e.registry)
 	}
-	// This "Copy" is pretty hacky...but works for now
-	return entity.Copy(), nil
-}
 
-func (e *EntityService) PathName(entityType EntityType) (string, error) {
-	entity, err := e.LookupEntity(entityType)
-	if err != nil {
-		return "", err
-	}
-	return entity.PathName(), nil
+	// TODO: This "Copy" is pretty hacky...but works for now
+	return entity.Copy(), nil
 }
 
 func GetBytes(key interface{}) ([]byte, error) {
@@ -79,6 +72,7 @@ func (e *EntityService) toEntityTypes(entityInterfaces []interface{}) ([]Entity,
 }
 
 func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error) {
+	// Determine Entity Type
 	var entityValsByKey = entityInterface.(map[string]interface{})
 	meta, ok := entityValsByKey["meta"]
 	if !ok {
@@ -96,6 +90,7 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 		return nil, err
 	}
 
+	// Convert into struct of Entity Type
 	entityJSON, err := json.Marshal(entityValsByKey)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshaling entity to JSON: %s", err)
@@ -105,15 +100,18 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 	if err != nil {
 		return nil, fmt.Errorf("Error unmarshaling entity JSON: %s", err)
 	}
+
 	return entityObj, nil
 }
 
+// TODO: Paging is not working here. Waiting on techops
+// TODO: SearchID
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	var entities []Entity
 	if opts == nil {
 		opts = &EntityListOptions{}
 	}
-	opts.ListOptions = ListOptions{Limit: LocationListMaxLimit}
+	opts.ListOptions = ListOptions{Limit: LocationListMaxLimit} // TODO: should this be EntityListMaxLimit
 	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
 		opts.ListOptions = *listOptions
 		resp, _, err := e.List(opts)
@@ -128,6 +126,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		for _, entity := range typedEntities {
 			entities = append(entities, entity)
 		}
+		log.Println(resp.PageToken)
 		return resp.PageToken, err
 	}
 
@@ -164,86 +163,12 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		return nil, r, err
 	}
 
-	// TODO: handle hyrdation and nil is empty
-	// if _, err := e.HydrateLocations(v.Locations); err != nil {
-	// 	return nil, r, err
-	// }
-
+	// TODO: nil is empty
 	// for _, l := range v.Entities {
 	// 	l.nilIsEmpty = true
 	// }
 
 	return v, nil, nil
-}
-
-// TODO: This function is a stub
-func (e *EntityService) ListAllOfType(opts *EntityListOptions, entityType EntityType) ([]Entity, error) {
-	var entities []Entity
-	if opts == nil {
-		opts = &EntityListOptions{}
-	}
-	opts.ListOptions = ListOptions{Limit: LocationListMaxLimit}
-	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
-		opts.ListOptions = *listOptions
-		resp, _, err := e.ListOfType(opts, entityType)
-		if err != nil {
-			return "", err
-		}
-		// for _, entity := range resp.Entities {
-		// 	entities = append(entities, entity)
-		// }
-		return resp.PageToken, err
-	}
-
-	if err := tokenListHelper(lg, &opts.ListOptions); err != nil {
-		return nil, err
-	} else {
-		return entities, nil
-	}
-}
-
-func (e *EntityService) ListOfType(opts *EntityListOptions, entityType EntityType) (*EntityListResponse, *Response, error) {
-	var (
-		requrl string
-		err    error
-	)
-
-	pathName, err := e.PathName(entityType)
-	if err != nil {
-		return nil, nil, err
-	}
-	requrl = pathName
-
-	if opts != nil {
-		requrl, err = addEntityListOptions(requrl, opts)
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
-	if opts != nil {
-		requrl, err = addListOptions(requrl, &opts.ListOptions)
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
-	v := &EntityListResponse{}
-	r, err := e.client.DoRequest("GET", requrl, v)
-	if err != nil {
-		return nil, r, err
-	}
-
-	// TODO: handle hydration and nil is empty
-	// if _, err := e.HydrateLocations(v.Locations); err != nil {
-	// 	return nil, r, err
-	// }
-
-	// for _, l := range v.Entities {
-	// 	l.nilIsEmpty = true
-	// }
-
-	return v, r, nil
 }
 
 func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error) {
@@ -263,40 +188,42 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	if opts.ResolvePlaceholders {
 		q.Add("resolvePlaceholders", "true")
 	}
-	if opts.EntityTypes != nil && len(opts.EntityTypes) > 0 {
-		// TODO: add entity types
-	}
 	u.RawQuery = q.Encode()
 
 	return u.String(), nil
 }
 
-func (e *EntityService) Get(id string, entityType EntityType) (Entity, *Response, error) {
-	entity, err := e.LookupEntity(entityType)
-	if err != nil {
-		return nil, nil, err
-	}
-	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", entity.PathName(), id), entity)
+func (e *EntityService) Get(id string) (Entity, *Response, error) {
+	var v interface{}
+	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityPath, id), &v)
 	if err != nil {
 		return nil, r, err
 	}
 
-	// TODO: handle hydration and nil is empty
-	// if _, err := HydrateLocation(&v, l.CustomFields); err != nil {
-	// 	return nil, r, err
-	// }
+	entity, err := e.toEntityType(v)
 
+	// TODO: nil is emtpy
 	//v.nilIsEmpty = true
 
 	return entity, r, nil
 }
 
+// TODO: Currently an error with API. Need to test this
 func (e *EntityService) Create(y Entity) (*Response, error) {
 	// TODO: custom field validation
 	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
 	// 	return nil, err
 	// }
-	r, err := e.client.DoRequestJSON("POST", fmt.Sprintf("%s", y.PathName()), y, nil)
+	var requrl = entityPath
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return nil, err
+	}
+
+	q := u.Query()
+	q.Add("entityType", string(y.GetEntityType()))
+	u.RawQuery = q.Encode()
+	r, err := e.client.DoRequestJSON("POST", u.String(), y, nil)
 	if err != nil {
 		return r, err
 	}
@@ -304,12 +231,13 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 	return r, nil
 }
 
+// TODO: Sanket is including the Id in the request but we may have to remove other things like account
 func (e *EntityService) Edit(y Entity) (*Response, error) {
 	// TODO: custom field validation
 	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
 	// 	return nil, err
 	// }
-	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", y.PathName(), y.EntityId()), y, nil)
+	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, y.GetEntityId()), y, nil)
 	if err != nil {
 		return r, err
 	}
