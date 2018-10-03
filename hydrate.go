@@ -2,7 +2,7 @@ package yext
 
 import "fmt"
 
-// TODO: This mutates the location, no need to return the value
+// TODO: I think this can be deleted (unless we keep the location-service around)
 func HydrateLocation(loc *Location, customFields []*CustomField) (*Location, error) {
 	if loc == nil || loc.CustomFields == nil || customFields == nil {
 		return loc, nil

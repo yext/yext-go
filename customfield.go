@@ -1,6 +1,8 @@
 package yext
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type CustomFieldType string
 
@@ -231,26 +233,18 @@ func (v *VideoGallery) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_VIDEO
 }
 
-type Hours struct {
-	// TODO: Check how AdditonalText and HolidayHours are represented
-	AdditionalText string         `json:"additionalHoursText,omitempty"`
-	HolidayHours   []HolidayHours `json:"holidayHours,omitempty"`
-	Hours          string         `json:"holidayHours,omitempty"`
-	// Monday         []*DayHours    `json:"monday,omitempty"`
-	// Tuesday        []*DayHours    `json:"tuesday,omitempty"`
-	// Wednesday      []*DayHours    `json:"wednesday,omitempty"`
-	// Thursday       []*DayHours    `json:"thursday,omitempty"`
-	// Friday         []*DayHours    `json:"friday,omitempty"`
-	// Saturday       []*DayHours    `json:"saturday,omitempty"`
-	// Sunday         []*DayHours    `json:"sunday,omitempty"`
-}
-
 func (h Hours) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
 }
 
 type DailyTimes struct {
-	DailyTimes string `json:"dailyTimes,omitempty"`
+	Sunday    string `json:"sunday,omitempty"`
+	Monday    string `json:"monday,omitempty"`
+	Tuesday   string `json:"tuesday,omitempty"`
+	Wednesday string `json:"wednesday,omitempty"`
+	Thursday  string `json:"thursday,omitempty"`
+	Friday    string `json:"friday,omitempty"`
+	Saturday  string `json:"saturday,omitempty"`
 }
 
 func (d DailyTimes) CustomFieldTag() string {

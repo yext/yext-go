@@ -42,11 +42,11 @@ func runParseTest(t *testing.T, index int, c customFieldParseTest) {
 	)
 
 	if cfType != expectType {
-		t.Errorf("test #%d (%s) failed: expected type %s, got type %s", index, c.TypeName, expectType, cfType)
+		t.Errorf("test #%d (%s) failed:\nexpected type %s\ngot type %s", index, c.TypeName, expectType, cfType)
 	}
 
 	if !reflect.DeepEqual(cf, c.Expected) {
-		t.Errorf("test #%d (%s) failed: expected value %v, got value %v", index, c.TypeName, c.Expected, cf)
+		t.Errorf("test #%d (%s) failed\nexpected value %v\ngot value      %v", index, c.TypeName, c.Expected, cf)
 	}
 }
 
@@ -59,15 +59,58 @@ var (
 	}
 	hoursRaw = map[string]interface{}{
 		"additionalHoursText": "This is an example of extra hours info",
-		"hours":               "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
+		"monday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "9:00",
+				"end":   "17:00",
+			},
+		},
+		"tuesday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "12:00",
+				"end":   "15:00",
+			},
+			{
+				"start": "5:00",
+				"end":   "11:00",
+			},
+		},
+		"wednesday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "9:00",
+				"end":   "17:00",
+			},
+		},
+		"thursday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "0:00",
+				"end":   "23:59",
+			},
+		},
+		"friday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "9:00",
+				"end":   "17:00",
+			},
+		},
+		"saturday": []map[string]interface{}{
+			map[string]interface{}{
+				"start": "9:00",
+				"end":   "17:00",
+			},
+		},
 		"holidayHours": []interface{}{
 			map[string]interface{}{
-				"date":  "2016-05-30",
-				"hours": "",
+				"date": "2016-05-30",
 			},
 			map[string]interface{}{
-				"date":  "2016-05-31",
-				"hours": "9:00:17:00",
+				"date": "2016-05-31",
+				"hours": []*Times{
+					&Times{
+						Start: "9:00",
+						End:   "17:00",
+					},
+				},
 			},
 		},
 	}
@@ -76,7 +119,13 @@ var (
 		"url":         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 	}
 	dailyTimesRaw = map[string]interface{}{
-		"dailyTimes": "2:7:00,3:7:00,4:7:00,5:7:00,6:7:00,7:7:00,1:7:00",
+		"monday":    "4:00",
+		"tuesday":   "5:00",
+		"wednesday": "6:00",
+		"thursday":  "7:00",
+		"friday":    "8:00",
+		"saturday":  "9:00",
+		"sunday":    "10:00",
 	}
 	parseTests = []customFieldParseTest{
 		customFieldParseTest{"BOOLEAN", false, YesNo(false)},
@@ -111,21 +160,48 @@ var (
 			Description: "An example caption for a video",
 		}},
 		customFieldParseTest{"HOURS", hoursRaw, Hours{
-			AdditionalText: "This is an example of extra hours info",
-			Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
-			HolidayHours: []HolidayHours{
+			Monday: []*Times{
+				&Times{Start: "9:00", End: "17:00"},
+			},
+			Tuesday: []*Times{
+				&Times{Start: "12:00", End: "15:00"},
+				&Times{Start: "5:00", End: "11:00"},
+			},
+			Wednesday: []*Times{
+				&Times{Start: "9:00", End: "17:00"},
+			},
+			Thursday: []*Times{
+				&Times{Start: "0:00", End: "23:59"},
+			},
+			Friday: []*Times{
+				&Times{Start: "9:00", End: "17:00"},
+			},
+			Saturday: []*Times{
+				&Times{Start: "9:00", End: "17:00"},
+			},
+			HolidayHours: &[]HolidayHours{
 				HolidayHours{
-					Date:  "2016-05-30",
-					Hours: "",
+					Date: "2016-05-30",
 				},
 				HolidayHours{
-					Date:  "2016-05-31",
-					Hours: "9:00:17:00",
+					Date: "2016-05-31",
+					Hours: []*Times{
+						&Times{
+							Start: "9:00",
+							End:   "17:00",
+						},
+					},
 				},
 			},
 		}},
 		customFieldParseTest{"DAILY_TIMES", dailyTimesRaw, DailyTimes{
-			DailyTimes: "2:7:00,3:7:00,4:7:00,5:7:00,6:7:00,7:7:00,1:7:00",
+			Monday:    "4:00",
+			Tuesday:   "5:00",
+			Wednesday: "6:00",
+			Thursday:  "7:00",
+			Friday:    "8:00",
+			Saturday:  "9:00",
+			Sunday:    "10:00",
 		}},
 		customFieldParseTest{"LOCATION_LIST", []string{"a", "b", "c"}, LocationList([]string{"a", "b", "c"})},
 	}
