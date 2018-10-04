@@ -10,14 +10,13 @@ import (
 	"fmt"
 )
 
-const ENTITYTYPE_LOCATION EntityType = "LOCATION"
-
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
-	EntityMeta *EntityMeta `json:"meta,omitempty"`
-
 	// Admin
+	Id           *string                `json:"id,omitempty"`
+	AccountId    *string                `json:"accountId,omitempty"`
+	LocationType *string                `json:"locationType,omitempty"`
 	FolderId     *string                `json:"folderId,omitempty"`
 	LabelIds     *UnorderedStrings      `json:"labelIds,omitempty"`
 	CategoryIds  *[]string              `json:"categoryIds,omitempty"`
@@ -47,7 +46,7 @@ type Location struct {
 	FaxPhone       *string   `json:"faxPhone,omitempty"`
 	LocalPhone     *string   `json:"localPhone,omitempty"`
 	MobilePhone    *string   `json:"mobilePhone,omitempty"`
-	MainPhone      *string   `json:"mainPhone,omitempty"`
+	Phone          *string   `json:"phone,omitempty"`
 	TollFreePhone  *string   `json:"tollFreePhone,omitempty"`
 	TtyPhone       *string   `json:"ttyPhone,omitempty"`
 	IsPhoneTracked *bool     `json:"isPhoneTracked,omitempty"`
@@ -68,30 +67,32 @@ type Location struct {
 	Degrees              *[]string      `json:"degrees,omitempty"`
 
 	// Location Info
-	Description         *string        `json:"description,omitempty"`
-	Hours               *Hours         `json:"hours,omitempty"`
-	AdditionalHoursText *string        `json:"additionalHoursText,omitempty"`
-	YearEstablished     *float64       `json:"yearEstablished,omitempty"`
-	Associations        *[]string      `json:"associations,omitempty"`
-	Certifications      *[]string      `json:"certifications,omitempty"`
-	Brands              *[]string      `json:"brands,omitempty"`
-	Products            *[]string      `json:"products,omitempty"`
-	Services            *[]string      `json:"services,omitempty"`
-	Specialties         *[]string      `json:"specialties,omitempty"`
-	Languages           *[]string      `json:"languages,omitempty"`
-	Logo                *LocationPhoto `json:"logo,omitempty"`
-	PaymentOptions      *[]string      `json:"paymentOptions,omitempty"`
+	Description         *string                 `json:"description,omitempty"`
+	HolidayHours        *[]LocationHolidayHours `json:"holidayHours,omitempty"`
+	Hours               *string                 `json:"hours,omitempty"`
+	AdditionalHoursText *string                 `json:"additionalHoursText,omitempty"`
+	YearEstablished     *string                 `json:"yearEstablished,omitempty"`
+	Associations        *[]string               `json:"associations,omitempty"`
+	Certifications      *[]string               `json:"certifications,omitempty"`
+	Brands              *[]string               `json:"brands,omitempty"`
+	Products            *[]string               `json:"products,omitempty"`
+	Services            *[]string               `json:"services,omitempty"`
+	Specialties         *[]string               `json:"specialties,omitempty"`
+	Languages           *[]string               `json:"languages,omitempty"`
+	Logo                *LocationPhoto          `json:"logo,omitempty"`
+	PaymentOptions      *[]string               `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs
-	DisplayCoordinate *Coordinate `json:"yextDisplayCoordinate,omitempty"`
-	// TODO: Update below
-	DropoffLat         *float64    `json:"dropoffLat,omitempty"`
-	DropoffLng         *float64    `json:"dropoffLng,omitempty"`
-	WalkableLat        *float64    `json:"walkableLat,omitempty"`
-	WalkableLng        *float64    `json:"walkableLng,omitempty"`
-	RoutableCoordinate *Coordinate `json:"yextRoutableCoordinate,omitempty"`
-	PickupLat          *float64    `json:"pickupLat,omitempty"`
-	PickupLng          *float64    `json:"pickupLng,omitempty"`
+	DisplayLat  *float64 `json:"displayLat,omitempty"`
+	DisplayLng  *float64 `json:"displayLng,omitempty"`
+	DropoffLat  *float64 `json:"dropoffLat,omitempty"`
+	DropoffLng  *float64 `json:"dropoffLng,omitempty"`
+	WalkableLat *float64 `json:"walkableLat,omitempty"`
+	WalkableLng *float64 `json:"walkableLng,omitempty"`
+	RoutableLat *float64 `json:"routableLat,omitempty"`
+	RoutableLng *float64 `json:"routableLng,omitempty"`
+	PickupLat   *float64 `json:"pickupLat,omitempty"`
+	PickupLng   *float64 `json:"pickupLng,omitempty"`
 
 	// ECLS
 	BioListIds        *[]string `json:"bioListIds,omitempty"`
@@ -104,11 +105,16 @@ type Location struct {
 	ProductListsLabel *string   `json:"productListsLabel,omitempty"`
 
 	// Urls
-	MenuUrl         *Website         `json:"menuUrl,omitempty"`
-	OrderUrl        *Website         `json:"orderUrl,omitempty"`
-	ReservationUrl  *Website         `json:"reservationUrl,omitempty"`
-	WebsiteUrl      *Website         `json:"websiteUrl,omitempty"`
-	FeaturedMessage *FeaturedMessage `json:"featuredMessage,omitempty"`
+	MenuUrl               *string `json:"menuUrl,omitempty"`
+	DisplayMenuUrl        *string `json:"displayMenuUrl,omitempty"`
+	OrderUrl              *string `json:"orderUrl,omitempty"`
+	DisplayOrderUrl       *string `json:"displayOrderUrl,omitempty"`
+	ReservationUrl        *string `json:"reservationUrl,omitempty"`
+	DisplayReservationUrl *string `json:"displayReservationUrl,omitempty"`
+	DisplayWebsiteUrl     *string `json:"displayWebsiteUrl,omitempty"`
+	WebsiteUrl            *string `json:"websiteUrl,omitempty"`
+	FeaturedMessage       *string `json:"featuredMessage,omitempty"`
+	FeaturedMessageUrl    *string `json:"featuredMessageUrl,omitempty"`
 
 	// Uber
 	UberClientId         *string `json:"uberClientId,omitempty"`
@@ -155,59 +161,16 @@ type Location struct {
 	*/
 }
 
-type Address struct {
-	Line1       *string `json:"line1,omitempty"`
-	Line2       *string `json:"line2,omitempty"`
-	City        *string `json:"city,omitempty"`
-	Region      *string `json:"region,omitempty"`
-	Sublocality *string `json:"sublocality,omitempty"`
-	PostalCode  *string `json:"postalCode,omitempty"`
-}
-
-type FeaturedMessage struct {
-	Description *string `json:"description,omitempty"`
-	Url         *string `json:"url,omitempty"`
-}
-
-type Website struct {
-	DisplayUrl       *string `json:"displayUrl,omitempty"`
-	Url              *string `json:"url,omitempty"`
-	PreferDisplayUrl *bool   `json:"preferDisplayUrl,omitempty"`
-}
-
-type Coordinate struct {
-	Latitude  *float64 `json:"latitude,omitempty"`
-	Longitude *float64 `json:"longitude,omitempty"`
-}
-
-type Hours struct {
-	Monday       []*Times        `json:"monday,omitempty"`
-	Tuesday      []*Times        `json:"tuesday,omitempty"`
-	Wednesday    []*Times        `json:"wednesday,omitempty"`
-	Thursday     []*Times        `json:"thursday,omitempty"`
-	Friday       []*Times        `json:"friday,omitempty"`
-	Saturday     []*Times        `json:"saturday,omitempty"`
-	Sunday       []*Times        `json:"sunday,omitempty"`
-	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
-}
-
-// TODO: *Times will become *OpenIntervals after Techops change
-type Times struct {
-	Start string `json:"start,omitempty"`
-	End   string `json:"end,omitempty"`
-}
-
-func (y *Location) GetEntityId() string {
-	return y.GetId()
-}
-
-func (y *Location) GetEntityType() EntityType {
-	return ENTITYTYPE_LOCATION
-}
-
 func (y Location) GetId() string {
-	if y.EntityMeta != nil && y.EntityMeta.Id != nil {
-		return *y.EntityMeta.Id
+	if y.Id != nil {
+		return *y.Id
+	}
+	return ""
+}
+
+func (y Location) GetLocationType() string {
+	if y.LocationType != nil {
+		return *y.LocationType
 	}
 	return ""
 }
@@ -283,22 +246,22 @@ func (y Location) GetDegrees() []string {
 }
 
 func (y Location) GetAccountId() string {
-	if y.EntityMeta.AccountId != nil {
-		return *y.EntityMeta.AccountId
+	if y.AccountId != nil {
+		return *y.AccountId
 	}
 	return ""
 }
 
-func (y Location) GetLine1() string {
-	if y.Address != nil && y.Address.Line1 != nil {
-		return *y.Address.Line1
+func (y Location) GetAddress() string {
+	if y.Address != nil {
+		return *y.Address
 	}
 	return ""
 }
 
-func (y Location) GetLine2() string {
-	if y.Address != nil && y.Address.Line2 != nil {
-		return *y.Address.Line2
+func (y Location) GetAddress2() string {
+	if y.Address2 != nil {
+		return *y.Address2
 	}
 	return ""
 }
@@ -325,22 +288,22 @@ func (y Location) GetDisplayAddress() string {
 }
 
 func (y Location) GetCity() string {
-	if y.Address != nil && y.Address.City != nil {
-		return *y.Address.City
+	if y.City != nil {
+		return *y.City
 	}
 	return ""
 }
 
-func (y Location) GetRegion() string {
-	if y.Address != nil && y.Address.Region != nil {
-		return *y.Address.Region
+func (y Location) GetState() string {
+	if y.State != nil {
+		return *y.State
 	}
 	return ""
 }
 
-func (y Location) GetPostalCode() string {
-	if y.Address != nil && y.Address.PostalCode != nil {
-		return *y.Address.PostalCode
+func (y Location) GetZip() string {
+	if y.Zip != nil {
+		return *y.Zip
 	}
 	return ""
 }
@@ -352,9 +315,9 @@ func (y Location) GetCountryCode() string {
 	return ""
 }
 
-func (y Location) GetMainPhone() string {
-	if y.MainPhone != nil {
-		return *y.MainPhone
+func (y Location) GetPhone() string {
+	if y.Phone != nil {
+		return *y.Phone
 	}
 	return ""
 }
@@ -408,37 +371,44 @@ func (y Location) GetTtyPhone() string {
 	return ""
 }
 
-func (y Location) GetFeaturedMessageDescription() string {
-	if y.FeaturedMessage != nil && y.FeaturedMessage.Description != nil {
-		return *y.FeaturedMessage.Description
+func (y Location) GetFeaturedMessage() string {
+	if y.FeaturedMessage != nil {
+		return *y.FeaturedMessage
 	}
 	return ""
 }
 
 func (y Location) GetFeaturedMessageUrl() string {
-	if y.FeaturedMessage != nil && y.FeaturedMessage.Url != nil {
-		return *y.FeaturedMessage.Url
+	if y.FeaturedMessageUrl != nil {
+		return *y.FeaturedMessageUrl
 	}
 	return ""
 }
 
 func (y Location) GetWebsiteUrl() string {
-	if y.WebsiteUrl != nil && y.WebsiteUrl.Url != nil {
-		return *y.WebsiteUrl.Url
+	if y.WebsiteUrl != nil {
+		return *y.WebsiteUrl
 	}
 	return ""
 }
 
 func (y Location) GetDisplayWebsiteUrl() string {
-	if y.WebsiteUrl != nil && y.WebsiteUrl.DisplayUrl != nil {
-		return *y.WebsiteUrl.DisplayUrl
+	if y.DisplayWebsiteUrl != nil {
+		return *y.DisplayWebsiteUrl
 	}
 	return ""
 }
 
 func (y Location) GetReservationUrl() string {
-	if y.ReservationUrl != nil && y.ReservationUrl.Url != nil {
-		return *y.ReservationUrl.Url
+	if y.ReservationUrl != nil {
+		return *y.ReservationUrl
+	}
+	return ""
+}
+
+func (y Location) GetHours() string {
+	if y.Hours != nil {
+		return *y.Hours
 	}
 	return ""
 }
@@ -471,37 +441,37 @@ func (y Location) GetFacebookPageUrl() string {
 	return ""
 }
 
-func (y Location) GetYearEstablished() float64 {
+func (y Location) GetYearEstablished() string {
 	if y.YearEstablished != nil {
 		return *y.YearEstablished
 	}
-	return 0
+	return ""
 }
 
 func (y Location) GetDisplayLat() float64 {
-	if y.DisplayCoordinate != nil && y.DisplayCoordinate.Latitude != nil {
-		return *y.DisplayCoordinate.Latitude
+	if y.DisplayLat != nil {
+		return *y.DisplayLat
 	}
 	return 0
 }
 
 func (y Location) GetDisplayLng() float64 {
-	if y.DisplayCoordinate != nil && y.DisplayCoordinate.Longitude != nil {
-		return *y.DisplayCoordinate.Longitude
+	if y.DisplayLng != nil {
+		return *y.DisplayLng
 	}
 	return 0
 }
 
 func (y Location) GetRoutableLat() float64 {
-	if y.RoutableCoordinate != nil && y.RoutableCoordinate.Latitude != nil {
-		return *y.RoutableCoordinate.Latitude
+	if y.RoutableLat != nil {
+		return *y.RoutableLat
 	}
 	return 0
 }
 
 func (y Location) GetRoutableLng() float64 {
-	if y.RoutableCoordinate != nil && y.RoutableCoordinate.Longitude != nil {
-		return *y.RoutableCoordinate.Longitude
+	if y.RoutableLng != nil {
+		return *y.RoutableLng
 	}
 	return 0
 }
@@ -667,9 +637,9 @@ func (y Location) GetGoogleAttributes() GoogleAttributes {
 	return nil
 }
 
-func (y Location) GetHolidayHours() []HolidayHours {
-	if y.Hours != nil && y.Hours.HolidayHours != nil {
-		return *y.Hours.HolidayHours
+func (y Location) GetHolidayHours() []LocationHolidayHours {
+	if y.HolidayHours != nil {
+		return *y.HolidayHours
 	}
 	return nil
 }
@@ -707,9 +677,9 @@ func (l LocationClosed) String() string {
 
 // HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.
 // For details see
-type HolidayHours struct {
-	Date  string   `json:"date"`
-	Hours []*Times `json:"hours"`
+type LocationHolidayHours struct {
+	Date  string `json:"date"`
+	Hours string `json:"hours"`
 }
 
 // UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds

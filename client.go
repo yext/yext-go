@@ -53,6 +53,7 @@ func NewClient(config *Config) *Client {
 	c.AssetService = &AssetService{client: c}
 	c.AnalyticsService = &AnalyticsService{client: c}
 	c.EntityService = &EntityService{client: c}
+	c.EntityService.RegisterDefaultEntities()
 	return c
 }
 

@@ -13,9 +13,7 @@ var examplePhoto = LocationPhoto{
 }
 
 var complexOne = &Location{
-	EntityMeta: &EntityMeta{
-		Id: String("lock206"),
-	},
+	Id:   String("lock206"),
 	Name: String("Farmers Insurance - Stephen Lockhart "),
 	CustomFields: map[string]interface{}{
 		"1857": "",
@@ -56,16 +54,14 @@ var complexOne = &Location{
 		"7299": "1046846",
 		"7300": true,
 	},
-	Address: &Address{
-		Line1:      String("2690 Sheridan Dr W"),
-		Line2:      String(""),
-		City:       String("Tonawanda"),
-		Region:     String("NY"),
-		PostalCode: String("14150-9425"),
-	},
-	MainPhone:       String("716-835-0306"),
+	Address:         String("2690 Sheridan Dr W"),
+	Address2:        String(""),
+	City:            String("Tonawanda"),
+	State:           String("NY"),
+	Zip:             String("14150-9425"),
+	Phone:           String("716-835-0306"),
 	FaxPhone:        String("716-835-0415"),
-	YearEstablished: Float(2015),
+	YearEstablished: String("2015"),
 	Emails:          &[]string{"slockhart@farmersagent.com"},
 	Services: &[]string{
 		"Auto Insurance",
@@ -82,9 +78,7 @@ var complexOne = &Location{
 }
 
 var complexTwo = &Location{
-	EntityMeta: &EntityMeta{
-		Id: String("lock206"),
-	},
+	Id:   String("lock206"),
 	Name: String("Farmers Insurance - Stephen Lockhart "),
 	CustomFields: map[string]interface{}{
 		"1857": "",
@@ -125,16 +119,14 @@ var complexTwo = &Location{
 		"7299": "1046846",
 		"7300": true,
 	},
-	Address: &Address{
-		Line1:      String("2690 Sheridan Dr W"),
-		Line2:      String(""),
-		City:       String("Tonawanda"),
-		Region:     String("NY"),
-		PostalCode: String("14150-9425"),
-	},
-	MainPhone:       String("716-835-0306"),
+	Address:         String("2690 Sheridan Dr W"),
+	Address2:        String(""),
+	City:            String("Tonawanda"),
+	State:           String("NY"),
+	Zip:             String("14150-9425"),
+	Phone:           String("716-835-0306"),
 	FaxPhone:        String("716-835-0415"),
-	YearEstablished: Float(2015),
+	YearEstablished: String("2015"),
 	Emails:          &[]string{"slockhart@farmersagent.com"},
 	Services: &[]string{
 		"Auto Insurance",
@@ -150,101 +142,44 @@ var complexTwo = &Location{
 	FolderId:  String("91760"),
 }
 
-var jsonData string = `{"id":"phai514","locationName":"Farmers Insurance - Aroun Phaisan ","customFields":{"1857":"","1858":"122191","1859":"Aroun","1871":"Phaisan","3004":"Agent","7240":"Aroun Phaisan","7251":true,"7253":"1221","7254":"aphaisan","7255":"2685","7256":["phai514"],"7261":false,"7263":true,"7265":"","7266":"","7269":"91","7270":true,"7271":"21","7272":"User_Dup","7273":"Lincoln","7274":"NE","7275":"5730 R St Ste B","7276":"68505-2309","7277":"12","7278":false,"7279":true,"7283":"","7284":"","7285":"16133384","7286":"","7287":true,"7288":true,"7296":"16133384","7297":"","7298":"","7299":"786200","7300":true},"address": {"line1":"5730 R St","line2":"Ste B","city":"Lincoln","state":"NE","zip":"68505-2309"},"phone":"402-417-4266","faxPhone":"402-423-3141","yearEstablished":2011,"emails":["aphaisan@farmersagent.com"],"services":["Auto Insurance","Home Insurance","Homeowners Insurance","Business Insurance","Motorcyle Insurance","Recreational Insurance","Renters Insurance","Umbrella Insurance","Term Life Insurance","Whole Life Insurance"],"languages":["English"],"folderId":"91760"}`
+var jsonData string = `{"id":"phai514","locationName":"Farmers Insurance - Aroun Phaisan ","customFields":{"1857":"","1858":"122191","1859":"Aroun","1871":"Phaisan","3004":"Agent","7240":"Aroun Phaisan","7251":true,"7253":"1221","7254":"aphaisan","7255":"2685","7256":["phai514"],"7261":false,"7263":true,"7265":"","7266":"","7269":"91","7270":true,"7271":"21","7272":"User_Dup","7273":"Lincoln","7274":"NE","7275":"5730 R St Ste B","7276":"68505-2309","7277":"12","7278":false,"7279":true,"7283":"","7284":"","7285":"16133384","7286":"","7287":true,"7288":true,"7296":"16133384","7297":"","7298":"","7299":"786200","7300":true},"address":"5730 R St","address2":"Ste B","city":"Lincoln","state":"NE","zip":"68505-2309","phone":"402-417-4266","faxPhone":"402-423-3141","yearEstablished":"2011","emails":["aphaisan@farmersagent.com"],"services":["Auto Insurance","Home Insurance","Homeowners Insurance","Business Insurance","Motorcyle Insurance","Recreational Insurance","Renters Insurance","Umbrella Insurance","Term Life Insurance","Whole Life Insurance"],"languages":["English"],"folderId":"91760"}`
 
 var baseLocation Location = Location{
-	EntityMeta: &EntityMeta{
-		Id:        String("ding"),
-		AccountId: String("ding"),
-	},
-	Name:           String("ding"),
-	DisplayAddress: String("ding"),
-	Address: &Address{
-		Line1:      String("ding"),
-		Line2:      String("ding"),
-		City:       String("ding"),
-		Region:     String("ding"),
-		PostalCode: String("ding"),
-	},
-	CountryCode:    String("ding"),
-	MainPhone:      String("ding"),
-	LocalPhone:     String("ding"),
-	AlternatePhone: String("ding"),
-	FaxPhone:       String("ding"),
-	MobilePhone:    String("ding"),
-	TollFreePhone:  String("ding"),
-	TtyPhone:       String("ding"),
-	FeaturedMessage: &FeaturedMessage{
-		Description: String("ding"),
-		Url:         String("ding"),
-	},
-	WebsiteUrl: &Website{
-		Url:        String("ding"),
-		DisplayUrl: String("ding"),
-	},
-	ReservationUrl: &Website{
-		Url: String("ding"),
-	},
-	Hours: &Hours{
-		Monday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Tuesday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Wednesday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Thursday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Friday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Saturday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-		Sunday: []*Times{
-			&Times{
-				Start: "ding",
-				End:   "ding",
-			},
-		},
-	},
-	AdditionalHoursText: String("ding"),
-	Description:         String("ding"),
-	TwitterHandle:       String("ding"),
-	FacebookPageUrl:     String("ding"),
-	YearEstablished:     Float(1234),
-	FolderId:            String("ding"),
-	SuppressAddress:     Bool(false),
-	IsPhoneTracked:      Bool(true),
-	DisplayCoordinate: &Coordinate{
-		Latitude:  Float(1234.0),
-		Longitude: Float(1234.0),
-	},
-	RoutableCoordinate: &Coordinate{
-		Latitude:  Float(1234.0),
-		Longitude: Float(1234.0),
-	},
+	Id:                     String("ding"),
+	Name:                   String("ding"),
+	AccountId:              String("ding"),
+	Address:                String("ding"),
+	Address2:               String("ding"),
+	DisplayAddress:         String("ding"),
+	City:                   String("ding"),
+	State:                  String("ding"),
+	Zip:                    String("ding"),
+	CountryCode:            String("ding"),
+	Phone:                  String("ding"),
+	LocalPhone:             String("ding"),
+	AlternatePhone:         String("ding"),
+	FaxPhone:               String("ding"),
+	MobilePhone:            String("ding"),
+	TollFreePhone:          String("ding"),
+	TtyPhone:               String("ding"),
+	FeaturedMessage:        String("ding"),
+	FeaturedMessageUrl:     String("ding"),
+	WebsiteUrl:             String("ding"),
+	DisplayWebsiteUrl:      String("ding"),
+	ReservationUrl:         String("ding"),
+	Hours:                  String("ding"),
+	AdditionalHoursText:    String("ding"),
+	Description:            String("ding"),
+	TwitterHandle:          String("ding"),
+	FacebookPageUrl:        String("ding"),
+	YearEstablished:        String("ding"),
+	FolderId:               String("ding"),
+	SuppressAddress:        Bool(false),
+	IsPhoneTracked:         Bool(true),
+	DisplayLat:             Float(1234.0),
+	DisplayLng:             Float(1234.0),
+	RoutableLat:            Float(1234.0),
+	RoutableLng:            Float(1234.0),
 	Keywords:               &[]string{"ding", "ding"},
 	PaymentOptions:         &[]string{"ding", "ding"},
 	VideoUrls:              &[]string{"ding", "ding"},
@@ -268,98 +203,41 @@ var baseLocation Location = Location{
 
 func TestDiffIdentical(t *testing.T) {
 	secondLocation := &Location{
-		EntityMeta: &EntityMeta{
-			Id:        String("ding"),
-			AccountId: String("ding"),
-		},
-		Name:           String("ding"),
-		DisplayAddress: String("ding"),
-		Address: &Address{
-			Line1:      String("ding"),
-			Line2:      String("ding"),
-			City:       String("ding"),
-			Region:     String("ding"),
-			PostalCode: String("ding"),
-		},
-		CountryCode:    String("ding"),
-		MainPhone:      String("ding"),
-		LocalPhone:     String("ding"),
-		AlternatePhone: String("ding"),
-		FaxPhone:       String("ding"),
-		MobilePhone:    String("ding"),
-		TollFreePhone:  String("ding"),
-		TtyPhone:       String("ding"),
-		FeaturedMessage: &FeaturedMessage{
-			Description: String("ding"),
-			Url:         String("ding"),
-		},
-		WebsiteUrl: &Website{
-			Url:        String("ding"),
-			DisplayUrl: String("ding"),
-		},
-		ReservationUrl: &Website{
-			Url: String("ding"),
-		},
-		Hours: &Hours{
-			Monday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Tuesday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Wednesday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Thursday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Friday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Saturday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-			Sunday: []*Times{
-				&Times{
-					Start: "ding",
-					End:   "ding",
-				},
-			},
-		},
-		AdditionalHoursText: String("ding"),
-		Description:         String("ding"),
-		TwitterHandle:       String("ding"),
-		FacebookPageUrl:     String("ding"),
-		YearEstablished:     Float(1234),
-		FolderId:            String("ding"),
-		SuppressAddress:     Bool(false),
-		IsPhoneTracked:      Bool(true),
-		DisplayCoordinate: &Coordinate{
-			Latitude:  Float(1234.0),
-			Longitude: Float(1234.0),
-		},
-		RoutableCoordinate: &Coordinate{
-			Latitude:  Float(1234.0),
-			Longitude: Float(1234.0),
-		},
+		Id:                     String("ding"),
+		Name:                   String("ding"),
+		AccountId:              String("ding"),
+		Address:                String("ding"),
+		Address2:               String("ding"),
+		DisplayAddress:         String("ding"),
+		City:                   String("ding"),
+		State:                  String("ding"),
+		Zip:                    String("ding"),
+		CountryCode:            String("ding"),
+		Phone:                  String("ding"),
+		LocalPhone:             String("ding"),
+		AlternatePhone:         String("ding"),
+		FaxPhone:               String("ding"),
+		MobilePhone:            String("ding"),
+		TollFreePhone:          String("ding"),
+		TtyPhone:               String("ding"),
+		FeaturedMessage:        String("ding"),
+		FeaturedMessageUrl:     String("ding"),
+		WebsiteUrl:             String("ding"),
+		DisplayWebsiteUrl:      String("ding"),
+		ReservationUrl:         String("ding"),
+		Hours:                  String("ding"),
+		AdditionalHoursText:    String("ding"),
+		Description:            String("ding"),
+		TwitterHandle:          String("ding"),
+		FacebookPageUrl:        String("ding"),
+		YearEstablished:        String("ding"),
+		FolderId:               String("ding"),
+		SuppressAddress:        Bool(false),
+		IsPhoneTracked:         Bool(true),
+		DisplayLat:             Float(1234.0),
+		DisplayLng:             Float(1234.0),
+		RoutableLat:            Float(1234.0),
+		RoutableLng:            Float(1234.0),
 		Keywords:               &[]string{"ding", "ding"},
 		PaymentOptions:         &[]string{"ding", "ding"},
 		VideoUrls:              &[]string{"ding", "ding"},
@@ -778,8 +656,7 @@ func (t floatTest) formatErrorBase(index int) string {
 func TestFloatDiffs(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	for i, data := range floatTests {
-		a.YearEstablished = data.baseValue
-		b.YearEstablished = data.newValue
+		a.DisplayLat, b.DisplayLat = data.baseValue, data.newValue
 		a.nilIsEmpty, b.nilIsEmpty = data.nilIsEmpty, data.nilIsEmpty
 		d, isDiff := a.Diff(b)
 		if isDiff != data.isDiff {
@@ -791,7 +668,7 @@ func TestFloatDiffs(t *testing.T) {
 			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), formatFloatPtr(data.expectedFieldValue))
 		} else if d != nil && data.expectedFieldValue == nil {
 			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
-		} else if *d.YearEstablished != *data.expectedFieldValue {
+		} else if *d.DisplayLat != *data.expectedFieldValue {
 			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
 		}
 	}
@@ -1362,15 +1239,11 @@ func TestLabels(t *testing.T) {
 		tests = []Scenario{
 			Scenario{
 				A: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &one,
 				},
 				B: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &two,
 				},
 				WantDelta: nil,
@@ -1378,15 +1251,11 @@ func TestLabels(t *testing.T) {
 			},
 			Scenario{
 				A: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &one,
 				},
 				B: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &three,
 				},
 				WantDelta: nil,
@@ -1394,21 +1263,15 @@ func TestLabels(t *testing.T) {
 			},
 			Scenario{
 				A: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &one,
 				},
 				B: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &four,
 				},
 				WantDelta: &Location{
-					EntityMeta: &EntityMeta{
-						Id: String("1"),
-					},
+					Id:       String("1"),
 					LabelIds: &four,
 				},
 				WantDiff: true,
@@ -1445,7 +1308,7 @@ func TestLocationNils(t *testing.T) {
 
 func TestLocationCustomFieldEmptyComparision(t *testing.T) {
 	a, b := *new(Location), new(Location)
-	a.EntityMeta = &EntityMeta{Id: String("blah")}
+	a.Id = String("blah")
 	b.CustomFields = map[string]interface{}{}
 
 	a.hydrated, b.hydrated = true, true
@@ -1458,14 +1321,13 @@ func TestLocationCustomFieldEmptyComparision(t *testing.T) {
 
 func TestCustomFieldPointerComparison(t *testing.T) {
 	a, b := *new(Location), new(Location)
-	a.EntityMeta = &EntityMeta{Id: String("blah")}
-	// TODO: Fix
-	// a.CustomFields = map[string]interface{}{
-	// 	"1": Hours{Hours: "1:09:00:18:00"},
-	// }
-	// b.CustomFields = map[string]interface{}{
-	// 	"1": &Hours{Hours: "1:09:00:18:00"},
-	// }
+	a.Id = String("blah")
+	a.CustomFields = map[string]interface{}{
+		"1": HoursCustom{Hours: "1:09:00:18:00"},
+	}
+	b.CustomFields = map[string]interface{}{
+		"1": &HoursCustom{Hours: "1:09:00:18:00"},
+	}
 
 	a.hydrated, b.hydrated = true, true
 	d, isDiff := a.Diff(b)
@@ -1528,99 +1390,98 @@ func TestZeroValuesAndNilDiffing(t *testing.T) {
 	}
 }
 
-// TODO: re-enable tests
-// var hoursTests = []struct {
-// 	A, B                     *ProfileHours
-// 	WantEquivalent, WantDiff bool
-// }{
-// 	{
-// 		A:              nil,
-// 		B:              nil,
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// 	{
-// 		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
-// 		B:              String(""),
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// 	// This might seem odd, but we're still working out hours semantics with Product, so I'd rather err on the side
-// 	// of a limited set of 'closed' equivalencies for now:
-// 	{
-// 		A:              String("1:closed"),
-// 		B:              String(""),
-// 		WantEquivalent: false,
-// 		WantDiff:       true,
-// 	},
-// 	{
-// 		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
-// 		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// 	{
-// 		A:              String("1:11:00"),
-// 		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
-// 		WantEquivalent: false,
-// 		WantDiff:       true,
-// 	},
-// 	{
-// 		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
-// 		B:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// 	{
-// 		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
-// 		B:              String("1:11:01:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
-// 		WantEquivalent: false,
-// 		WantDiff:       true,
-// 	},
-// 	{
-// 		A:              String("1:11:00:20:00"),
-// 		B:              String("1:11:00:20:00"),
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// 	{
-// 		A:              String("1:11:00:20:00"),
-// 		B:              String("1:11:01:20:00"),
-// 		WantEquivalent: false,
-// 		WantDiff:       true,
-// 	},
-// 	{
-// 		A:              nil,
-// 		B:              String("1:11:01:20:00"),
-// 		WantEquivalent: false,
-// 		WantDiff:       true,
-// 	},
-// 	{
-// 		A:              String("1:11:01:20:00"),
-// 		B:              nil,
-// 		WantEquivalent: false,
-// 		WantDiff:       false,
-// 	},
-// 	{
-// 		A:              nil,
-// 		B:              nil,
-// 		WantEquivalent: true,
-// 		WantDiff:       false,
-// 	},
-// }
-//
-// func TestHoursAreEquivalent(t *testing.T) {
-// 	for _, test := range hoursTests {
-// 		if test.A != nil && test.B != nil {
-// 			if got := HoursAreEquivalent(*test.A, *test.B); got != test.WantEquivalent {
-// 				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), got, test.WantEquivalent)
-// 			}
-// 			if got := HoursAreEquivalent(*test.B, *test.A); got != test.WantEquivalent {
-// 				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.B), stringify(test.A), got, test.WantEquivalent)
-// 			}
-// 		}
-// 	}
-// }
+var hoursTests = []struct {
+	A, B                     *string
+	WantEquivalent, WantDiff bool
+}{
+	{
+		A:              String(""),
+		B:              String(""),
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+	{
+		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		B:              String(""),
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+	// This might seem odd, but we're still working out hours semantics with Product, so I'd rather err on the side
+	// of a limited set of 'closed' equivalencies for now:
+	{
+		A:              String("1:closed"),
+		B:              String(""),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+	{
+		A:              String("1:11:00"),
+		B:              String("1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		B:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+	{
+		A:              String("1:11:00:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		B:              String("1:11:01:20:00,2:10:00:21:00,3:10:00:21:00,4:10:00:21:00,5:10:00:21:00,6:10:00:21:00,7:10:00:21:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              String("1:11:00:20:00"),
+		B:              String("1:11:00:20:00"),
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+	{
+		A:              String("1:11:00:20:00"),
+		B:              String("1:11:01:20:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              nil,
+		B:              String("1:11:01:20:00"),
+		WantEquivalent: false,
+		WantDiff:       true,
+	},
+	{
+		A:              String("1:11:01:20:00"),
+		B:              nil,
+		WantEquivalent: false,
+		WantDiff:       false,
+	},
+	{
+		A:              nil,
+		B:              nil,
+		WantEquivalent: true,
+		WantDiff:       false,
+	},
+}
+
+func TestHoursAreEquivalent(t *testing.T) {
+	for _, test := range hoursTests {
+		if test.A != nil && test.B != nil {
+			if got := HoursAreEquivalent(*test.A, *test.B); got != test.WantEquivalent {
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), got, test.WantEquivalent)
+			}
+			if got := HoursAreEquivalent(*test.B, *test.A); got != test.WantEquivalent {
+				t.Errorf(`HoursAreEquivalent("%s", "%s")=%t, wanted %t`, stringify(test.B), stringify(test.A), got, test.WantEquivalent)
+			}
+		}
+	}
+}
 
 func stringify(v *string) string {
 	if v != nil {
@@ -1629,13 +1490,13 @@ func stringify(v *string) string {
 	return "nil"
 }
 
-// func TestHoursAreEquivalentDiff(t *testing.T) {
-// 	for _, test := range hoursTests {
-// 		a := &Location{Hours: test.A}
-// 		b := &Location{Hours: test.B}
-//
-// 		if _, isDiff := a.Diff(b); isDiff != test.WantDiff {
-// 			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), isDiff, test.WantDiff)
-// 		}
-// 	}
-// }
+func TestHoursAreEquivalentDiff(t *testing.T) {
+	for _, test := range hoursTests {
+		a := &Location{Hours: test.A}
+		b := &Location{Hours: test.B}
+
+		if _, isDiff := a.Diff(b); isDiff != test.WantDiff {
+			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), isDiff, test.WantDiff)
+		}
+	}
+}

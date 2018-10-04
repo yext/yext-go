@@ -23,14 +23,14 @@ func TestJSONSerialization(t *testing.T) {
 
 	tests := []test{
 		{&Location{}, `{}`},
-		{&Location{Address: &Address{City: nil}}, `{"address":{}}`}, // TODO: verify this is correct
-		{&Location{Address: &Address{City: String("")}}, `{"address":{"city":""}}`},
+		{&Location{City: nil}, `{}`},
+		{&Location{City: String("")}, `{"city":""}`},
 		{&Location{Languages: nil}, `{}`},
 		{&Location{Languages: nil}, `{}`},
 		{&Location{Languages: &[]string{}}, `{"languages":[]}`},
 		{&Location{Languages: &[]string{"English"}}, `{"languages":["English"]}`},
-		{&Location{Photos: nil}, `{}`},
-		{&Location{Photos: &[]LocationPhoto{}}, `{"photos":[]}`},
+		{&Location{HolidayHours: nil}, `{}`},
+		{&Location{HolidayHours: &[]LocationHolidayHours{}}, `{"holidayHours":[]}`},
 	}
 
 	for _, test := range tests {
@@ -77,12 +77,10 @@ var sampleLocationJSON = `{
 	 "timestamp":1483891079283,
 	 "accountId":"479390",
 	 "locationName":"Best Buy",
-	 "address":{
-		"line1": "105 Topsham Fair Mall Rd",
-	 	"city":"Topsham",
-	 	"state":"ME",
-	 	"zip":"04086"
-	 },
+	 "address":"105 Topsham Fair Mall Rd",
+	 "city":"Topsham",
+	 "state":"ME",
+	 "zip":"04086",
 	 "countryCode":"US",
 	 "language":"en",
 	 "phone":"8882378289",
@@ -145,15 +143,10 @@ var sampleLocationJSON = `{
 				 ]
 			}
 	 ],
-	 "featuredMessage":{
-		 "description": "Black Friday 2016",
-	 	 "url":"http://www.bestbuy.com/site/electronics/black-friday/pcmcat225600050002.c?id\u003dpcmcat225600050002\u0026ref\u003dNS\u0026loc\u003dns100"
-	 },
-	 "websiteUrl": {
-	 	"url": "[[BEST BUY LOCAL PAGES URL]]/?ref\u003dNS\u0026loc\u003dns100",
-		"displayWebsiteUrl":"[[BEST BUY LOCAL PAGES URL]]/?ref\u003dNS\u0026loc\u003dns100",
-		"preferDisplayUrl":true
-	 },
+	 "featuredMessage":"Black Friday 2016",
+	 "featuredMessageUrl":"http://www.bestbuy.com/site/electronics/black-friday/pcmcat225600050002.c?id\u003dpcmcat225600050002\u0026ref\u003dNS\u0026loc\u003dns100",
+	 "websiteUrl":"[[BEST BUY LOCAL PAGES URL]]/?ref\u003dNS\u0026loc\u003dns100",
+	 "displayWebsiteUrl":"[[BEST BUY LOCAL PAGES URL]]/?ref\u003dNS\u0026loc\u003dns100",
 	 "logo":{
 			"url":"http://www.yext-static.com/cms/79fb6255-2e84-435f-9864-aa0572fe4cbd.png"
 	 },
