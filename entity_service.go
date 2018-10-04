@@ -5,22 +5,15 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/url"
+	"reflect"
 )
 
 const entityPath = "entities"
 
-type EntityRegistry map[EntityType]Entity
-
-var YextEntityRegistry = EntityRegistry{
-	ENTITYTYPE_EVENT:    &EventEntity{},
-	ENTITYTYPE_LOCATION: &Location{},
-}
-
 type EntityService struct {
 	client   *Client
-	registry map[EntityType]Entity
+	registry map[EntityType]interface{}
 }
 
 type EntityListOptions struct {
@@ -35,18 +28,33 @@ type EntityListResponse struct {
 	PageToken string        `json:"pageToken"`
 }
 
-func (e *EntityService) RegisterEntity(entityType EntityType, entity Entity) {
-	e.registry[entityType] = entity
+func (e *EntityService) RegisterDefaultEntities() {
+	e.registry = make(map[EntityType]interface{})
+	e.RegisterEntity(ENTITYTYPE_LOCATION, &Location{})
+	e.RegisterEntity(ENTITYTYPE_EVENT, &Event{})
 }
 
-func (e *EntityService) LookupEntity(entityType EntityType) (Entity, error) {
-	entity, ok := e.registry[entityType]
+func (e *EntityService) RegisterEntity(entityType EntityType, entity interface{}) {
+	//From: https://github.com/reggo/reggo/blob/master/common/common.go#L169
+	isPtr := reflect.ValueOf(entity).Kind() == reflect.Ptr
+	var newVal interface{}
+	var tmp interface{}
+	if isPtr {
+		tmp = reflect.ValueOf(entity).Elem().Interface()
+	} else {
+		tmp = entity
+	}
+	newVal = reflect.New(reflect.TypeOf(tmp)).Elem().Interface()
+	e.registry[entityType] = newVal
+}
+
+func (e *EntityService) LookupEntity(entityType EntityType) (interface{}, error) {
+	val, ok := e.registry[entityType]
 	if !ok {
 		return nil, fmt.Errorf("Unable to find entity type %s in entity registry %v", entityType, e.registry)
 	}
 
-	// TODO: This "Copy" is pretty hacky...but works for now
-	return entity.Copy(), nil
+	return reflect.New(reflect.TypeOf(val)).Interface(), nil
 }
 
 func GetBytes(key interface{}) ([]byte, error) {
@@ -96,12 +104,12 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 		return nil, fmt.Errorf("Error marshaling entity to JSON: %s", err)
 	}
 
-	err = json.Unmarshal(entityJSON, entityObj)
+	err = json.Unmarshal(entityJSON, &entityObj)
 	if err != nil {
 		return nil, fmt.Errorf("Error unmarshaling entity JSON: %s", err)
 	}
 
-	return entityObj, nil
+	return entityObj.(Entity), nil
 }
 
 // TODO: Paging is not working here. Waiting on techops
@@ -126,7 +134,6 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		for _, entity := range typedEntities {
 			entities = append(entities, entity)
 		}
-		log.Println(resp.PageToken)
 		return resp.PageToken, err
 	}
 
@@ -231,7 +238,7 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 	return r, nil
 }
 
-// TODO: Sanket is including the Id in the request but we may have to remove other things like account
+// TODO: There is an outstanding techops QA issue to allow the Id in the request but we may have to remove other things like account
 func (e *EntityService) Edit(y Entity) (*Response, error) {
 	// TODO: custom field validation
 	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
