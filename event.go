@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 )
 
-const (
-	ENTITYTYPE_EVENT     EntityType = "EVENT"
-	EntityPathNameEvents            = "events" // TODO: rename
-)
+const ENTITYTYPE_EVENT EntityType = "EVENT"
 
-type EventEntity struct { // TODO: rename
-	//EntityMeta
-	Id          *string    `json:"id,omitempty"`
-	Name        *string    `json:"name,omitempty"`
-	Description *string    `json:"description,omitempty"`
-	EntityType  EntityType `json:"entityType,omitempty"`
+// TODO: "Event" conflicts with the Event struct in list.go, but should consider better name
+type EventEntity struct {
+	EntityMeta  *EntityMeta `json:"meta,omitempty"`
+	Id          *string     `json:"id,omitempty"`
+	Name        *string     `json:"name,omitempty"`
+	Description *string     `json:"description,omitempty"`
+	EntityType  EntityType  `json:"entityType,omitempty"`
 }
 
 func (e *EventEntity) GetEntityId() string {
