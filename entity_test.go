@@ -4,14 +4,12 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
-
-	"github.com/mohae/deepcopy"
 )
 
 // Note to self: fields with json tag HAVE to be exported
 // See: https://stackoverflow.com/questions/11126793/json-and-dealing-with-unexported-fields
 type CustomLocationEntity struct {
-	Location
+	LocationEntity
 	CFHours        *Hours      `json:"cf_Hours,omitempty"`
 	CFUrl          *string     `json:"cf_Url,omitempty"` // TODO: do we want to continue to use these types or just the underlying type?
 	CFDailyTimes   *DailyTimes `json:"cf_DailyTimes,omitempty"`
@@ -23,27 +21,6 @@ type CustomLocationEntity struct {
 	CFDate         *Date       `json:"cf_Date,omitempty"`
 	CFSingleOption *string     `json:"cf_SingleOtpion,omitempty"`
 	CFMultiOption  *[]string   `json:"cf_MultiOption,omitempty"`
-}
-
-func (l *CustomLocationEntity) EntityId() string {
-	return ""
-}
-
-func (l *CustomLocationEntity) Type() EntityType {
-	return ENTITYTYPE_LOCATION
-}
-
-func (l *CustomLocationEntity) PathName() string {
-	return locationsPath
-}
-
-func (l *CustomLocationEntity) Copy() Entity {
-	return deepcopy.Copy(l).(*CustomLocationEntity)
-}
-
-func (l *CustomLocationEntity) String() string {
-	b, _ := json.Marshal(l)
-	return string(b)
 }
 
 func entityToJSONString(entity Entity) (error, string) {
@@ -63,14 +40,14 @@ func TestEntityJSONSerialization(t *testing.T) {
 
 	tests := []test{
 		{&CustomLocationEntity{}, `{}`},
-		{&CustomLocationEntity{Location: Location{Address: &Address{City: nil}}}, `{"address":{}}`}, // TODO: verify this is correct
-		{&CustomLocationEntity{Location: Location{Address: &Address{City: String("")}}}, `{"address":{"city":""}}`},
-		{&CustomLocationEntity{Location: Location{Languages: nil}}, `{}`},
-		{&CustomLocationEntity{Location: Location{Languages: nil}}, `{}`},
-		{&CustomLocationEntity{Location: Location{Languages: &[]string{}}}, `{"languages":[]}`},
-		{&CustomLocationEntity{Location: Location{Languages: &[]string{"English"}}}, `{"languages":["English"]}`},
-		{&CustomLocationEntity{Location: Location{Hours: nil}}, `{}`},
-		{&CustomLocationEntity{Location: Location{Hours: &Hours{}}}, `{"hours":{}}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: nil}}}, `{"address":{}}`}, // TODO: verify this is correct
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: String("")}}}, `{"address":{"city":""}}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{}}}, `{"languages":[]}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{"English"}}}, `{"languages":["English"]}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: nil}}, `{}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: &Hours{}}}, `{"hours":{}}`},
 		{&CustomLocationEntity{CFUrl: String("")}, `{"cf_Url":""}`},
 		{&CustomLocationEntity{CFUrl: nil}, `{}`},
 		{&CustomLocationEntity{CFTextList: &[]string{}}, `{"cf_TextList":[]}`},
@@ -94,8 +71,8 @@ func TestEntityJSONDeserialization(t *testing.T) {
 
 	tests := []test{
 		{`{}`, &CustomLocationEntity{}},
-		{`{"emails": []}`, &CustomLocationEntity{Location: Location{Emails: Strings([]string{})}}},
-		{`{"emails": ["mhupman@yext.com", "bmcginnis@yext.com"]}`, &CustomLocationEntity{Location: Location{Emails: Strings([]string{"mhupman@yext.com", "bmcginnis@yext.com"})}}},
+		{`{"emails": []}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{})}}},
+		{`{"emails": ["mhupman@yext.com", "bmcginnis@yext.com"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"mhupman@yext.com", "bmcginnis@yext.com"})}}},
 		{`{"cf_Url": "www.yext.com"}`, &CustomLocationEntity{CFUrl: String("www.yext.com")}},
 		{`{"cf_TextList": ["a", "b", "c"]}`, &CustomLocationEntity{CFTextList: Strings([]string{"a", "b", "c"})}},
 	}

@@ -57,7 +57,8 @@ var (
 		"clickthroughUrl": "https://yext.com/event",
 		"url":             "https://mktgcdn.com/awesome.jpg",
 	}
-	hoursRaw = map[string]interface{}{
+	// hoursRawForEntites is the format used by entities API
+	hoursRawForEntity = map[string]interface{}{
 		"additionalHoursText": "This is an example of extra hours info",
 		"monday": []map[string]interface{}{
 			map[string]interface{}{
@@ -105,12 +106,26 @@ var (
 			},
 			map[string]interface{}{
 				"date": "2016-05-31",
-				"hours": []*Times{
-					&Times{
-						Start: "9:00",
-						End:   "17:00",
+				"hours": []interface{}{
+					map[string]interface{}{
+						"start": "9:00",
+						"end":   "17:00",
 					},
 				},
+			},
+		},
+	}
+	hoursRawForLocation = map[string]interface{}{
+		"additionalHoursText": "This is an example of extra hours info",
+		"hours":               "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
+		"holidayHours": []interface{}{
+			map[string]interface{}{
+				"date":  "2016-05-30",
+				"hours": "",
+			},
+			map[string]interface{}{
+				"date":  "2016-05-31",
+				"hours": "9:00:17:00",
 			},
 		},
 	}
@@ -159,7 +174,22 @@ var (
 			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},
-		customFieldParseTest{"HOURS", hoursRaw, Hours{
+		// TODO: re-enable
+		// customFieldParseTest{"HOURS", hoursRawForLocation, HoursCustom{
+		// 	AdditionalText: "This is an example of extra hours info",
+		// 	Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
+		// 	HolidayHours: []LocationHolidayHours{
+		// 		LocationHolidayHours{
+		// 			Date:  "2016-05-30",
+		// 			Hours: "",
+		// 		},
+		// 		LocationHolidayHours{
+		// 			Date:  "2016-05-31",
+		// 			Hours: "9:00:17:00",
+		// 		},
+		// 	},
+		// }},
+		customFieldParseTest{"HOURS", hoursRawForEntity, Hours{
 			Monday: []*Times{
 				&Times{Start: "9:00", End: "17:00"},
 			},

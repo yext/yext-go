@@ -531,7 +531,8 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 	return parsed, nil
 }
 
-func validateCustomFieldsKeys(cfs map[string]interface{}) error {
+// validateLocationCustomFieldsKeys can be used with Location API to validate custom fields
+func validateLocationCustomFieldsKeys(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
 		if !customFieldKeyRegex.MatchString(k) {
 			return errors.New(fmt.Sprintf("custom fields must be specified by their id, not name: %s", k))
