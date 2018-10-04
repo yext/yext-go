@@ -6,14 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"reflect"
 )
 
 const entityPath = "entities"
 
 type EntityService struct {
 	client   *Client
-	registry map[EntityType]interface{}
+	registry Registry
 }
 
 type EntityListOptions struct {
@@ -29,32 +28,17 @@ type EntityListResponse struct {
 }
 
 func (e *EntityService) RegisterDefaultEntities() {
-	e.registry = make(map[EntityType]interface{})
+	e.registry = make(Registry)
 	e.RegisterEntity(ENTITYTYPE_LOCATION, &Location{})
 	e.RegisterEntity(ENTITYTYPE_EVENT, &Event{})
 }
 
 func (e *EntityService) RegisterEntity(entityType EntityType, entity interface{}) {
-	//From: https://github.com/reggo/reggo/blob/master/common/common.go#L169
-	isPtr := reflect.ValueOf(entity).Kind() == reflect.Ptr
-	var newVal interface{}
-	var tmp interface{}
-	if isPtr {
-		tmp = reflect.ValueOf(entity).Elem().Interface()
-	} else {
-		tmp = entity
-	}
-	newVal = reflect.New(reflect.TypeOf(tmp)).Elem().Interface()
-	e.registry[entityType] = newVal
+	e.registry.Register(string(entityType), entity)
 }
 
 func (e *EntityService) LookupEntity(entityType EntityType) (interface{}, error) {
-	val, ok := e.registry[entityType]
-	if !ok {
-		return nil, fmt.Errorf("Unable to find entity type %s in entity registry %v", entityType, e.registry)
-	}
-
-	return reflect.New(reflect.TypeOf(val)).Interface(), nil
+	return e.registry.Lookup(string(entityType))
 }
 
 func GetBytes(key interface{}) ([]byte, error) {
