@@ -7,7 +7,6 @@ type EntityType string
 type Entity interface {
 	GetEntityId() string
 	GetEntityType() EntityType
-	Copy() Entity
 }
 
 type EntityMeta struct {
