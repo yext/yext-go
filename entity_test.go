@@ -112,7 +112,7 @@ func TestEntityJSONDeserialization(t *testing.T) {
 
 func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	entityService := EntityService{
-		registry: map[EntityType]interface{}{},
+		registry: make(Registry),
 	}
 	entityService.RegisterEntity("LOCATION", &CustomLocationEntity{})
 	mapOfStringToInterface := make(map[string]interface{})
