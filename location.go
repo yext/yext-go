@@ -8,8 +8,6 @@ package yext
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/mohae/deepcopy"
 )
 
 const ENTITYTYPE_LOCATION EntityType = "LOCATION"
@@ -193,7 +191,7 @@ type Hours struct {
 	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
 }
 
-// TODO: This will become OpenIntervals
+// TODO: *Times will become *OpenIntervals after Techops change
 type Times struct {
 	Start string `json:"start,omitempty"`
 	End   string `json:"end,omitempty"`
@@ -207,27 +205,12 @@ func (y *Location) GetEntityType() EntityType {
 	return ENTITYTYPE_LOCATION
 }
 
-func (y *Location) PathName() string {
-	return locationsPath
-}
-
-func (y *Location) Copy() Entity {
-	return deepcopy.Copy(y).(*Location)
-}
-
 func (y Location) GetId() string {
 	if y.EntityMeta != nil && y.EntityMeta.Id != nil {
 		return *y.EntityMeta.Id
 	}
 	return ""
 }
-
-// func (y Location) GetEntityType() string {
-// 	if y.EntityType != nil {
-// 		return *y.EntityType
-// 	}
-// 	return ""
-// }
 
 func (y Location) GetName() string {
 	if y.Name != nil {

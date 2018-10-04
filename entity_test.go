@@ -111,12 +111,10 @@ func TestEntityJSONDeserialization(t *testing.T) {
 }
 
 func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
-
 	entityService := EntityService{
-		registry: map[EntityType]Entity{
-			ENTITYTYPE_LOCATION: &CustomLocationEntity{},
-		},
+		registry: map[EntityType]interface{}{},
 	}
+	entityService.RegisterEntity("LOCATION", &CustomLocationEntity{})
 	mapOfStringToInterface := make(map[string]interface{})
 	err := json.Unmarshal([]byte(sampleEntityJSON), &mapOfStringToInterface)
 	if err != nil {
@@ -125,7 +123,6 @@ func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	if _, err := entityService.toEntityType(mapOfStringToInterface); err != nil {
 		t.Errorf("Unable to convert JSON to entity type. Err: %s", err)
 	}
-	// TODO: Add diff test
 }
 
 var sampleEntityJSON = `{
