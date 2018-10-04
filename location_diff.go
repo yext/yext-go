@@ -8,6 +8,8 @@ type Comparable interface {
 	Equal(Comparable) bool
 }
 
+// TODO: Need to fix the comments below and update this to work with the new EntityMeta structure
+
 // Diff calculates the differences between a base Location (a) and a proposed set of changes
 // represented by a second Location (b).  The diffing logic will ignore fields in the proposed
 // Location that aren't set (nil).  This characteristic makes the function ideal for
@@ -48,7 +50,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		// Issue here because EntityMeta is an embedded struct
+		// TODO: Issue here because EntityMeta is an embedded struct
 		if nameA == "Id" || nameA == "EntityMeta" || valB.IsNil() {
 			continue
 		}

@@ -2,8 +2,6 @@ package yext
 
 type EntityType string
 
-// This is a little dangerous because if you embed an Entity (like Location) within another Entity
-// You don't have to re-define these...but we'd need to re-define copy...
 type Entity interface {
 	GetEntityId() string
 	GetEntityType() EntityType

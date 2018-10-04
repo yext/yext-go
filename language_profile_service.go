@@ -31,9 +31,9 @@ func (l *LanguageProfileService) GetAll(id string) (*LanguageProfileListResponse
 		return nil, r, err
 	}
 
-	// if _, err := l.HydrateLocations(v.LanguageProfiles); err != nil {
-	// 	return nil, r, err
-	// }
+	if _, err := l.HydrateLocations(v.LanguageProfiles); err != nil {
+		return nil, r, err
+	}
 
 	return &v, r, nil
 }
@@ -45,9 +45,9 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageP
 		return nil, r, err
 	}
 
-	// if _, err := HydrateLocation(&v.Location, l.CustomFields); err != nil {
-	// 	return nil, r, err
-	// }
+	if _, err := HydrateLocation(&v.Location, l.CustomFields); err != nil {
+		return nil, r, err
+	}
 
 	return &v, r, nil
 }
@@ -88,17 +88,17 @@ func (l *LanguageProfileService) Delete(id string, languageCode string) (*Respon
 	return r, nil
 }
 
-// func (l *LanguageProfileService) HydrateLocations(languageProfiles []*LanguageProfile) ([]*LanguageProfile, error) {
-// 	if l.CustomFields == nil {
-// 		return languageProfiles, nil
-// 	}
-//
-// 	// for _, profile := range languageProfiles {
-// 	// 	// _, err := HydrateLocation(&profile.Location, l.CustomFields)
-// 	// 	// if err != nil {
-// 	// 	// 	return languageProfiles, err
-// 	// 	// }
-// 	// }
-//
-// 	return languageProfiles, nil
-// }
+func (l *LanguageProfileService) HydrateLocations(languageProfiles []*LanguageProfile) ([]*LanguageProfile, error) {
+	if l.CustomFields == nil {
+		return languageProfiles, nil
+	}
+
+	for _, profile := range languageProfiles {
+		_, err := HydrateLocation(&profile.Location, l.CustomFields)
+		if err != nil {
+			return languageProfiles, err
+		}
+	}
+
+	return languageProfiles, nil
+}
