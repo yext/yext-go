@@ -97,7 +97,7 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 }
 
 // TODO: Paging is not working here. Waiting on techops
-// TODO: SearchID
+// TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	var entities []Entity
 	if opts == nil {

@@ -531,7 +531,6 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 	return parsed, nil
 }
 
-// TODO: Can we do this anymore?
 func validateCustomFieldsKeys(cfs map[string]interface{}) error {
 	for k, _ := range cfs {
 		if !customFieldKeyRegex.MatchString(k) {

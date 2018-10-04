@@ -154,7 +154,7 @@ type Address struct {
 	Line2       *string `json:"line2,omitempty"`
 	City        *string `json:"city,omitempty"`
 	Region      *string `json:"region,omitempty"`
-	Sublocality *string `json:"sublocality,omitempty"` // check on this one??
+	Sublocality *string `json:"sublocality,omitempty"`
 	PostalCode  *string `json:"postalCode,omitempty"`
 }
 

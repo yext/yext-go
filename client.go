@@ -337,7 +337,7 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
 	if opts.PageToken != "" {
-		// TODO: this is not compatible with the old parameter name
+		// TODO: Outstanding techops issue because this seems to have changed to page_token (similar to api_key)
 		q.Add("pageToken", opts.PageToken)
 	} else if opts.Offset != 0 {
 		q.Add("offset", strconv.Itoa(opts.Offset))
