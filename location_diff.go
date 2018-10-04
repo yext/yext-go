@@ -8,8 +8,6 @@ type Comparable interface {
 	Equal(Comparable) bool
 }
 
-// TODO: Need to fix the comments below and update this to work with the new EntityMeta structure
-
 // Diff calculates the differences between a base Location (a) and a proposed set of changes
 // represented by a second Location (b).  The diffing logic will ignore fields in the proposed
 // Location that aren't set (nil).  This characteristic makes the function ideal for
@@ -30,8 +28,7 @@ type Comparable interface {
 //   // isDiff -> false
 //   // delta -> nil
 func (y Location) Diff(b *Location) (d *Location, diff bool) {
-	d = &Location{EntityMeta: &EntityMeta{
-		Id: String(y.GetId())}}
+	d = &Location{Id: String(y.GetId())}
 
 	var (
 		aV, bV = reflect.ValueOf(y), reflect.ValueOf(b).Elem()
@@ -50,17 +47,14 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		// TODO: Issue here because EntityMeta is an embedded struct
-		if nameA == "Id" || nameA == "EntityMeta" || valB.IsNil() {
+		if valB.IsNil() || nameA == "Id" {
 			continue
 		}
 
 		if nameA == "Hours" {
-			// TODO: need to re-enable
-			continue
-			// if !valA.IsNil() && !valB.IsNil() && HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
-			// 	continue
-			// }
+			if !valA.IsNil() && !valB.IsNil() && HoursAreEquivalent(getUnderlyingValue(valA.Interface()).(string), getUnderlyingValue(valB.Interface()).(string)) {
+				continue
+			}
 		}
 
 		if isZeroValue(valA, y.nilIsEmpty) && isZeroValue(valB, b.nilIsEmpty) {
@@ -169,11 +163,9 @@ var closedHoursEquivalents = map[string]struct{}{
 	HoursClosedAllWeek: struct{}{},
 }
 
-// TODO: need to re-enable
 func HoursAreEquivalent(a, b string) bool {
-	return false
-	// _, aIsClosed := closedHoursEquivalents[a]
-	// _, bIsClosed := closedHoursEquivalents[b]
-	//
-	// return a == b || aIsClosed && bIsClosed
+	_, aIsClosed := closedHoursEquivalents[a]
+	_, bIsClosed := closedHoursEquivalents[b]
+
+	return a == b || aIsClosed && bIsClosed
 }

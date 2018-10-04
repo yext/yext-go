@@ -68,7 +68,7 @@ func (l *LanguageProfileService) Upsert(y *LanguageProfile, languageCode string)
 	}
 	delete(asMap, "id")
 
-	if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
+	if err := validateLocationCustomFieldsKeys(y.CustomFields); err != nil {
 		return nil, err
 	}
 	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), asMap, nil)

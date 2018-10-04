@@ -233,8 +233,29 @@ func (v *VideoGallery) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_VIDEO
 }
 
+// HoursCustom is the Hours custom field format used by locations API
+// Entities API uses the Hours struct in location_entities.go (profile and custom hours are defined the same way for entities)
+type HoursCustom struct {
+	AdditionalText string                 `json:"additionalHoursText,omitempty"`
+	Hours          string                 `json:"hours,omitempty"`
+	HolidayHours   []LocationHolidayHours `json:"holidayHours,omitempty"`
+}
+
+func (h HoursCustom) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_HOURS
+}
+
 func (h Hours) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
+}
+
+// TODO: This is the old structure of daily times. Figure out a better way of naming
+type DailyTimesCustom struct {
+	DailyTimes string `json:"dailyTimes,omitempty"`
+}
+
+func (d DailyTimesCustom) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_DAILYTIMES
 }
 
 type DailyTimes struct {

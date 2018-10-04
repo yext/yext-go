@@ -1,8 +1,6 @@
 package yext
 
 import (
-	"bytes"
-	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -33,39 +31,29 @@ func (e *EntityService) RegisterDefaultEntities() {
 	e.RegisterEntity(ENTITYTYPE_EVENT, &Event{})
 }
 
-func (e *EntityService) RegisterEntity(entityType EntityType, entity interface{}) {
-	e.registry.Register(string(entityType), entity)
+func (e *EntityService) RegisterEntity(t EntityType, entity interface{}) {
+	e.registry.Register(string(t), entity)
 }
 
-func (e *EntityService) LookupEntity(entityType EntityType) (interface{}, error) {
-	return e.registry.Lookup(string(entityType))
+func (e *EntityService) CreateEntity(t EntityType) (interface{}, error) {
+	return e.registry.Create(string(t))
 }
 
-func GetBytes(key interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(key)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
-func (e *EntityService) toEntityTypes(entityInterfaces []interface{}) ([]Entity, error) {
-	var entities = []Entity{}
-	for _, entityInterface := range entityInterfaces {
+func (e *EntityService) toEntityTypes(entities []interface{}) ([]Entity, error) {
+	var types = []Entity{}
+	for _, entityInterface := range entities {
 		entity, err := e.toEntityType(entityInterface)
 		if err != nil {
 			return nil, err
 		}
-		entities = append(entities, entity)
+		types = append(types, entity)
 	}
-	return entities, nil
+	return types, nil
 }
 
-func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error) {
+func (e *EntityService) toEntityType(entity interface{}) (Entity, error) {
 	// Determine Entity Type
-	var entityValsByKey = entityInterface.(map[string]interface{})
+	var entityValsByKey = entity.(map[string]interface{})
 	meta, ok := entityValsByKey["meta"]
 	if !ok {
 		return nil, fmt.Errorf("Unable to find meta attribute in %v", entityValsByKey)
@@ -77,7 +65,8 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 		return nil, fmt.Errorf("Unable to find entityType attribute in %v", metaByKey)
 	}
 
-	entityObj, err := e.LookupEntity(EntityType(entityType.(string)))
+	// TODO: Re-examine what happens when we get an error here. Do we want to procede with a generic type?
+	entityObj, err := e.CreateEntity(EntityType(entityType.(string)))
 	if err != nil {
 		return nil, err
 	}
@@ -85,14 +74,13 @@ func (e *EntityService) toEntityType(entityInterface interface{}) (Entity, error
 	// Convert into struct of Entity Type
 	entityJSON, err := json.Marshal(entityValsByKey)
 	if err != nil {
-		return nil, fmt.Errorf("Error marshaling entity to JSON: %s", err)
+		return nil, fmt.Errorf("Marshaling entity to JSON: %s", err)
 	}
 
 	err = json.Unmarshal(entityJSON, &entityObj)
 	if err != nil {
-		return nil, fmt.Errorf("Error unmarshaling entity JSON: %s", err)
+		return nil, fmt.Errorf("Unmarshaling entity JSON: %s", err)
 	}
-
 	return entityObj.(Entity), nil
 }
 
@@ -185,13 +173,16 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 }
 
 func (e *EntityService) Get(id string) (Entity, *Response, error) {
-	var v interface{}
+	var v map[string]interface{}
 	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityPath, id), &v)
 	if err != nil {
 		return nil, r, err
 	}
 
 	entity, err := e.toEntityType(v)
+	if err != nil {
+		return nil, r, err
+	}
 
 	// TODO: nil is emtpy
 	//v.nilIsEmpty = true

@@ -87,8 +87,7 @@ func makeLocs(n int) []*Location {
 	var locs []*Location
 
 	for i := 0; i < n; i++ {
-		new := &Location{EntityMeta: &EntityMeta{
-			Id: String(strconv.Itoa(i))}}
+		new := &Location{Id: String(strconv.Itoa(i))}
 		locs = append(locs, new)
 	}
 
