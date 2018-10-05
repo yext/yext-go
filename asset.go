@@ -38,9 +38,9 @@ const (
 type AssetUsageType string
 
 type Asset struct {
-	Id          *string           `json:"id"`
-	Name        *string           `json:"name"`
-	Type        AssetType         `json:"type"`
+	Id          *string           `json:"id,omitempty"`
+	Name        *string           `json:"name,omitempty"`
+	Type        AssetType         `json:"type,omitempty"`
 	Description *string           `json:"description,omitempty"`
 	ForEntities *ForEntities      `json:"forEntities,omitempty"`
 	Usage       *[]AssetUsage     `json:"usage,omitempty"`
@@ -51,7 +51,7 @@ type Asset struct {
 }
 
 type ForEntities struct {
-	MappingType   MappingType       `json:"mappingType"`
+	MappingType   MappingType       `json:"mappingType,omitempty"`
 	FolderId      *string           `json:"folderId,omitempty"`
 	EntityIds     *[]string         `json:"entityIds,omitempty"`
 	LabelIds      *UnorderedStrings `json:"labelIds,omitempty"`
@@ -59,7 +59,7 @@ type ForEntities struct {
 }
 
 type AssetUsage struct {
-	Type       UsageType `json:"type"`
+	Type       UsageType `json:"type,omitempty"`
 	FieldNames *[]string `json:"fieldNames,omitempty"`
 }
 
@@ -73,13 +73,9 @@ func (t TextValue) GetAssetType() AssetType {
 	return ASSETTYPE_TEXT
 }
 
-type Image struct {
-	Url           string  `json:"url"`
-	AlternateText *string `json:"alternateText,omitempty"`
-}
-
 type ImageValue struct {
-	Image *Image `json:"image,omitempty"`
+	Url           string `json:"url,omitempty"`
+	AlternateText string `json:"alternateText,omitempty"`
 }
 
 func (i ImageValue) GetAssetType() AssetType {
@@ -87,9 +83,9 @@ func (i ImageValue) GetAssetType() AssetType {
 }
 
 type ComplexImageValue struct {
-	Image           *Image `json:"image,omitempty"`
-	ClickthroughURL string `json:"clickthroughUrl,omitempty"`
-	Details         string `json:"details,omitempty"`
+	Image           *ImageValue `json:"image,omitempty"`
+	ClickthroughURL string      `json:"clickthroughUrl,omitempty"`
+	Details         string      `json:"details,omitempty"`
 }
 
 func (ci ComplexImageValue) GetAssetType() AssetType {
@@ -97,7 +93,8 @@ func (ci ComplexImageValue) GetAssetType() AssetType {
 }
 
 type VideoValue struct {
-	Video *Video `json:"video,omitempty"`
+	Url           string `json:"url,omitempty"`
+	AlternateText string `json:"alternateText,omitempty"`
 }
 
 func (i VideoValue) GetAssetType() AssetType {
@@ -105,9 +102,9 @@ func (i VideoValue) GetAssetType() AssetType {
 }
 
 type ComplexVideoValue struct {
-	Video           *Video `json:"image,omitempty"`
-	ClickthroughURL string `json:"clickthroughUrl,omitempty"`
-	Details         string `json:"details,omitempty"`
+	Video           *VideoValue `json:"video,omitempty"`
+	ClickthroughURL string      `json:"clickthroughUrl,omitempty"`
+	Details         string      `json:"details,omitempty"`
 }
 
 func (ci ComplexVideoValue) GetAssetType() AssetType {
