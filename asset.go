@@ -35,8 +35,6 @@ const (
 	ASSETTYPE_COMPLEXVIDEO AssetType = "complexVideo"
 )
 
-type AssetUsageType string
-
 type Asset struct {
 	Id          *string           `json:"id,omitempty"`
 	Name        *string           `json:"name,omitempty"`
@@ -63,50 +61,27 @@ type AssetUsage struct {
 	FieldNames *[]string `json:"fieldNames,omitempty"`
 }
 
-type AssetValue interface {
-	GetAssetType() AssetType
-}
-
 type TextValue string
-
-func (t TextValue) GetAssetType() AssetType {
-	return ASSETTYPE_TEXT
-}
 
 type ImageValue struct {
 	Url           string `json:"url,omitempty"`
 	AlternateText string `json:"alternateText,omitempty"`
-}
-
-func (i ImageValue) GetAssetType() AssetType {
-	return ASSETTYPE_IMAGE
+	Height        uint64 `json:height,omitempty`
+	Width         uint64 `json:width,omitempty`
 }
 
 type ComplexImageValue struct {
 	Image           *ImageValue `json:"image,omitempty"`
-	ClickthroughURL string      `json:"clickthroughUrl,omitempty"`
+	Description     string      `json:"description,omitempty"`
 	Details         string      `json:"details,omitempty"`
-}
-
-func (ci ComplexImageValue) GetAssetType() AssetType {
-	return ASSETTYPE_COMPLEXIMAGE
+	ClickthroughURL string      `json:"clickthroughUrl,omitempty"`
 }
 
 type VideoValue struct {
-	Url           string `json:"url,omitempty"`
-	AlternateText string `json:"alternateText,omitempty"`
-}
-
-func (i VideoValue) GetAssetType() AssetType {
-	return ASSETTYPE_VIDEO
+	Url string `json:"url,omitempty"`
 }
 
 type ComplexVideoValue struct {
-	Video           *VideoValue `json:"video,omitempty"`
-	ClickthroughURL string      `json:"clickthroughUrl,omitempty"`
-	Details         string      `json:"details,omitempty"`
-}
-
-func (ci ComplexVideoValue) GetAssetType() AssetType {
-	return ASSETTYPE_COMPLEXVIDEO
+	Video       *VideoValue `json:"video,omitempty"`
+	Description string      `json:"description,omitempty"`
 }
