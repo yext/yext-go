@@ -53,7 +53,7 @@ type ForEntities struct {
 	FolderId      *string           `json:"folderId,omitempty"`
 	EntityIds     *[]string         `json:"entityIds,omitempty"`
 	LabelIds      *UnorderedStrings `json:"labelIds,omitempty"`
-	LabelOperator *LabelOperator    `json:"labelOperator,omitempty"`
+	LabelOperator LabelOperator     `json:"labelOperator,omitempty"`
 }
 
 type AssetUsage struct {

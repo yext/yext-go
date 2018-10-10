@@ -32,7 +32,7 @@ type EntityListResponse struct {
 
 func (e *EntityService) RegisterDefaultEntities() {
 	e.registry = make(Registry)
-	e.RegisterEntity(ENTITYTYPE_LOCATION, &Location{})
+	e.RegisterEntity(ENTITYTYPE_LOCATION, &LocationEntity{})
 	e.RegisterEntity(ENTITYTYPE_EVENT, &Event{})
 }
 
