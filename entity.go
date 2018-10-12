@@ -8,14 +8,13 @@ type Entity interface {
 }
 
 type EntityMeta struct {
-	Id          *string           `json:"id,omitempty"`
-	AccountId   *string           `json:"accountId,omitempty"`
-	EntityType  EntityType        `json:"entityType,omitempty"`
-	FolderId    *string           `json:"folderId,omitempty"`
-	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
-	CategoryIds *[]string         `json:"categoryIds,omitempty"`
-	Language    *string           `json:"language,omitempty"`
-	CountryCode *string           `json:"countryCode,omitempty"`
+	Id          *string    `json:"id,omitempty"`
+	AccountId   *string    `json:"accountId,omitempty"`
+	EntityType  EntityType `json:"entityType,omitempty"`
+	Language    *string    `json:"language,omitempty"`
+	CountryCode *string    `json:"countryCode,omitempty"`
+	// TODO: See if we still need and implement
+	nilIsEmpty bool
 }
 
 type BaseEntity struct {
@@ -43,34 +42,4 @@ func (b *BaseEntity) GetNilIsEmpty() bool {
 
 func (b *BaseEntity) SetNilIsEmpty(val bool) {
 	b.nilIsEmpty = val
-}
-
-func (b *BaseEntity) GetFolderId() string {
-	if b.Meta.FolderId != nil {
-		return *b.Meta.FolderId
-	}
-	return ""
-}
-
-func (b *BaseEntity) GetCategoryIds() (v []string) {
-	if b.Meta.CategoryIds != nil {
-		v = *b.Meta.CategoryIds
-	}
-	return v
-}
-
-func (b *BaseEntity) GetLabelIds() (v UnorderedStrings) {
-	if b.Meta.LabelIds != nil {
-		v = *b.Meta.LabelIds
-	}
-	return v
-}
-
-func (b *BaseEntity) SetLabelIds(v []string) {
-	l := UnorderedStrings(v)
-	b.SetLabelIdsWithUnorderedStrings(l)
-}
-
-func (b *BaseEntity) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
-	b.Meta.LabelIds = &v
 }
