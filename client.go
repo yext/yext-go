@@ -35,6 +35,7 @@ type Client struct {
 	ReviewService          *ReviewService
 	LanguageProfileService *LanguageProfileService
 	AssetService           *AssetService
+	CFTAssetService        *CFTAssetService
 	AnalyticsService       *AnalyticsService
 	EntityService          *EntityService
 }
@@ -51,7 +52,8 @@ func NewClient(config *Config) *Client {
 	c.ReviewService = &ReviewService{client: c}
 	c.LanguageProfileService = &LanguageProfileService{client: c}
 	c.AssetService = &AssetService{client: c}
-	c.AssetService.RegisterDefaultAssetValues()
+	c.CFTAssetService = &CFTAssetService{client: c}
+	c.CFTAssetService.RegisterDefaultAssetValues()
 	c.AnalyticsService = &AnalyticsService{client: c}
 	c.EntityService = &EntityService{client: c}
 	c.EntityService.RegisterDefaultEntities()
