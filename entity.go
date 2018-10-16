@@ -16,12 +16,11 @@ type EntityMeta struct {
 	CategoryIds *[]string         `json:"categoryIds,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 	CountryCode *string           `json:"countryCode,omitempty"`
-	// TODO: See if we still need and implement
-	nilIsEmpty bool
 }
 
 type BaseEntity struct {
-	Meta *EntityMeta `json:"meta,omitempty"`
+	Meta       *EntityMeta `json:"meta,omitempty"`
+	nilIsEmpty bool
 }
 
 func (b *BaseEntity) GetEntityId() string {
@@ -36,4 +35,12 @@ func (b *BaseEntity) GetEntityType() EntityType {
 		return b.Meta.EntityType
 	}
 	return ""
+}
+
+func (b *BaseEntity) GetNilIsEmpty() bool {
+	return b.nilIsEmpty
+}
+
+func (b *BaseEntity) SetNilIsEmpty(val bool) {
+	b.nilIsEmpty = val
 }

@@ -60,45 +60,60 @@ var (
 	// hoursRawForEntites is the format used by entities API
 	hoursRawForEntity = map[string]interface{}{
 		"additionalHoursText": "This is an example of extra hours info",
-		"monday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "9:00",
-				"end":   "17:00",
+		"monday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "9:00",
+					"end":   "17:00",
+				},
 			},
 		},
-		"tuesday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "12:00",
-				"end":   "15:00",
-			},
-			{
-				"start": "5:00",
-				"end":   "11:00",
-			},
-		},
-		"wednesday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "9:00",
-				"end":   "17:00",
+		"tuesday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "12:00",
+					"end":   "15:00",
+				},
+				{
+					"start": "5:00",
+					"end":   "11:00",
+				},
 			},
 		},
-		"thursday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "0:00",
-				"end":   "23:59",
+		"wednesday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "9:00",
+					"end":   "17:00",
+				},
 			},
 		},
-		"friday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "9:00",
-				"end":   "17:00",
+		"thursday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "0:00",
+					"end":   "23:59",
+				},
 			},
 		},
-		"saturday": []map[string]interface{}{
-			map[string]interface{}{
-				"start": "9:00",
-				"end":   "17:00",
+		"friday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "9:00",
+					"end":   "17:00",
+				},
 			},
+		},
+		"saturday": map[string]interface{}{
+			"openIntervals": []map[string]interface{}{
+				map[string]interface{}{
+					"start": "9:00",
+					"end":   "17:00",
+				},
+			},
+		},
+		"sunday": map[string]interface{}{
+			"isClosed": true,
 		},
 		"holidayHours": []interface{}{
 			map[string]interface{}{
@@ -106,7 +121,7 @@ var (
 			},
 			map[string]interface{}{
 				"date": "2016-05-31",
-				"hours": []interface{}{
+				"openIntervals": []map[string]interface{}{
 					map[string]interface{}{
 						"start": "9:00",
 						"end":   "17:00",
@@ -190,24 +205,39 @@ var (
 		// 	},
 		// }},
 		customFieldParseTest{"HOURS", hoursRawForEntity, Hours{
-			Monday: []*Times{
-				&Times{Start: "9:00", End: "17:00"},
+			Monday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "9:00", End: "17:00"},
+				},
 			},
-			Tuesday: []*Times{
-				&Times{Start: "12:00", End: "15:00"},
-				&Times{Start: "5:00", End: "11:00"},
+			Tuesday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "12:00", End: "15:00"},
+					&Interval{Start: "5:00", End: "11:00"},
+				},
 			},
-			Wednesday: []*Times{
-				&Times{Start: "9:00", End: "17:00"},
+			Wednesday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "9:00", End: "17:00"},
+				},
 			},
-			Thursday: []*Times{
-				&Times{Start: "0:00", End: "23:59"},
+			Thursday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "0:00", End: "23:59"},
+				},
 			},
-			Friday: []*Times{
-				&Times{Start: "9:00", End: "17:00"},
+			Friday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "9:00", End: "17:00"},
+				},
 			},
-			Saturday: []*Times{
-				&Times{Start: "9:00", End: "17:00"},
+			Saturday: &DayHours{
+				OpenIntervals: []*Interval{
+					&Interval{Start: "9:00", End: "17:00"},
+				},
+			},
+			Sunday: &DayHours{
+				IsClosed: Bool(true),
 			},
 			HolidayHours: &[]HolidayHours{
 				HolidayHours{
@@ -215,8 +245,8 @@ var (
 				},
 				HolidayHours{
 					Date: "2016-05-31",
-					Hours: []*Times{
-						&Times{
+					OpenIntervals: []*Interval{
+						&Interval{
 							Start: "9:00",
 							End:   "17:00",
 						},

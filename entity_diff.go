@@ -1,28 +1,28 @@
 package yext
 
 import (
+	"log"
 	"reflect"
 )
 
-func copyEntity(val interface{}) interface{} {
+func instanceOf(val interface{}) interface{} {
 	var (
-		isPtr  = reflect.ValueOf(val).Kind() == reflect.Ptr
-		newVal interface{}
-		tmp    interface{}
+		isPtr = reflect.ValueOf(val).Kind() == reflect.Ptr
+		tmp   interface{}
 	)
 	if isPtr {
 		tmp = reflect.ValueOf(val).Elem().Interface()
 	} else {
 		tmp = val
 	}
-	newVal = reflect.New(reflect.TypeOf(tmp)).Elem().Interface()
-	return reflect.New(reflect.TypeOf(newVal)).Interface()
+	return reflect.New(reflect.TypeOf(tmp)).Interface()
 }
 
-func diff(a interface{}, b interface{}, delta interface{}) bool {
+func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (interface{}, bool) {
 	var (
 		aV, bV = reflect.ValueOf(a), reflect.ValueOf(b)
 		isDiff = false
+		delta  = instanceOf(a)
 	)
 
 	if aV.Kind() == reflect.Ptr {
@@ -43,40 +43,82 @@ func diff(a interface{}, b interface{}, delta interface{}) bool {
 			valA  = aV.Field(i)
 			valB  = bV.Field(i)
 		)
+		log.Println(nameA)
 
-		if nameA == "BaseEntity" { // TODO: Need to handle this case
+		if nameA == "nilIsEmpty" {
 			continue
 		}
 
+		log.Println("valA", valA)
+		log.Println("valB", valB)
+
+		// If Kind() == struct, this is likely an embedded struct
 		if valA.Kind() == reflect.Struct {
-			diff := diff(valA.Addr().Interface(), valB.Addr().Interface(), reflect.ValueOf(delta).Elem().FieldByName(nameA).Addr().Interface())
+			log.Println("is struct")
+			d, diff := diff(valA.Addr().Interface(), valB.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
 			if diff {
 				isDiff = true
+				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d).Elem())
 			}
 			continue
 		} else if valA.Kind() == reflect.Ptr {
-			if !valB.IsNil() || !valB.CanSet() { // should we check can set?
+			// log.Println("is pointer")
+			// if valA.IsNil() { // implies valB is non-nil
+			// 	log.Println("I am nil")
+			// 	//valBIndirect := valB.Elem()
+			// 	log.Println("Nil is empty b", nilIsEmptyB)
+			// 	log.Println("Nil is empty a", nilIsEmptyA)
+			// 	log.Println("is zero a", isZeroValue(valA, nilIsEmptyA))
+			// 	log.Println("is zero b", isZeroValue(valB.Elem(), nilIsEmptyB))
+			// 	if isZeroValue(valA, nilIsEmptyA) && isZeroValue(valB, nilIsEmptyB) {
+			// 		continue
+			// 	}
+			// 	isDiff = true
+			// 	reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+			// 	continue
+			log.Println("isZeroA", isZeroValue(valA, nilIsEmptyA))
+			log.Println("isZeroB", isZeroValue(valB, nilIsEmptyB))
+			if !valB.IsNil() && valB.CanSet() {
+				log.Println("val B is not nil")
 				valAIndirect := valA.Elem()
 				valBIndirect := valB.Elem()
+				// log.Println("valAInd", valAIndirect)
+				// log.Println("valBInd", valBIndirect)
+				// log.Println("kind:", valAIndirect.Kind())
 				if valAIndirect.Kind() == reflect.Struct {
+					// If base is &Address{Line1:"abc"} and new is &Address{}, we want &Address for the diff
+					// if isZeroValue(valBIndirect, getNilIsEmpty(valBIndirect)) {
+					// 	log.Println("val b is zero")
+					// 	if !(isZeroValue(valAIndirect, getNilIsEmpty(valAIndirect))) {
+					// 		log.Println("val a is not zero")
+					// 		isDiff = true
+					// 		reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+					// 	}
+					// 	continue
+					// }
 					reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
-					diff := diff(valAIndirect.Addr().Interface(), valBIndirect.Addr().Interface(), reflect.ValueOf(delta).Elem().FieldByName(nameA).Interface())
+					d, diff := diff(valAIndirect.Addr().Interface(), valBIndirect.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
 					if diff {
 						isDiff = true
+						reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d))
 					}
 					continue
 				}
 			}
 		}
 
-		if valB.IsNil() || !valB.CanSet() {
+		// before we want to recur we want to make sure neither is zoer
+
+		if valB.Kind() == reflect.Ptr && valB.IsNil() {
+			continue
+		}
+		if !valB.CanSet() {
 			continue
 		}
 
-		// if isZeroValue(valA, y.nilIsEmpty) && isZeroValue(valB, b.nilIsEmpty) {
-		// 	continue
-		// }
-		//
+		if isZeroValue(valA, getNilIsEmpty(a)) && isZeroValue(valB, getNilIsEmpty(b)) {
+			continue
+		}
 
 		aI, bI := valA.Interface(), valB.Interface()
 
@@ -93,25 +135,16 @@ func diff(a interface{}, b interface{}, delta interface{}) bool {
 			isDiff = true
 		}
 	}
-	return isDiff
+	return delta, isDiff
 }
 
+// Diff(a, b): a is base, b is new
 func Diff(a Entity, b Entity) (Entity, bool) {
 	if a.GetEntityType() != b.GetEntityType() {
 		return nil, true
 	}
 
-	baseEntity := BaseEntity{
-		Meta: &EntityMeta{
-			Id: String(a.GetEntityId()),
-		},
-	}
-
-	// TODO: figure out how to handle other base entity attributes
-	delta := copyEntity(a)
-	reflect.ValueOf(delta).Elem().FieldByName("BaseEntity").Set(reflect.ValueOf(baseEntity))
-
-	isDiff := diff(a, b, delta)
+	delta, isDiff := diff(a, b, getNilIsEmpty(a), getNilIsEmpty(b))
 	if !isDiff {
 		return nil, isDiff
 	}

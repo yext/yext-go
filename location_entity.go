@@ -17,16 +17,15 @@ type LocationEntity struct {
 	BaseEntity
 
 	// Admin
-	FolderId     *string                `json:"folderId,omitempty"`
-	LabelIds     *UnorderedStrings      `json:"labelIds,omitempty"`
-	CategoryIds  *[]string              `json:"categoryIds,omitempty"`
-	Closed       *LocationClosed        `json:"closed,omitempty"`
-	Keywords     *[]string              `json:"keywords,omitempty"`
-	Language     *string                `json:"language,omitempty"`
-	CustomFields map[string]interface{} `json:"customFields,omitempty"`
+	FolderId    *string           `json:"folderId,omitempty"`
+	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
+	CategoryIds *[]string         `json:"categoryIds,omitempty"`
+	Closed      *LocationClosed   `json:"closed,omitempty"`
+	Keywords    *[]string         `json:"keywords,omitempty"`
+	Language    *string           `json:"language,omitempty"`
 
-	hydrated   bool
-	nilIsEmpty bool
+	// hydrated   bool
+	// nilIsEmpty bool
 
 	// Address Fields
 	Name            *string  `json:"name,omitempty"`
@@ -174,20 +173,30 @@ type Coordinate struct {
 }
 
 type Hours struct {
-	Monday       []*Times        `json:"monday,omitempty"`
-	Tuesday      []*Times        `json:"tuesday,omitempty"`
-	Wednesday    []*Times        `json:"wednesday,omitempty"`
-	Thursday     []*Times        `json:"thursday,omitempty"`
-	Friday       []*Times        `json:"friday,omitempty"`
-	Saturday     []*Times        `json:"saturday,omitempty"`
-	Sunday       []*Times        `json:"sunday,omitempty"`
+	Monday       *DayHours       `json:"monday,omitempty"`
+	Tuesday      *DayHours       `json:"tuesday,omitempty"`
+	Wednesday    *DayHours       `json:"wednesday,omitempty"`
+	Thursday     *DayHours       `json:"thursday,omitempty"`
+	Friday       *DayHours       `json:"friday,omitempty"`
+	Saturday     *DayHours       `json:"saturday,omitempty"`
+	Sunday       *DayHours       `json:"sunday,omitempty"`
 	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
 }
 
-// TODO: *Times will become *OpenIntervals after Techops change
-type Times struct {
+type DayHours struct {
+	OpenIntervals []*Interval `json:"openIntervals,omitempty"`
+	IsClosed      *bool       `json:"isClosed,omitempty"`
+}
+
+type Interval struct {
 	Start string `json:"start,omitempty"`
 	End   string `json:"end,omitempty"`
+}
+
+type HolidayHours struct {
+	Date          string      `json:"date"`
+	IsClosed      *bool       `json:"isClosed,omitempty"`
+	OpenIntervals []*Interval `json:"openIntervals"`
 }
 
 func (y LocationEntity) GetId() string {
@@ -657,11 +666,4 @@ func (y LocationEntity) IsClosed() bool {
 		return true
 	}
 	return false
-}
-
-// HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.
-// For details see
-type HolidayHours struct {
-	Date  string   `json:"date"`
-	Hours []*Times `json:"hours"`
 }
