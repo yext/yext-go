@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"reflect"
 )
 
 const entityPath = "entities"
@@ -104,6 +105,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 			return "", err
 		}
 		for _, entity := range typedEntities {
+			setNilIsEmpty(entity)
 			entities = append(entities, entity)
 		}
 		return resp.PageToken, err
@@ -184,10 +186,27 @@ func (e *EntityService) Get(id string) (Entity, *Response, error) {
 		return nil, r, err
 	}
 
-	// TODO: nil is emtpy
-	//v.nilIsEmpty = true
+	setNilIsEmpty(entity)
 
 	return entity, r, nil
+}
+
+func setNilIsEmpty(i interface{}) {
+	m := reflect.ValueOf(i).MethodByName("SetNilIsEmpty")
+	if m.IsValid() {
+		m.Call([]reflect.Value{reflect.ValueOf(true)})
+	}
+}
+
+func getNilIsEmpty(i interface{}) bool {
+	m := reflect.ValueOf(i).MethodByName("GetNilIsEmpty")
+	if m.IsValid() {
+		values := m.Call([]reflect.Value{})
+		if len(values) == 1 {
+			return values[0].Interface().(bool)
+		}
+	}
+	return false
 }
 
 // TODO: Currently an error with API. Need to test this

@@ -6,21 +6,26 @@ import (
 	"testing"
 )
 
-// Note to self: fields with json tag HAVE to be exported
-// See: https://stackoverflow.com/questions/11126793/json-and-dealing-with-unexported-fields
+type CustomCustomFieldType struct {
+	Name   *string
+	Date   *float64
+	Person *bool
+}
+
 type CustomLocationEntity struct {
 	LocationEntity
-	CFHours        *Hours      `json:"cf_Hours,omitempty"`
-	CFUrl          *string     `json:"cf_Url,omitempty"` // TODO: do we want to continue to use these types or just the underlying type?
-	CFDailyTimes   *DailyTimes `json:"cf_DailyTimes,omitempty"`
-	CFTextList     *[]string   `json:"cf_TextList,omitempty"`
-	CFGallery      []*Photo    `json:"cf_Gallery,omitempty"`
-	CFPhoto        *Photo      `json:"cf_Photo,omitempty"`
-	CFVideos       []*Video    `json:"cf_Videos,omitempty"`
-	CFVideo        *Video      `json:"cf_Video,omitempty"`
-	CFDate         *Date       `json:"cf_Date,omitempty"`
-	CFSingleOption *string     `json:"cf_SingleOtpion,omitempty"`
-	CFMultiOption  *[]string   `json:"cf_MultiOption,omitempty"`
+	CFHours        *Hours                 `json:"cf_Hours,omitempty"`
+	CFUrl          *string                `json:"cf_Url,omitempty"`
+	CFDailyTimes   *DailyTimes            `json:"cf_DailyTimes,omitempty"`
+	CFTextList     *[]string              `json:"cf_TextList,omitempty"`
+	CFGallery      []*Photo               `json:"cf_Gallery,omitempty"`
+	CFPhoto        *Photo                 `json:"cf_Photo,omitempty"`
+	CFVideos       []*Video               `json:"cf_Videos,omitempty"`
+	CFVideo        *Video                 `json:"cf_Video,omitempty"`
+	CFDate         *Date                  `json:"cf_Date,omitempty"`
+	CFSingleOption *string                `json:"cf_SingleOtpion,omitempty"`
+	CFMultiOption  *[]UnorderedStrings    `json:"cf_MultiOption,omitempty"`
+	CFCustomType   *CustomCustomFieldType `json:"cf_CustomCustomFieldType,omitempty"`
 }
 
 func entityToJSONString(entity Entity) (error, string) {
@@ -114,91 +119,119 @@ var sampleEntityJSON = `{
   "addressHidden": false,
   "description": "This is my description",
   "hours": {
-     "monday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "tuesday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "wednesday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "thursday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "friday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "sunday": [
-         {
-             "start": "00:00",
-             "end": "23:59"
-         }
-     ],
+     "monday": {
+			 "openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "tuesday": {
+			 "openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "wednesday": {
+			 	"openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "thursday": {
+		 		"openIntervals": [
+					 {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "friday": {
+			 "openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+		 "saturday": {
+			 "isClosed": true
+     },
+     "sunday": {
+			  "openIntervals": [
+	         {
+	             "start": "00:00",
+	             "end": "23:59"
+	         }
+				]
+     },
      "holidayHours": [
          {
              "date": "2018-12-25",
+						 "isClosed": true,
              "isRegularHours": false
          }
      ]
   },
   "name": "Yext Consulting",
   "cf_Hours": {
-     "monday": [
+     "monday": {
+			 "openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "tuesday": {
+			 "openIntervals": [
          {
              "start": "09:00",
              "end": "17:00"
          }
-     ],
-     "tuesday": [
+				]
+     },
+     "wednesday": {
+			 "openIntervals": [
          {
              "start": "09:00",
              "end": "17:00"
          }
-     ],
-     "wednesday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "thursday": [
-         {
-             "start": "09:00",
-             "end": "17:00"
-         }
-     ],
-     "friday": [
-         {
-             "start": "09:00",
-             "end": "14:00"
-         },
-         {
-             "start": "15:00",
-             "end": "17:00"
-         }
-     ],
-     "saturday": [
-         {
-             "start": "00:00",
-             "end": "23:59"
-         }
-     ],
+		 	 ]
+     },
+     "thursday": {
+			 "openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "friday": {
+			 	"openIntervals": [
+	         {
+	             "start": "09:00",
+	             "end": "14:00"
+	         },
+	         {
+	             "start": "15:00",
+	             "end": "17:00"
+	         }
+				]
+     },
+     "saturday": {
+			 	"openIntervals": [
+	         {
+	             "start": "00:00",
+	             "end": "23:59"
+	         }
+				]
+     },
      "holidayHours": [
          {
              "date": "2018-10-13",
