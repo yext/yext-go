@@ -43,6 +43,10 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			valB  = bV.Field(i)
 		)
 
+		// log.Println(nameA)
+		// log.Println(valB.CanSet())
+		// log.Println(valB.Kind())
+
 		if !valB.CanSet() {
 			continue
 		}
