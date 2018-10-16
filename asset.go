@@ -85,3 +85,10 @@ type ComplexVideoValue struct {
 	Video       *VideoValue `json:"video,omitempty"`
 	Description string      `json:"description,omitempty"`
 }
+
+func (a *Asset) GetId() string {
+	if a.Id == nil {
+		return ""
+	}
+	return *a.Id
+}
