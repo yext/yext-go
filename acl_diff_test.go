@@ -1,109 +1,111 @@
-package yext
+package yext_test
 
 import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/yext/yext-go"
 )
 
 func TestACL_Diff(t *testing.T) {
 	tests := []struct {
 		name      string
-		aclA      ACL
-		aclB      ACL
-		wantDelta *ACL
+		aclA      yext.ACL
+		aclB      yext.ACL
+		wantDelta *yext.ACL
 		wantDiff  bool
 	}{
 		{
 			name: "Identical ACLs",
-			aclA: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			aclB: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
 			wantDelta: nil,
 			wantDiff:  false,
 		},
 		{
 			name: "Different Roles in ACL",
-			aclA: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			aclB: ACL{
-				Role: Role{
-					Id:   String("4"),
-					Name: String("Example Role Two"),
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("4"),
+					Name: yext.String("Example Role Two"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			wantDelta: &ACL{
-				Role: Role{
-					Id:   String("4"),
-					Name: String("Example Role Two"),
+			wantDelta: &yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("4"),
+					Name: yext.String("Example Role Two"),
 				},
 			},
 			wantDiff: true,
 		},
 		{
 			name: "Different 'On' params in ACL",
-			aclA: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			aclB: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "123456",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			wantDelta: &ACL{
+			wantDelta: &yext.ACL{
 				On: "123456",
 			},
 			wantDiff: true,
 		},
 		{
 			name: "Different 'AccessOn' params in ACL",
-			aclA: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclA: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_FOLDER,
+				AccessOn: yext.ACCESS_FOLDER,
 			},
-			aclB: ACL{
-				Role: Role{
-					Id:   String("3"),
-					Name: String("Example Role"),
+			aclB: yext.ACL{
+				Role: yext.Role{
+					Id:   yext.String("3"),
+					Name: yext.String("Example Role"),
 				},
 				On:       "12345",
-				AccessOn: ACCESS_LOCATION,
+				AccessOn: yext.ACCESS_LOCATION,
 			},
-			wantDelta: &ACL{
-				AccessOn: ACCESS_LOCATION,
+			wantDelta: &yext.ACL{
+				AccessOn: yext.ACCESS_LOCATION,
 			},
 			wantDiff: true,
 		},
@@ -119,47 +121,47 @@ func TestACL_Diff(t *testing.T) {
 func TestACLList_Diff(t *testing.T) {
 	tests := []struct {
 		name      string
-		aclListA  ACLList
-		aclListB  ACLList
-		wantDelta ACLList
+		aclListA  yext.ACLList
+		aclListB  yext.ACLList
+		wantDelta yext.ACLList
 		wantDiff  bool
 	}{
 		{
 			name: "Identical ACLLists",
-			aclListA: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			aclListB: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
 			wantDelta: nil,
@@ -167,40 +169,40 @@ func TestACLList_Diff(t *testing.T) {
 		},
 		{
 			name: "Identical ACLs in ACLLists",
-			aclListA: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
 			},
-			aclListB: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
 			},
 			wantDelta: nil,
@@ -208,214 +210,214 @@ func TestACLList_Diff(t *testing.T) {
 		},
 		{
 			name: "Different Length in ACLLists",
-			aclListA: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			aclListB: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("5"),
-						Name: String("Example Role Three"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
 					},
 					On:       "1234567",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			wantDelta: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("5"),
-						Name: String("Example Role Three"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
 					},
 					On:       "1234567",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
 			wantDiff: true,
 		},
 		{
 			name: "Different Items in ACLLists",
-			aclListA: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			aclListB: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("33"),
-						Name: String("Example Role"),
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("33"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("44"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("44"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			wantDelta: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("33"),
-						Name: String("Example Role"),
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("33"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("44"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("44"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
 			wantDiff: true,
 		},
 		{
 			name: "Some Identical and Some Different Items in ACLLists",
-			aclListA: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListA: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			aclListB: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			aclListB: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("5"),
-						Name: String("Example Role Three"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
 					},
 					On:       "1234567",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
-			wantDelta: ACLList{
-				ACL{
-					Role: Role{
-						Id:   String("3"),
-						Name: String("Example Role"),
+			wantDelta: yext.ACLList{
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("3"),
+						Name: yext.String("Example Role"),
 					},
 					On:       "12345",
-					AccessOn: ACCESS_FOLDER,
+					AccessOn: yext.ACCESS_FOLDER,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("4"),
-						Name: String("Example Role Two"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("4"),
+						Name: yext.String("Example Role Two"),
 					},
 					On:       "123456",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
-				ACL{
-					Role: Role{
-						Id:   String("5"),
-						Name: String("Example Role Three"),
+				yext.ACL{
+					Role: yext.Role{
+						Id:   yext.String("5"),
+						Name: yext.String("Example Role Three"),
 					},
 					On:       "1234567",
-					AccessOn: ACCESS_LOCATION,
+					AccessOn: yext.ACCESS_LOCATION,
 				},
 			},
 			wantDiff: true,
