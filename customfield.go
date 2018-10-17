@@ -245,11 +245,8 @@ func (h HoursCustom) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
 }
 
-// func (h Hours) CustomFieldTag() string {
-// 	return CUSTOMFIELDTYPE_HOURS
-// }
-
-// TODO: This is the old structure of daily times. Figure out a better way of naming
+// DailyTimesCustom is the DailyTimes custom field format used by locations API
+// Entities API uses the new DailyTimes struct
 type DailyTimesCustom struct {
 	DailyTimes string `json:"dailyTimes,omitempty"`
 }
@@ -266,8 +263,4 @@ type DailyTimes struct {
 	Thursday  string `json:"thursday,omitempty"`
 	Friday    string `json:"friday,omitempty"`
 	Saturday  string `json:"saturday,omitempty"`
-}
-
-func (d DailyTimes) CustomFieldTag() string {
-	return CUSTOMFIELDTYPE_DAILYTIMES
 }
