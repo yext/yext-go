@@ -26,10 +26,13 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 	)
 
 	if aV.Kind() == reflect.Ptr {
-		aV = aV.Elem()
+		aV = indirect(aV)
 	}
 	if bV.Kind() == reflect.Ptr {
-		bV = bV.Elem()
+		if bV.IsNil() {
+			return delta, isDiff
+		}
+		bV = indirect(bV)
 	}
 
 	var (
@@ -49,74 +52,40 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		log.Println("valA", valA)
-		log.Println("valB", valB)
+		if valB.Kind() == reflect.Ptr && valB.IsNil() {
+			continue
+		}
 
+		if !valB.CanSet() {
+			continue
+		}
+
+		// First, use recursion to handle a field that is a struct or a pointer to a struct
 		// If Kind() == struct, this is likely an embedded struct
 		if valA.Kind() == reflect.Struct {
-			log.Println("is struct")
 			d, diff := diff(valA.Addr().Interface(), valB.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
 			if diff {
 				isDiff = true
 				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d).Elem())
 			}
 			continue
-		} else if valA.Kind() == reflect.Ptr {
-			// log.Println("is pointer")
-			// if valA.IsNil() { // implies valB is non-nil
-			// 	log.Println("I am nil")
-			// 	//valBIndirect := valB.Elem()
-			// 	log.Println("Nil is empty b", nilIsEmptyB)
-			// 	log.Println("Nil is empty a", nilIsEmptyA)
-			// 	log.Println("is zero a", isZeroValue(valA, nilIsEmptyA))
-			// 	log.Println("is zero b", isZeroValue(valB.Elem(), nilIsEmptyB))
-			// 	if isZeroValue(valA, nilIsEmptyA) && isZeroValue(valB, nilIsEmptyB) {
-			// 		continue
-			// 	}
-			// 	isDiff = true
-			// 	reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
-			// 	continue
-			log.Println("isZeroA", isZeroValue(valA, nilIsEmptyA))
-			log.Println("isZeroB", isZeroValue(valB, nilIsEmptyB))
-			if !valB.IsNil() && valB.CanSet() {
-				log.Println("val B is not nil")
-				valAIndirect := valA.Elem()
-				valBIndirect := valB.Elem()
-				// log.Println("valAInd", valAIndirect)
-				// log.Println("valBInd", valBIndirect)
-				// log.Println("kind:", valAIndirect.Kind())
-				if valAIndirect.Kind() == reflect.Struct {
-					// If base is &Address{Line1:"abc"} and new is &Address{}, we want &Address for the diff
-					// if isZeroValue(valBIndirect, getNilIsEmpty(valBIndirect)) {
-					// 	log.Println("val b is zero")
-					// 	if !(isZeroValue(valAIndirect, getNilIsEmpty(valAIndirect))) {
-					// 		log.Println("val a is not zero")
-					// 		isDiff = true
-					// 		reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
-					// 	}
-					// 	continue
-					// }
-					reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
-					d, diff := diff(valAIndirect.Addr().Interface(), valBIndirect.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
-					if diff {
-						isDiff = true
-						reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d))
-					}
-					continue
+			// If it's a pointer to a struct we need to handle it in a special way:
+		} else if valA.Kind() == reflect.Ptr && indirectKind(valA) == reflect.Struct {
+			// Handle case where new is &Address{} and base is &Address{"Line1"}
+			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
+				isDiff = true
+				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+			} else {
+				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
+				if diff {
+					isDiff = true
+					reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d))
 				}
 			}
-		}
-
-		// before we want to recur we want to make sure neither is zoer
-
-		if valB.Kind() == reflect.Ptr && valB.IsNil() {
-			continue
-		}
-		if !valB.CanSet() {
 			continue
 		}
 
-		if isZeroValue(valA, getNilIsEmpty(a)) && isZeroValue(valB, getNilIsEmpty(b)) {
+		if isZeroValue(valA, nilIsEmptyA) && isZeroValue(valB, nilIsEmptyB) {
 			continue
 		}
 
@@ -136,6 +105,17 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 		}
 	}
 	return delta, isDiff
+}
+
+func indirect(v reflect.Value) reflect.Value {
+	for v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	return v
+}
+
+func indirectKind(v reflect.Value) reflect.Kind {
+	return indirect(v).Kind()
 }
 
 // Diff(a, b): a is base, b is new

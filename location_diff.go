@@ -152,7 +152,7 @@ func isZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 		return isZeroValue(v.Elem(), interpretNilAsZeroValue)
 	case reflect.Struct:
 		for i, n := 0, v.NumField(); i < n; i++ {
-			if !isZeroValue(v.Field(i), interpretNilAsZeroValue) {
+			if !isZeroValue(v.Field(i), true) {
 				return false
 			}
 		}
