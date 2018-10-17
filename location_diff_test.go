@@ -630,7 +630,7 @@ type floatTest struct {
 var floatTests = []floatTest{
 	{Float(1234.0), Float(1234.0), false, false, nil},
 	{Float(1234.0), nil, false, false, nil},
-	{Float(1234), nil, false, false, nil},
+	{Float(0), nil, false, false, nil},
 	{nil, nil, false, false, nil},
 	{Float(0), Float(0), false, false, nil},
 	{Float(0), Float(9876.0), true, false, Float(9876.0)},

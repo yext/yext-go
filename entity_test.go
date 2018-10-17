@@ -38,7 +38,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 
 	tests := []test{
 		{&CustomLocationEntity{}, `{}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: nil}}}, `{"address":{}}`}, // TODO: verify this is correct
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: nil}}}, `{"address":{}}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: String("")}}}, `{"address":{"city":""}}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
@@ -70,7 +70,7 @@ func TestEntityJSONDeserialization(t *testing.T) {
 	tests := []test{
 		{`{}`, &CustomLocationEntity{}},
 		{`{"emails": []}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{})}}},
-		{`{"emails": ["mhupman@yext.com", "bmcginnis@yext.com"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"mhupman@yext.com", "bmcginnis@yext.com"})}}},
+		{`{"emails": ["bob@email.com", "sue@email.com"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"bob@email.com", "sue@email.com"})}}},
 		{`{"cf_Url": "www.yext.com"}`, &CustomLocationEntity{CFUrl: String("www.yext.com")}},
 		{`{"cf_TextList": ["a", "b", "c"]}`, &CustomLocationEntity{CFTextList: Strings([]string{"a", "b", "c"})}},
 	}
