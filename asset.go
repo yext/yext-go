@@ -1,18 +1,9 @@
 package yext
 
-type AssetType string
-
 const (
 	AssetTypeText  AssetType = "AssetTypeText"
 	AssetTypePhoto AssetType = "AssetTypePhoto"
 	AssetTypeVideo AssetType = "AssetTypeVideo"
-)
-
-type LabelOperator string
-
-const (
-	LabelOperatorAnd LabelOperator = "AND"
-	LabelOperatorOr  LabelOperator = "OR"
 )
 
 type Asset struct {

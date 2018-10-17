@@ -193,12 +193,6 @@ type Interval struct {
 	End   string `json:"end,omitempty"`
 }
 
-type HolidayHours struct {
-	Date          string      `json:"date"`
-	IsClosed      *bool       `json:"isClosed,omitempty"`
-	OpenIntervals []*Interval `json:"openIntervals"`
-}
-
 func (y LocationEntity) GetId() string {
 	if y.BaseEntity.Meta != nil && y.BaseEntity.Meta.Id != nil {
 		return *y.BaseEntity.Meta.Id
@@ -521,13 +515,6 @@ func (y LocationEntity) GetMenuListIds() (v []string) {
 	return v
 }
 
-func (y LocationEntity) GetFolderId() string {
-	if y.FolderId != nil {
-		return *y.FolderId
-	}
-	return ""
-}
-
 func (y LocationEntity) GetReviewBalancingURL() string {
 	if y.ReviewBalancingURL != nil {
 		return *y.ReviewBalancingURL
@@ -603,6 +590,20 @@ func (y LocationEntity) GetLanguages() (v []string) {
 	return v
 }
 
+func (y LocationEntity) GetFolderId() string {
+	if y.FolderId != nil {
+		return *y.FolderId
+	}
+	return ""
+}
+
+func (y LocationEntity) GetCategoryIds() (v []string) {
+	if y.CategoryIds != nil {
+		v = *y.CategoryIds
+	}
+	return v
+}
+
 func (y LocationEntity) GetLabelIds() (v UnorderedStrings) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
@@ -617,13 +618,6 @@ func (y LocationEntity) SetLabelIds(v []string) {
 
 func (y LocationEntity) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
 	y.LabelIds = &v
-}
-
-func (y LocationEntity) GetCategoryIds() (v []string) {
-	if y.CategoryIds != nil {
-		v = *y.CategoryIds
-	}
-	return v
 }
 
 func (y LocationEntity) GetPaymentOptions() (v []string) {
@@ -666,4 +660,11 @@ func (y LocationEntity) IsClosed() bool {
 		return true
 	}
 	return false
+}
+
+// HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.
+// For details see
+type HolidayHours struct {
+	Date  string      `json:"date"`
+	Hours []*Interval `json:"hours"`
 }
