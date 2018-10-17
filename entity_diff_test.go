@@ -1,16 +1,14 @@
 package yext
 
 import (
-	"log"
 	"reflect"
 	"testing"
 )
 
 type diffTest struct {
-	name     string
-	property string
-	isDiff   bool
-
+	name           string
+	property       string
+	isDiff         bool
 	baseValue      interface{}
 	newValue       interface{}
 	baseNilIsEmpty bool
@@ -30,6 +28,7 @@ func (c *CustomLocationEntity) SetValOnProperty(val interface{}, property string
 }
 
 func TestEntityDiff(t *testing.T) {
+	// To ensure that we test all combinations, tests follow this pattern: (more or less):
 	// BASIC EQUALITY:
 	// A) equal
 	// B) not equal
@@ -53,46 +52,7 @@ func TestEntityDiff(t *testing.T) {
 	// N) base is zero value (nil is empty), new is nil (nil is empty)
 
 	tests := []diffTest{
-		// Meta
-		// diffTest{
-		// 	name:     "Base Entity: not equal",
-		// 	property: "BaseEntity",
-		// 	baseValue: BaseEntity{
-		// 		Meta: &EntityMeta{
-		// 			Id:          String("CTG"),
-		// 			CategoryIds: Strings([]string{"123"}),
-		// 		},
-		// 	},
-		// 	newValue: BaseEntity{
-		// 		Meta: &EntityMeta{
-		// 			Id:          String("CTG"),
-		// 			CategoryIds: Strings([]string{"123", "456"}),
-		// 		},
-		// 	},
-		// 	isDiff: true,
-		// 	deltaValue: BaseEntity{
-		// 		Meta: &EntityMeta{
-		// 			Id:          String("CTG"),
-		// 			CategoryIds: Strings([]string{"123", "456"}),
-		// 		},
-		// 	},
-		// },
-		// diffTest{
-		// 	name:     "Base Entity: equal",
-		// 	property: "BaseEntity",
-		// 	baseValue: BaseEntity{
-		// 		Meta: &EntityMeta{
-		// 			CategoryIds: Strings([]string{"123", "456"}),
-		// 		},
-		// 	},
-		// 	newValue: BaseEntity{
-		// 		Meta: &EntityMeta{
-		// 			CategoryIds: Strings([]string{"123", "456"}),
-		// 		},
-		// 	},
-		// 	isDiff: false,
-		// },
-		// String tests
+		// *String tests
 		diffTest{
 			name:      "*String: equal (A)",
 			property:  "Name",
@@ -202,8 +162,7 @@ func TestEntityDiff(t *testing.T) {
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
-
-		//Float tests
+		// *Float tests
 		diffTest{
 			name:      "*Float: equal (A)",
 			property:  "YearEstablished",
@@ -416,8 +375,7 @@ func TestEntityDiff(t *testing.T) {
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
-
-		// Struct Diffs
+		// Struct tests (Address)
 		diffTest{
 			name:     "Address: equal (A)",
 			property: "Address",
@@ -498,7 +456,6 @@ func TestEntityDiff(t *testing.T) {
 				Line1: String("7900 Westpark Dr"),
 			},
 		},
-		// THIS IS THE DIFFICULT TEST
 		diffTest{
 			name:     "Address: base is not empty struct, new is empty struct (D)",
 			property: "Address",
@@ -508,14 +465,6 @@ func TestEntityDiff(t *testing.T) {
 			newValue:   &Address{},
 			isDiff:     true,
 			deltaValue: &Address{},
-		},
-		diffTest{
-			name:       "List: base is not empty struct, new is empty struct (D)",
-			property:   "CFTextList",
-			baseValue:  &[]string{"a", "b"},
-			newValue:   &[]string{},
-			isDiff:     true,
-			deltaValue: &[]string{},
 		},
 		diffTest{
 			name:      "Address: both are empty struct (E)",
@@ -672,33 +621,190 @@ func TestEntityDiff(t *testing.T) {
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
-		//
-		// diffTest{
-		// 	name:      "LocationEntity",
-		// 	property:  "LocationEntity",
-		// 	baseValue: LocationEntity{},
-		// 	newValue:  LocationEntity{},
-		// 	isDiff:    false,
-		// },
-		// diffTest{
-		// 	name:      "LocationEntity",
-		// 	property:  "LocationEntity",
-		// 	baseValue: LocationEntity{},
-		// 	newValue:  nil,
-		// 	isDiff:    false,
-		// },
-		// diffTest{
-		// 	name:      "LocationEntity",
-		// 	property:  "LocationEntity",
-		// 	baseValue: nil,
-		// 	newValue:  LocationEntity{},
-		// 	isDiff:    true,
-		// },
+		diffTest{
+			name:       "List: base is not empty struct, new is empty struct (D)",
+			property:   "CFTextList",
+			baseValue:  &[]string{"a", "b"},
+			newValue:   &[]string{},
+			isDiff:     true,
+			deltaValue: &[]string{},
+		},
+		// Comparable tests (Unordered Strings)
+		diffTest{
+			name:      "UnorderedStrings: equal (ordered) (A)",
+			property:  "CFMultiOption",
+			baseValue: ToUnorderedStrings([]string{"a", "b"}),
+			newValue:  ToUnorderedStrings([]string{"a", "b"}),
+			isDiff:    false,
+		},
+		diffTest{
+			name:      "UnorderedStrings: equal (unordered) (A)",
+			property:  "CFMultiOption",
+			baseValue: ToUnorderedStrings([]string{"a", "b"}),
+			newValue:  ToUnorderedStrings([]string{"b", "a"}),
+			isDiff:    false,
+		},
+		diffTest{
+			name:       "UnorderedStrings: not equal (B)",
+			property:   "CFMultiOption",
+			baseValue:  ToUnorderedStrings([]string{"a", "b"}),
+			newValue:   ToUnorderedStrings([]string{"c", "b"}),
+			isDiff:     true,
+			deltaValue: ToUnorderedStrings([]string{"c", "b"}),
+		},
+		diffTest{
+			name:       "UnorderedStrings: base is empty, new is non-empty (C)",
+			property:   "CFMultiOption",
+			baseValue:  ToUnorderedStrings([]string{}),
+			newValue:   ToUnorderedStrings([]string{"a", "b"}),
+			isDiff:     true,
+			deltaValue: ToUnorderedStrings([]string{"a", "b"}),
+		},
+		diffTest{
+			name:       "UnorderedStrings: base is non-empty, new is empty (D)",
+			property:   "CFMultiOption",
+			baseValue:  ToUnorderedStrings([]string{"a", "b"}),
+			newValue:   ToUnorderedStrings([]string{}),
+			isDiff:     true,
+			deltaValue: ToUnorderedStrings([]string{}),
+		},
+		diffTest{
+			name:      "UnorderedStrings: both are empty (E)",
+			property:  "CFMultiOption",
+			baseValue: ToUnorderedStrings([]string{}),
+			newValue:  ToUnorderedStrings([]string{}),
+			isDiff:    false,
+		},
+		diffTest{
+			name:      "UnorderedStrings: both are nil (F)",
+			property:  "CFMultiOption",
+			baseValue: nil,
+			newValue:  nil,
+			isDiff:    false,
+		},
+		diffTest{
+			name:      "UnorderedStrings: base is non-zero, new is nil (G)",
+			property:  "CFMultiOption",
+			baseValue: ToUnorderedStrings([]string{"a", "b"}),
+			newValue:  nil,
+			isDiff:    false,
+		},
+		diffTest{
+			name:       "UnorderedStrings: base is nil, new is non-zero (H)",
+			property:   "CFMultiOption",
+			baseValue:  nil,
+			newValue:   ToUnorderedStrings([]string{"a", "b"}),
+			isDiff:     true,
+			deltaValue: ToUnorderedStrings([]string{"a", "b"}),
+		},
+		diffTest{
+			name:       "UnorderedStrings: base is nil, new is zero (I)",
+			property:   "CFMultiOption",
+			baseValue:  nil,
+			newValue:   ToUnorderedStrings([]string{}),
+			isDiff:     true,
+			deltaValue: ToUnorderedStrings([]string{}),
+		},
+		diffTest{
+			name:      "UnorderedStrings: base is zero, new is nil (J)",
+			property:  "CFMultiOption",
+			baseValue: ToUnorderedStrings([]string{}),
+			newValue:  nil,
+			isDiff:    false,
+		},
+		diffTest{
+			name:           "UnorderedStrings: base is nil (nil is empty), new is zero (K)",
+			property:       "CFMultiOption",
+			baseValue:      nil,
+			baseNilIsEmpty: true,
+			newValue:       ToUnorderedStrings([]string{}),
+			isDiff:         false,
+		},
+		diffTest{
+			name:           "UnorderedStrings: base is nil (nil is empty), new is zero (nil is empty) (L)",
+			property:       "CFMultiOption",
+			baseValue:      nil,
+			baseNilIsEmpty: true,
+			newValue:       ToUnorderedStrings([]string{}),
+			newNilIsEmpty:  true,
+			isDiff:         false,
+		},
+		diffTest{
+			name:          "UnorderedStrings: base is zero value, new is nil (nil is empty) (L)",
+			property:      "CFMultiOption",
+			baseValue:     ToUnorderedStrings([]string{}),
+			newValue:      nil,
+			newNilIsEmpty: true,
+			isDiff:        false,
+		},
+		diffTest{
+			name:           "UnorderedStrings: base is zero value (nil is empty), new is nil (nil is empty) (L)",
+			property:       "CFMultiOption",
+			baseValue:      ToUnorderedStrings([]string{}),
+			baseNilIsEmpty: true,
+			newValue:       nil,
+			newNilIsEmpty:  true,
+			isDiff:         false,
+		},
+		// EmbeddedStruct tests
+		diffTest{
+			name:     "Base Entity: different Ids",
+			property: "BaseEntity",
+			baseValue: BaseEntity{
+				Meta: &EntityMeta{
+					Id: String("CTG"),
+				},
+			},
+			newValue: BaseEntity{
+				Meta: &EntityMeta{
+					Id: String("CTG2"),
+				},
+			},
+			isDiff: true,
+			deltaValue: BaseEntity{
+				Meta: &EntityMeta{
+					Id: String("CTG2"),
+				},
+			},
+		},
+		diffTest{
+			name:     "Base Entity: not equal",
+			property: "BaseEntity",
+			baseValue: BaseEntity{
+				Meta: &EntityMeta{
+					Id:          String("CTG"),
+					CategoryIds: Strings([]string{"123"}),
+				},
+			},
+			newValue: BaseEntity{
+				Meta: &EntityMeta{
+					Id:          String("CTG"),
+					CategoryIds: Strings([]string{"123", "456"}),
+				},
+			},
+			isDiff: true,
+			deltaValue: BaseEntity{
+				Meta: &EntityMeta{
+					CategoryIds: Strings([]string{"123", "456"}),
+				},
+			},
+		},
+		diffTest{
+			name:     "Base Entity: equal",
+			property: "BaseEntity",
+			baseValue: BaseEntity{
+				Meta: &EntityMeta{
+					CategoryIds: Strings([]string{"123", "456"}),
+				},
+			},
+			newValue: BaseEntity{
+				Meta: &EntityMeta{
+					CategoryIds: Strings([]string{"123", "456"}),
+				},
+			},
+			isDiff: false,
+		},
 	}
-
-	// l := CustomLocationEntity{
-	// 	LocationEntity: nil,
-	// }
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -805,18 +911,17 @@ func TestEntityDiffComplex(t *testing.T) {
 			isDiff: true,
 			delta:  custom3,
 		},
+		// Though the test below might look incorrect this is how the location.Diff() works
 		{
 			name:   "empty struct (new is empty struct)",
 			base:   custom3,
 			new:    custom4,
-			isDiff: true,
-			delta:  custom4,
+			isDiff: false,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			log.Println()
 			delta, isDiff := Diff(test.base, test.new)
 			if isDiff != test.isDiff {
 				t.Log(delta)
@@ -831,8 +936,3 @@ func TestEntityDiffComplex(t *testing.T) {
 		})
 	}
 }
-
-// test comparable to make sure it gets used
-// UnorderedStrings
-// text list
-// hours
