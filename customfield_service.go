@@ -504,7 +504,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for DailyT imes Field %v", v, err)
 			}
-			var cf DailyTimes
+			var cf DailyTimesCustom
 			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Daily Times Field %v", v, err)

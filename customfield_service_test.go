@@ -57,80 +57,8 @@ var (
 		"clickthroughUrl": "https://yext.com/event",
 		"url":             "https://mktgcdn.com/awesome.jpg",
 	}
-	// hoursRawForEntites is the format used by entities API
-	hoursRawForEntity = map[string]interface{}{
-		"additionalHoursText": "This is an example of extra hours info",
-		"monday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "9:00",
-					"end":   "17:00",
-				},
-			},
-		},
-		"tuesday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "12:00",
-					"end":   "15:00",
-				},
-				{
-					"start": "5:00",
-					"end":   "11:00",
-				},
-			},
-		},
-		"wednesday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "9:00",
-					"end":   "17:00",
-				},
-			},
-		},
-		"thursday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "0:00",
-					"end":   "23:59",
-				},
-			},
-		},
-		"friday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "9:00",
-					"end":   "17:00",
-				},
-			},
-		},
-		"saturday": map[string]interface{}{
-			"openIntervals": []map[string]interface{}{
-				map[string]interface{}{
-					"start": "9:00",
-					"end":   "17:00",
-				},
-			},
-		},
-		"sunday": map[string]interface{}{
-			"isClosed": true,
-		},
-		"holidayHours": []interface{}{
-			map[string]interface{}{
-				"date": "2016-05-30",
-			},
-			map[string]interface{}{
-				"date": "2016-05-31",
-				"openIntervals": []map[string]interface{}{
-					map[string]interface{}{
-						"start": "9:00",
-						"end":   "17:00",
-					},
-				},
-			},
-		},
-	}
-	hoursRawForLocation = map[string]interface{}{
+	// hoursRaw is in the format used by HoursCustom for location-service
+	hoursRaw = map[string]interface{}{
 		"additionalHoursText": "This is an example of extra hours info",
 		"hours":               "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
 		"holidayHours": []interface{}{
@@ -148,14 +76,9 @@ var (
 		"description": "An example caption for a video",
 		"url":         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 	}
+	// dailyTimesRaw is in the format used by DailyTimesCustom for location-service
 	dailyTimesRaw = map[string]interface{}{
-		"monday":    "4:00",
-		"tuesday":   "5:00",
-		"wednesday": "6:00",
-		"thursday":  "7:00",
-		"friday":    "8:00",
-		"saturday":  "9:00",
-		"sunday":    "10:00",
+		"dailyTimes": "1:10:00;2:4:00;3:5:00;4:6:00;5:7:00;6:8:00;7:9:00",
 	}
 	parseTests = []customFieldParseTest{
 		customFieldParseTest{"BOOLEAN", false, YesNo(false)},
@@ -189,7 +112,7 @@ var (
 			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},
-		customFieldParseTest{"HOURS", hoursRawForLocation, HoursCustom{
+		customFieldParseTest{"HOURS", hoursRaw, HoursCustom{
 			AdditionalText: "This is an example of extra hours info",
 			Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
 			HolidayHours: []LocationHolidayHours{
@@ -203,14 +126,8 @@ var (
 				},
 			},
 		}},
-		customFieldParseTest{"DAILY_TIMES", dailyTimesRaw, DailyTimes{
-			Monday:    "4:00",
-			Tuesday:   "5:00",
-			Wednesday: "6:00",
-			Thursday:  "7:00",
-			Friday:    "8:00",
-			Saturday:  "9:00",
-			Sunday:    "10:00",
+		customFieldParseTest{"DAILY_TIMES", dailyTimesRaw, DailyTimesCustom{
+			DailyTimes: "1:10:00;2:4:00;3:5:00;4:6:00;5:7:00;6:8:00;7:9:00",
 		}},
 		customFieldParseTest{"LOCATION_LIST", []string{"a", "b", "c"}, LocationList([]string{"a", "b", "c"})},
 	}
