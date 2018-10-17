@@ -10,19 +10,9 @@ import (
 	"fmt"
 )
 
-type EmbeddedStruct struct {
-	MyName string
-}
-
-type EmbeddedStruct2 struct {
-	MyName2 string
-}
-
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
-	//	EmbeddedStruct
-	//	EmbeddedStruct2
 	// Admin
 	Id           *string                `json:"id,omitempty"`
 	AccountId    *string                `json:"accountId,omitempty"`

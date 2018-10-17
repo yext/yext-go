@@ -189,68 +189,17 @@ var (
 			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},
-		// TODO: re-enable
-		// customFieldParseTest{"HOURS", hoursRawForLocation, HoursCustom{
-		// 	AdditionalText: "This is an example of extra hours info",
-		// 	Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
-		// 	HolidayHours: []LocationHolidayHours{
-		// 		LocationHolidayHours{
-		// 			Date:  "2016-05-30",
-		// 			Hours: "",
-		// 		},
-		// 		LocationHolidayHours{
-		// 			Date:  "2016-05-31",
-		// 			Hours: "9:00:17:00",
-		// 		},
-		// 	},
-		// }},
-		customFieldParseTest{"HOURS", hoursRawForEntity, Hours{
-			Monday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "9:00", End: "17:00"},
+		customFieldParseTest{"HOURS", hoursRawForLocation, HoursCustom{
+			AdditionalText: "This is an example of extra hours info",
+			Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
+			HolidayHours: []LocationHolidayHours{
+				LocationHolidayHours{
+					Date:  "2016-05-30",
+					Hours: "",
 				},
-			},
-			Tuesday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "12:00", End: "15:00"},
-					&Interval{Start: "5:00", End: "11:00"},
-				},
-			},
-			Wednesday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "9:00", End: "17:00"},
-				},
-			},
-			Thursday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "0:00", End: "23:59"},
-				},
-			},
-			Friday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "9:00", End: "17:00"},
-				},
-			},
-			Saturday: &DayHours{
-				OpenIntervals: []*Interval{
-					&Interval{Start: "9:00", End: "17:00"},
-				},
-			},
-			Sunday: &DayHours{
-				IsClosed: Bool(true),
-			},
-			HolidayHours: &[]HolidayHours{
-				HolidayHours{
-					Date: "2016-05-30",
-				},
-				HolidayHours{
-					Date: "2016-05-31",
-					OpenIntervals: []*Interval{
-						&Interval{
-							Start: "9:00",
-							End:   "17:00",
-						},
-					},
+				LocationHolidayHours{
+					Date:  "2016-05-31",
+					Hours: "9:00:17:00",
 				},
 			},
 		}},

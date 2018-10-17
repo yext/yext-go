@@ -245,9 +245,9 @@ func (h HoursCustom) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
 }
 
-func (h Hours) CustomFieldTag() string {
-	return CUSTOMFIELDTYPE_HOURS
-}
+// func (h Hours) CustomFieldTag() string {
+// 	return CUSTOMFIELDTYPE_HOURS
+// }
 
 // TODO: This is the old structure of daily times. Figure out a better way of naming
 type DailyTimesCustom struct {
