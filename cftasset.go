@@ -66,8 +66,8 @@ type TextValue string
 type ImageValue struct {
 	Url           string `json:"url,omitempty"`
 	AlternateText string `json:"alternateText,omitempty"`
-	Height        uint64 `json:height,omitempty`
-	Width         uint64 `json:width,omitempty`
+	Height        uint64 `json:"height,omitempty"`
+	Width         uint64 `json:"width,omitempty"`
 }
 
 type ComplexImageValue struct {
