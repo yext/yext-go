@@ -6,26 +6,19 @@ import (
 	"testing"
 )
 
-type CustomCustomFieldType struct {
-	Name   *string
-	Date   *float64
-	Person *bool
-}
-
 type CustomLocationEntity struct {
 	LocationEntity
-	CFHours        *Hours                 `json:"cf_Hours,omitempty"`
-	CFUrl          *string                `json:"cf_Url,omitempty"`
-	CFDailyTimes   *DailyTimes            `json:"cf_DailyTimes,omitempty"`
-	CFTextList     *[]string              `json:"cf_TextList,omitempty"`
-	CFGallery      []*Photo               `json:"cf_Gallery,omitempty"`
-	CFPhoto        *Photo                 `json:"cf_Photo,omitempty"`
-	CFVideos       []*Video               `json:"cf_Videos,omitempty"`
-	CFVideo        *Video                 `json:"cf_Video,omitempty"`
-	CFDate         *Date                  `json:"cf_Date,omitempty"`
-	CFSingleOption *string                `json:"cf_SingleOtpion,omitempty"`
-	CFMultiOption  *[]UnorderedStrings    `json:"cf_MultiOption,omitempty"`
-	CFCustomType   *CustomCustomFieldType `json:"cf_CustomCustomFieldType,omitempty"`
+	CFHours        *Hours            `json:"cf_Hours,omitempty"`
+	CFUrl          *string           `json:"cf_Url,omitempty"`
+	CFDailyTimes   *DailyTimes       `json:"cf_DailyTimes,omitempty"`
+	CFTextList     *[]string         `json:"cf_TextList,omitempty"`
+	CFGallery      []*Photo          `json:"cf_Gallery,omitempty"`
+	CFPhoto        *Photo            `json:"cf_Photo,omitempty"`
+	CFVideos       []*Video          `json:"cf_Videos,omitempty"`
+	CFVideo        *Video            `json:"cf_Video,omitempty"`
+	CFDate         *Date             `json:"cf_Date,omitempty"`
+	CFSingleOption *string           `json:"cf_SingleOtpion,omitempty"`
+	CFMultiOption  *UnorderedStrings `json:"cf_MultiOption,omitempty"`
 }
 
 func entityToJSONString(entity Entity) (error, string) {
