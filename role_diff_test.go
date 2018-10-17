@@ -1,61 +1,59 @@
-package yext_test
+package yext
 
 import (
 	"fmt"
 	"reflect"
 	"testing"
-
-	yext "gopkg.in/yext/yext-go.v2"
 )
 
 func TestRole_Diff(t *testing.T) {
 	tests := []struct {
 		name      string
-		roleA     yext.Role
-		roleB     yext.Role
-		wantDelta yext.Role
+		roleA     Role
+		roleB     Role
+		wantDelta Role
 		wantDiff  bool
 	}{
 		{
 			name: "Identical Roles",
-			roleA: yext.Role{
-				Id:   yext.String("3"),
-				Name: yext.String("Example Role"),
+			roleA: Role{
+				Id:   String("3"),
+				Name: String("Example Role"),
 			},
-			roleB: yext.Role{
-				Id:   yext.String("3"),
-				Name: yext.String("Example Role"),
+			roleB: Role{
+				Id:   String("3"),
+				Name: String("Example Role"),
 			},
-			wantDelta: yext.Role{},
+			wantDelta: Role{},
 			wantDiff:  false,
 		},
 		{
 			name: "Different 'Id' params in Roles",
-			roleA: yext.Role{
-				Id:   yext.String("3"),
-				Name: yext.String("Example Role"),
+			roleA: Role{
+				Id:   String("3"),
+				Name: String("Example Role"),
 			},
-			roleB: yext.Role{
-				Id:   yext.String("4"),
-				Name: yext.String("Example Role"),
+			roleB: Role{
+				Id:   String("4"),
+				Name: String("Example Role"),
 			},
-			wantDelta: yext.Role{
-				Id: yext.String("4"),
+			wantDelta: Role{
+				Id: String("4"),
 			},
 			wantDiff: true,
 		},
 		{
 			name: "Different 'Name' params in Roles",
-			roleA: yext.Role{
-				Id:   yext.String("3"),
-				Name: yext.String("Example Role"),
+			roleA: Role{
+				Id:   String("3"),
+				Name: String("Example Role"),
 			},
-			roleB: yext.Role{
-				Id:   yext.String("3"),
-				Name: yext.String("Example Role Two"),
+			roleB: Role{
+				Id:   String("3"),
+				Name: String("Example Role Two"),
 			},
-			wantDelta: yext.Role{
-				Name: yext.String("Example Role Two"),
+			wantDelta: Role{
+				Name: String("Example Role Two"),
 			},
 			wantDiff: true,
 		},
