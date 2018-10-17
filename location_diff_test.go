@@ -1500,3 +1500,138 @@ func TestHoursAreEquivalentDiff(t *testing.T) {
 		}
 	}
 }
+
+func TestIsZeroValue(t *testing.T) {
+	tests := []struct {
+		name       string
+		i          interface{}
+		nilIsEmpty bool
+		want       bool
+	}{
+		{
+			name: "Non-Empty String",
+			i:    "CTG",
+			want: false,
+		},
+		{
+			name:       "Non-Empty String (nil is empty)",
+			i:          "CTG",
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "Empty String",
+			i:    "",
+			want: true,
+		},
+		{
+			name:       "Empty String (nil is empty)",
+			i:          "",
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "Empty String",
+			i:    "",
+			want: true,
+		},
+		{
+			name: "Nil *string",
+			i:    (*string)(nil),
+			want: false,
+		},
+		{
+			name:       "Nil *string (nil is empty)",
+			i:          (*string)(nil),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "Empty *string",
+			i:    String(""),
+			want: true,
+		},
+		{
+			name:       "Empty *string (nil is empty)",
+			i:          String(""),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "nil ptr to *Address struct ",
+			i:    (*Address)(nil),
+			want: false,
+		},
+		{
+			name:       "nil ptr to *Address struct (nil is empty)",
+			i:          (*Address)(nil),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "empty *Address struct",
+			i:    &Address{},
+			want: true,
+		},
+		{
+			name:       "empty *Address struct (nil is empty)",
+			i:          &Address{},
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "non-empty *Address struct",
+			i: &Address{
+				Line1: String("7900 Westpark"),
+			},
+			want: false,
+		},
+		{
+			name: "non-empty *Address struct with empty values",
+			i: &Address{
+				Line1: String(""),
+			},
+			want: true,
+		},
+		{
+			name: "*Address struct with empty values (nil is empty)",
+			i: &Address{
+				Line1: String(""),
+			},
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "*Address struct with zero values",
+			i: &Address{
+				Line1:       String(""),
+				Line2:       String(""),
+				City:        String(""),
+				Region:      String(""),
+				Sublocality: String(""),
+				PostalCode:  String(""),
+			},
+			want: true,
+		},
+		{
+			name: "struct with zero values (*Address)",
+			i: &Address{
+				Line1:       String(""),
+				Line2:       String(""),
+				City:        String(""),
+				Region:      String(""),
+				Sublocality: String(""),
+				PostalCode:  String(""),
+			},
+			nilIsEmpty: true,
+			want:       true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if isZeroValue := isZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty); test.want != isZeroValue {
+				t.Errorf(`Expected IsZeroValue: %t\nGot:%t`, test.want, isZeroValue)
+			}
+		})
+	}
+}
