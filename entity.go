@@ -8,13 +8,14 @@ type Entity interface {
 }
 
 type EntityMeta struct {
-	Id          *string    `json:"id,omitempty"`
-	AccountId   *string    `json:"accountId,omitempty"`
-	EntityType  EntityType `json:"entityType,omitempty"`
-	Language    *string    `json:"language,omitempty"`
-	CountryCode *string    `json:"countryCode,omitempty"`
-	// TODO: See if we still need and implement
-	nilIsEmpty bool
+	Id          *string           `json:"id,omitempty"`
+	AccountId   *string           `json:"accountId,omitempty"`
+	EntityType  EntityType        `json:"entityType,omitempty"`
+	FolderId    *string           `json:"folderId,omitempty"`
+	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
+	CategoryIds *[]string         `json:"categoryIds,omitempty"`
+	Language    *string           `json:"language,omitempty"`
+	CountryCode *string           `json:"countryCode,omitempty"`
 }
 
 type BaseEntity struct {
