@@ -1,7 +1,6 @@
 package yext
 
 import (
-	"log"
 	"reflect"
 )
 
@@ -46,18 +45,31 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			valA  = aV.Field(i)
 			valB  = bV.Field(i)
 		)
-		log.Println(nameA)
 
 		if nameA == "nilIsEmpty" {
 			continue
 		}
 
-		if valB.Kind() == reflect.Ptr && valB.IsNil() {
+		if isNil(valB) {
 			continue
 		}
 
 		if !valB.CanSet() {
 			continue
+		}
+
+		aI, bI := valA.Interface(), valB.Interface()
+		// Comparable does not handle the nil is empty case:
+		// So if valA is nil, don't call comparable (valB checked for nil above)
+		if !isNil(valA) {
+			comparableA, aOk := aI.(Comparable)
+			comparableB, bOk := bI.(Comparable)
+			if aOk && bOk {
+				if !comparableA.Equal(comparableB) {
+					return b, true
+				}
+				return nil, false
+			}
 		}
 
 		// First, use recursion to handle a field that is a struct or a pointer to a struct
@@ -70,7 +82,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			}
 			continue
 			// If it's a pointer to a struct we need to handle it in a special way:
-		} else if valA.Kind() == reflect.Ptr && indirectKind(valA) == reflect.Struct {
+		} else if valA.Kind() == reflect.Ptr && indirect(valA).Kind() == reflect.Struct {
 			// Handle case where new is &Address{} and base is &Address{"Line1"}
 			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
 				isDiff = true
@@ -89,17 +101,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		aI, bI := valA.Interface(), valB.Interface()
-
-		comparableA, aOk := aI.(Comparable)
-		comparableB, bOk := bI.(Comparable)
-
-		if aOk && bOk {
-			if !comparableA.Equal(comparableB) {
-				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
-				isDiff = true
-			}
-		} else if !reflect.DeepEqual(aI, bI) {
+		if !reflect.DeepEqual(aI, bI) {
 			reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
 			isDiff = true
 		}
@@ -114,8 +116,11 @@ func indirect(v reflect.Value) reflect.Value {
 	return v
 }
 
-func indirectKind(v reflect.Value) reflect.Kind {
-	return indirect(v).Kind()
+func isNil(v reflect.Value) bool {
+	if v.Kind() == reflect.Ptr {
+		return v.IsNil()
+	}
+	return false
 }
 
 // Diff(a, b): a is base, b is new
