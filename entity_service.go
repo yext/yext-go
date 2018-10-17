@@ -7,7 +7,10 @@ import (
 	"reflect"
 )
 
-const entityPath = "entities"
+const (
+	entityPath         = "entities"
+	EntityListMaxLimit = 50
+)
 
 type EntityService struct {
 	client   *Client
@@ -21,9 +24,10 @@ type EntityListOptions struct {
 }
 
 type EntityListResponse struct {
-	Count     int           `json:"count"`
-	Entities  []interface{} `json:"entities"`
-	PageToken string        `json:"pageToken"`
+	Count        int           `json:"count"`
+	Entities     []interface{} `json:"entities"`
+	typedEntites []Entity
+	PageToken    string `json:"pageToken"`
 }
 
 func (e *EntityService) RegisterDefaultEntities() {
@@ -92,7 +96,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	if opts == nil {
 		opts = &EntityListOptions{}
 	}
-	opts.ListOptions = ListOptions{Limit: LocationListMaxLimit} // TODO: should this be EntityListMaxLimit
+	opts.ListOptions = ListOptions{Limit: EntityListMaxLimit}
 	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
 		opts.ListOptions = *listOptions
 		resp, _, err := e.List(opts)
@@ -100,14 +104,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 			return "", err
 		}
 
-		typedEntities, err := e.toEntityTypes(resp.Entities)
-		if err != nil {
-			return "", err
-		}
-		for _, entity := range typedEntities {
-			setNilIsEmpty(entity)
-			entities = append(entities, entity)
-		}
+		entities = append(entities, resp.typedEntites...)
 		return resp.PageToken, err
 	}
 
@@ -144,12 +141,18 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		return nil, r, err
 	}
 
-	// TODO: nil is empty
-	// for _, l := range v.Entities {
-	// 	l.nilIsEmpty = true
-	// }
+	typedEntities, err := e.toEntityTypes(v.Entities)
+	if err != nil {
+		return nil, r, err
+	}
+	entities := []Entity{}
+	for _, entity := range typedEntities {
+		setNilIsEmpty(entity)
+		entities = append(entities, entity)
+	}
+	v.typedEntites = entities
 
-	return v, nil, nil
+	return v, r, nil
 }
 
 func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error) {
@@ -211,10 +214,6 @@ func getNilIsEmpty(i interface{}) bool {
 
 // TODO: Currently an error with API. Need to test this
 func (e *EntityService) Create(y Entity) (*Response, error) {
-	// TODO: custom field validation
-	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
-	// 	return nil, err
-	// }
 	var requrl = entityPath
 	u, err := url.Parse(requrl)
 	if err != nil {
@@ -234,10 +233,6 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 
 // TODO: There is an outstanding techops QA issue to allow the Id in the request but we may have to remove other things like account
 func (e *EntityService) Edit(y Entity) (*Response, error) {
-	// TODO: custom field validation
-	// if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
-	// 	return nil, err
-	// }
 	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, y.GetEntityId()), y, nil)
 	if err != nil {
 		return r, err
