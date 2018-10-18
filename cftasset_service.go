@@ -47,7 +47,7 @@ func (a *CFTAssetService) toAssetsWithValues(assets []*CFTAsset) error {
 
 func (a *CFTAssetService) toAssetWithValue(asset *CFTAsset) error {
 	if asset.Type == ASSETTYPE_TEXT {
-		asset.Value = asset.Value.(string)
+		asset.Value = TextValue(asset.Value.(string))
 		return nil
 	}
 	var assetValueValsByKey = asset.Value.(map[string]interface{})
