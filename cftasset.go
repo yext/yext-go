@@ -92,3 +92,7 @@ func (a *CFTAsset) GetId() string {
 	}
 	return *a.Id
 }
+
+func (a *CFTAsset) GetAssetType() AssetType {
+	return a.Type
+}
