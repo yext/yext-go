@@ -139,6 +139,8 @@ func isZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 		return v.Bool() == false
 	case reflect.String:
 		return v.String() == ""
+	case reflect.Uint64:
+		return v.Uint() == 0
 	case reflect.Float64:
 		return v.Float() == 0.0
 	case reflect.Ptr, reflect.Interface:
