@@ -43,7 +43,7 @@ type CFTAsset struct {
 	Type        AssetType         `json:"type,omitempty"`
 	Description *string           `json:"description,omitempty"`
 	ForEntities *ForEntities      `json:"forEntities,omitempty"`
-	Usage       *AssetUsageList     `json:"usage,omitempty"`
+	Usage       *AssetUsageList   `json:"usage,omitempty"`
 	Locale      *string           `json:"locale,omitempty"`
 	Labels      *UnorderedStrings `json:"labels,omitempty"`
 	Owner       *uint64           `json:"owner,omitempty"`
@@ -64,55 +64,55 @@ type AssetUsage struct {
 }
 
 func (a *AssetUsage) Equal(b Comparable) bool {
-    defer func() {
-        if r := recover(); r != nil {
-            fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
-            panic(r)
-        }
-    }()
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
 
-    bAssetUsage := *b.(*AssetUsage)
-    if a.Type != bAssetUsage.Type || !a.FieldNames.Equal(bAssetUsage.FieldNames) {
-        return false
-    }
+	bAssetUsage := *b.(*AssetUsage)
+	if a.Type != bAssetUsage.Type || !a.FieldNames.Equal(bAssetUsage.FieldNames) {
+		return false
+	}
 
-    return true
+	return true
 }
 
 type AssetUsageList []AssetUsage
 
 func (a *AssetUsageList) Equal(b Comparable) bool {
-    defer func() {
-        if r := recover(); r != nil {
-            fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
-            panic(r)
-        }
-    }()
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
 
-    if a == nil || b == nil {
-        return false
-    }
+	if a == nil || b == nil {
+		return false
+	}
 
-    var (
-        u = []AssetUsage(*a)
-        s = []AssetUsage(*b.(*AssetUsageList))
-    )
-    if len(u) != len(s) {
-        return false
-    }
+	var (
+		u = []AssetUsage(*a)
+		s = []AssetUsage(*b.(*AssetUsageList))
+	)
+	if len(u) != len(s) {
+		return false
+	}
 
-    for i := 0; i < len(u); i++ {
-        var found bool
-        for j := 0; j < len(s); j++ {
-            if u[i].Equal(&s[j]) {
-                found = true
-            }
-        }
-        if !found {
-            return false
-        }
-    }
-    return true
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i].Equal(&s[j]) {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }
 
 type TextValue string
