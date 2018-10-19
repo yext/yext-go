@@ -585,12 +585,12 @@ func (y Location) GetLabelIds() (v UnorderedStrings) {
 	return v
 }
 
-func (y Location) SetLabelIds(v []string) {
+func (y *Location) SetLabelIds(v []string) {
 	l := UnorderedStrings(v)
 	y.SetLabelIdsWithUnorderedStrings(l)
 }
 
-func (y Location) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
+func (y *Location) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
 	y.LabelIds = &v
 }
 
