@@ -20,7 +20,7 @@ type LocationEntity struct {
 	FolderId    *string           `json:"folderId,omitempty"`
 	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
 	CategoryIds *[]string         `json:"categoryIds,omitempty"`
-	Closed      *LocationClosed   `json:"closed,omitempty"`
+	Closed      *bool             `json:"closed,omitempty"`
 	Keywords    *[]string         `json:"keywords,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 
@@ -656,7 +656,7 @@ func (y LocationEntity) GetHolidayHours() []HolidayHours {
 }
 
 func (y LocationEntity) IsClosed() bool {
-	if y.Closed != nil && y.Closed.IsClosed {
+	if y.Closed != nil && *y.Closed {
 		return true
 	}
 	return false
