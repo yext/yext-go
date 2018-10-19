@@ -136,6 +136,10 @@ func (h *HoursHelper) SetUnspecified(weekday Weekday) {
 	h.SetHours(weekday, nil)
 }
 
+func (h *HoursHelper) SetOpen24Hours(weekday Weekday) {
+	h.SetHours(weekday, []string{HoursOpen24Hours})
+}
+
 func (h *HoursHelper) GetHours(weekday Weekday) []string {
 	switch weekday {
 	case Sunday:
