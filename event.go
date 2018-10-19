@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-const ENTITYTYPE_EVENT EntityType = "EVENT"
+const ENTITYTYPE_EVENT EntityType = "event"
 
 type EventEntity struct {
 	BaseEntity

@@ -38,6 +38,7 @@ type Client struct {
 	CFTAssetService        *CFTAssetService
 	AnalyticsService       *AnalyticsService
 	EntityService          *EntityService
+	EntityProfileService   *EntityProfileService
 }
 
 func NewClient(config *Config) *Client {
@@ -57,6 +58,8 @@ func NewClient(config *Config) *Client {
 	c.AnalyticsService = &AnalyticsService{client: c}
 	c.EntityService = &EntityService{client: c}
 	c.EntityService.RegisterDefaultEntities()
+	c.EntityProfileService = &EntityProfileService{client: c}
+	c.EntityProfileService.RegisterDefaultEntities()
 	return c
 }
 
@@ -341,7 +344,6 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
 	if opts.PageToken != "" {
-		// TODO: Outstanding techops issue because this seems to have changed to page_token (similar to api_key)
 		q.Add("pageToken", opts.PageToken)
 	} else if opts.Offset != 0 {
 		q.Add("offset", strconv.Itoa(opts.Offset))

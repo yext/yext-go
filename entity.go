@@ -44,3 +44,25 @@ func (b *BaseEntity) GetNilIsEmpty() bool {
 func (b *BaseEntity) SetNilIsEmpty(val bool) {
 	b.nilIsEmpty = val
 }
+
+type RawEntity map[string]interface{}
+
+func (r *RawEntity) GetEntityId() string {
+	if m, ok := (*r)["meta"]; ok {
+		meta := m.(map[string]interface{})
+		if id, ok := meta["id"]; ok {
+			return id.(string)
+		}
+	}
+	return ""
+}
+
+func (r *RawEntity) GetEntityType() EntityType {
+	if m, ok := (*r)["meta"]; ok {
+		meta := m.(map[string]interface{})
+		if t, ok := meta["entityType"]; ok {
+			return EntityType(t.(string))
+		}
+	}
+	return EntityType("")
+}

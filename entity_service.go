@@ -1,7 +1,6 @@
 package yext
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -31,9 +30,7 @@ type EntityListResponse struct {
 }
 
 func (e *EntityService) RegisterDefaultEntities() {
-	e.registry = make(Registry)
-	e.RegisterEntity(ENTITYTYPE_LOCATION, &LocationEntity{})
-	e.RegisterEntity(ENTITYTYPE_EVENT, &Event{})
+	e.registry = defaultEntityRegistry()
 }
 
 func (e *EntityService) RegisterEntity(t EntityType, entity interface{}) {
@@ -45,51 +42,13 @@ func (e *EntityService) CreateEntity(t EntityType) (interface{}, error) {
 }
 
 func (e *EntityService) toEntityTypes(entities []interface{}) ([]Entity, error) {
-	var types = []Entity{}
-	for _, entityInterface := range entities {
-		entity, err := e.toEntityType(entityInterface)
-		if err != nil {
-			return nil, err
-		}
-		types = append(types, entity)
-	}
-	return types, nil
+	return toEntityTypes(entities, e.registry)
 }
 
 func (e *EntityService) toEntityType(entity interface{}) (Entity, error) {
-	// Determine Entity Type
-	var entityValsByKey = entity.(map[string]interface{})
-	meta, ok := entityValsByKey["meta"]
-	if !ok {
-		return nil, fmt.Errorf("Unable to find meta attribute in %v", entityValsByKey)
-	}
-
-	var metaByKey = meta.(map[string]interface{})
-	entityType, ok := metaByKey["entityType"]
-	if !ok {
-		return nil, fmt.Errorf("Unable to find entityType attribute in %v", metaByKey)
-	}
-
-	// TODO: Re-examine what happens when we get an error here. Do we want to procede with a generic type?
-	entityObj, err := e.CreateEntity(EntityType(entityType.(string)))
-	if err != nil {
-		return nil, err
-	}
-
-	// Convert into struct of Entity Type
-	entityJSON, err := json.Marshal(entityValsByKey)
-	if err != nil {
-		return nil, fmt.Errorf("Marshaling entity to JSON: %s", err)
-	}
-
-	err = json.Unmarshal(entityJSON, &entityObj)
-	if err != nil {
-		return nil, fmt.Errorf("Unmarshaling entity JSON: %s", err)
-	}
-	return entityObj.(Entity), nil
+	return toEntityType(entity, e.registry)
 }
 
-// TODO: Paging is not working here. Waiting on techops
 // TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	var entities []Entity
@@ -105,14 +64,13 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		}
 
 		entities = append(entities, resp.typedEntites...)
-		return resp.PageToken, err
+		return resp.PageToken, nil
 	}
 
 	if err := tokenListHelper(lg, &opts.ListOptions); err != nil {
 		return nil, err
-	} else {
-		return entities, nil
 	}
+	return entities, nil
 }
 
 func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Response, error) {
@@ -151,7 +109,6 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		entities = append(entities, entity)
 	}
 	v.typedEntites = entities
-
 	return v, r, nil
 }
 
@@ -212,7 +169,6 @@ func getNilIsEmpty(i interface{}) bool {
 	return false
 }
 
-// TODO: Currently an error with API. Need to test this
 func (e *EntityService) Create(y Entity) (*Response, error) {
 	var requrl = entityPath
 	u, err := url.Parse(requrl)
@@ -231,7 +187,6 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 	return r, nil
 }
 
-// TODO: There is an outstanding techops QA issue to allow the Id in the request but we may have to remove other things like account
 func (e *EntityService) Edit(y Entity) (*Response, error) {
 	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, y.GetEntityId()), y, nil)
 	if err != nil {

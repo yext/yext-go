@@ -27,7 +27,7 @@ func (r Registry) Register(key string, val interface{}) {
 func (r Registry) Create(key string) (interface{}, error) {
 	val, ok := r[key]
 	if !ok {
-		return nil, fmt.Errorf("Unable to find key %s in registry. Known types: %s", key, strings.Join(r.Keys(), ", "))
+		return nil, fmt.Errorf("Unable to find key %s in registry. Known keys: %s", key, strings.Join(r.Keys(), ","))
 	}
 	return reflect.New(reflect.TypeOf(val)).Interface(), nil
 }
