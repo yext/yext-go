@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 )
 
-const ENTITYTYPE_LOCATION EntityType = "LOCATION"
+const ENTITYTYPE_LOCATION EntityType = "location"
 
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
