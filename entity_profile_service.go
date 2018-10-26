@@ -2,7 +2,6 @@ package yext
 
 import (
 	"fmt"
-	"log"
 )
 
 const entityProfilesPath = "entityprofiles"
@@ -13,7 +12,7 @@ type EntityProfileService struct {
 }
 
 type EntityProfileListResponse struct {
-	Profiles []*EntityProfile `json:"profiles"`
+	Profiles []interface{} `json:"profiles"`
 }
 
 func (e *EntityProfileService) RegisterDefaultEntities() {
@@ -35,29 +34,30 @@ func (e *EntityProfileService) Get(id string, languageCode string) (*EntityProfi
 	if err != nil {
 		return nil, r, err
 	}
-
 	setNilIsEmpty(entity)
 
 	return &EntityProfile{Entity: entity}, r, nil
 }
 
 func (e *EntityProfileService) List(id string) ([]*EntityProfile, *Response, error) {
-	var v EntityProfileListResponse
+	var (
+		v        EntityProfileListResponse
+		profiles = []*EntityProfile{}
+	)
 	r, err := e.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityProfilesPath, id), &v)
 	if err != nil {
 		return nil, r, err
 	}
 
-	log.Println(len(v.Profiles))
-
-	// entity, err := toEntityType(v, e.registry)
-	// if err != nil {
-	// 	return nil, r, err
-	// }
-	//
-	// setNilIsEmpty(entity)
-
-	return nil, r, nil
+	typedProfiles, err := toEntityTypes(v.Profiles, e.registry)
+	if err != nil {
+		return nil, r, err
+	}
+	for _, profile := range typedProfiles {
+		setNilIsEmpty(profile)
+		profiles = append(profiles, &EntityProfile{Entity: profile})
+	}
+	return profiles, r, nil
 }
 
 func (e *EntityProfileService) Upsert(entity Entity, languageCode string) (*Response, error) {
