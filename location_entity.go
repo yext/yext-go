@@ -24,9 +24,6 @@ type LocationEntity struct {
 	Keywords    *[]string         `json:"keywords,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 
-	// hydrated   bool
-	// nilIsEmpty bool
-
 	// Address Fields
 	Name            *string  `json:"name,omitempty"`
 	Address         *Address `json:"address,omitempty"`
@@ -44,20 +41,6 @@ type LocationEntity struct {
 	TtyPhone       *string   `json:"ttyPhone,omitempty"`
 	IsPhoneTracked *bool     `json:"isPhoneTracked,omitempty"`
 	Emails         *[]string `json:"emails,omitempty"`
-
-	// HealthCare fields
-	FirstName            *string        `json:"firstName,omitempty"`
-	MiddleName           *string        `json:"middleName,omitempty"`
-	LastName             *string        `json:"lastName,omitempty"`
-	Gender               *string        `json:"gender,omitempty"`
-	Headshot             *LocationPhoto `json:"headshot,omitempty"`
-	AcceptingNewPatients *bool          `json:"acceptingNewPatients,omitempty"`
-	AdmittingHospitals   *[]string      `json:"admittingHospitals,omitempty"`
-	ConditionsTreated    *[]string      `json:"conditionsTreated,omitempty"`
-	InsuranceAccepted    *[]string      `json:"insuranceAccepted,omitempty"`
-	NPI                  *string        `json:"npi,omitempty"`
-	OfficeName           *string        `json:"officeName,omitempty"`
-	Degrees              *[]string      `json:"degrees,omitempty"`
 
 	// Location Info
 	Description         *string        `json:"description,omitempty"`
@@ -130,21 +113,6 @@ type LocationEntity struct {
 	// Reviews
 	ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
-
-	/** TODO(bmcginnis) add the following fields:
-
-	   ServiceArea       struct {
-	 		Places *[]string `json:"places,omitempty"`
-	 		Radius *int      `json:"radius,omitempty"`
-	 		Unit   *string   `json:"unit,omitempty"`
-	 	} `json:"serviceArea,omitempty"`
-
-	  EducationList         []struct {
-			InstitutionName *string `json:"institutionName,omitempty"`
-			Type            *string `json:"type,omitempty"`
-			YearCompleted   *string `json:"yearCompleted,omitempty"`
-		} `json:"educationList,omitempty"`
-	*/
 }
 
 type Address struct {
@@ -205,69 +173,6 @@ func (y LocationEntity) GetName() string {
 		return *y.Name
 	}
 	return ""
-}
-
-func (y LocationEntity) GetFirstName() string {
-	if y.FirstName != nil {
-		return *y.FirstName
-	}
-	return ""
-}
-
-func (y LocationEntity) GetMiddleName() string {
-	if y.MiddleName != nil {
-		return *y.MiddleName
-	}
-	return ""
-}
-
-func (y LocationEntity) GetLastName() string {
-	if y.LastName != nil {
-		return *y.LastName
-	}
-	return ""
-}
-
-func (y LocationEntity) GetGender() string {
-	if y.Gender != nil {
-		return *y.Gender
-	}
-	return ""
-}
-
-func (y LocationEntity) GetAcceptingNewPatients() bool {
-	if y.AcceptingNewPatients != nil {
-		return *y.AcceptingNewPatients
-	}
-	return false
-}
-
-func (y LocationEntity) GetCertifications() []string {
-	if y.Certifications != nil {
-		return *y.Certifications
-	}
-	return nil
-}
-
-func (y LocationEntity) GetNPI() string {
-	if y.NPI != nil {
-		return *y.NPI
-	}
-	return ""
-}
-
-func (y LocationEntity) GetOfficeName() string {
-	if y.OfficeName != nil {
-		return *y.OfficeName
-	}
-	return ""
-}
-
-func (y LocationEntity) GetDegrees() []string {
-	if y.Degrees != nil {
-		return *y.Degrees
-	}
-	return nil
 }
 
 func (y LocationEntity) GetAccountId() string {
@@ -634,13 +539,6 @@ func (y LocationEntity) GetVideoUrls() (v []string) {
 	return v
 }
 
-func (y LocationEntity) GetAdmittingHospitals() (v []string) {
-	if y.AdmittingHospitals != nil {
-		v = *y.AdmittingHospitals
-	}
-	return v
-}
-
 func (y LocationEntity) GetGoogleAttributes() GoogleAttributes {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
@@ -656,8 +554,8 @@ func (y LocationEntity) GetHolidayHours() []HolidayHours {
 }
 
 func (y LocationEntity) IsClosed() bool {
-	if y.Closed != nil && *y.Closed {
-		return true
+	if y.Closed != nil {
+		return *y.Closed
 	}
 	return false
 }
