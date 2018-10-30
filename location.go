@@ -39,6 +39,7 @@ type Location struct {
 	Zip             *string `json:"zip,omitempty"`
 	CountryCode     *string `json:"countryCode,omitempty"`
 	SuppressAddress *bool   `json:"suppressAddress,omitempty"`
+	ISORegionCode   *string `json:"isoRegionCode,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -270,6 +271,13 @@ func (y Location) GetSuppressAddress() bool {
 		return *y.SuppressAddress
 	}
 	return false
+}
+
+func (y Location) GetISORegionCode() string {
+	if y.ISORegionCode != nil {
+		return *y.ISORegionCode
+	}
+	return ""
 }
 
 func (y Location) GetDisplayAddress() string {
