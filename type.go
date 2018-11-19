@@ -7,6 +7,9 @@ func Bool(v bool) *bool {
 }
 
 func GetBool(v *bool) bool {
+	if v == nil {
+		return false
+	}
 	return *v
 }
 
@@ -17,6 +20,9 @@ func String(v string) *string {
 }
 
 func GetString(v *string) string {
+	if v == nil {
+		return ""
+	}
 	return *v
 }
 
@@ -27,6 +33,9 @@ func Float(v float64) *float64 {
 }
 
 func GetFloat(v *float64) float64 {
+	if v == nil {
+		return 0
+	}
 	return *v
 }
 
@@ -37,6 +46,9 @@ func Int(v int) *int {
 }
 
 func GetInt(v *int) int {
+	if v == nil {
+		return 0
+	}
 	return *v
 }
 
@@ -45,6 +57,9 @@ func Strings(v []string) *[]string {
 }
 
 func GetStrings(v *[]string) []string {
+	if v == nil {
+		return []string{}
+	}
 	return *v
 }
 
