@@ -6,10 +6,18 @@ func Bool(v bool) *bool {
 	return p
 }
 
+func GetBool(v *bool) bool {
+	return *v
+}
+
 func String(v string) *string {
 	p := new(string)
 	*p = v
 	return p
+}
+
+func GetString(v *string) string {
+	return *v
 }
 
 func Float(v float64) *float64 {
@@ -18,14 +26,26 @@ func Float(v float64) *float64 {
 	return p
 }
 
+func GetFloat(v *float64) float64 {
+	return *v
+}
+
 func Int(v int) *int {
 	p := new(int)
 	*p = v
 	return p
 }
 
+func GetInt(v *int) int {
+	return *v
+}
+
 func Strings(v []string) *[]string {
 	return &v
+}
+
+func GetStrings(v *[]string) []string {
+	return *v
 }
 
 func ToUnorderedStrings(v []string) *UnorderedStrings {
