@@ -47,7 +47,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			continue
 		}
 
-		if valB.IsNil() || nameA == "Id" {
+		if valB.IsNil() {
 			continue
 		}
 
