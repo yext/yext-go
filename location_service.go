@@ -134,7 +134,11 @@ func addGetOptions(requrl string, opts *LocationListOptions) (string, error) {
 	return u.String(), nil
 }
 
-func (l *LocationService) Edit(id string, y *Location) (*Response, error) {
+func (l *LocationService) Edit(y *Location) (*Response, error) {
+	return l.EditWithId(y.GetId(), y)
+}
+
+func (l *LocationService) EditWithId(id string, y *Location) (*Response, error) {
 	if err := validateLocationCustomFieldsKeys(y.CustomFields); err != nil {
 		return nil, err
 	}

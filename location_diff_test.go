@@ -1244,6 +1244,20 @@ func TestDiffIds(t *testing.T) {
 				Name: String("New Name"),
 			},
 		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id:   String("1"),
+				Name: String("New Name"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id:   String("1"), // Historically, even though there is no diff in the Id, we always want the Id set
+				Name: String("New Name"),
+			},
+		},
 	}
 	for _, test := range tests {
 		delta, isDiff := test.BaseLoc.Diff(test.NewLoc)
