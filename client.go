@@ -32,6 +32,7 @@ type Client struct {
 	FolderService          *FolderService
 	CategoryService        *CategoryService
 	UserService            *UserService
+	ApprovalGroupsService  *ApprovalGroupsService
 	ReviewService          *ReviewService
 	LanguageProfileService *LanguageProfileService
 	AssetService           *AssetService
@@ -50,6 +51,7 @@ func NewClient(config *Config) *Client {
 	c.FolderService = &FolderService{client: c}
 	c.CategoryService = &CategoryService{client: c}
 	c.UserService = &UserService{client: c}
+	c.ApprovalGroupsService = &ApprovalGroupsService{client: c}
 	c.ReviewService = &ReviewService{client: c}
 	c.LanguageProfileService = &LanguageProfileService{client: c}
 	c.AssetService = &AssetService{client: c}
