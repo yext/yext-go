@@ -1,9 +1,9 @@
 package yext
 
 type LicensePack struct {
-	LocationIds []string `json:"locationIds"`
-	Features    []string `json:"features"`
-	Id          int      `json:"id"`
-	Quantity    int      `json:"quantity"`
-	Status      string   `json:"status"`
+	LocationIds []string `json:"locationIds,omitempty"`
+	Features    []string `json:"features,omitempty"`
+	Id          int      `json:"id,omitempty"`
+	Quantity    int      `json:"quantity,omitempty"`
+	Status      string   `json:"status,omitempty"`
 }

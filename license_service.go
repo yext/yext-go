@@ -21,11 +21,12 @@ func (l *LicenseService) AddLocationToLicense(licenseId string, locationId strin
 }
 
 func (l *LicenseService) AddLocationsToLicenseBulk(licenseId string, locationIds []string) (*LicensePack, error) {
+	var w LicensePack
 	v := LicensePack{
 		LocationIds: locationIds,
 	}
-	err := l.client.DoRequest("PUT", fmt.Sprintf("%s/%s/bulk", licensePacksPath, licenseId), &v)
-	return &v, err
+	err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/bulk", licensePacksPath, licenseId), &v, &w)
+	return &w, err
 }
 
 func (l *LicenseService) RemoveLocationFromLicense(licenseId string, locationId string) (*LicensePack, error) {
@@ -35,9 +36,10 @@ func (l *LicenseService) RemoveLocationFromLicense(licenseId string, locationId 
 }
 
 func (l *LicenseService) RemoveLocationsFromLicenseBulk(licenseId string, locationIds []string) (*LicensePack, error) {
+	var w LicensePack
 	v := LicensePack{
 		LocationIds: locationIds,
 	}
-	err := l.client.DoRequest("DELETE", fmt.Sprintf("%s/%s/bulk", licensePacksPath, licenseId), &v)
-	return &v, err
+	err := l.client.DoRequestJSON("DELETE", fmt.Sprintf("%s/%s/bulk", licensePacksPath, licenseId), &v, &w)
+	return &w, err
 }
