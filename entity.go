@@ -12,7 +12,7 @@ type EntityMeta struct {
 	AccountId   *string           `json:"accountId,omitempty"`
 	EntityType  EntityType        `json:"entityType,omitempty"`
 	FolderId    *string           `json:"folderId,omitempty"`
-	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
+	Labels      *UnorderedStrings `json:"labels,omitempty"`
 	CategoryIds *[]string         `json:"categoryIds,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 	CountryCode *string           `json:"countryCode,omitempty"`

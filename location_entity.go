@@ -17,12 +17,9 @@ type LocationEntity struct {
 	BaseEntity
 
 	// Admin
-	FolderId    *string           `json:"folderId,omitempty"`
-	LabelIds    *UnorderedStrings `json:"labelIds,omitempty"`
-	CategoryIds *[]string         `json:"categoryIds,omitempty"`
-	Closed      *bool             `json:"closed,omitempty"`
-	Keywords    *[]string         `json:"keywords,omitempty"`
-	Language    *string           `json:"language,omitempty"`
+	CategoryIds *[]string `json:"categoryIds,omitempty"`
+	Closed      *bool     `json:"closed,omitempty"`
+	Keywords    *[]string `json:"keywords,omitempty"`
 
 	// Address Fields
 	Name            *string  `json:"name,omitempty"`
@@ -447,8 +444,8 @@ func (y LocationEntity) GetKeywords() (v []string) {
 }
 
 func (y LocationEntity) GetLanguage() (v string) {
-	if y.Language != nil {
-		v = *y.Language
+	if y.BaseEntity.Meta.Language != nil {
+		v = *y.BaseEntity.Meta.Language
 	}
 	return v
 }
@@ -496,8 +493,8 @@ func (y LocationEntity) GetLanguages() (v []string) {
 }
 
 func (y LocationEntity) GetFolderId() string {
-	if y.FolderId != nil {
-		return *y.FolderId
+	if y.BaseEntity.Meta.FolderId != nil {
+		return *y.BaseEntity.Meta.FolderId
 	}
 	return ""
 }
@@ -509,20 +506,20 @@ func (y LocationEntity) GetCategoryIds() (v []string) {
 	return v
 }
 
-func (y LocationEntity) GetLabelIds() (v UnorderedStrings) {
-	if y.LabelIds != nil {
-		v = *y.LabelIds
+func (y LocationEntity) GetLabels() (v UnorderedStrings) {
+	if y.BaseEntity.Meta.Labels != nil {
+		v = *y.BaseEntity.Meta.Labels
 	}
 	return v
 }
 
-func (y LocationEntity) SetLabelIds(v []string) {
+func (y LocationEntity) SetLabels(v []string) {
 	l := UnorderedStrings(v)
-	y.SetLabelIdsWithUnorderedStrings(l)
+	y.SetLabelsWithUnorderedStrings(l)
 }
 
-func (y LocationEntity) SetLabelIdsWithUnorderedStrings(v UnorderedStrings) {
-	y.LabelIds = &v
+func (y LocationEntity) SetLabelsWithUnorderedStrings(v UnorderedStrings) {
+	y.BaseEntity.Meta.Labels = &v
 }
 
 func (y LocationEntity) GetPaymentOptions() (v []string) {
