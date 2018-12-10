@@ -492,36 +492,6 @@ func (y LocationEntity) GetLanguages() (v []string) {
 	return v
 }
 
-func (y LocationEntity) GetFolderId() string {
-	if y.BaseEntity.Meta.FolderId != nil {
-		return *y.BaseEntity.Meta.FolderId
-	}
-	return ""
-}
-
-func (y LocationEntity) GetCategoryIds() (v []string) {
-	if y.CategoryIds != nil {
-		v = *y.CategoryIds
-	}
-	return v
-}
-
-func (y LocationEntity) GetLabels() (v UnorderedStrings) {
-	if y.BaseEntity.Meta.Labels != nil {
-		v = *y.BaseEntity.Meta.Labels
-	}
-	return v
-}
-
-func (y LocationEntity) SetLabels(v []string) {
-	l := UnorderedStrings(v)
-	y.SetLabelsWithUnorderedStrings(l)
-}
-
-func (y LocationEntity) SetLabelsWithUnorderedStrings(v UnorderedStrings) {
-	y.BaseEntity.Meta.Labels = &v
-}
-
 func (y LocationEntity) GetPaymentOptions() (v []string) {
 	if y.PaymentOptions != nil {
 		v = *y.PaymentOptions

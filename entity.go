@@ -37,6 +37,36 @@ func (b *BaseEntity) GetEntityType() EntityType {
 	return ""
 }
 
+func (b *BaseEntity) GetFolderId() string {
+	if b.Meta.FolderId != nil {
+		return *b.Meta.FolderId
+	}
+	return ""
+}
+
+func (b *BaseEntity) GetCategoryIds() (v []string) {
+	if b.Meta.CategoryIds != nil {
+		v = *b.Meta.CategoryIds
+	}
+	return v
+}
+
+func (b *BaseEntity) GetLabels() (v UnorderedStrings) {
+	if b.Meta.Labels != nil {
+		v = *b.Meta.Labels
+	}
+	return v
+}
+
+func (b *BaseEntity) SetLabels(v []string) {
+	l := UnorderedStrings(v)
+	b.SetLabelsWithUnorderedStrings(l)
+}
+
+func (b *BaseEntity) SetLabelsWithUnorderedStrings(v UnorderedStrings) {
+	b.Meta.Labels = &v
+}
+
 func (b *BaseEntity) GetNilIsEmpty() bool {
 	return b.nilIsEmpty
 }
