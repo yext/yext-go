@@ -1202,6 +1202,73 @@ func TestComplexIdentical(t *testing.T) {
 	}
 }
 
+func TestDiffIds(t *testing.T) {
+	tests := []struct {
+		BaseLoc *Location
+		NewLoc  *Location
+		IsDiff  bool
+		Delta   *Location
+	}{
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id: String("2"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id: String("2"),
+			},
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id: String("1"),
+			},
+			IsDiff: false,
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id:   String("2"),
+				Name: String("New Name"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id:   String("2"),
+				Name: String("New Name"),
+			},
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id:   String("1"),
+				Name: String("New Name"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id:   String("1"), // Historically, even though there is no diff in the Id, we always want the Id set
+				Name: String("New Name"),
+			},
+		},
+	}
+	for _, test := range tests {
+		delta, isDiff := test.BaseLoc.Diff(test.NewLoc)
+		if isDiff != test.IsDiff {
+			t.Errorf("Expected %t but was %t, delta was:\n%v\n", test.IsDiff, isDiff, delta)
+		} else if test.IsDiff && !reflect.DeepEqual(test.Delta, delta) {
+			t.Errorf("Expected %v for delta, delta was \n%v\n", test.Delta, delta)
+		}
+	}
+}
+
 func TestUnmarshal(t *testing.T) {
 	var one, two = new(Location), new(Location)
 	err := json.Unmarshal([]byte(jsonData), one)
