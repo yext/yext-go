@@ -145,19 +145,14 @@ type Location struct {
 	ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
 
+	EducationList *EducationList `json:"educationList,omitempty"`
 	/** TODO(bmcginnis) add the following fields:
 
-	   ServiceArea       struct {
-	 		Places *[]string `json:"places,omitempty"`
-	 		Radius *int      `json:"radius,omitempty"`
-	 		Unit   *string   `json:"unit,omitempty"`
-	 	} `json:"serviceArea,omitempty"`
-
-	  EducationList         []struct {
-			InstitutionName *string `json:"institutionName,omitempty"`
-			Type            *string `json:"type,omitempty"`
-			YearCompleted   *string `json:"yearCompleted,omitempty"`
-		} `json:"educationList,omitempty"`
+	  ServiceArea       struct {
+			Places *[]string `json:"places,omitempty"`
+			Radius *int      `json:"radius,omitempty"`
+			Unit   *string   `json:"unit,omitempty"`
+		} `json:"serviceArea,omitempty"`
 	*/
 }
 
@@ -637,6 +632,13 @@ func (y Location) GetGoogleAttributes() GoogleAttributes {
 	return nil
 }
 
+func (y Location) GetEducationList() EducationList {
+	if y.EducationList != nil {
+		return *y.EducationList
+	}
+	return nil
+}
+
 func (y Location) GetHolidayHours() []LocationHolidayHours {
 	if y.HolidayHours != nil {
 		return *y.HolidayHours
@@ -651,6 +653,100 @@ func (y Location) IsClosed() bool {
 	return false
 }
 
+//Education is an entry in EducationList which represents a location's (person's) education history
+type Education struct {
+	InstitutionName string `json:"institutionName,omitempty"`
+	Type            string `json:"type,omitempty"`
+	YearCompleted   string `json:"yearCompleted,omitempty"`
+}
+
+func (e Education) String() string {
+	return fmt.Sprintf("Institution Name: '%v', Type: '%v', Year Completed: '%v'", e.InstitutionName, e.Type, e.YearCompleted)
+}
+
+// Equal compares Education
+func (a *Education) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = Education(*a)
+		s = Education(*b.(*Education))
+	)
+	if u.InstitutionName != s.InstitutionName {
+		return false
+	}
+
+	if u.Type != s.Type {
+		return false
+	}
+
+	if u.YearCompleted != s.YearCompleted {
+		return false
+	}
+
+	return true
+}
+
+type EducationList []*Education
+
+func (e EducationList) String() string {
+	var ret string
+
+	for i, education := range e {
+		if i == 0 {
+			ret = education.String()
+			continue
+		}
+		ret = fmt.Sprintf("%s; %s", ret, education.String())
+	}
+
+	return ret
+}
+
+// Equal compares EducationList
+func (a *EducationList) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = []*Education(*a)
+		s = []*Education(*b.(*EducationList))
+	)
+	if len(u) != len(s) {
+		return false
+	}
+
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i].Equal(s[j]) {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
 // LocationPhoto represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
@@ -658,6 +754,10 @@ type LocationPhoto struct {
 	Description     string `json:"description,omitempty"`
 	AlternateText   string `json:"alternateText,omitempty"`
 	ClickThroughUrl string `json:"clickthroughUrl,omitempty"`
+}
+
+func (l LocationPhoto) String() string {
+	return fmt.Sprintf("Url: '%v', Description: '%v', AlternateText: '%v', ClickThroughUrl: '%v'", l.Url, l.Description, l.AlternateText, l.ClickThroughUrl)
 }
 
 func (l Photo) String() string {
@@ -680,6 +780,10 @@ func (l LocationClosed) String() string {
 type LocationHolidayHours struct {
 	Date  string `json:"date"`
 	Hours string `json:"hours"`
+}
+
+func (l LocationHolidayHours) String() string {
+	return fmt.Sprintf("Date: '%v', Hours: '%v'", l.Date, l.Hours)
 }
 
 // UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
@@ -725,6 +829,10 @@ type GoogleAttribute struct {
 	OptionIds *[]string `json:"optionIds,omitempty"`
 }
 
+func (g GoogleAttribute) String() string {
+	return fmt.Sprintf("Id: '%v', OptionIds: '%v'", g.Id, g.OptionIds)
+}
+
 // Equal compares GoogleAttribute
 func (a *GoogleAttribute) Equal(b Comparable) bool {
 	defer func() {
@@ -768,6 +876,20 @@ func (a *GoogleAttribute) Equal(b Comparable) bool {
 }
 
 type GoogleAttributes []*GoogleAttribute
+
+func (g GoogleAttributes) String() string {
+	var ret string
+
+	for i, googleAttr := range g {
+		if i == 0 {
+			ret = googleAttr.String()
+			continue
+		}
+		ret = fmt.Sprintf("%s; %s", ret, googleAttr.String())
+	}
+
+	return ret
+}
 
 // Equal compares GoogleAttributes
 func (a *GoogleAttributes) Equal(b Comparable) bool {
