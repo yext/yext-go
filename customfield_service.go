@@ -460,7 +460,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Photo Field %v", v, err)
 			}
-			var cfp *Photo
+			var cfp *CustomLocationPhoto
 			err = json.Unmarshal(asJSON, &cfp)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Photo Field %v", v, err)
@@ -493,7 +493,7 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Hours Field %v", v, err)
 			}
-			var cf HoursCustom
+			var cf CustomLocationHours
 			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Hours Field %v", v, err)
@@ -784,7 +784,7 @@ func (c *CustomFieldManager) MustSetString(name string, value string, loc *Locat
 	Must(c.SetString(name, value, loc))
 }
 
-func (c *CustomFieldManager) SetPhoto(name string, v *Photo, loc *Location) error {
+func (c *CustomFieldManager) SetPhoto(name string, v *CustomLocationPhoto, loc *Location) error {
 	_, err := c.Set(name, v, loc)
 	return err
 }

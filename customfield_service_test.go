@@ -93,15 +93,15 @@ var (
 		customFieldParseTest{"TEXT_LIST", []interface{}{"a", "b", "c"}, TextList([]string{"a", "b", "c"})},
 		customFieldParseTest{"MULTI_OPTION", []string{"a", "b", "c"}, MultiOption([]string{"a", "b", "c"})},
 		customFieldParseTest{"MULTI_OPTION", []interface{}{"a", "b", "c"}, MultiOption([]string{"a", "b", "c"})},
-		customFieldParseTest{"PHOTO", customPhotoRaw, &Photo{
+		customFieldParseTest{"PHOTO", customPhotoRaw, &CustomLocationPhoto{
 			Url:             "https://mktgcdn.com/awesome.jpg",
 			Description:     "This is a picture of an awesome event",
 			Details:         "A great picture",
 			ClickThroughURL: "https://yext.com/event",
 		}},
-		customFieldParseTest{"PHOTO", nil, (*Photo)(nil)},
+		customFieldParseTest{"PHOTO", nil, (*CustomLocationPhoto)(nil)},
 		customFieldParseTest{"GALLERY", []interface{}{customPhotoRaw}, Gallery{
-			&Photo{
+			&CustomLocationPhoto{
 				Url:             "https://mktgcdn.com/awesome.jpg",
 				Description:     "This is a picture of an awesome event",
 				Details:         "A great picture",
@@ -112,7 +112,7 @@ var (
 			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},
-		customFieldParseTest{"HOURS", hoursRaw, HoursCustom{
+		customFieldParseTest{"HOURS", hoursRaw, CustomLocationHours{
 			AdditionalText: "This is an example of extra hours info",
 			Hours:          "1:9:00:17:00,3:15:00:12:00,3:5:00:11:00,4:9:00:17:00,5:0:00:0:00,6:9:00:17:00,7:9:00:17:00",
 			HolidayHours: []LocationHolidayHours{

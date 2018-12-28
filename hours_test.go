@@ -137,8 +137,10 @@ func TestSerialize(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		if got := test.Have.Serialize(); got != test.Want {
+		if got := test.Have.StringSerialize(); got != test.Want {
 			t.Errorf("Test Serialize %d.\nWanted: %s\nGot: %s", i+1, test.Want, got)
 		}
 	}
 }
+
+// TODO: Add struct serialize

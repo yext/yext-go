@@ -1,5 +1,7 @@
 package yext
 
+import "encoding/json"
+
 type EntityType string
 
 type Entity interface {
@@ -95,4 +97,37 @@ func (r *RawEntity) GetEntityType() EntityType {
 		}
 	}
 	return EntityType("")
+}
+
+func (r *RawEntity) GetLanguage() string {
+	if m, ok := (*r)["meta"]; ok {
+		meta := m.(map[string]interface{})
+		if l, ok := meta["language"]; ok {
+			return l.(string)
+		}
+	}
+	return ""
+}
+
+func (r *RawEntity) GetAccountId() string {
+	if m, ok := (*r)["meta"]; ok {
+		meta := m.(map[string]interface{})
+		if a, ok := meta["account"]; ok {
+			return a.(string)
+		}
+	}
+	return ""
+}
+
+func ConvertToRawEntity(e Entity) (*RawEntity, error) {
+	var raw RawEntity
+	m, err := json.Marshal(e)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(m, &raw)
+	if err != nil {
+		return nil, err
+	}
+	return &raw, nil
 }

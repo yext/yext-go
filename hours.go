@@ -49,6 +49,7 @@ func (w Weekday) ToString() string {
 	return "Unknown"
 }
 
+// TODO: Rename to LocationHoursHelper
 type HoursHelper struct {
 	Sunday    []string
 	Monday    []string
@@ -59,6 +60,7 @@ type HoursHelper struct {
 	Saturday  []string
 }
 
+// Format used from LocationService
 func HoursHelperFromString(str string) (*HoursHelper, error) {
 	var (
 		hoursHelper  = &HoursHelper{}
@@ -160,23 +162,23 @@ func (h *HoursHelper) GetHours(weekday Weekday) []string {
 	return nil
 }
 
-func (h *HoursHelper) Serialize() string {
+func (h *HoursHelper) StringSerialize() string {
 	if h.HoursAreAllUnspecified() {
 		return ""
 	}
 	var days = []string{
-		h.SerializeDay(Sunday),
-		h.SerializeDay(Monday),
-		h.SerializeDay(Tuesday),
-		h.SerializeDay(Wednesday),
-		h.SerializeDay(Thursday),
-		h.SerializeDay(Friday),
-		h.SerializeDay(Saturday),
+		h.StringSerializeDay(Sunday),
+		h.StringSerializeDay(Monday),
+		h.StringSerializeDay(Tuesday),
+		h.StringSerializeDay(Wednesday),
+		h.StringSerializeDay(Thursday),
+		h.StringSerializeDay(Friday),
+		h.StringSerializeDay(Saturday),
 	}
 	return strings.Join(days, ",")
 }
 
-func (h *HoursHelper) SerializeDay(weekday Weekday) string {
+func (h *HoursHelper) StringSerializeDay(weekday Weekday) string {
 	if h.HoursAreAllUnspecified() {
 		return ""
 	}
@@ -188,6 +190,40 @@ func (h *HoursHelper) SerializeDay(weekday Weekday) string {
 		hoursStrings = append(hoursStrings, fmt.Sprintf("%d:%s", weekday, hours))
 	}
 	return strings.Join(hoursStrings, ",")
+}
+
+func (h *HoursHelper) StructSerialize() *Hours {
+	if h.HoursAreAllUnspecified() {
+		return nil
+	}
+	hours := &Hours{}
+	hours.Sunday = h.StructSerializeDay(Sunday)
+	hours.Monday = h.StructSerializeDay(Monday)
+	hours.Tuesday = h.StructSerializeDay(Tuesday)
+	hours.Wednesday = h.StructSerializeDay(Wednesday)
+	hours.Thursday = h.StructSerializeDay(Thursday)
+	hours.Friday = h.StructSerializeDay(Friday)
+	hours.Saturday = h.StructSerializeDay(Saturday)
+	return hours
+
+}
+
+func (h *HoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
+	if h.HoursAreUnspecified(weekday) {
+		return nil
+	}
+
+	if h.HoursAreClosed(weekday) {
+		return &DayHours{
+			IsClosed: Bool(true),
+		}
+	}
+	var d = &DayHours{}
+	for _, interval := range h.GetHours(weekday) {
+		parts := strings.Split(interval, ":")
+		d.SetHours(fmt.Sprintf("%s:%s", parts[0], parts[1]), fmt.Sprintf("%s:%s", parts[2], parts[3]))
+	}
+	return d
 }
 
 func (h *HoursHelper) ToStringSlice() ([]string, error) {

@@ -125,6 +125,7 @@ func isNil(v reflect.Value) bool {
 
 // Diff(a, b): a is base, b is new
 func Diff(a Entity, b Entity) (Entity, bool) {
+	// TODO: should the below return an error? If not should return an empty b object with entity type set?
 	if a.GetEntityType() != b.GetEntityType() {
 		return nil, true
 	}

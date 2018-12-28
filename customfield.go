@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	UnsetPhotoValue = (*Photo)(nil)
+	UnsetPhotoValue = (*CustomLocationPhoto)(nil)
 )
 
 type CustomFieldOption struct {
@@ -206,18 +206,18 @@ func (m LocationList) Equal(c Comparable) bool {
 	return (&a).Equal(&b)
 }
 
-type Photo struct {
+type CustomLocationPhoto struct {
 	Url             string `json:"url,omitempty"`
 	Description     string `json:"description,omitempty"`
 	Details         string `json:"details,omitempty"`
 	ClickThroughURL string `json:"clickthroughUrl,omitempty"`
 }
 
-func (p *Photo) CustomFieldTag() string {
+func (p *CustomLocationPhoto) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_PHOTO
 }
 
-type Gallery []*Photo
+type Gallery []*CustomLocationPhoto
 
 func (g *Gallery) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_GALLERY
@@ -236,13 +236,13 @@ func (v *VideoGallery) CustomFieldTag() string {
 
 // HoursCustom is the Hours custom field format used by locations API
 // Entities API uses the Hours struct in location_entities.go (profile and custom hours are defined the same way for entities)
-type HoursCustom struct {
+type CustomLocationHours struct {
 	AdditionalText string                 `json:"additionalHoursText,omitempty"`
 	Hours          string                 `json:"hours,omitempty"`
 	HolidayHours   []LocationHolidayHours `json:"holidayHours,omitempty"`
 }
 
-func (h HoursCustom) CustomFieldTag() string {
+func (h CustomLocationHours) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_HOURS
 }
 
