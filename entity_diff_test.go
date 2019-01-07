@@ -822,7 +822,7 @@ func TestEntityDiff(t *testing.T) {
 			if test.newNilIsEmpty {
 				setNilIsEmpty(newEntity)
 			}
-			delta, isDiff := Diff(baseEntity, newEntity)
+			delta, isDiff, _ := Diff(baseEntity, newEntity)
 			if isDiff != test.isDiff {
 				t.Errorf("Expected isDiff: %t. Got: %t", test.isDiff, isDiff)
 			} else if test.isDiff == false && delta != nil {
@@ -922,7 +922,7 @@ func TestEntityDiffComplex(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			delta, isDiff := Diff(test.base, test.new)
+			delta, isDiff, _ := Diff(test.base, test.new)
 			if isDiff != test.isDiff {
 				t.Log(delta)
 				t.Errorf("Expected isDiff: %t. Got: %t", test.isDiff, isDiff)

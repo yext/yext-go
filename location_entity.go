@@ -199,6 +199,10 @@ type Interval struct {
 	End   string `json:"end,omitempty"`
 }
 
+func NewInterval(start string, end string) *Interval {
+	return &Interval{Start: start, End: end}
+}
+
 func (h *Hours) GetDayHours(w Weekday) *DayHours {
 	switch w {
 	case Sunday:
