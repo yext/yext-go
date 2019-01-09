@@ -210,6 +210,13 @@ func (y Location) GetGender() string {
 	return ""
 }
 
+func (y Location) GetHeadshot() (v LocationPhoto) {
+	if y.Headshot != nil {
+		v = *y.Headshot
+	}
+	return v
+}
+
 func (y Location) GetAcceptingNewPatients() bool {
 	if y.AcceptingNewPatients != nil {
 		return *y.AcceptingNewPatients
@@ -434,6 +441,20 @@ func (y Location) GetTwitterHandle() string {
 	return ""
 }
 
+func (y Location) GetFacebookCoverPhoto() (v LocationPhoto) {
+	if y.FacebookCoverPhoto != nil {
+		v = *y.FacebookCoverPhoto
+	}
+	return v
+}
+
+func (y Location) GetFacebookProfilePicture() (v LocationPhoto) {
+	if y.FacebookProfilePicture != nil {
+		v = *y.FacebookProfilePicture
+	}
+	return v
+}
+
 func (y Location) GetFacebookPageUrl() string {
 	if y.FacebookPageUrl != nil {
 		return *y.FacebookPageUrl
@@ -586,6 +607,13 @@ func (y Location) GetLanguages() (v []string) {
 	return v
 }
 
+func (y Location) GetLogo() (v LocationPhoto) {
+	if y.Logo != nil {
+		v = *y.Logo
+	}
+	return v
+}
+
 func (y Location) GetLabelIds() (v UnorderedStrings) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
@@ -616,6 +644,13 @@ func (y Location) GetPaymentOptions() (v []string) {
 	return v
 }
 
+func (y Location) GetPhotos() (v []LocationPhoto) {
+	if y.Photos != nil {
+		v = *y.Photos
+	}
+	return v
+}
+
 func (y Location) GetVideoUrls() (v []string) {
 	if y.VideoUrls != nil {
 		v = *y.VideoUrls
@@ -626,6 +661,20 @@ func (y Location) GetVideoUrls() (v []string) {
 func (y Location) GetAdmittingHospitals() (v []string) {
 	if y.AdmittingHospitals != nil {
 		v = *y.AdmittingHospitals
+	}
+	return v
+}
+
+func (y Location) GetConditionsTreated() (v []string) {
+	if y.ConditionsTreated != nil {
+		v = *y.ConditionsTreated
+	}
+	return v
+}
+
+func (y Location) GetInsuranceAccepted() (v []string) {
+	if y.InsuranceAccepted != nil {
+		v = *y.InsuranceAccepted
 	}
 	return v
 }
