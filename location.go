@@ -62,6 +62,7 @@ type Location struct {
 	AdmittingHospitals   *[]string      `json:"admittingHospitals,omitempty"`
 	ConditionsTreated    *[]string      `json:"conditionsTreated,omitempty"`
 	InsuranceAccepted    *[]string      `json:"insuranceAccepted,omitempty"`
+	ProceduresPerformed  *[]string      `json:"proceduresPerformed,omitempty"`
 	NPI                  *string        `json:"npi,omitempty"`
 	OfficeName           *string        `json:"officeName,omitempty"`
 	Degrees              *[]string      `json:"degrees,omitempty"`
@@ -208,6 +209,13 @@ func (y Location) GetGender() string {
 		return *y.Gender
 	}
 	return ""
+}
+
+func (y Location) GetHeadshot() (v LocationPhoto) {
+	if y.Headshot != nil {
+		v = *y.Headshot
+	}
+	return v
 }
 
 func (y Location) GetAcceptingNewPatients() bool {
@@ -434,6 +442,20 @@ func (y Location) GetTwitterHandle() string {
 	return ""
 }
 
+func (y Location) GetFacebookCoverPhoto() (v LocationPhoto) {
+	if y.FacebookCoverPhoto != nil {
+		v = *y.FacebookCoverPhoto
+	}
+	return v
+}
+
+func (y Location) GetFacebookProfilePicture() (v LocationPhoto) {
+	if y.FacebookProfilePicture != nil {
+		v = *y.FacebookProfilePicture
+	}
+	return v
+}
+
 func (y Location) GetFacebookPageUrl() string {
 	if y.FacebookPageUrl != nil {
 		return *y.FacebookPageUrl
@@ -586,6 +608,13 @@ func (y Location) GetLanguages() (v []string) {
 	return v
 }
 
+func (y Location) GetLogo() (v LocationPhoto) {
+	if y.Logo != nil {
+		v = *y.Logo
+	}
+	return v
+}
+
 func (y Location) GetLabelIds() (v UnorderedStrings) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
@@ -616,6 +645,13 @@ func (y Location) GetPaymentOptions() (v []string) {
 	return v
 }
 
+func (y Location) GetPhotos() (v []LocationPhoto) {
+	if y.Photos != nil {
+		v = *y.Photos
+	}
+	return v
+}
+
 func (y Location) GetVideoUrls() (v []string) {
 	if y.VideoUrls != nil {
 		v = *y.VideoUrls
@@ -626,6 +662,27 @@ func (y Location) GetVideoUrls() (v []string) {
 func (y Location) GetAdmittingHospitals() (v []string) {
 	if y.AdmittingHospitals != nil {
 		v = *y.AdmittingHospitals
+	}
+	return v
+}
+
+func (y Location) GetProceduresPerformed() (v []string) {
+	if y.ProceduresPerformed != nil {
+		v = *y.ProceduresPerformed
+	}
+	return v
+}
+
+func (y Location) GetConditionsTreated() (v []string) {
+	if y.ConditionsTreated != nil {
+		v = *y.ConditionsTreated
+	}
+	return v
+}
+
+func (y Location) GetInsuranceAccepted() (v []string) {
+	if y.InsuranceAccepted != nil {
+		v = *y.InsuranceAccepted
 	}
 	return v
 }
