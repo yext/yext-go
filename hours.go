@@ -241,10 +241,10 @@ func (h *HoursHelper) ToStringSlice() ([]string, error) {
 				if err != nil {
 					return nil, err
 				}
-				if open, err = ConvertBetweenFormats(open, "15:04", "3:04pm"); err != nil {
+				if open, err = ConvertBetweenFormats(open, "15:04", "03:04pm"); err != nil {
 					return nil, err
 				}
-				if close, err = ConvertBetweenFormats(close, "15:04", "3:04pm"); err != nil {
+				if close, err = ConvertBetweenFormats(close, "15:04", "03:04pm"); err != nil {
 					return nil, err
 				}
 				hoursStringSlice[i] = append(hoursStringSlice[i], fmt.Sprintf("%s - %s", open, close))
