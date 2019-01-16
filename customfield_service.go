@@ -482,10 +482,10 @@ func ParseCustomFields(cfraw map[string]interface{}, cfs []*CustomField) (map[st
 			if err != nil {
 				return nil, fmt.Errorf("parse custom fields failure: could not re-marshal '%v' as json for Video Field %v", v, err)
 			}
-			var cf Video
+			var cf CustomLocationVideo
 			err = json.Unmarshal(asJSON, &cf)
 			if err != nil {
-				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Video Field %v", v, err)
+				return nil, fmt.Errorf("parse custom fields failure: could not unmarshal '%v' into Custom Location Video Field %v", v, err)
 			}
 			newval = cf
 		case CUSTOMFIELDTYPE_HOURS:

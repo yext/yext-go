@@ -15,7 +15,6 @@ type EntityMeta struct {
 	EntityType  EntityType        `json:"entityType,omitempty"`
 	FolderId    *string           `json:"folderId,omitempty"`
 	Labels      *UnorderedStrings `json:"labels,omitempty"`
-	CategoryIds *[]string         `json:"categoryIds,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 	CountryCode *string           `json:"countryCode,omitempty"`
 }
@@ -44,13 +43,6 @@ func (b *BaseEntity) GetFolderId() string {
 		return *b.Meta.FolderId
 	}
 	return ""
-}
-
-func (b *BaseEntity) GetCategoryIds() (v []string) {
-	if b.Meta.CategoryIds != nil {
-		v = *b.Meta.CategoryIds
-	}
-	return v
 }
 
 func (b *BaseEntity) GetLabels() (v UnorderedStrings) {

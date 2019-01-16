@@ -5,12 +5,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	yext "github.com/yext/yext-go"
 )
 
 const (
 	HoursClosedAllWeek = "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"
 	HoursOpen24Hours   = "00:00:00:00"
 	HoursClosed        = "closed"
+	hoursLen           = 11 // XX:XX:XX:XX format
 )
 
 type Weekday int
@@ -183,10 +186,13 @@ func (h *HoursHelper) StringSerializeDay(weekday Weekday) string {
 		return ""
 	}
 	var hoursStrings = []string{}
-	if h.GetHours(weekday) == nil || len(h.GetHours(weekday)) == 0 {
+	if h.GetHours(weekday) == nil || len(h.GetHours(weekday)) == 0 || h.HoursAreClosed(weekday) {
 		return fmt.Sprintf("%d:%s", weekday, HoursClosed)
 	}
 	for _, hours := range h.GetHours(weekday) {
+		if len(hours) != hoursLen {
+			hours = "0" + hours
+		}
 		hoursStrings = append(hoursStrings, fmt.Sprintf("%d:%s", weekday, hours))
 	}
 	return strings.Join(hoursStrings, ",")
@@ -278,7 +284,14 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if err != nil {
 		return -1, "", fmt.Errorf("Error parsing weekday hours from string; unable to convert index to num: %s", err)
 	}
-	return Weekday(weekdayInt), strings.Join(hoursParts[1:], ":"), nil
+	if hoursParts[1] == HoursClosed {
+		return Weekday(weekdayInt), HoursClosed, nil
+	}
+	hours := strings.Join(hoursParts[1:], ":")
+	if len(hours) != hoursLen {
+		hours = "0" + hours
+	}
+	return Weekday(weekdayInt), hours, nil
 }
 
 func ParseOpenAndCloseHoursFromString(hours string) (string, string, error) {
@@ -346,4 +359,37 @@ func ConvertBetweenFormats(hours string, convertFromFormat string, convertToForm
 		return "", fmt.Errorf("Hours %s was not in expected format %s: %s", hours, convertFromFormat, err)
 	}
 	return t.Format(convertToFormat), nil
+}
+
+func LocationHolidayHoursToHolidayHours(l *LocationHolidayHours) (*HolidayHours, error) {
+	if l == nil {
+		return nil, nil
+	}
+	var h = &HolidayHours{
+		Date: l.Date,
+	}
+	if l.Hours == "" {
+		h.IsClosed = yext.Bool(true)
+	} else {
+		intervalsList := []Interval{}
+		intervals := strings.Split(l.Hours, ",")
+		for _, i := range intervals {
+			open, close, err := ParseOpenAndCloseHoursFromString(i)
+			if err != nil {
+				return nil, err
+			}
+			if len(open) != 5 {
+				open = "0" + open
+			}
+			if len(close) != 5 {
+				close = "0" + close
+			}
+			intervalsList = append(intervalsList, Interval{
+				Start: open,
+				End:   close,
+			})
+		}
+		h.OpenIntervals = &intervalsList
+	}
+	return h, nil
 }

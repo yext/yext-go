@@ -26,8 +26,8 @@ type EntityListOptions struct {
 
 // Used for Create and Edit
 type EntityServiceOptions struct {
-	TemplateId     string
-	TemplateFields []string
+	TemplateId     string   `json:"templateId,omitempty"`
+	TemplateFields []string `json:"templateFields,omitempty"`
 }
 
 type EntityListResponse struct {

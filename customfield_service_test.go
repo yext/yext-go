@@ -108,7 +108,7 @@ var (
 				ClickThroughURL: "https://yext.com/event",
 			},
 		}},
-		customFieldParseTest{"VIDEO", videoRaw, Video{
+		customFieldParseTest{"VIDEO", videoRaw, CustomLocationVideo{
 			Url:         "http://www.youtube.com/watch?v=M80FTIcEgZM",
 			Description: "An example caption for a video",
 		}},

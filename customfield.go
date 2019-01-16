@@ -223,12 +223,12 @@ func (g *Gallery) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_GALLERY
 }
 
-type Video struct {
+type CustomLocationVideo struct {
 	Description string `json:"description"`
 	Url         string `json:"url"`
 }
 
-type VideoGallery []Video
+type VideoGallery []CustomLocationVideo
 
 func (v *VideoGallery) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_VIDEO

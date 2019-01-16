@@ -3,6 +3,8 @@ package yext
 import (
 	"reflect"
 	"testing"
+
+	yext "github.com/yext/yext-go"
 )
 
 func TestHoursHelperFromString(t *testing.T) {
@@ -12,6 +14,18 @@ func TestHoursHelperFromString(t *testing.T) {
 	}{
 		{
 			Have: "1:09:00:20:00,2:closed,3:00:00:00:00,4:07:00:22:00,5:09:00:19:00,6:09:00:21:00,7:08:00:20:00",
+			Want: &HoursHelper{
+				Sunday:    []string{"09:00:20:00"},
+				Monday:    []string{"closed"},
+				Tuesday:   []string{"00:00:00:00"},
+				Wednesday: []string{"07:00:22:00"},
+				Thursday:  []string{"09:00:19:00"},
+				Friday:    []string{"09:00:21:00"},
+				Saturday:  []string{"08:00:20:00"},
+			},
+		},
+		{
+			Have: "1:9:00:20:00,2:closed,3:0:00:00:00,4:7:00:22:00,5:9:00:19:00,6:9:00:21:00,7:8:00:20:00",
 			Want: &HoursHelper{
 				Sunday:    []string{"09:00:20:00"},
 				Monday:    []string{"closed"},
@@ -69,7 +83,7 @@ func TestHoursHelperFromString(t *testing.T) {
 	}
 }
 
-func TestSerialize(t *testing.T) {
+func TestStringSerialize(t *testing.T) {
 	var tests = []struct {
 		Have *HoursHelper
 		Want string
@@ -83,6 +97,18 @@ func TestSerialize(t *testing.T) {
 				Thursday:  []string{"09:00:19:00"},
 				Friday:    []string{"09:00:21:00"},
 				Saturday:  []string{"08:00:20:00"},
+			},
+			Want: "1:09:00:20:00,2:closed,3:00:00:00:00,4:07:00:22:00,5:09:00:19:00,6:09:00:21:00,7:08:00:20:00",
+		},
+		{
+			Have: &HoursHelper{
+				Sunday:    []string{"9:00:20:00"},
+				Monday:    []string{"closed"},
+				Tuesday:   []string{"00:00:00:00"},
+				Wednesday: []string{"7:00:22:00"},
+				Thursday:  []string{"9:00:19:00"},
+				Friday:    []string{"9:00:21:00"},
+				Saturday:  []string{"8:00:20:00"},
 			},
 			Want: "1:09:00:20:00,2:closed,3:00:00:00:00,4:07:00:22:00,5:09:00:19:00,6:09:00:21:00,7:08:00:20:00",
 		},
@@ -141,6 +167,81 @@ func TestSerialize(t *testing.T) {
 			t.Errorf("Test Serialize %d.\nWanted: %s\nGot: %s", i+1, test.Want, got)
 		}
 	}
+}
+
+func TestHolidayHoursConvert(t *testing.T) {
+
+	var tests = []struct {
+		Have *LocationHolidayHours
+		Want *HolidayHours
+	}{
+		{
+			Have: &LocationHolidayHours{
+				Date:  "2018-12-25",
+				Hours: "8:00:16:00",
+			},
+			Want: &HolidayHours{
+				Date: "2018-12-25",
+				OpenIntervals: &[]Interval{
+					Interval{
+						Start: "08:00",
+						End:   "16:00",
+					},
+				},
+			},
+		},
+		{
+			Have: &LocationHolidayHours{
+				Date:  "2018-12-25",
+				Hours: "08:00:16:00",
+			},
+			Want: &HolidayHours{
+				Date: "2018-12-25",
+				OpenIntervals: &[]Interval{
+					Interval{
+						Start: "08:00",
+						End:   "16:00",
+					},
+				},
+			},
+		},
+		{
+			Have: &LocationHolidayHours{
+				Date:  "2018-12-25",
+				Hours: "9:00:15:00,17:00:19:00",
+			},
+			Want: &HolidayHours{
+				Date: "2018-12-25",
+				OpenIntervals: &[]Interval{
+					Interval{
+						Start: "09:00",
+						End:   "15:00",
+					},
+					Interval{
+						Start: "17:00",
+						End:   "19:00",
+					},
+				},
+			},
+		},
+		{
+			Have: &LocationHolidayHours{
+				Date:  "2018-12-25",
+				Hours: "",
+			},
+			Want: &HolidayHours{
+				Date:     "2018-12-25",
+				IsClosed: yext.Bool(true),
+			},
+		},
+	}
+
+	for i, test := range tests {
+		if got, _ := LocationHolidayHoursToHolidayHours(test.Have); !reflect.DeepEqual(got, test.Want) {
+			t.Errorf("Test LocattionHolidayHoursToHolidayHours %d.\nWanted: %v\nGot: %v", i+1, *test.Want, *got)
+		}
+	}
+
 }
 
 // TODO: Add struct serialize

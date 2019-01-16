@@ -276,21 +276,21 @@ func TestEntityDiff(t *testing.T) {
 		// Bool tests
 		diffTest{
 			name:      "*Bool: both true (A)",
-			property:  "SuppressAddress",
+			property:  "Closed",
 			baseValue: Bool(true),
 			newValue:  Bool(true),
 			isDiff:    false,
 		},
 		diffTest{
 			name:      "*Bool: both false (A/E)",
-			property:  "SuppressAddress",
+			property:  "Closed",
 			baseValue: Bool(false),
 			newValue:  Bool(false),
 			isDiff:    false,
 		},
 		diffTest{
 			name:       "*Bool: not equal, base true, new false (B/D)",
-			property:   "SuppressAddress",
+			property:   "Closed",
 			baseValue:  Bool(true),
 			newValue:   Bool(false),
 			isDiff:     true,
@@ -298,7 +298,7 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:       "*Bool: not equal, base is false, new is true (B/C)",
-			property:   "SuppressAddress",
+			property:   "Closed",
 			baseValue:  Bool(false),
 			newValue:   Bool(true),
 			isDiff:     true,
@@ -306,21 +306,21 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:      "*Bool: both are nil (F)",
-			property:  "SuppressAddress",
+			property:  "Closed",
 			baseValue: nil,
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
 			name:      "*Bool: base is non-zero, new is nil (G)",
-			property:  "SuppressAddress",
+			property:  "Closed",
 			baseValue: Bool(true),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
 			name:       "*Bool: base is nil, new is non-zero value (H)",
-			property:   "SuppressAddress",
+			property:   "Closed",
 			baseValue:  nil,
 			newValue:   Bool(true),
 			isDiff:     true,
@@ -328,7 +328,7 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:       "*Bool: base is nil, new is zero value (I)",
-			property:   "SuppressAddress",
+			property:   "Closed",
 			baseValue:  nil,
 			newValue:   Bool(false),
 			isDiff:     true,
@@ -336,14 +336,14 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:      "*Bool: base is zero value, new is nil (J)",
-			property:  "SuppressAddress",
+			property:  "Closed",
 			baseValue: Bool(false),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
 			name:           "*Bool: base is nil (nil is empty), new is zero value (K)",
-			property:       "SuppressAddress",
+			property:       "Closed",
 			baseValue:      nil,
 			newValue:       Bool(false),
 			baseNilIsEmpty: true,
@@ -351,7 +351,7 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:           "*Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
-			property:       "SuppressAddress",
+			property:       "Closed",
 			baseValue:      nil,
 			newValue:       Bool(false),
 			baseNilIsEmpty: true,
@@ -360,7 +360,7 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:          "*Bool: base is zero value, new is nil (nil is empty) (L)",
-			property:      "SuppressAddress",
+			property:      "Closed",
 			baseValue:     Bool(false),
 			newValue:      nil,
 			newNilIsEmpty: true,
@@ -368,7 +368,7 @@ func TestEntityDiff(t *testing.T) {
 		},
 		diffTest{
 			name:           "*Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
-			property:       "SuppressAddress",
+			property:       "Closed",
 			baseValue:      Bool(false),
 			newValue:       nil,
 			baseNilIsEmpty: true,
@@ -772,20 +772,20 @@ func TestEntityDiff(t *testing.T) {
 			property: "BaseEntity",
 			baseValue: BaseEntity{
 				Meta: &EntityMeta{
-					Id:          String("CTG"),
-					CategoryIds: Strings([]string{"123"}),
+					Id:       String("CTG"),
+					FolderId: String("123"),
 				},
 			},
 			newValue: BaseEntity{
 				Meta: &EntityMeta{
-					Id:          String("CTG"),
-					CategoryIds: Strings([]string{"123", "456"}),
+					Id:       String("CTG"),
+					FolderId: String("456"),
 				},
 			},
 			isDiff: true,
 			deltaValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("456"),
 				},
 			},
 		},
@@ -794,12 +794,12 @@ func TestEntityDiff(t *testing.T) {
 			property: "BaseEntity",
 			baseValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("123"),
 				},
 			},
 			newValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("123"),
 				},
 			},
 			isDiff: false,
