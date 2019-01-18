@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -97,6 +98,7 @@ func (c *Client) NewRootRequestJSON(method string, path string, obj interface{})
 }
 
 func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*http.Request, error) {
+	fullPath = strings.Replace(fullPath, "#", "%23", -1)
 	req, err := http.NewRequest(method, fullPath, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
