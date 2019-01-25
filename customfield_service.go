@@ -793,7 +793,7 @@ func (c *CustomFieldManager) UnsetPhoto(name string, loc *Location) error {
 	return c.SetPhoto(name, UnsetPhotoValue, loc)
 }
 
-func (c *CustomFieldManager) MustSetPhoto(name string, v *Photo, loc *Location) {
+func (c *CustomFieldManager) MustSetPhoto(name string, v *CustomLocationPhoto, loc *Location) {
 	Must(c.SetPhoto(name, v, loc))
 }
 
