@@ -14,7 +14,7 @@ const (
 
 type EntityService struct {
 	client   *Client
-	registry Registry
+	Registry *EntityRegistry
 }
 
 type EntityListOptions struct {
@@ -38,23 +38,23 @@ type EntityListResponse struct {
 }
 
 func (e *EntityService) RegisterDefaultEntities() {
-	e.registry = defaultEntityRegistry()
+	e.Registry = defaultEntityRegistry()
 }
 
 func (e *EntityService) RegisterEntity(t EntityType, entity interface{}) {
-	e.registry.Register(string(t), entity)
+	e.Registry.RegisterEntity(t, entity)
 }
 
-func (e *EntityService) CreateEntity(t EntityType) (interface{}, error) {
-	return e.registry.Create(string(t))
+func (e *EntityService) InitializeEntity(t EntityType) (Entity, error) {
+	return e.Registry.InitializeEntity(t)
 }
 
 func (e *EntityService) ToEntityTypes(entities []interface{}) ([]Entity, error) {
-	return toEntityTypes(entities, e.registry)
+	return e.Registry.ToEntityTypes(entities)
 }
 
 func (e *EntityService) ToEntityType(entity interface{}) (Entity, error) {
-	return toEntityType(entity, e.registry)
+	return e.Registry.ToEntityType(entity)
 }
 
 // TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented

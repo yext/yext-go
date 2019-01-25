@@ -2,7 +2,10 @@ package yext
 
 import (
 	"fmt"
+	"log"
 	"reflect"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func instanceOf(val interface{}) interface{} {
@@ -11,7 +14,36 @@ func instanceOf(val interface{}) interface{} {
 		tmp   interface{}
 	)
 	if isPtr {
-		tmp = reflect.ValueOf(val).Elem().Interface()
+		var numPointers = 0
+		for reflect.ValueOf(val).Kind() == reflect.Ptr {
+			log.Println(reflect.ValueOf(val).Kind())
+			val = reflect.ValueOf(val).Elem().Interface()
+			numPointers++
+		}
+		log.Println("numPointers", numPointers)
+		tmp = val
+		i := 0
+		for i < numPointers {
+			log.Println(i)
+			// if i == numPointers-1 {
+			// 	tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
+			// } else {
+			tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
+			//}
+			i++
+		}
+		log.Println("type of ", reflect.ValueOf(tmp).Kind())
+		// log.Println("here")
+		// var s = DoubleString("blah")
+		// var v = reflect.ValueOf(s).Elem().Elem().Interface()
+		// log.Println(v, reflect.ValueOf(s).Kind(), reflect.ValueOf(v).Kind())
+		// log.Println("typeof ", reflect.TypeOf(v))
+		// log.Println(reflect.New(reflect.TypeOf(v)).Kind())
+		// var ptr = reflect.New(reflect.TypeOf(v)).Interface()
+		// log.Println("typeof ", reflect.TypeOf(ptr))
+		// log.Println(reflect.New(reflect.TypeOf(ptr)))
+		return tmp
+		//tmp = reflect.ValueOf(val).Elem().Interface()
 	} else {
 		tmp = val
 	}
@@ -102,8 +134,14 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
+		log.Println(nameA)
+		log.Println(valB)
 		if !reflect.DeepEqual(aI, bI) {
-			reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+			log.Print("kind ", reflect.ValueOf(delta).Kind())
+			var d = indirect(reflect.ValueOf(delta)) // reflect.ValueOf(delta).Elem()
+			log.Println("delta")
+			spew.Dump(delta)
+			d.FieldByName(nameA).Set(valB)
 			isDiff = true
 		}
 	}
@@ -112,6 +150,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 
 func indirect(v reflect.Value) reflect.Value {
 	for v.Kind() == reflect.Ptr {
+		log.Println(v, "was ptr")
 		v = v.Elem()
 	}
 	return v

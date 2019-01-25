@@ -19,12 +19,12 @@ package yext_test
 // 		{
 // 			name: "Identical Roles",
 // 			roleA: yext.Role{
-// 				Id:   yext.String("3"),
-// 				Name: yext.String("Example Role"),
+// 				Id:   yext.SingleString("3"),
+// 				Name: yext.SingleString("Example Role"),
 // 			},
 // 			roleB: yext.Role{
-// 				Id:   yext.String("3"),
-// 				Name: yext.String("Example Role"),
+// 				Id:   yext.SingleString("3"),
+// 				Name: yext.SingleString("Example Role"),
 // 			},
 // 			wantDelta: yext.Role{},
 // 			wantDiff:  false,
@@ -32,30 +32,30 @@ package yext_test
 // 		{
 // 			name: "Different 'Id' params in Roles",
 // 			roleA: yext.Role{
-// 				Id:   yext.String("3"),
-// 				Name: yext.String("Example Role"),
+// 				Id:   yext.SingleString("3"),
+// 				Name: yext.SingleString("Example Role"),
 // 			},
 // 			roleB: yext.Role{
-// 				Id:   yext.String("4"),
-// 				Name: yext.String("Example Role"),
+// 				Id:   yext.SingleString("4"),
+// 				Name: yext.SingleString("Example Role"),
 // 			},
 // 			wantDelta: yext.Role{
-// 				Id: yext.String("4"),
+// 				Id: yext.SingleString("4"),
 // 			},
 // 			wantDiff: true,
 // 		},
 // 		{
 // 			name: "Different 'Name' params in Roles",
 // 			roleA: yext.Role{
-// 				Id:   yext.String("3"),
-// 				Name: yext.String("Example Role"),
+// 				Id:   yext.SingleString("3"),
+// 				Name: yext.SingleString("Example Role"),
 // 			},
 // 			roleB: yext.Role{
-// 				Id:   yext.String("3"),
-// 				Name: yext.String("Example Role Two"),
+// 				Id:   yext.SingleString("3"),
+// 				Name: yext.SingleString("Example Role Two"),
 // 			},
 // 			wantDelta: yext.Role{
-// 				Name: yext.String("Example Role Two"),
+// 				Name: yext.SingleString("Example Role Two"),
 // 			},
 // 			wantDiff: true,
 // 		},

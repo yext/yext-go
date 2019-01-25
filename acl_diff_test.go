@@ -20,16 +20,16 @@ package yext_test
 // 			name: "Identical ACLs",
 // 			aclA: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
 // 			},
 // 			aclB: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
@@ -41,24 +41,24 @@ package yext_test
 // 			name: "Different Roles in ACL",
 // 			aclA: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
 // 			},
 // 			aclB: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("4"),
-// 					Name: yext.String("Example Role Two"),
+// 					Id:   yext.SingleString("4"),
+// 					Name: yext.SingleString("Example Role Two"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
 // 			},
 // 			wantDelta: &yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("4"),
-// 					Name: yext.String("Example Role Two"),
+// 					Id:   yext.SingleString("4"),
+// 					Name: yext.SingleString("Example Role Two"),
 // 				},
 // 			},
 // 			wantDiff: true,
@@ -67,16 +67,16 @@ package yext_test
 // 			name: "Different 'On' params in ACL",
 // 			aclA: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
 // 			},
 // 			aclB: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "123456",
 // 				AccessOn: yext.ACCESS_FOLDER,
@@ -90,16 +90,16 @@ package yext_test
 // 			name: "Different 'AccessOn' params in ACL",
 // 			aclA: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_FOLDER,
 // 			},
 // 			aclB: yext.ACL{
 // 				Role: yext.Role{
-// 					Id:   yext.String("3"),
-// 					Name: yext.String("Example Role"),
+// 					Id:   yext.SingleString("3"),
+// 					Name: yext.SingleString("Example Role"),
 // 				},
 // 				On:       "12345",
 // 				AccessOn: yext.ACCESS_LOCATION,
@@ -131,16 +131,16 @@ package yext_test
 // 			aclListA: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -149,16 +149,16 @@ package yext_test
 // 			aclListB: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -172,16 +172,16 @@ package yext_test
 // 			aclListA: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
@@ -190,16 +190,16 @@ package yext_test
 // 			aclListB: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
@@ -213,16 +213,16 @@ package yext_test
 // 			aclListA: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -231,24 +231,24 @@ package yext_test
 // 			aclListB: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("5"),
-// 						Name: yext.String("Example Role Three"),
+// 						Id:   yext.SingleString("5"),
+// 						Name: yext.SingleString("Example Role Three"),
 // 					},
 // 					On:       "1234567",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -257,24 +257,24 @@ package yext_test
 // 			wantDelta: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("5"),
-// 						Name: yext.String("Example Role Three"),
+// 						Id:   yext.SingleString("5"),
+// 						Name: yext.SingleString("Example Role Three"),
 // 					},
 // 					On:       "1234567",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -287,16 +287,16 @@ package yext_test
 // 			aclListA: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -305,16 +305,16 @@ package yext_test
 // 			aclListB: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("33"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("33"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("44"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("44"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -323,16 +323,16 @@ package yext_test
 // 			wantDelta: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("33"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("33"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("44"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("44"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -345,24 +345,24 @@ package yext_test
 // 			aclListA: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -371,24 +371,24 @@ package yext_test
 // 			aclListB: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("5"),
-// 						Name: yext.String("Example Role Three"),
+// 						Id:   yext.SingleString("5"),
+// 						Name: yext.SingleString("Example Role Three"),
 // 					},
 // 					On:       "1234567",
 // 					AccessOn: yext.ACCESS_LOCATION,
@@ -397,24 +397,24 @@ package yext_test
 // 			wantDelta: yext.ACLList{
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("3"),
-// 						Name: yext.String("Example Role"),
+// 						Id:   yext.SingleString("3"),
+// 						Name: yext.SingleString("Example Role"),
 // 					},
 // 					On:       "12345",
 // 					AccessOn: yext.ACCESS_FOLDER,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("4"),
-// 						Name: yext.String("Example Role Two"),
+// 						Id:   yext.SingleString("4"),
+// 						Name: yext.SingleString("Example Role Two"),
 // 					},
 // 					On:       "123456",
 // 					AccessOn: yext.ACCESS_LOCATION,
 // 				},
 // 				yext.ACL{
 // 					Role: yext.Role{
-// 						Id:   yext.String("5"),
-// 						Name: yext.String("Example Role Three"),
+// 						Id:   yext.SingleString("5"),
+// 						Name: yext.SingleString("Example Role Three"),
 // 					},
 // 					On:       "1234567",
 // 					AccessOn: yext.ACCESS_LOCATION,

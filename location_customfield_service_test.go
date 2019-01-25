@@ -100,7 +100,7 @@ var (
 			ClickThroughURL: "https://yext.com/event",
 		}},
 		customFieldParseTest{"PHOTO", nil, (*CustomLocationPhoto)(nil)},
-		customFieldParseTest{"GALLERY", []interface{}{customPhotoRaw}, Gallery{
+		customFieldParseTest{"GALLERY", []interface{}{customPhotoRaw}, CustomLocationGallery{
 			&CustomLocationPhoto{
 				Url:             "https://mktgcdn.com/awesome.jpg",
 				Description:     "This is a picture of an awesome event",
@@ -126,7 +126,7 @@ var (
 				},
 			},
 		}},
-		customFieldParseTest{"DAILY_TIMES", dailyTimesRaw, DailyTimesCustom{
+		customFieldParseTest{"DAILY_TIMES", dailyTimesRaw, CustomLocationDailyTimes{
 			DailyTimes: "1:10:00;2:4:00;3:5:00;4:6:00;5:7:00;6:8:00;7:9:00",
 		}},
 		customFieldParseTest{"LOCATION_LIST", []string{"a", "b", "c"}, LocationList([]string{"a", "b", "c"})},

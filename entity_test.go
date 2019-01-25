@@ -8,17 +8,24 @@ import (
 
 type CustomLocationEntity struct {
 	LocationEntity
-	CFHours        *Hours            `json:"cf_Hours,omitempty"`
+	CFHours        **Hours           `json:"cf_Hours,omitempty"`
 	CFUrl          *string           `json:"cf_Url,omitempty"`
-	CFDailyTimes   *DailyTimes       `json:"cf_DailyTimes,omitempty"`
+	CFDailyTimes   **DailyTimes      `json:"cf_DailyTimes,omitempty"`
 	CFTextList     *[]string         `json:"cf_TextList,omitempty"`
-	CFGallery      []*Photo          `json:"cf_Gallery,omitempty"`
-	CFPhoto        *Photo            `json:"cf_Photo,omitempty"`
-	CFVideos       []*Video          `json:"cf_Videos,omitempty"`
-	CFVideo        *Video            `json:"cf_Video,omitempty"`
-	CFDate         *Date             `json:"cf_Date,omitempty"`
-	CFSingleOption *string           `json:"cf_SingleOtpion,omitempty"`
+	CFGallery      *[]Photo          `json:"cf_Gallery,omitempty"`
+	CFPhoto        **Photo           `json:"cf_Photo,omitempty"`
+	CFVideos       *[]Video          `json:"cf_Videos,omitempty"`
+	CFVideo        **Video           `json:"cf_Video,omitempty"`
+	CFDate         **Date            `json:"cf_Date,omitempty"`
+	CFSingleOption **string          `json:"cf_SingleOption,omitempty"`
 	CFMultiOption  *UnorderedStrings `json:"cf_MultiOption,omitempty"`
+	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
+	CFHolidayHours *[]HolidayHours   `json:"cf_HolidayHours,omitempty"` // TODO: REMOVE THIS IS NOT REAL
+}
+
+func (y CustomLocationEntity) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
 }
 
 func entityToJSONString(entity Entity) (error, string) {
@@ -45,11 +52,21 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{}}}, `{"languages":[]}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{"English"}}}, `{"languages":["English"]}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: nil}}, `{}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: &Hours{}}}, `{"hours":{}}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullHours()}}, `{"hours":null}`},
 		{&CustomLocationEntity{CFUrl: String("")}, `{"cf_Url":""}`},
 		{&CustomLocationEntity{CFUrl: nil}, `{}`},
 		{&CustomLocationEntity{CFTextList: &[]string{}}, `{"cf_TextList":[]}`},
 		{&CustomLocationEntity{CFTextList: nil}, `{}`},
+		{&CustomLocationEntity{CFSingleOption: NullDoubleString()}, `{"cf_SingleOption":null}`},
+		{&CustomLocationEntity{CFMultiOption: ToUnorderedStrings([]string{})}, `{"cf_MultiOption":[]}`},
+		{&CustomLocationEntity{CFDate: NullDate()}, `{"cf_Date":null}`},
+		{&CustomLocationEntity{CFVideo: NullVideo()}, `{"cf_Video":null}`},
+		{&CustomLocationEntity{CFPhoto: NullPhoto()}, `{"cf_Photo":null}`},
+		{&CustomLocationEntity{CFGallery: &[]Photo{}}, `{"cf_Gallery":[]}`},
+		{&CustomLocationEntity{CFVideos: &[]Video{}}, `{"cf_Videos":[]}`},
+		{&CustomLocationEntity{CFDailyTimes: NullDailyTimes()}, `{"cf_DailyTimes":null}`},
+		{&CustomLocationEntity{CFHours: NullHours()}, `{"cf_Hours":null}`},
+		{&CustomLocationEntity{CFYesNo: NullBool()}, `{"cf_YesNo":null}`},
 	}
 
 	for _, test := range tests {
@@ -87,9 +104,9 @@ func TestEntityJSONDeserialization(t *testing.T) {
 
 func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	entityService := EntityService{
-		registry: make(Registry),
+		Registry: &EntityRegistry{},
 	}
-	entityService.RegisterEntity("LOCATION", &CustomLocationEntity{})
+	entityService.RegisterEntity("LOCATION", &CustomLocationEntity{}) // TODO should be location
 	mapOfStringToInterface := make(map[string]interface{})
 	err := json.Unmarshal([]byte(sampleEntityJSON), &mapOfStringToInterface)
 	if err != nil {

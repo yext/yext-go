@@ -3,8 +3,6 @@ package yext
 import (
 	"reflect"
 	"testing"
-
-	yext "github.com/yext/yext-go"
 )
 
 func TestHoursHelperFromString(t *testing.T) {
@@ -181,7 +179,7 @@ func TestHolidayHoursConvert(t *testing.T) {
 				Hours: "8:00:16:00",
 			},
 			Want: &HolidayHours{
-				Date: "2018-12-25",
+				Date: String("2018-12-25"),
 				OpenIntervals: &[]Interval{
 					Interval{
 						Start: "08:00",
@@ -196,7 +194,7 @@ func TestHolidayHoursConvert(t *testing.T) {
 				Hours: "08:00:16:00",
 			},
 			Want: &HolidayHours{
-				Date: "2018-12-25",
+				Date: String("2018-12-25"),
 				OpenIntervals: &[]Interval{
 					Interval{
 						Start: "08:00",
@@ -211,7 +209,7 @@ func TestHolidayHoursConvert(t *testing.T) {
 				Hours: "9:00:15:00,17:00:19:00",
 			},
 			Want: &HolidayHours{
-				Date: "2018-12-25",
+				Date: String("2018-12-25"),
 				OpenIntervals: &[]Interval{
 					Interval{
 						Start: "09:00",
@@ -230,8 +228,8 @@ func TestHolidayHoursConvert(t *testing.T) {
 				Hours: "",
 			},
 			Want: &HolidayHours{
-				Date:     "2018-12-25",
-				IsClosed: yext.Bool(true),
+				Date:     String("2018-12-25"),
+				IsClosed: Bool(true),
 			},
 		},
 	}

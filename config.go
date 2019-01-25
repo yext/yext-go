@@ -93,7 +93,7 @@ func (c *Config) WithEnvCredentials() *Config {
 }
 
 func (c *Config) WithRetries(r int) *Config {
-	c.RetryCount = Int(r)
+	c.RetryCount = SingleInt(r)
 	return c
 }
 

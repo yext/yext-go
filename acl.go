@@ -22,7 +22,7 @@ type ACL struct {
 
 type ACLList []ACL
 
-func (a ACL) String() string {
+func (a ACL)SingleString() string {
 	b, _ := json.Marshal(a)
 	return string(b)
 }

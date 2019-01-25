@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	yext "github.com/yext/yext-go"
 )
 
 const (
@@ -203,13 +201,13 @@ func (h *HoursHelper) StructSerialize() *Hours {
 		return nil
 	}
 	hours := &Hours{}
-	hours.Sunday = h.StructSerializeDay(Sunday)
-	hours.Monday = h.StructSerializeDay(Monday)
-	hours.Tuesday = h.StructSerializeDay(Tuesday)
-	hours.Wednesday = h.StructSerializeDay(Wednesday)
-	hours.Thursday = h.StructSerializeDay(Thursday)
-	hours.Friday = h.StructSerializeDay(Friday)
-	hours.Saturday = h.StructSerializeDay(Saturday)
+	hours.Sunday = ToDayHours(h.StructSerializeDay(Sunday))
+	hours.Monday = ToDayHours(h.StructSerializeDay(Monday))
+	hours.Tuesday = ToDayHours(h.StructSerializeDay(Tuesday))
+	hours.Wednesday = ToDayHours(h.StructSerializeDay(Wednesday))
+	hours.Thursday = ToDayHours(h.StructSerializeDay(Thursday))
+	hours.Friday = ToDayHours(h.StructSerializeDay(Friday))
+	hours.Saturday = ToDayHours(h.StructSerializeDay(Saturday))
 	return hours
 
 }
@@ -366,10 +364,10 @@ func LocationHolidayHoursToHolidayHours(l *LocationHolidayHours) (*HolidayHours,
 		return nil, nil
 	}
 	var h = &HolidayHours{
-		Date: l.Date,
+		Date: String(l.Date),
 	}
 	if l.Hours == "" {
-		h.IsClosed = yext.Bool(true)
+		h.IsClosed = Bool(true)
 	} else {
 		intervalsList := []Interval{}
 		intervals := strings.Split(l.Hours, ",")

@@ -816,7 +816,7 @@ type LocationClosed struct {
 	ClosedDate string `json:"closedDate,omitempty"`
 }
 
-func (l LocationClosed) String() string {
+func (l LocationClosed) SingleString() string {
 	return fmt.Sprintf("isClosed: %v, closedDate: '%v'", l.IsClosed, l.ClosedDate)
 }
 

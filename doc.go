@@ -20,16 +20,16 @@ Fetch a single location
 Create a new location (see full documentation for required fields)
 
 	loc := &yext.Location{
-		Id: yext.String("JB-02"),
-		Name: yext.String("Joe's Bake Shop"),
+		Id: yext.SingleString("JB-02"),
+		Name: yext.SingleString("Joe's Bake Shop"),
 	}
 	loc, err := client.LocationService.Create(loc)
 
 Edit an existing location
 
 	loc := &yext.Location{
-		Id: yext.String("JB-02"),
-		Name: yext.String("Joe's Pastry Emporium"),
+		Id: yext.SingleString("JB-02"),
+		Name: yext.SingleString("Joe's Pastry Emporium"),
 	}
 	loc, err := client.LocationService.Edit(loc)
 
@@ -59,7 +59,7 @@ Models
 In order to support partial object updates, many of the struct attributes are represented as pointers in order to differentiate between "not-present" and "zero-valued".  Helpers are provided to make it easier to work with the pointers:
 
 	l := &yext.Location{
-		Id: yext.String("JB-01"),
+		Id: yext.SingleString("JB-01"),
 		SuppressAddress: yext.Bool(true),
 		DisplayLat: yext.Float(38.813),
 		Keywords: yext.Strings([]string{"pastries", "bakery", "food"})
