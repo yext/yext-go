@@ -797,13 +797,13 @@ type customFieldsTest struct {
 
 var baseCustomFields = map[string]interface{}{
 	"62150": Gallery{
-		&Photo{
+		&CustomLocationPhoto{
 			ClickThroughURL: "https://locations.yext.com",
 			Description:     "This is the caption",
 			Url:             "http://a.mktgcdn.com/p-sandbox/gRcmaehu-FoJtL3Ld6vNjYHpbZxmPSYZ1cTEF_UU7eY/1247x885.png",
 		},
 	},
-	"62151": Photo{
+	"62151": CustomLocationPhoto{
 		ClickThroughURL: "https://locations.yext.com",
 		Description:     "This is a caption on a single!",
 		Url:             "http://a.mktgcdn.com/p-sandbox/bSZ_mKhfFYGih6-ry5mtbwB_JbKu930kFxHOaQRwZC4/1552x909.png",
@@ -1390,10 +1390,10 @@ func TestCustomFieldPointerComparison(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	a.Id = String("blah")
 	a.CustomFields = map[string]interface{}{
-		"1": HoursCustom{Hours: "1:09:00:18:00"},
+		"1": CustomLocationHours{Hours: "1:09:00:18:00"},
 	}
 	b.CustomFields = map[string]interface{}{
-		"1": &HoursCustom{Hours: "1:09:00:18:00"},
+		"1": &CustomLocationHours{Hours: "1:09:00:18:00"},
 	}
 
 	a.hydrated, b.hydrated = true, true

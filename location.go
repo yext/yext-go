@@ -809,10 +809,6 @@ func (l LocationPhoto) String() string {
 	return fmt.Sprintf("Url: '%v', Description: '%v', AlternateText: '%v', ClickThroughUrl: '%v'", l.Url, l.Description, l.AlternateText, l.ClickThroughUrl)
 }
 
-func (l Photo) String() string {
-	return fmt.Sprintf("Url: '%v', Description: '%v'", l.Url, l.Description)
-}
-
 // LocationClosed represents the 'closed' state of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Closed
 type LocationClosed struct {

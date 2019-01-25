@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -124,14 +125,15 @@ func isNil(v reflect.Value) bool {
 }
 
 // Diff(a, b): a is base, b is new
-func Diff(a Entity, b Entity) (Entity, bool) {
+func Diff(a Entity, b Entity) (Entity, bool, error) {
+	// TODO: should the below return an error? If not should return an empty b object with entity type set?
 	if a.GetEntityType() != b.GetEntityType() {
-		return nil, true
+		return nil, true, fmt.Errorf("Entity Types do not match: '%s', '%s'", a.GetEntityType(), b.GetEntityType())
 	}
 
 	delta, isDiff := diff(a, b, getNilIsEmpty(a), getNilIsEmpty(b))
 	if !isDiff {
-		return nil, isDiff
+		return nil, isDiff, nil
 	}
-	return delta.(Entity), isDiff
+	return delta.(Entity), isDiff, nil
 }

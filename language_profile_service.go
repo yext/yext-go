@@ -1,104 +1,82 @@
 package yext
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-const profilesPath = "profiles"
+const entityProfilesPath = "entityprofiles"
 
 type LanguageProfileService struct {
-	client       *Client
-	CustomFields []*CustomField
+	client   *Client
+	registry Registry
 }
 
 type LanguageProfileListResponse struct {
-	LanguageProfiles []*LanguageProfile `json:"languageProfiles"`
+	Profiles []interface{} `json:"profiles"`
 }
 
-func (l *LanguageProfileListResponse) ResponseAsLocations() []*Location {
-	languageProfilesAsLocs := []*Location{}
-	for _, lp := range l.LanguageProfiles {
-		languageProfilesAsLocs = append(languageProfilesAsLocs, &lp.Location)
-	}
-	return languageProfilesAsLocs
+func (l *LanguageProfileService) RegisterDefaultEntities() {
+	l.registry = defaultEntityRegistry()
 }
 
-func (l *LanguageProfileService) GetAll(id string) (*LanguageProfileListResponse, *Response, error) {
-	var v LanguageProfileListResponse
-	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s/%s", locationsPath, id, profilesPath), &v)
-	if err != nil {
-		return nil, r, err
-	}
-
-	if _, err := l.HydrateLocations(v.LanguageProfiles); err != nil {
-		return nil, r, err
-	}
-
-	return &v, r, nil
+func (l *LanguageProfileService) RegisterEntity(t EntityType, entity interface{}) {
+	l.registry.Register(string(t), entity)
 }
 
 func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageProfile, *Response, error) {
-	var v LanguageProfile
-	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), &v)
+	var v map[string]interface{}
+	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), &v)
 	if err != nil {
 		return nil, r, err
 	}
 
-	if _, err := HydrateLocation(&v.Location, l.CustomFields); err != nil {
+	entity, err := toEntityType(v, l.registry)
+	if err != nil {
 		return nil, r, err
 	}
+	setNilIsEmpty(entity)
 
-	return &v, r, nil
+	return &LanguageProfile{Entity: entity}, r, nil
 }
 
-func (l *LanguageProfileService) Upsert(y *LanguageProfile, languageCode string) (*Response, error) {
-	id := y.GetId()
-	if id == "" {
-		return nil, fmt.Errorf("language profile service: upsert: profile object had no id")
-	}
-	asJSON, err := json.Marshal(y)
+func (l *LanguageProfileService) List(id string) ([]*LanguageProfile, *Response, error) {
+	var (
+		v        LanguageProfileListResponse
+		profiles = []*LanguageProfile{}
+	)
+	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityProfilesPath, id), &v)
 	if err != nil {
-		return nil, err
+		return nil, r, err
 	}
-	var asMap map[string]interface{}
-	err = json.Unmarshal(asJSON, &asMap)
-	if err != nil {
-		return nil, err
-	}
-	delete(asMap, "id")
 
-	if err := validateLocationCustomFieldsKeys(y.CustomFields); err != nil {
-		return nil, err
+	typedProfiles, err := toEntityTypes(v.Profiles, l.registry)
+	if err != nil {
+		return nil, r, err
 	}
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), asMap, nil)
+	for _, profile := range typedProfiles {
+		setNilIsEmpty(profile)
+		profiles = append(profiles, &LanguageProfile{Entity: profile})
+	}
+	return profiles, r, nil
+}
+
+func (l *LanguageProfileService) Upsert(entity Entity, languageCode string) (*Response, error) {
+	id := entity.GetEntityId()
+	if id == "" {
+		return nil, fmt.Errorf("entity profile service upsert: profile object had no id")
+	}
+
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), entity, nil)
 	if err != nil {
 		return r, err
 	}
-
 	return r, nil
 }
 
 func (l *LanguageProfileService) Delete(id string, languageCode string) (*Response, error) {
-	r, err := l.client.DoRequest("DELETE", fmt.Sprintf("%s/%s/%s/%s", locationsPath, id, profilesPath, languageCode), nil)
+	r, err := l.client.DoRequest("DELETE", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), nil)
 	if err != nil {
 		return r, err
 	}
-
 	return r, nil
-}
-
-func (l *LanguageProfileService) HydrateLocations(languageProfiles []*LanguageProfile) ([]*LanguageProfile, error) {
-	if l.CustomFields == nil {
-		return languageProfiles, nil
-	}
-
-	for _, profile := range languageProfiles {
-		_, err := HydrateLocation(&profile.Location, l.CustomFields)
-		if err != nil {
-			return languageProfiles, err
-		}
-	}
-
-	return languageProfiles, nil
 }

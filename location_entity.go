@@ -7,6 +7,8 @@ package yext
 
 import (
 	"encoding/json"
+
+	yext "github.com/yext/yext-go"
 )
 
 const ENTITYTYPE_LOCATION EntityType = "location"
@@ -24,13 +26,11 @@ type LocationEntity struct {
 	// Address Fields
 	Name            *string  `json:"name,omitempty"`
 	Address         *Address `json:"address,omitempty"`
-	DisplayAddress  *string  `json:"displayAddress,omitempty"`
-	CountryCode     *string  `json:"countryCode,omitempty"`
 	SuppressAddress *bool    `json:"suppressAddress,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
-	FaxPhone       *string   `json:"faxPhone,omitempty"`
+	Fax            *string   `json:"fax,omitempty"`
 	LocalPhone     *string   `json:"localPhone,omitempty"`
 	MobilePhone    *string   `json:"mobilePhone,omitempty"`
 	MainPhone      *string   `json:"mainPhone,omitempty"`
@@ -112,13 +112,28 @@ type LocationEntity struct {
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
 }
 
+// TODO: Rename LocationPhoto....profilePhoto?
+// Or below could be complex photo vs simple photo
+type Photo struct {
+	Image           *Image  `json:"image,omitempty"`
+	ClickthroughUrl *string `json:"clickthroughUrl,omitempty"`
+	Description     *string `json:"description,omitempty"`
+	Details         *string `json:"details,omitempty"`
+}
+
+type Image struct {
+	Url           *string `json:"url,omitempty"`
+	AlternateText *string `json:"alternateText,omitempty"`
+}
+
 type Address struct {
-	Line1       *string `json:"line1,omitempty"`
-	Line2       *string `json:"line2,omitempty"`
-	City        *string `json:"city,omitempty"`
-	Region      *string `json:"region,omitempty"`
-	Sublocality *string `json:"sublocality,omitempty"`
-	PostalCode  *string `json:"postalCode,omitempty"`
+	Line1            *string `json:"line1,omitempty"`
+	Line2            *string `json:"line2,omitempty"`
+	City             *string `json:"city,omitempty"`
+	Region           *string `json:"region,omitempty"`
+	Sublocality      *string `json:"sublocality,omitempty"`
+	PostalCode       *string `json:"postalCode,omitempty"`
+	ExtraDescription *string `json:"extraDescription,omitempty"`
 }
 
 type FeaturedMessage struct {
@@ -153,9 +168,163 @@ type DayHours struct {
 	IsClosed      *bool       `json:"isClosed,omitempty"`
 }
 
+func (d *DayHours) SetClosed() {
+	d.IsClosed = yext.Bool(true)
+	d.OpenIntervals = nil
+}
+
+func (d *DayHours) AddHours(start string, end string) {
+	d.IsClosed = nil
+	if d.OpenIntervals == nil {
+		d.OpenIntervals = []*Interval{}
+	}
+	d.OpenIntervals = append(d.OpenIntervals, &Interval{
+		Start: start,
+		End:   end,
+	})
+}
+
+func (d *DayHours) SetHours(start string, end string) {
+	d.IsClosed = nil
+	d.OpenIntervals = []*Interval{
+		&Interval{
+			Start: start,
+			End:   end,
+		},
+	}
+}
+
 type Interval struct {
 	Start string `json:"start,omitempty"`
 	End   string `json:"end,omitempty"`
+}
+
+func NewInterval(start string, end string) *Interval {
+	return &Interval{Start: start, End: end}
+}
+
+func (h *Hours) GetDayHours(w Weekday) *DayHours {
+	switch w {
+	case Sunday:
+		return h.Sunday
+	case Monday:
+		return h.Monday
+	case Tuesday:
+		return h.Tuesday
+	case Wednesday:
+		return h.Wednesday
+	case Thursday:
+		return h.Thursday
+	case Friday:
+		return h.Friday
+	case Saturday:
+		return h.Saturday
+	}
+	return nil
+}
+
+func (h *Hours) SetClosedAllWeek() {
+	h = &Hours{
+		Sunday:    &DayHours{},
+		Monday:    &DayHours{},
+		Tuesday:   &DayHours{},
+		Wednesday: &DayHours{},
+		Thursday:  &DayHours{},
+		Friday:    &DayHours{},
+		Saturday:  &DayHours{},
+	}
+	h.Sunday.SetClosed()
+	h.Monday.SetClosed()
+	h.Tuesday.SetClosed()
+	h.Wednesday.SetClosed()
+	h.Thursday.SetClosed()
+	h.Friday.SetClosed()
+	h.Saturday.SetClosed()
+}
+
+func (h *Hours) SetClosed(w Weekday) {
+	d := &DayHours{}
+	d.SetClosed()
+	switch w {
+	case Sunday:
+		h.Sunday = d
+	case Monday:
+		h.Monday = d
+	case Tuesday:
+		h.Tuesday = d
+	case Wednesday:
+		h.Wednesday = d
+	case Thursday:
+		h.Thursday = d
+	case Friday:
+		h.Friday = d
+	case Saturday:
+		h.Saturday = d
+	}
+}
+
+func (h *Hours) SetUnspecified(w Weekday) {
+	switch w {
+	case Sunday:
+		h.Sunday = nil
+	case Monday:
+		h.Monday = nil
+	case Tuesday:
+		h.Tuesday = nil
+	case Wednesday:
+		h.Wednesday = nil
+	case Thursday:
+		h.Thursday = nil
+	case Friday:
+		h.Friday = nil
+	case Saturday:
+		h.Saturday = nil
+	}
+}
+
+func (h *Hours) AddHours(w Weekday, start string, end string) {
+	d := h.GetDayHours(w)
+	if d == nil {
+		d = &DayHours{}
+	}
+	d.AddHours(start, end)
+	switch w {
+	case Sunday:
+		h.Sunday = d
+	case Monday:
+		h.Monday = d
+	case Tuesday:
+		h.Tuesday = d
+	case Wednesday:
+		h.Wednesday = d
+	case Thursday:
+		h.Thursday = d
+	case Friday:
+		h.Friday = d
+	case Saturday:
+		h.Saturday = d
+	}
+}
+
+func (h *Hours) SetHours(w Weekday, start string, end string) {
+	d := &DayHours{}
+	d.AddHours(start, end)
+	switch w {
+	case Sunday:
+		h.Sunday = d
+	case Monday:
+		h.Monday = d
+	case Tuesday:
+		h.Tuesday = d
+	case Wednesday:
+		h.Wednesday = d
+	case Thursday:
+		h.Thursday = d
+	case Friday:
+		h.Friday = d
+	case Saturday:
+		h.Saturday = d
+	}
 }
 
 func (y LocationEntity) GetId() string {
@@ -200,9 +369,9 @@ func (y LocationEntity) GetSuppressAddress() bool {
 	return false
 }
 
-func (y LocationEntity) GetDisplayAddress() string {
-	if y.DisplayAddress != nil {
-		return *y.DisplayAddress
+func (y LocationEntity) GetExtraDescription() string {
+	if y.Address != nil && y.Address.ExtraDescription != nil {
+		return *y.Address.ExtraDescription
 	}
 	return ""
 }
@@ -224,13 +393,6 @@ func (y LocationEntity) GetRegion() string {
 func (y LocationEntity) GetPostalCode() string {
 	if y.Address != nil && y.Address.PostalCode != nil {
 		return *y.Address.PostalCode
-	}
-	return ""
-}
-
-func (y LocationEntity) GetCountryCode() string {
-	if y.CountryCode != nil {
-		return *y.CountryCode
 	}
 	return ""
 }
@@ -263,9 +425,9 @@ func (y LocationEntity) GetAlternatePhone() string {
 	return ""
 }
 
-func (y LocationEntity) GetFaxPhone() string {
-	if y.FaxPhone != nil {
-		return *y.FaxPhone
+func (y LocationEntity) GetFax() string {
+	if y.Fax != nil {
+		return *y.Fax
 	}
 	return ""
 }

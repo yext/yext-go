@@ -41,11 +41,11 @@ func (e *EntityService) CreateEntity(t EntityType) (interface{}, error) {
 	return e.registry.Create(string(t))
 }
 
-func (e *EntityService) toEntityTypes(entities []interface{}) ([]Entity, error) {
+func (e *EntityService) ToEntityTypes(entities []interface{}) ([]Entity, error) {
 	return toEntityTypes(entities, e.registry)
 }
 
-func (e *EntityService) toEntityType(entity interface{}) (Entity, error) {
+func (e *EntityService) ToEntityType(entity interface{}) (Entity, error) {
 	return toEntityType(entity, e.registry)
 }
 
@@ -99,7 +99,7 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 		return nil, r, err
 	}
 
-	typedEntities, err := e.toEntityTypes(v.Entities)
+	typedEntities, err := e.ToEntityTypes(v.Entities)
 	if err != nil {
 		return nil, r, err
 	}
@@ -141,7 +141,7 @@ func (e *EntityService) Get(id string) (Entity, *Response, error) {
 		return nil, r, err
 	}
 
-	entity, err := e.toEntityType(v)
+	entity, err := e.ToEntityType(v)
 	if err != nil {
 		return nil, r, err
 	}
@@ -187,11 +187,15 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 	return r, nil
 }
 
-func (e *EntityService) Edit(y Entity) (*Response, error) {
-	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, y.GetEntityId()), y, nil)
+func (e *EntityService) EditWithId(id string, y Entity) (*Response, error) {
+	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, id), y, nil)
 	if err != nil {
 		return r, err
 	}
 
 	return r, nil
+}
+
+func (e *EntityService) Edit(y Entity) (*Response, error) {
+	return e.EditWithId(y.GetEntityId(), y)
 }

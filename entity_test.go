@@ -95,7 +95,7 @@ func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unable to unmarshal sample entity JSON. Err: %s", err)
 	}
-	if _, err := entityService.toEntityType(mapOfStringToInterface); err != nil {
+	if _, err := entityService.ToEntityType(mapOfStringToInterface); err != nil {
 		t.Errorf("Unable to convert JSON to entity type. Err: %s", err)
 	}
 }
