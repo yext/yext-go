@@ -1,12 +1,13 @@
 package yext
 
 type Reviewer struct {
-	LocationId *string `json:"locationId"`
-	FirstName  *string `json:"firstName"`
-	LastName   *string `json:"lastName"`
-	Contact    *string `json:"contact"`
-	Image      *bool   `json:"image"`
-	TemplateId *string `json:"templateId"`
+	LocationId *string      `json:"locationId,omitempty"`
+	FirstName  *string      `json:"firstName,omitempty"`
+	LastName   *string      `json:"lastName,omitempty"`
+	Contact    *string      `json:"contact,omitempty"`
+	Image      *bool        `json:"image,omitempty"`
+	TemplateId *string      `json:"templateId,omitempty"`
+	LabelIds   []*string    `json:"labelIds,omitempty"`
 }
 
 type Review struct {
