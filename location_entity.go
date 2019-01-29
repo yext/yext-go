@@ -24,9 +24,9 @@ type LocationEntity struct {
 	Keywords    *[]string `json:"keywords,omitempty"`
 
 	// Address Fields
-	Name            *string  `json:"name,omitempty"`
-	Address         *Address `json:"address,omitempty"`
-	SuppressAddress *bool    `json:"suppressAddress,omitempty"`
+	Name          *string  `json:"name,omitempty"`
+	Address       *Address `json:"address,omitempty"`
+	AddressHidden *bool    `json:"addressHidden,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -36,7 +36,6 @@ type LocationEntity struct {
 	MainPhone      *string   `json:"mainPhone,omitempty"`
 	TollFreePhone  *string   `json:"tollFreePhone,omitempty"`
 	TtyPhone       *string   `json:"ttyPhone,omitempty"`
-	IsPhoneTracked *bool     `json:"isPhoneTracked,omitempty"`
 	Emails         *[]string `json:"emails,omitempty"`
 
 	// Location Info
@@ -90,9 +89,9 @@ type LocationEntity struct {
 	UberTripBrandingUrl  *string `json:"uberTripBrandingUrl,omitempty"`
 
 	// Social Media
-	FacebookCoverPhoto     *LocationPhoto `json:"facebookCoverPhoto,omitempty"`
-	FacebookPageUrl        *string        `json:"facebookPageUrl,omitempty"`
-	FacebookProfilePicture *LocationPhoto `json:"facebookProfilePicture,omitempty"`
+	FacebookCoverPhoto   *LocationPhoto `json:"facebookCoverPhoto,omitempty"`
+	FacebookPageUrl      *string        `json:"facebookPageUrl,omitempty"`
+	FacebookProfilePhoto *LocationPhoto `json:"facebookProfilePhoto,omitempty"`
 
 	GoogleCoverPhoto      *LocationPhoto `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string        `json:"googlePreferredPhoto,omitempty"`
@@ -133,6 +132,7 @@ type Address struct {
 	Region           *string `json:"region,omitempty"`
 	Sublocality      *string `json:"sublocality,omitempty"`
 	PostalCode       *string `json:"postalCode,omitempty"`
+	CountryCode      *string `json:"countryCode,omitempty"`
 	ExtraDescription *string `json:"extraDescription,omitempty"`
 }
 
@@ -362,9 +362,9 @@ func (y LocationEntity) GetLine2() string {
 	return ""
 }
 
-func (y LocationEntity) GetSuppressAddress() bool {
-	if y.SuppressAddress != nil {
-		return *y.SuppressAddress
+func (y LocationEntity) GetAddressHidden() bool {
+	if y.AddressHidden != nil {
+		return *y.AddressHidden
 	}
 	return false
 }
@@ -402,13 +402,6 @@ func (y LocationEntity) GetMainPhone() string {
 		return *y.MainPhone
 	}
 	return ""
-}
-
-func (y LocationEntity) GetIsPhoneTracked() bool {
-	if y.IsPhoneTracked != nil {
-		return *y.IsPhoneTracked
-	}
-	return false
 }
 
 func (y LocationEntity) GetLocalPhone() string {
