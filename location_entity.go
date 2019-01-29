@@ -104,7 +104,7 @@ type LocationEntity struct {
 	Photos    *[]LocationPhoto `json:"photos,omitempty"`
 	VideoUrls *[]string        `json:"videoUrls,omitempty"`
 
-	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
+	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
 
 	// Reviews
 	ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
@@ -661,7 +661,7 @@ func (y LocationEntity) GetVideoUrls() (v []string) {
 	return v
 }
 
-func (y LocationEntity) GetGoogleAttributes() GoogleAttributes {
+func (y LocationEntity) GetGoogleAttributes() map[string][]string {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
 	}

@@ -70,7 +70,7 @@ type EventEntity struct {
 	PhotoGallery *[]PhotoGalleryItem `json:"photoGallery,omitempty"`
 	Videos       *[]Video            `json:"videos,omitempty"`
 
-	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
+	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
 }
 
 type AgeRange struct {
@@ -341,7 +341,7 @@ func (y EventEntity) GetFacebookPageUrl() string {
 	return ""
 }
 
-func (y EventEntity) GetGoogleAttributes() GoogleAttributes {
+func (y EventEntity) GetGoogleAttributes() map[string][]string {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
 	}
