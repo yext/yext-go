@@ -2,10 +2,7 @@ package yext
 
 import (
 	"fmt"
-	"log"
 	"reflect"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func instanceOf(val interface{}) interface{} {
@@ -13,40 +10,28 @@ func instanceOf(val interface{}) interface{} {
 		isPtr = reflect.ValueOf(val).Kind() == reflect.Ptr
 		tmp   interface{}
 	)
+
 	if isPtr {
+		var ptr = reflect.New(reflect.TypeOf(val).Elem()).Interface()
 		var numPointers = 0
 		for reflect.ValueOf(val).Kind() == reflect.Ptr {
-			log.Println(reflect.ValueOf(val).Kind())
 			val = reflect.ValueOf(val).Elem().Interface()
 			numPointers++
 		}
-		log.Println("numPointers", numPointers)
+		// can we just use val?
 		tmp = val
-		i := 0
-		for i < numPointers {
-			log.Println(i)
-			// if i == numPointers-1 {
-			// 	tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
-			// } else {
-			tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
-			//}
-			i++
+		tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
+		if numPointers == 1 {
+			return tmp
 		}
-		log.Println("type of ", reflect.ValueOf(tmp).Kind())
-		// log.Println("here")
-		// var s = DoubleString("blah")
-		// var v = reflect.ValueOf(s).Elem().Elem().Interface()
-		// log.Println(v, reflect.ValueOf(s).Kind(), reflect.ValueOf(v).Kind())
-		// log.Println("typeof ", reflect.TypeOf(v))
-		// log.Println(reflect.New(reflect.TypeOf(v)).Kind())
-		// var ptr = reflect.New(reflect.TypeOf(v)).Interface()
-		// log.Println("typeof ", reflect.TypeOf(ptr))
-		// log.Println(reflect.New(reflect.TypeOf(ptr)))
-		return tmp
-		//tmp = reflect.ValueOf(val).Elem().Interface()
+		// This will only work for ** pointers, no *** pointers
+		reflect.ValueOf(ptr).Elem().Set(reflect.ValueOf(tmp))
+		return ptr
 	} else {
 		tmp = val
 	}
+	// i believe this could be simplified to be. to terrified to mess with it atm
+	// reflect.New(reflect.TypeOf(val)).Interface()
 	return reflect.New(reflect.TypeOf(tmp)).Interface()
 }
 
@@ -124,7 +109,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
 				if diff {
 					isDiff = true
-					reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d))
+					indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
 				}
 			}
 			continue
@@ -134,15 +119,9 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		log.Println(nameA)
-		log.Println(valB)
 		if !reflect.DeepEqual(aI, bI) {
-			log.Print("kind ", reflect.ValueOf(delta).Kind())
-			var d = indirect(reflect.ValueOf(delta)) // reflect.ValueOf(delta).Elem()
-			log.Println("delta")
-			spew.Dump(delta)
-			d.FieldByName(nameA).Set(valB)
 			isDiff = true
+			indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 		}
 	}
 	return delta, isDiff
@@ -150,7 +129,6 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 
 func indirect(v reflect.Value) reflect.Value {
 	for v.Kind() == reflect.Ptr {
-		log.Println(v, "was ptr")
 		v = v.Elem()
 	}
 	return v

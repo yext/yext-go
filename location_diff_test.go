@@ -1693,6 +1693,33 @@ func TestIsZeroValue(t *testing.T) {
 			nilIsEmpty: true,
 			want:       true,
 		},
+		{
+			name: "list",
+			i: &[]HolidayHours{
+				HolidayHours{
+					Date:     String("01-21-2019"),
+					IsClosed: Bool(true),
+				},
+			},
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "**struct",
+			i: ToDayHours(&DayHours{
+				IsClosed: Bool(true),
+			}),
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "**struct",
+			i: ToDayHours(&DayHours{
+				IsClosed: Bool(false),
+			}),
+			nilIsEmpty: true,
+			want:       true,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
