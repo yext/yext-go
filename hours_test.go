@@ -229,7 +229,7 @@ func TestHolidayHoursConvert(t *testing.T) {
 			},
 			Want: &HolidayHours{
 				Date:     String("2018-12-25"),
-				IsClosed: Bool(true),
+				IsClosed: NullableBool(true),
 			},
 		},
 	}

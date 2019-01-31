@@ -10,7 +10,7 @@ const customFieldPath = "customfields"
 var CustomFieldListMaxLimit = 1000
 
 type CustomFieldService struct {
-	CustomFieldManager *CustomFieldManager // TODO: do we need this?
+	CustomFieldManager *CustomFieldManager
 	client             *Client
 }
 
@@ -103,4 +103,155 @@ func (c *CustomFieldManager) MustUnsetPhoto(name string, loc *Location) {
 
 func GetSingleOptionPointer(option SingleOption) *SingleOption {
 	return &option
+}
+
+type CustomFieldManager struct {
+	CustomFields []*CustomField
+}
+
+func (c *CustomFieldManager) CustomField(name string) (*CustomField, error) {
+	names := []string{}
+	for _, cf := range c.CustomFields {
+		if name == cf.Name {
+			return cf, nil
+		}
+		names = append(names, cf.Name)
+	}
+
+	return nil, fmt.Errorf("Unable to find custom field with name %s, available fields: %v", name, names)
+}
+
+func (c *CustomFieldManager) MustCustomField(name string) *CustomField {
+	if cf, err := c.CustomField(name); err != nil {
+		panic(err)
+	} else {
+		return cf
+	}
+}
+
+func (c *CustomFieldManager) CustomFieldId(name string) (string, error) {
+	if cf, err := c.CustomField(name); err != nil {
+		return "", err
+	} else {
+		return cf.GetId(), nil
+	}
+}
+
+func (c *CustomFieldManager) MustCustomFieldId(name string) string {
+	if id, err := c.CustomFieldId(name); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
+}
+
+func (c *CustomFieldManager) CustomFieldName(id string) (string, error) {
+	ids := []string{}
+	for _, cf := range c.CustomFields {
+		if id == cf.GetId() {
+			return cf.Name, nil
+		}
+		ids = append(ids, cf.GetId())
+	}
+
+	return "", fmt.Errorf("Unable to find custom field with Id %s, available Ids: %v", id, ids)
+}
+
+func (c *CustomFieldManager) MustCustomFieldName(id string) string {
+	if name, err := c.CustomFieldName(id); err != nil {
+		panic(err)
+	} else {
+		return name
+	}
+}
+
+func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (string, error) {
+	cf, err := c.CustomField(fieldName)
+	if err != nil {
+		return "", err
+	}
+
+	if cf.Options == nil {
+		return "", fmt.Errorf("Custom field %s doesn't have any options", fieldName)
+	}
+
+	for _, option := range cf.Options {
+		if option.Value == optionName {
+			return option.Key, nil
+		}
+	}
+
+	return "", fmt.Errorf("Unable to find custom field option with name %s", optionName)
+}
+
+func (c *CustomFieldManager) MustCustomFieldOptionId(fieldName, optionName string) string {
+	if id, err := c.CustomFieldOptionId(fieldName, optionName); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
+}
+
+func (c *CustomFieldManager) MustSingleOptionId(fieldName, optionName string) **string {
+	id := c.MustCustomFieldOptionId(fieldName, optionName)
+	return NullableString(id)
+}
+
+func (c *CustomFieldManager) MustIsSingleOptionSet(fieldName, optionName string, setOptionId **string) bool {
+	id := c.MustCustomFieldOptionId(fieldName, optionName)
+	return GetNullableString(setOptionId) == id
+}
+
+func (c *CustomFieldManager) NullSingleOption() **string {
+	return NullString()
+}
+
+func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *[]string {
+	var optionIds = []string{}
+	for _, optionName := range optionNames {
+		id := c.MustCustomFieldOptionId(fieldName, optionName)
+		optionIds = append(optionIds, id)
+	}
+	return &optionIds
+}
+
+func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *[]string) bool {
+	if setOptionIds == nil {
+		return false
+	}
+	optionIds := GetStrings(c.MustMultiOptionIds(fieldName, optionName))
+	if optionIds == nil {
+		return false
+	}
+	for _, v := range *setOptionIds {
+		if v == optionIds[0] {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *CustomFieldManager) NullMultiOption() *[]string {
+	return &[]string{}
+}
+
+func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
+	cf, err := c.CustomField(cfName)
+	if err != nil {
+		return "", err
+	}
+	for _, option := range cf.Options {
+		if option.Key == optionId {
+			return option.Value, nil
+		}
+	}
+	return "", fmt.Errorf("Unable to find option for key %s for custom field %s", optionId, cfName)
+}
+
+func (c *CustomFieldManager) MustCustomFieldOptionName(fieldName, optionId string) string {
+	if id, err := c.CustomFieldOptionName(fieldName, optionId); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
 }

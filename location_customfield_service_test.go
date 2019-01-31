@@ -272,7 +272,7 @@ func TestParseLeaveUnknownTypes(t *testing.T) {
 }
 
 func TestGetString(t *testing.T) {
-	var cfManager = &CustomFieldManager{
+	var cfManager = &LocationCustomFieldManager{
 		CustomFields: []*CustomField{
 			&CustomField{
 				Name: "Single Line Text",
@@ -412,7 +412,7 @@ func TestGetString(t *testing.T) {
 }
 
 func TestGetStringSlice(t *testing.T) {
-	var cfManager = &CustomFieldManager{
+	var cfManager = &LocationCustomFieldManager{
 		CustomFields: []*CustomField{
 			&CustomField{
 				Name: "Text List",

@@ -1,22 +1,22 @@
 package yext
 
-func Bool(v bool) **bool {
+func NullableBool(v bool) **bool {
 	p := &v
 	return &p
 }
 
-func GetBool(v **bool) bool {
+func GetNullableBool(v **bool) bool {
 	if v == nil || *v == nil {
 		return false
 	}
 	return **v
 }
 
-func SingleBool(v bool) *bool {
+func Bool(v bool) *bool {
 	return &v
 }
 
-func GetSingleBool(v *bool) bool {
+func GetBool(v *bool) bool {
 	if v == nil {
 		return false
 	}
@@ -41,26 +41,19 @@ func GetString(v *string) string {
 	return *v
 }
 
-func NullString() *string {
-	var v string
-	return &v
-}
-
-// Necessary for single option custom fields
-// TODO: rename to single option?
-func DoubleString(v string) **string {
+func NullableString(v string) **string {
 	y := &v
 	return &y
 }
 
-func GetDoubleString(v **string) string {
+func GetNullableString(v **string) string {
 	if v == nil || *v == nil {
 		return ""
 	}
 	return **v
 }
 
-func NullDoubleString() **string {
+func NullString() **string {
 	var v *string
 	return &v
 }
@@ -76,53 +69,58 @@ func GetStrings(v *[]string) []string {
 	return *v
 }
 
-func SingleFloat(v float64) *float64 {
+func Float(v float64) *float64 {
 	p := new(float64)
 	*p = v
 	return p
 }
 
-func GetSingleFloat(v *float64) float64 {
+func GetFloat(v *float64) float64 {
 	if v == nil {
 		return 0
 	}
 	return *v
 }
 
-func Float(v float64) **float64 {
+func NullableFloat(v float64) **float64 {
 	p := &v
 	return &p
 }
 
-func GetFloat(v **float64) float64 {
+func GetNullableFloat(v **float64) float64 {
 	if v == nil || *v == nil {
 		return 0
 	}
 	return **v
 }
 
-func Int(v int) **int {
-	p := &v
-	return &p
+func NullFloat() **float64 {
+	var v *float64
+	return &v
 }
 
-func GetInt(v **int) int {
-	if v == nil || *v == nil {
-		return 0
-	}
-	return **v
-}
-
-func SingleInt(v int) *int {
+func Int(v int) *int {
 	p := &v
 	return p
 }
 
-func GetSingleInt(v *int) int {
+func GetInt(v *int) int {
 	if v == nil {
 		return 0
 	}
 	return *v
+}
+
+func NullableInt(v int) **int {
+	p := &v
+	return &p
+}
+
+func GetNullableInt(v **int) int {
+	if v == nil || *v == nil {
+		return 0
+	}
+	return **v
 }
 
 func NullInt() **int {
@@ -130,7 +128,7 @@ func NullInt() **int {
 	return &v
 }
 
-func ToDate(v *Date) **Date {
+func NullableDate(v *Date) **Date {
 	return &v
 }
 
@@ -146,7 +144,7 @@ func NullDate() **Date {
 	return &v
 }
 
-func ToVideo(v *Video) **Video {
+func NullableVideo(v *Video) **Video {
 	return &v
 }
 
@@ -162,7 +160,7 @@ func NullVideo() **Video {
 	return &v
 }
 
-func ToPhoto(v *Photo) **Photo {
+func NullablePhoto(v *Photo) **Photo {
 	return &v
 }
 
@@ -178,7 +176,7 @@ func NullPhoto() **Photo {
 	return &v
 }
 
-func ToDailyTimes(v *DailyTimes) **DailyTimes {
+func NullableDailyTimes(v *DailyTimes) **DailyTimes {
 	return &v
 }
 
@@ -194,7 +192,7 @@ func NullDailyTimes() **DailyTimes {
 	return &v
 }
 
-func ToHours(v *Hours) **Hours {
+func NullableHours(v *Hours) **Hours {
 	return &v
 }
 

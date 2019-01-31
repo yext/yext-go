@@ -166,38 +166,38 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:      "**Float: equal (A)",
 			property:  "YearEstablished",
-			baseValue: Float(2018),
-			newValue:  Float(2018),
+			baseValue: NullableFloat(2018),
+			newValue:  NullableFloat(2018),
 			isDiff:    false,
 		},
 		diffTest{
 			name:       "**Float: not equal (B)",
 			property:   "YearEstablished",
-			baseValue:  Float(2018),
-			newValue:   Float(2006),
+			baseValue:  NullableFloat(2018),
+			newValue:   NullableFloat(2006),
 			isDiff:     true,
-			deltaValue: Float(2006),
+			deltaValue: NullableFloat(2006),
 		},
 		diffTest{
 			name:       "**Float: base is 0, new is not 0 (C)",
 			property:   "YearEstablished",
-			baseValue:  Float(0),
-			newValue:   Float(2006),
+			baseValue:  NullableFloat(0),
+			newValue:   NullableFloat(2006),
 			isDiff:     true,
-			deltaValue: Float(2006),
+			deltaValue: NullableFloat(2006),
 		},
 		diffTest{
 			name:       "**Float: base is not 0, new is 0 (D)",
 			property:   "YearEstablished",
-			baseValue:  Float(2006),
-			newValue:   Float(0),
+			baseValue:  NullableFloat(2006),
+			newValue:   NullableFloat(0),
 			isDiff:     true,
-			deltaValue: Float(0),
+			deltaValue: NullableFloat(0),
 		},
 		diffTest{
 			name:      "**Float: both are 0 (E)",
 			property:  "YearEstablished",
-			baseValue: Float(2018),
+			baseValue: NullableFloat(2018),
 			newValue:  nil,
 			isDiff:    false,
 		},
@@ -211,7 +211,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:      "**Float: base is not 0, new is nil (G)",
 			property:  "YearEstablished",
-			baseValue: Float(1993),
+			baseValue: NullableFloat(1993),
 			newValue:  nil,
 			isDiff:    false,
 		},
@@ -219,22 +219,22 @@ func TestEntityDiff(t *testing.T) {
 			name:       "**Float: base is nil, new is not 0 (H)",
 			property:   "YearEstablished",
 			baseValue:  nil,
-			newValue:   Float(1993),
+			newValue:   NullableFloat(1993),
 			isDiff:     true,
-			deltaValue: Float(1993),
+			deltaValue: NullableFloat(1993),
 		},
 		diffTest{
 			name:       "**Float: base is nil, new is 0 (I)",
 			property:   "YearEstablished",
 			baseValue:  nil,
-			newValue:   Float(0),
+			newValue:   NullableFloat(0),
 			isDiff:     true,
-			deltaValue: Float(0),
+			deltaValue: NullableFloat(0),
 		},
 		diffTest{
 			name:      "**Float: base is 0, new is nil (J)",
 			property:  "YearEstablished",
-			baseValue: Float(0),
+			baseValue: NullableFloat(0),
 			newValue:  nil,
 			isDiff:    false,
 		},
@@ -242,7 +242,7 @@ func TestEntityDiff(t *testing.T) {
 			name:           "**Float: base is nil (nil is empty), new is 0 (K)",
 			property:       "YearEstablished",
 			baseValue:      nil,
-			newValue:       Float(0),
+			newValue:       NullableFloat(0),
 			baseNilIsEmpty: true,
 			isDiff:         false,
 		},
@@ -250,7 +250,7 @@ func TestEntityDiff(t *testing.T) {
 			name:           "**Float: base is nil (nil is empty), new is 0 (nil is empty) (L)",
 			property:       "YearEstablished",
 			baseValue:      nil,
-			newValue:       Float(0),
+			newValue:       NullableFloat(0),
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
 			isDiff:         false,
@@ -258,7 +258,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:          "**Float: base is 0, new is nil (nil is empty) (M)",
 			property:      "YearEstablished",
-			baseValue:     Float(0),
+			baseValue:     NullableFloat(0),
 			newValue:      nil,
 			newNilIsEmpty: true,
 			isDiff:        false,
@@ -266,7 +266,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:           "**Float: base is 0 (nil is empty), new is nil (nil is empty) (N)",
 			property:       "YearEstablished",
-			baseValue:      Float(0),
+			baseValue:      NullableFloat(0),
 			baseNilIsEmpty: true,
 			newValue:       nil,
 			newNilIsEmpty:  true,
@@ -277,32 +277,32 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:      "**Bool: both true (A)",
 			property:  "Closed",
-			baseValue: Bool(true),
-			newValue:  Bool(true),
+			baseValue: NullableBool(true),
+			newValue:  NullableBool(true),
 			isDiff:    false,
 		},
 		diffTest{
 			name:      "**Bool: both false (A/E)",
 			property:  "Closed",
-			baseValue: Bool(false),
-			newValue:  Bool(false),
+			baseValue: NullableBool(false),
+			newValue:  NullableBool(false),
 			isDiff:    false,
 		},
 		diffTest{
 			name:       "**Bool: not equal, base true, new false (B/D)",
 			property:   "Closed",
-			baseValue:  Bool(true),
-			newValue:   Bool(false),
+			baseValue:  NullableBool(true),
+			newValue:   NullableBool(false),
 			isDiff:     true,
-			deltaValue: Bool(false),
+			deltaValue: NullableBool(false),
 		},
 		diffTest{
 			name:       "**Bool: not equal, base is false, new is true (B/C)",
 			property:   "Closed",
-			baseValue:  Bool(false),
-			newValue:   Bool(true),
+			baseValue:  NullableBool(false),
+			newValue:   NullableBool(true),
 			isDiff:     true,
-			deltaValue: Bool(true),
+			deltaValue: NullableBool(true),
 		},
 		diffTest{
 			name:      "**Bool: both are nil (F)",
@@ -314,7 +314,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:      "**Bool: base is non-zero, new is nil (G)",
 			property:  "Closed",
-			baseValue: Bool(true),
+			baseValue: NullableBool(true),
 			newValue:  nil,
 			isDiff:    false,
 		},
@@ -322,22 +322,22 @@ func TestEntityDiff(t *testing.T) {
 			name:       "**Bool: base is nil, new is non-zero value (H)",
 			property:   "Closed",
 			baseValue:  nil,
-			newValue:   Bool(true),
+			newValue:   NullableBool(true),
 			isDiff:     true,
-			deltaValue: Bool(true),
+			deltaValue: NullableBool(true),
 		},
 		diffTest{
 			name:       "**Bool: base is nil, new is zero value (I)",
 			property:   "Closed",
 			baseValue:  nil,
-			newValue:   Bool(false),
+			newValue:   NullableBool(false),
 			isDiff:     true,
-			deltaValue: Bool(false),
+			deltaValue: NullableBool(false),
 		},
 		diffTest{
 			name:      "**Bool: base is zero value, new is nil (J)",
 			property:  "Closed",
-			baseValue: Bool(false),
+			baseValue: NullableBool(false),
 			newValue:  nil,
 			isDiff:    false,
 		},
@@ -345,7 +345,7 @@ func TestEntityDiff(t *testing.T) {
 			name:           "**Bool: base is nil (nil is empty), new is zero value (K)",
 			property:       "Closed",
 			baseValue:      nil,
-			newValue:       Bool(false),
+			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
 			isDiff:         false,
 		},
@@ -353,7 +353,7 @@ func TestEntityDiff(t *testing.T) {
 			name:           "**Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
 			property:       "Closed",
 			baseValue:      nil,
-			newValue:       Bool(false),
+			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
 			isDiff:         false,
@@ -361,7 +361,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:          "**Bool: base is zero value, new is nil (nil is empty) (L)",
 			property:      "Closed",
-			baseValue:     Bool(false),
+			baseValue:     NullableBool(false),
 			newValue:      nil,
 			newNilIsEmpty: true,
 			isDiff:        false,
@@ -369,7 +369,7 @@ func TestEntityDiff(t *testing.T) {
 		diffTest{
 			name:           "**Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
 			property:       "Closed",
-			baseValue:      Bool(false),
+			baseValue:      NullableBool(false),
 			newValue:       nil,
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
@@ -966,7 +966,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -974,7 +974,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-22"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -983,7 +983,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-22"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -994,7 +994,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(false),
+						IsClosed: NullableBool(false),
 					},
 				},
 			},
@@ -1002,7 +1002,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1011,7 +1011,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1035,7 +1035,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1044,7 +1044,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1098,11 +1098,11 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-21"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 					HolidayHours{
 						Date:     String("2019-01-22"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1110,11 +1110,11 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-23"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 					HolidayHours{
 						Date:     String("2019-01-24"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1123,11 +1123,11 @@ func TestEntityDiffComplex(t *testing.T) {
 				CFHolidayHours: &[]HolidayHours{
 					HolidayHours{
 						Date:     String("2019-01-23"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 					HolidayHours{
 						Date:     String("2019-01-24"),
-						IsClosed: Bool(true),
+						IsClosed: NullableBool(true),
 					},
 				},
 			},
@@ -1136,18 +1136,18 @@ func TestEntityDiffComplex(t *testing.T) {
 			name: "Hours Closed Change",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
 					}),
 				},
 			},
 			new: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(false),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(false),
 						}),
 					}),
 				},
@@ -1155,9 +1155,9 @@ func TestEntityDiffComplex(t *testing.T) {
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(false),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(false),
 						}),
 					}),
 				},
@@ -1167,18 +1167,18 @@ func TestEntityDiffComplex(t *testing.T) {
 			name: "Holiday Hours Date Change",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 						},
 					}),
@@ -1186,18 +1186,18 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			new: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-22-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 						},
 					}),
@@ -1206,15 +1206,15 @@ func TestEntityDiffComplex(t *testing.T) {
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
+					Hours: NullableHours(&Hours{
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-22-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 						},
 					}),
@@ -1225,11 +1225,11 @@ func TestEntityDiffComplex(t *testing.T) {
 			name: "Hours Change",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Tuesday: ToDayHours(&DayHours{
+						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
 								Interval{
 									Start: "08:00",
@@ -1237,25 +1237,25 @@ func TestEntityDiffComplex(t *testing.T) {
 								},
 							},
 						}),
-						Wednesday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Thursday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Friday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Saturday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Sunday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 						},
 					}),
@@ -1263,11 +1263,11 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			new: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Monday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Tuesday: ToDayHours(&DayHours{
+						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
 								Interval{
 									Start: "08:00",
@@ -1275,25 +1275,25 @@ func TestEntityDiffComplex(t *testing.T) {
 								},
 							},
 						}),
-						Wednesday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Thursday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Friday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Saturday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
-						Sunday: ToDayHours(&DayHours{
-							IsClosed: Bool(true),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: Bool(true),
+								IsClosed: NullableBool(true),
 							},
 						},
 					}),
@@ -1302,8 +1302,8 @@ func TestEntityDiffComplex(t *testing.T) {
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
-					Hours: ToHours(&Hours{
-						Tuesday: ToDayHours(&DayHours{
+					Hours: NullableHours(&Hours{
+						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
 								Interval{
 									Start: "08:00",
@@ -1366,7 +1366,7 @@ func TestInstanceOf(t *testing.T) {
 	var (
 		h = &[]HolidayHours{
 			HolidayHours{
-				IsClosed: Bool(true),
+				IsClosed: NullableBool(true),
 			},
 		}
 		j = instanceOf(h)
@@ -1376,9 +1376,9 @@ func TestInstanceOf(t *testing.T) {
 	}
 
 	var (
-		hours = ToHours(&Hours{
-			Monday: ToDayHours(&DayHours{
-				IsClosed: Bool(true),
+		hours = NullableHours(&Hours{
+			Monday: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(true),
 			}),
 		})
 		k = instanceOf(hours)

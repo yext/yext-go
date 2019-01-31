@@ -174,12 +174,12 @@ var baseLocation Location = Location{
 	FacebookPageUrl:        String("ding"),
 	YearEstablished:        String("ding"),
 	FolderId:               String("ding"),
-	SuppressAddress:        SingleBool(false),
-	IsPhoneTracked:         SingleBool(true),
-	DisplayLat:             SingleFloat(1234.0),
-	DisplayLng:             SingleFloat(1234.0),
-	RoutableLat:            SingleFloat(1234.0),
-	RoutableLng:            SingleFloat(1234.0),
+	SuppressAddress:        Bool(false),
+	IsPhoneTracked:         Bool(true),
+	DisplayLat:             Float(1234.0),
+	DisplayLng:             Float(1234.0),
+	RoutableLat:            Float(1234.0),
+	RoutableLng:            Float(1234.0),
 	Keywords:               &[]string{"ding", "ding"},
 	PaymentOptions:         &[]string{"ding", "ding"},
 	VideoUrls:              &[]string{"ding", "ding"},
@@ -232,12 +232,12 @@ func TestDiffIdentical(t *testing.T) {
 		FacebookPageUrl:        String("ding"),
 		YearEstablished:        String("ding"),
 		FolderId:               String("ding"),
-		SuppressAddress:        SingleBool(false),
-		IsPhoneTracked:         SingleBool(true),
-		DisplayLat:             SingleFloat(1234.0),
-		DisplayLng:             SingleFloat(1234.0),
-		RoutableLat:            SingleFloat(1234.0),
-		RoutableLng:            SingleFloat(1234.0),
+		SuppressAddress:        Bool(false),
+		IsPhoneTracked:         Bool(true),
+		DisplayLat:             Float(1234.0),
+		DisplayLng:             Float(1234.0),
+		RoutableLat:            Float(1234.0),
+		RoutableLng:            Float(1234.0),
 		Keywords:               &[]string{"ding", "ding"},
 		PaymentOptions:         &[]string{"ding", "ding"},
 		VideoUrls:              &[]string{"ding", "ding"},
@@ -335,16 +335,16 @@ type boolTest struct {
 }
 
 var boolTests = []boolTest{
-	{SingleBool(false), SingleBool(false), false, false, nil},
-	{SingleBool(true), SingleBool(true), false, false, nil},
-	{SingleBool(false), SingleBool(true), true, false, SingleBool(true)},
-	{SingleBool(true), SingleBool(false), true, false, SingleBool(false)},
-	{nil, SingleBool(false), true, false, SingleBool(false)},
-	{nil, SingleBool(false), false, true, nil},
-	{nil, SingleBool(true), true, false, SingleBool(true)},
-	{SingleBool(false), nil, false, false, nil},
-	{SingleBool(false), nil, false, true, nil},
-	{SingleBool(true), nil, false, false, nil},
+	{Bool(false), Bool(false), false, false, nil},
+	{Bool(true), Bool(true), false, false, nil},
+	{Bool(false), Bool(true), true, false, Bool(true)},
+	{Bool(true), Bool(false), true, false, Bool(false)},
+	{nil, Bool(false), true, false, Bool(false)},
+	{nil, Bool(false), false, true, nil},
+	{nil, Bool(true), true, false, Bool(true)},
+	{Bool(false), nil, false, false, nil},
+	{Bool(false), nil, false, true, nil},
+	{Bool(true), nil, false, false, nil},
 	{nil, nil, false, false, nil},
 }
 
@@ -628,17 +628,17 @@ type floatTest struct {
 }
 
 var floatTests = []floatTest{
-	{SingleFloat(1234.0), SingleFloat(1234.0), false, false, nil},
-	{SingleFloat(1234.0), nil, false, false, nil},
-	{SingleFloat(0), nil, false, false, nil},
+	{Float(1234.0), Float(1234.0), false, false, nil},
+	{Float(1234.0), nil, false, false, nil},
+	{Float(0), nil, false, false, nil},
 	{nil, nil, false, false, nil},
-	{SingleFloat(0), SingleFloat(0), false, false, nil},
-	{SingleFloat(0), SingleFloat(9876.0), true, false, SingleFloat(9876.0)},
-	{SingleFloat(1234.0), SingleFloat(9876.0), true, false, SingleFloat(9876.0)},
-	{nil, SingleFloat(9876.0), true, false, SingleFloat(9876.0)},
-	{nil, SingleFloat(9876.0), true, true, SingleFloat(9876.0)},
-	{nil, SingleFloat(0), true, false, SingleFloat(0)},
-	{nil, SingleFloat(0), false, true, nil},
+	{Float(0), Float(0), false, false, nil},
+	{Float(0), Float(9876.0), true, false, Float(9876.0)},
+	{Float(1234.0), Float(9876.0), true, false, Float(9876.0)},
+	{nil, Float(9876.0), true, false, Float(9876.0)},
+	{nil, Float(9876.0), true, true, Float(9876.0)},
+	{nil, Float(0), true, false, Float(0)},
+	{nil, Float(0), false, true, nil},
 }
 
 func formatFloatPtr(b *float64) string {
@@ -1413,20 +1413,20 @@ func TestZeroValuesAndNilDiffing(t *testing.T) {
 			WantDiff:  false,
 		},
 		Scenario{
-			A:         &Location{SuppressAddress: SingleBool(false)},
+			A:         &Location{SuppressAddress: Bool(false)},
 			B:         &Location{SuppressAddress: nil},
 			WantDelta: nil,
 			WantDiff:  false,
 		},
 		Scenario{
 			A:         &Location{SuppressAddress: nil},
-			B:         &Location{SuppressAddress: SingleBool(false)},
-			WantDelta: &Location{SuppressAddress: SingleBool(false)},
+			B:         &Location{SuppressAddress: Bool(false)},
+			WantDelta: &Location{SuppressAddress: Bool(false)},
 			WantDiff:  true,
 		},
 		Scenario{
 			A:         &Location{nilIsEmpty: true, SuppressAddress: nil},
-			B:         &Location{SuppressAddress: SingleBool(false)},
+			B:         &Location{SuppressAddress: Bool(false)},
 			WantDelta: nil,
 			WantDiff:  false,
 		},
@@ -1698,7 +1698,7 @@ func TestIsZeroValue(t *testing.T) {
 			i: &[]HolidayHours{
 				HolidayHours{
 					Date:     String("01-21-2019"),
-					IsClosed: Bool(true),
+					IsClosed: NullableBool(true),
 				},
 			},
 			nilIsEmpty: true,
@@ -1706,16 +1706,16 @@ func TestIsZeroValue(t *testing.T) {
 		},
 		{
 			name: "**struct",
-			i: ToDayHours(&DayHours{
-				IsClosed: Bool(true),
+			i: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(true),
 			}),
 			nilIsEmpty: true,
 			want:       false,
 		},
 		{
 			name: "**struct",
-			i: ToDayHours(&DayHours{
-				IsClosed: Bool(false),
+			i: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(false),
 			}),
 			nilIsEmpty: true,
 			want:       true,

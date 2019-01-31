@@ -57,7 +57,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{CFUrl: nil}, `{}`},
 		{&CustomLocationEntity{CFTextList: &[]string{}}, `{"cf_TextList":[]}`},
 		{&CustomLocationEntity{CFTextList: nil}, `{}`},
-		{&CustomLocationEntity{CFSingleOption: NullDoubleString()}, `{"cf_SingleOption":null}`},
+		{&CustomLocationEntity{CFSingleOption: NullString()}, `{"cf_SingleOption":null}`},
 		{&CustomLocationEntity{CFMultiOption: ToUnorderedStrings([]string{})}, `{"cf_MultiOption":[]}`},
 		{&CustomLocationEntity{CFDate: NullDate()}, `{"cf_Date":null}`},
 		{&CustomLocationEntity{CFVideo: NullVideo()}, `{"cf_Video":null}`},

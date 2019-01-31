@@ -201,13 +201,13 @@ func (h *HoursHelper) StructSerialize() *Hours {
 		return nil
 	}
 	hours := &Hours{}
-	hours.Sunday = ToDayHours(h.StructSerializeDay(Sunday))
-	hours.Monday = ToDayHours(h.StructSerializeDay(Monday))
-	hours.Tuesday = ToDayHours(h.StructSerializeDay(Tuesday))
-	hours.Wednesday = ToDayHours(h.StructSerializeDay(Wednesday))
-	hours.Thursday = ToDayHours(h.StructSerializeDay(Thursday))
-	hours.Friday = ToDayHours(h.StructSerializeDay(Friday))
-	hours.Saturday = ToDayHours(h.StructSerializeDay(Saturday))
+	hours.Sunday = NullableDayHours(h.StructSerializeDay(Sunday))
+	hours.Monday = NullableDayHours(h.StructSerializeDay(Monday))
+	hours.Tuesday = NullableDayHours(h.StructSerializeDay(Tuesday))
+	hours.Wednesday = NullableDayHours(h.StructSerializeDay(Wednesday))
+	hours.Thursday = NullableDayHours(h.StructSerializeDay(Thursday))
+	hours.Friday = NullableDayHours(h.StructSerializeDay(Friday))
+	hours.Saturday = NullableDayHours(h.StructSerializeDay(Saturday))
 	return hours
 
 }
@@ -219,7 +219,7 @@ func (h *HoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
 
 	if h.HoursAreClosed(weekday) {
 		return &DayHours{
-			IsClosed: Bool(true),
+			IsClosed: NullableBool(true),
 		}
 	}
 	var d = &DayHours{}
@@ -367,7 +367,7 @@ func LocationHolidayHoursToHolidayHours(l *LocationHolidayHours) (*HolidayHours,
 		Date: String(l.Date),
 	}
 	if l.Hours == "" {
-		h.IsClosed = Bool(true)
+		h.IsClosed = NullableBool(true)
 	} else {
 		intervalsList := []Interval{}
 		intervals := strings.Split(l.Hours, ",")

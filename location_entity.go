@@ -113,7 +113,7 @@ type UberLink struct {
 	Presentation *string `json:"presentation,omitempty"`
 }
 
-func ToUberLink(u *UberLink) **UberLink {
+func NullableUberLink(u *UberLink) **UberLink {
 	return &u
 }
 
@@ -135,7 +135,7 @@ type UberTripBranding struct {
 	Description *string `json:"description,omitempty"`
 }
 
-func ToUberTripBranding(u *UberTripBranding) **UberTripBranding {
+func NullableUberTripBranding(u *UberTripBranding) **UberTripBranding {
 	return &u
 }
 
@@ -156,7 +156,7 @@ type Lists struct {
 	Ids   *[]string `json:"ids,omitempty"`
 }
 
-func ToLists(l *Lists) **Lists {
+func NullableLists(l *Lists) **Lists {
 	return &l
 }
 
@@ -184,7 +184,7 @@ type Image struct {
 	AlternateText *string `json:"alternateText,omitempty"`
 }
 
-func ToImage(i *Image) **Image {
+func NullableImage(i *Image) **Image {
 	return &i
 }
 
@@ -216,7 +216,7 @@ type FeaturedMessage struct {
 	Url         *string `json:"url,omitempty"`
 }
 
-func ToFeaturedMessage(f *FeaturedMessage) **FeaturedMessage {
+func NullableFeaturedMessage(f *FeaturedMessage) **FeaturedMessage {
 	return &f
 }
 
@@ -238,7 +238,7 @@ type Website struct {
 	PreferDisplayUrl **bool  `json:"preferDisplayUrl,omitempty"`
 }
 
-func ToWebsite(w *Website) **Website {
+func NullableWebsite(w *Website) **Website {
 	return &w
 }
 
@@ -259,7 +259,7 @@ type Coordinate struct {
 	Longitude **float64 `json:"longitude,omitempty"`
 }
 
-func ToCoordinate(c *Coordinate) **Coordinate {
+func NullableCoordinate(c *Coordinate) **Coordinate {
 	return &c
 }
 
@@ -291,7 +291,7 @@ type DayHours struct {
 	IsClosed      **bool      `json:"isClosed,omitempty"`
 }
 
-func ToDayHours(d *DayHours) **DayHours {
+func NullableDayHours(d *DayHours) **DayHours {
 	return &d
 }
 
@@ -303,7 +303,7 @@ func GetDayHours(d **DayHours) *DayHours {
 }
 
 func (d *DayHours) SetClosed() {
-	d.IsClosed = Bool(true)
+	d.IsClosed = NullableBool(true)
 	d.OpenIntervals = nil
 }
 
@@ -374,19 +374,19 @@ func (h *Hours) SetClosed(w Weekday) {
 	d.SetClosed()
 	switch w {
 	case Sunday:
-		h.Sunday = ToDayHours(d)
+		h.Sunday = NullableDayHours(d)
 	case Monday:
-		h.Monday = ToDayHours(d)
+		h.Monday = NullableDayHours(d)
 	case Tuesday:
-		h.Tuesday = ToDayHours(d)
+		h.Tuesday = NullableDayHours(d)
 	case Wednesday:
-		h.Wednesday = ToDayHours(d)
+		h.Wednesday = NullableDayHours(d)
 	case Thursday:
-		h.Thursday = ToDayHours(d)
+		h.Thursday = NullableDayHours(d)
 	case Friday:
-		h.Friday = ToDayHours(d)
+		h.Friday = NullableDayHours(d)
 	case Saturday:
-		h.Saturday = ToDayHours(d)
+		h.Saturday = NullableDayHours(d)
 	}
 }
 
@@ -417,19 +417,19 @@ func (h *Hours) AddHours(w Weekday, start string, end string) {
 	d.AddHours(start, end)
 	switch w {
 	case Sunday:
-		h.Sunday = ToDayHours(d)
+		h.Sunday = NullableDayHours(d)
 	case Monday:
-		h.Monday = ToDayHours(d)
+		h.Monday = NullableDayHours(d)
 	case Tuesday:
-		h.Tuesday = ToDayHours(d)
+		h.Tuesday = NullableDayHours(d)
 	case Wednesday:
-		h.Wednesday = ToDayHours(d)
+		h.Wednesday = NullableDayHours(d)
 	case Thursday:
-		h.Thursday = ToDayHours(d)
+		h.Thursday = NullableDayHours(d)
 	case Friday:
-		h.Friday = ToDayHours(d)
+		h.Friday = NullableDayHours(d)
 	case Saturday:
-		h.Saturday = ToDayHours(d)
+		h.Saturday = NullableDayHours(d)
 	}
 }
 
@@ -438,19 +438,19 @@ func (h *Hours) SetHours(w Weekday, start string, end string) {
 	d.AddHours(start, end)
 	switch w {
 	case Sunday:
-		h.Sunday = ToDayHours(d)
+		h.Sunday = NullableDayHours(d)
 	case Monday:
-		h.Monday = ToDayHours(d)
+		h.Monday = NullableDayHours(d)
 	case Tuesday:
-		h.Tuesday = ToDayHours(d)
+		h.Tuesday = NullableDayHours(d)
 	case Wednesday:
-		h.Wednesday = ToDayHours(d)
+		h.Wednesday = NullableDayHours(d)
 	case Thursday:
-		h.Thursday = ToDayHours(d)
+		h.Thursday = NullableDayHours(d)
 	case Friday:
-		h.Friday = ToDayHours(d)
+		h.Friday = NullableDayHours(d)
 	case Saturday:
-		h.Saturday = ToDayHours(d)
+		h.Saturday = NullableDayHours(d)
 	}
 }
 
@@ -490,7 +490,7 @@ func (y LocationEntity) GetLine2() string {
 }
 
 func (y LocationEntity) GetAddressHidden() bool {
-	return GetBool(y.AddressHidden)
+	return GetNullableBool(y.AddressHidden)
 }
 
 func (y LocationEntity) GetExtraDescription() string {
@@ -610,6 +610,10 @@ func (y LocationEntity) GetReservationUrl() string {
 	return ""
 }
 
+func (y LocationEntity) GetHours() *Hours {
+	return GetHours(y.Hours)
+}
+
 func (y LocationEntity) GetAdditionalHoursText() string {
 	if y.AdditionalHoursText != nil {
 		return *y.AdditionalHoursText
@@ -640,7 +644,7 @@ func (y LocationEntity) GetFacebookPageUrl() string {
 
 func (y LocationEntity) GetYearEstablished() float64 {
 	if y.YearEstablished != nil {
-		return GetFloat(y.YearEstablished)
+		return GetNullableFloat(y.YearEstablished)
 	}
 	return 0
 }
@@ -648,7 +652,7 @@ func (y LocationEntity) GetYearEstablished() float64 {
 func (y LocationEntity) GetDisplayLat() float64 {
 	c := GetCoordinate(y.DisplayCoordinate)
 	if c != nil {
-		return GetFloat(c.Latitude)
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
@@ -656,7 +660,7 @@ func (y LocationEntity) GetDisplayLat() float64 {
 func (y LocationEntity) GetDisplayLng() float64 {
 	c := GetCoordinate(y.DisplayCoordinate)
 	if c != nil {
-		return GetFloat(c.Longitude)
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
@@ -664,7 +668,7 @@ func (y LocationEntity) GetDisplayLng() float64 {
 func (y LocationEntity) GetRoutableLat() float64 {
 	c := GetCoordinate(y.RoutableCoordinate)
 	if c != nil {
-		return GetFloat(c.Latitude)
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
@@ -672,7 +676,7 @@ func (y LocationEntity) GetRoutableLat() float64 {
 func (y LocationEntity) GetRoutableLng() float64 {
 	c := GetCoordinate(y.RoutableCoordinate)
 	if c != nil {
-		return GetFloat(c.Longitude)
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
@@ -798,7 +802,7 @@ func (y LocationEntity) GetHolidayHours() []HolidayHours {
 }
 
 func (y LocationEntity) IsClosed() bool {
-	return GetBool(y.Closed)
+	return GetNullableBool(y.Closed)
 }
 
 // HolidayHours represents individual exceptions to a Location's regular hours in Yext Location Manager.

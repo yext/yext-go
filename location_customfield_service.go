@@ -7,11 +7,81 @@ import (
 	"strconv"
 )
 
-type CustomFieldManager struct {
+type LocationCustomFieldService struct {
+	CustomFieldManager *LocationCustomFieldManager
+	client             *Client
+}
+
+func (s *LocationCustomFieldService) ListAll() ([]*CustomField, error) {
+	var customFields []*CustomField
+	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
+		cfr, _, err := s.List(opts)
+		if err != nil {
+			return 0, 0, err
+		}
+		customFields = append(customFields, cfr.CustomFields...)
+		return len(cfr.CustomFields), cfr.Count, err
+	}
+
+	if err := listHelper(lr, &ListOptions{Limit: CustomFieldListMaxLimit}); err != nil {
+		return nil, err
+	} else {
+		return customFields, nil
+	}
+}
+
+func (s *LocationCustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Response, error) {
+	requrl, err := addListOptions(customFieldPath, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := &CustomFieldResponse{}
+	r, err := s.client.DoRequest("GET", requrl, v)
+	if err != nil {
+		return nil, r, err
+	}
+	return v, r, nil
+}
+
+func (s *LocationCustomFieldService) Create(cf *CustomField) (*Response, error) {
+	asJSON, err := json.Marshal(cf)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap, "id")
+	return s.client.DoRequestJSON("POST", customFieldPath, asMap, nil)
+}
+
+func (s *LocationCustomFieldService) Edit(cf *CustomField) (*Response, error) {
+	asJSON, err := json.Marshal(cf)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap, "id")
+	delete(asMap, "type")
+	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
+}
+
+func (s *LocationCustomFieldService) Delete(customFieldId string) (*Response, error) {
+	return s.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", customFieldPath, customFieldId), nil)
+}
+
+type LocationCustomFieldManager struct {
 	CustomFields []*CustomField
 }
 
-func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
+func (c *LocationCustomFieldManager) Get(name string, loc *Location) (interface{}, error) {
 	if loc == nil || loc.CustomFields == nil {
 		return nil, nil
 	}
@@ -28,7 +98,7 @@ func (c *CustomFieldManager) Get(name string, loc *Location) (interface{}, error
 	return loc.CustomFields[field.GetId()], nil
 }
 
-func (c *CustomFieldManager) MustGet(name string, loc *Location) interface{} {
+func (c *LocationCustomFieldManager) MustGet(name string, loc *Location) interface{} {
 	if ret, err := c.Get(name, loc); err != nil {
 		panic(err)
 	} else {
@@ -36,7 +106,7 @@ func (c *CustomFieldManager) MustGet(name string, loc *Location) interface{} {
 	}
 }
 
-func (c *CustomFieldManager) IsOptionSet(fieldName string, optionName string, loc *Location) (bool, error) {
+func (c *LocationCustomFieldManager) IsOptionSet(fieldName string, optionName string, loc *Location) (bool, error) {
 	var (
 		field interface{}
 		err   error
@@ -75,7 +145,7 @@ func (c *CustomFieldManager) IsOptionSet(fieldName string, optionName string, lo
 	return of.IsOptionIdSet(id), nil
 }
 
-func (c *CustomFieldManager) MustIsOptionSet(fieldName string, optionName string, loc *Location) bool {
+func (c *LocationCustomFieldManager) MustIsOptionSet(fieldName string, optionName string, loc *Location) bool {
 	if set, err := c.IsOptionSet(fieldName, optionName, loc); err != nil {
 		panic(err)
 	} else {
@@ -83,7 +153,7 @@ func (c *CustomFieldManager) MustIsOptionSet(fieldName string, optionName string
 	}
 }
 
-func (c *CustomFieldManager) SetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
+func (c *LocationCustomFieldManager) SetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
 	var (
 		field interface{}
 		err   error
@@ -121,7 +191,7 @@ func (c *CustomFieldManager) SetOption(fieldName string, optionName string, loc 
 	return c.Set(fieldName, of, loc)
 }
 
-func (c *CustomFieldManager) MustSetOption(fieldName string, optionName string, loc *Location) *Location {
+func (c *LocationCustomFieldManager) MustSetOption(fieldName string, optionName string, loc *Location) *Location {
 	if loc, err := c.SetOption(fieldName, optionName, loc); err != nil {
 		panic(err)
 	} else {
@@ -129,7 +199,7 @@ func (c *CustomFieldManager) MustSetOption(fieldName string, optionName string, 
 	}
 }
 
-func (c *CustomFieldManager) UnsetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
+func (c *LocationCustomFieldManager) UnsetOption(fieldName string, optionName string, loc *Location) (*Location, error) {
 	var (
 		field interface{}
 		err   error
@@ -157,7 +227,7 @@ func (c *CustomFieldManager) UnsetOption(fieldName string, optionName string, lo
 	return c.Set(fieldName, option, loc)
 }
 
-func (c *CustomFieldManager) MustUnsetOption(fieldName string, optionName string, loc *Location) *Location {
+func (c *LocationCustomFieldManager) MustUnsetOption(fieldName string, optionName string, loc *Location) *Location {
 	if loc, err := c.UnsetOption(fieldName, optionName, loc); err != nil {
 		panic(err)
 	} else {
@@ -167,7 +237,7 @@ func (c *CustomFieldManager) MustUnsetOption(fieldName string, optionName string
 
 // TODO: Why does this return a location?
 // TODO: Should we validate the the type we received matches the type of the field?  Probably.
-func (c *CustomFieldManager) Set(name string, value CustomFieldValue, loc *Location) (*Location, error) {
+func (c *LocationCustomFieldManager) Set(name string, value CustomFieldValue, loc *Location) (*Location, error) {
 	field, err := c.CustomField(name)
 	if err != nil {
 		return loc, err
@@ -176,7 +246,7 @@ func (c *CustomFieldManager) Set(name string, value CustomFieldValue, loc *Locat
 	return loc, nil
 }
 
-func (c *CustomFieldManager) MustSet(name string, value CustomFieldValue, loc *Location) *Location {
+func (c *LocationCustomFieldManager) MustSet(name string, value CustomFieldValue, loc *Location) *Location {
 	if loc, err := c.Set(name, value, loc); err != nil {
 		panic(err)
 	} else {
@@ -184,7 +254,7 @@ func (c *CustomFieldManager) MustSet(name string, value CustomFieldValue, loc *L
 	}
 }
 
-func (c *CustomFieldManager) CustomField(name string) (*CustomField, error) {
+func (c *LocationCustomFieldManager) CustomField(name string) (*CustomField, error) {
 	names := []string{}
 	for _, cf := range c.CustomFields {
 		if name == cf.Name {
@@ -196,7 +266,7 @@ func (c *CustomFieldManager) CustomField(name string) (*CustomField, error) {
 	return nil, fmt.Errorf("Unable to find custom field with name %s, available fields: %v", name, names)
 }
 
-func (c *CustomFieldManager) MustCustomField(name string) *CustomField {
+func (c *LocationCustomFieldManager) MustCustomField(name string) *CustomField {
 	if cf, err := c.CustomField(name); err != nil {
 		panic(err)
 	} else {
@@ -204,7 +274,7 @@ func (c *CustomFieldManager) MustCustomField(name string) *CustomField {
 	}
 }
 
-func (c *CustomFieldManager) CustomFieldId(name string) (string, error) {
+func (c *LocationCustomFieldManager) CustomFieldId(name string) (string, error) {
 	if cf, err := c.CustomField(name); err != nil {
 		return "", err
 	} else {
@@ -212,7 +282,7 @@ func (c *CustomFieldManager) CustomFieldId(name string) (string, error) {
 	}
 }
 
-func (c *CustomFieldManager) MustCustomFieldId(name string) string {
+func (c *LocationCustomFieldManager) MustCustomFieldId(name string) string {
 	if id, err := c.CustomFieldId(name); err != nil {
 		panic(err)
 	} else {
@@ -220,7 +290,7 @@ func (c *CustomFieldManager) MustCustomFieldId(name string) string {
 	}
 }
 
-func (c *CustomFieldManager) CustomFieldName(id string) (string, error) {
+func (c *LocationCustomFieldManager) CustomFieldName(id string) (string, error) {
 	ids := []string{}
 	for _, cf := range c.CustomFields {
 		if id == cf.GetId() {
@@ -232,7 +302,7 @@ func (c *CustomFieldManager) CustomFieldName(id string) (string, error) {
 	return "", fmt.Errorf("Unable to find custom field with Id %s, available Ids: %v", id, ids)
 }
 
-func (c *CustomFieldManager) MustCustomFieldName(id string) string {
+func (c *LocationCustomFieldManager) MustCustomFieldName(id string) string {
 	if name, err := c.CustomFieldName(id); err != nil {
 		panic(err)
 	} else {
@@ -240,7 +310,7 @@ func (c *CustomFieldManager) MustCustomFieldName(id string) string {
 	}
 }
 
-func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (string, error) {
+func (c *LocationCustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (string, error) {
 	cf, err := c.CustomField(fieldName)
 	if err != nil {
 		return "", err
@@ -259,7 +329,7 @@ func (c *CustomFieldManager) CustomFieldOptionId(fieldName, optionName string) (
 	return "", fmt.Errorf("Unable to find custom field option with name %s", optionName)
 }
 
-func (c *CustomFieldManager) MustCustomFieldOptionId(fieldName, optionName string) string {
+func (c *LocationCustomFieldManager) MustCustomFieldOptionId(fieldName, optionName string) string {
 	if id, err := c.CustomFieldOptionId(fieldName, optionName); err != nil {
 		panic(err)
 	} else {
@@ -462,7 +532,7 @@ func validateLocationCustomFieldsKeys(cfs map[string]interface{}) error {
 	return nil
 }
 
-func (c *CustomFieldManager) GetBool(name string, loc *Location) (bool, error) {
+func (c *LocationCustomFieldManager) GetBool(name string, loc *Location) (bool, error) {
 	value, err := c.Get(name, loc)
 	if err != nil {
 		return false, err
@@ -482,7 +552,7 @@ func (c *CustomFieldManager) GetBool(name string, loc *Location) (bool, error) {
 	}
 }
 
-func (c *CustomFieldManager) MustGetBool(name string, loc *Location) bool {
+func (c *LocationCustomFieldManager) MustGetBool(name string, loc *Location) bool {
 	if ret, err := c.GetBool(name, loc); err != nil {
 		panic(err)
 	} else {
@@ -492,7 +562,7 @@ func (c *CustomFieldManager) MustGetBool(name string, loc *Location) bool {
 
 // GetStringAliasCustomField returns the string value from a string type alias
 // custom field. It will return an error if the field is not a string type.
-func (c *CustomFieldManager) GetString(name string, loc *Location) (string, error) {
+func (c *LocationCustomFieldManager) GetString(name string, loc *Location) (string, error) {
 	fv, err := c.Get(name, loc)
 	if err != nil {
 		return "", err
@@ -536,7 +606,7 @@ func (c *CustomFieldManager) GetString(name string, loc *Location) (string, erro
 	}
 }
 
-func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
+func (c *LocationCustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
 	cf, err := c.CustomField(cfName)
 	if err != nil {
 		return "", err
@@ -549,7 +619,7 @@ func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId strin
 	return "", fmt.Errorf("Unable to find option for key %s for custom field %s", optionId, cfName)
 }
 
-func (c *CustomFieldManager) MustCustomFieldOptionName(fieldName, optionId string) string {
+func (c *LocationCustomFieldManager) MustCustomFieldOptionName(fieldName, optionId string) string {
 	if id, err := c.CustomFieldOptionName(fieldName, optionId); err != nil {
 		panic(err)
 	} else {
@@ -557,7 +627,7 @@ func (c *CustomFieldManager) MustCustomFieldOptionName(fieldName, optionId strin
 	}
 }
 
-func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
+func (c *LocationCustomFieldManager) MustGetString(name string, loc *Location) string {
 	if ret, err := c.GetString(name, loc); err != nil {
 		panic(err)
 	} else {
@@ -568,7 +638,7 @@ func (c *CustomFieldManager) MustGetString(name string, loc *Location) string {
 // GetStringArrayAliasCustomField returns the string array value from a string array
 // type alias custom field. It will return an error if the field is not a string
 // array type.
-func (c *CustomFieldManager) GetStringSlice(name string, loc *Location) ([]string, error) {
+func (c *LocationCustomFieldManager) GetStringSlice(name string, loc *Location) ([]string, error) {
 	fv, err := c.Get(name, loc)
 	if err != nil {
 		return nil, err
@@ -598,7 +668,7 @@ func (c *CustomFieldManager) GetStringSlice(name string, loc *Location) ([]strin
 	}
 }
 
-func (c *CustomFieldManager) CustomFieldOptionNames(cfName string, optionIds []string) ([]string, error) {
+func (c *LocationCustomFieldManager) CustomFieldOptionNames(cfName string, optionIds []string) ([]string, error) {
 	var optionNames = []string{}
 	for _, optionId := range optionIds {
 		optionName, err := c.CustomFieldOptionName(cfName, optionId)
@@ -610,7 +680,7 @@ func (c *CustomFieldManager) CustomFieldOptionNames(cfName string, optionIds []s
 	return optionNames, nil
 }
 
-func (c *CustomFieldManager) MustGetStringSlice(name string, loc *Location) []string {
+func (c *LocationCustomFieldManager) MustGetStringSlice(name string, loc *Location) []string {
 	if ret, err := c.GetStringSlice(name, loc); err != nil {
 		panic(err)
 	} else {
@@ -618,7 +688,7 @@ func (c *CustomFieldManager) MustGetStringSlice(name string, loc *Location) []st
 	}
 }
 
-func (c *CustomFieldManager) SetBool(name string, value bool, loc *Location) error {
+func (c *LocationCustomFieldManager) SetBool(name string, value bool, loc *Location) error {
 	field, err := c.CustomField(name)
 	if err != nil {
 		return err
@@ -632,7 +702,7 @@ func (c *CustomFieldManager) SetBool(name string, value bool, loc *Location) err
 	return nil
 }
 
-func (c *CustomFieldManager) MustSetBool(name string, value bool, loc *Location) {
+func (c *LocationCustomFieldManager) MustSetBool(name string, value bool, loc *Location) {
 	if err := c.SetBool(name, value, loc); err != nil {
 		panic(err)
 	} else {
@@ -640,7 +710,7 @@ func (c *CustomFieldManager) MustSetBool(name string, value bool, loc *Location)
 	}
 }
 
-func (c *CustomFieldManager) SetStringSlice(name string, value []string, loc *Location) error {
+func (c *LocationCustomFieldManager) SetStringSlice(name string, value []string, loc *Location) error {
 	field, err := c.CustomField(name)
 	if err != nil {
 		return err
@@ -663,7 +733,7 @@ func (c *CustomFieldManager) SetStringSlice(name string, value []string, loc *Lo
 	}
 }
 
-func (c *CustomFieldManager) MustSetStringSlice(name string, value []string, loc *Location) {
+func (c *LocationCustomFieldManager) MustSetStringSlice(name string, value []string, loc *Location) {
 	if err := c.SetStringSlice(name, value, loc); err != nil {
 		panic(err)
 	} else {
@@ -671,7 +741,7 @@ func (c *CustomFieldManager) MustSetStringSlice(name string, value []string, loc
 	}
 }
 
-func (c *CustomFieldManager) SetString(name string, value string, loc *Location) error {
+func (c *LocationCustomFieldManager) SetString(name string, value string, loc *Location) error {
 	field, err := c.CustomField(name)
 	if err != nil {
 		return err
@@ -701,16 +771,16 @@ func (c *CustomFieldManager) SetString(name string, value string, loc *Location)
 	}
 }
 
-func (c *CustomFieldManager) MustSetString(name string, value string, loc *Location) {
+func (c *LocationCustomFieldManager) MustSetString(name string, value string, loc *Location) {
 	Must(c.SetString(name, value, loc))
 }
 
-func (c *CustomFieldManager) SetPhoto(name string, v *CustomLocationPhoto, loc *Location) error {
+func (c *LocationCustomFieldManager) SetPhoto(name string, v *CustomLocationPhoto, loc *Location) error {
 	_, err := c.Set(name, v, loc)
 	return err
 }
 
-func (c *CustomFieldManager) UnsetPhoto(name string, loc *Location) error {
+func (c *LocationCustomFieldManager) UnsetPhoto(name string, loc *Location) error {
 	return c.SetPhoto(name, UnsetPhotoValue, loc)
 }
 
