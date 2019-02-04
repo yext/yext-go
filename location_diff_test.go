@@ -194,7 +194,7 @@ var baseLocation Location = Location{
 	Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 	ProductListIds:         &[]string{"1234", "5678"},
 	Closed: &LocationClosed{
-		IsClosed: false,
+		IsClosed: Bool(false),
 	},
 	CustomFields: map[string]interface{}{
 		"1234": "ding",
@@ -252,7 +252,7 @@ func TestDiffIdentical(t *testing.T) {
 		Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 		ProductListIds:         &[]string{"1234", "5678"},
 		Closed: &LocationClosed{
-			IsClosed: false,
+			IsClosed: Bool(false),
 		},
 		CustomFields: map[string]interface{}{
 			"1234": "ding",
@@ -1079,23 +1079,23 @@ var closedTests = []closedTest{
 	{
 		nil,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		false,
@@ -1104,7 +1104,7 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		nil,
@@ -1114,33 +1114,33 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   false,
+			IsClosed:   Bool(false),
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   false,
+			IsClosed:   Bool(false),
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2002",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2002",
 		},
 	},

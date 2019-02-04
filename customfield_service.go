@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+// TODO: add tests
+
 const customFieldPath = "customfields"
 
 var CustomFieldListMaxLimit = 1000
@@ -254,4 +256,22 @@ func (c *CustomFieldManager) MustCustomFieldOptionName(fieldName, optionId strin
 	} else {
 		return id
 	}
+}
+
+func (c *CustomFieldService) CacheCustomFields() ([]*CustomField, error) {
+	cfs, err := c.ListAll()
+	if err != nil {
+		return nil, err
+	}
+
+	c.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
+	return c.CustomFieldManager.CustomFields, nil
+}
+
+func (c *CustomFieldService) MustCacheCustomFields() []*CustomField {
+	slice, err := c.CacheCustomFields()
+	if err != nil {
+		panic(err)
+	}
+	return slice
 }

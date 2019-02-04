@@ -244,7 +244,7 @@ func TestMustCache(t *testing.T) {
 		data, _ := json.Marshal(v)
 		w.Write(data)
 	})
-	m := client.CustomFieldService.MustCacheCustomFields()
+	m := client.LocationCustomFieldService.MustCacheCustomFields()
 	n := makeCustomFields(24)
 	for i := 0; i < 24; i++ {
 		if m[i].GetId() != n[i].GetId() {

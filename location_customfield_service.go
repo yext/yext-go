@@ -337,18 +337,18 @@ func (c *LocationCustomFieldManager) MustCustomFieldOptionId(fieldName, optionNa
 	}
 }
 
-func (s *CustomFieldService) CacheCustomFields() ([]*CustomField, error) {
-	cfs, err := s.ListAll()
+func (c *LocationCustomFieldService) CacheCustomFields() ([]*CustomField, error) {
+	cfs, err := c.ListAll()
 	if err != nil {
 		return nil, err
 	}
 
-	s.CustomFieldManager = &CustomFieldManager{CustomFields: cfs}
-	return s.CustomFieldManager.CustomFields, nil
+	c.CustomFieldManager = &LocationCustomFieldManager{CustomFields: cfs}
+	return c.CustomFieldManager.CustomFields, nil
 }
 
-func (s *CustomFieldService) MustCacheCustomFields() []*CustomField {
-	slice, err := s.CacheCustomFields()
+func (c *LocationCustomFieldService) MustCacheCustomFields() []*CustomField {
+	slice, err := c.CacheCustomFields()
 	if err != nil {
 		panic(err)
 	}
