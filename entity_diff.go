@@ -104,7 +104,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			// Handle case where new is &Address{} and base is &Address{"Line1"}
 			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
 				isDiff = true
-				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+				indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 			} else {
 				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
 				if diff {

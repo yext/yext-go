@@ -6,8 +6,7 @@ import (
 	"testing"
 )
 
-type CustomLocationEntity struct {
-	LocationEntity
+type CustomEntity struct {
 	CFHours        **Hours           `json:"cf_Hours,omitempty"`
 	CFUrl          *string           `json:"cf_Url,omitempty"`
 	CFDailyTimes   **DailyTimes      `json:"cf_DailyTimes,omitempty"`
@@ -23,9 +22,37 @@ type CustomLocationEntity struct {
 	CFHolidayHours *[]HolidayHours   `json:"cf_HolidayHours,omitempty"` // TODO: REMOVE THIS IS NOT REAL
 }
 
+type CustomLocationEntity struct {
+	LocationEntity
+	CustomEntity
+}
+
+func (y *CustomLocationEntity) UnmarshalJSON(bytes []byte) error {
+	if err := json.Unmarshal(bytes, &y.LocationEntity); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(bytes, &y.CustomEntity); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (y CustomLocationEntity) String() string {
 	b, _ := json.Marshal(y)
 	return string(b)
+}
+
+func (c *CustomEntity) UnmarshalJSON(data []byte) error {
+	type Alias CustomEntity
+	a := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+	return UnmarshalEntityJSON(c, data)
 }
 
 func entityToJSONString(entity Entity) (error, string) {
@@ -48,25 +75,26 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: nil}}}, `{"address":{}}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: String("")}}}, `{"address":{"city":""}}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: nil}}, `{}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{}}}, `{"languages":[]}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{"English"}}}, `{"languages":["English"]}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: nil}}, `{}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullHours()}}, `{"hours":null}`},
-		{&CustomLocationEntity{CFUrl: String("")}, `{"cf_Url":""}`},
-		{&CustomLocationEntity{CFUrl: nil}, `{}`},
-		{&CustomLocationEntity{CFTextList: &[]string{}}, `{"cf_TextList":[]}`},
-		{&CustomLocationEntity{CFTextList: nil}, `{}`},
-		{&CustomLocationEntity{CFSingleOption: NullString()}, `{"cf_SingleOption":null}`},
-		{&CustomLocationEntity{CFMultiOption: ToUnorderedStrings([]string{})}, `{"cf_MultiOption":[]}`},
-		{&CustomLocationEntity{CFDate: NullDate()}, `{"cf_Date":null}`},
-		{&CustomLocationEntity{CFVideo: NullVideo()}, `{"cf_Video":null}`},
-		{&CustomLocationEntity{CFPhoto: NullPhoto()}, `{"cf_Photo":null}`},
-		{&CustomLocationEntity{CFGallery: &[]Photo{}}, `{"cf_Gallery":[]}`},
-		{&CustomLocationEntity{CFVideos: &[]Video{}}, `{"cf_Videos":[]}`},
-		{&CustomLocationEntity{CFDailyTimes: NullDailyTimes()}, `{"cf_DailyTimes":null}`},
-		{&CustomLocationEntity{CFHours: NullHours()}, `{"cf_Hours":null}`},
-		{&CustomLocationEntity{CFYesNo: NullBool()}, `{"cf_YesNo":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: String("")}}, `{"cf_Url":""}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: nil}}, `{}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: &[]string{}}}, `{"cf_TextList":[]}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: nil}}, `{}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFSingleOption: NullString()}}, `{"cf_SingleOption":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFMultiOption: ToUnorderedStrings([]string{})}}, `{"cf_MultiOption":[]}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFDate: NullDate()}}, `{"cf_Date":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFVideo: NullVideo()}}, `{"cf_Video":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFPhoto: NullPhoto()}}, `{"cf_Photo":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFGallery: &[]Photo{}}}, `{"cf_Gallery":[]}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFVideos: &[]Video{}}}, `{"cf_Videos":[]}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFDailyTimes: NullDailyTimes()}}, `{"cf_DailyTimes":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFHours: NullHours()}}, `{"cf_Hours":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"cf_YesNo":null}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"Hello","cf_YesNo":null}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"","cf_YesNo":null}`},
 	}
 
 	for _, test := range tests {
@@ -88,8 +116,27 @@ func TestEntityJSONDeserialization(t *testing.T) {
 		{`{}`, &CustomLocationEntity{}},
 		{`{"emails": []}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{})}}},
 		{`{"emails": ["bob@email.com", "sue@email.com"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"bob@email.com", "sue@email.com"})}}},
-		{`{"cf_Url": "www.yext.com"}`, &CustomLocationEntity{CFUrl: String("www.yext.com")}},
-		{`{"cf_TextList": ["a", "b", "c"]}`, &CustomLocationEntity{CFTextList: Strings([]string{"a", "b", "c"})}},
+		{`{"emails": ["bob@email.com", "sue@email.com"], "cf_Url": "www.yext.com"}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"bob@email.com", "sue@email.com"})}, CustomEntity: CustomEntity{CFUrl: String("www.yext.com")}}},
+		{`{"cf_TextList": ["a", "b", "c"]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: Strings([]string{"a", "b", "c"})}}},
+		{`{"address":{"city":""}}`, &CustomLocationEntity{LocationEntity: LocationEntity{Address: &Address{City: String("")}}}},
+		{`{"languages":[]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{}}}},
+		{`{"languages":["English"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{"English"}}}},
+		{`{"hours":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullHours()}}},
+		{`{"cf_Url":""}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: String("")}}},
+		{`{"cf_Url": "www.yext.com"}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: String("www.yext.com")}}},
+		{`{"cf_TextList":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: &[]string{}}}},
+		{`{"cf_SingleOption":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFSingleOption: NullString()}}},
+		{`{"cf_MultiOption":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFMultiOption: ToUnorderedStrings([]string{})}}},
+		{`{"cf_Date":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFDate: NullDate()}}},
+		{`{"cf_Video":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFVideo: NullVideo()}}},
+		{`{"cf_Photo":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFPhoto: NullPhoto()}}},
+		{`{"cf_Gallery":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFGallery: &[]Photo{}}}},
+		{`{"cf_Videos":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFVideos: &[]Video{}}}},
+		{`{"cf_DailyTimes":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFDailyTimes: NullDailyTimes()}}},
+		{`{"cf_Hours":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFHours: NullHours()}}},
+		{`{"cf_YesNo":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
+		{`{"name":"Hello","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
+		{`{"name":"","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
 	}
 
 	for _, test := range tests {
