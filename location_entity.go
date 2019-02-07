@@ -842,3 +842,7 @@ func (y HolidayHours) String() string {
 	b, _ := json.Marshal(y)
 	return string(b)
 }
+
+func ToHolidayHours(y []HolidayHours) *[]HolidayHours {
+	return &y
+}

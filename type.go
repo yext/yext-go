@@ -1,5 +1,7 @@
 package yext
 
+import "fmt"
+
 func NullableBool(v bool) **bool {
 	p := &v
 	return &p
@@ -13,7 +15,9 @@ func GetNullableBool(v **bool) bool {
 }
 
 func Bool(v bool) *bool {
-	return &v
+	p := new(bool)
+	*p = v
+	return p
 }
 
 func GetBool(v *bool) bool {
@@ -100,7 +104,8 @@ func NullFloat() **float64 {
 }
 
 func Int(v int) *int {
-	p := &v
+	p := new(int)
+	*p = v
 	return p
 }
 
@@ -208,16 +213,45 @@ func NullHours() **Hours {
 	return &v
 }
 
+// UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
+type UnorderedStrings []string
+
+// Equal compares UnorderedStrings
+func (a *UnorderedStrings) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	var (
+		u = []string(*a)
+		s = []string(*b.(*UnorderedStrings))
+	)
+	if len(u) != len(s) {
+		return false
+	}
+
+	for i := 0; i < len(u); i++ {
+		var found bool
+		for j := 0; j < len(s); j++ {
+			if u[i] == s[j] {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
 func ToUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
-}
-
-func ToGoogleAttributes(v []*GoogleAttribute) *GoogleAttributes {
-	u := GoogleAttributes(v)
-	return &u
-}
-
-func ToHolidayHours(v []HolidayHours) *[]HolidayHours {
-	return &v
 }

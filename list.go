@@ -218,7 +218,7 @@ type MenuList struct {
 	Sections []*MenuListSection `json:"sections,omitempty"`
 }
 
-func (m MenuList) SingleString() string {
+func (m MenuList) String() string {
 	l, _ := json.Marshal(m)
 	return string(l)
 }

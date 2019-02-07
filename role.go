@@ -23,7 +23,7 @@ func (r *Role) GetName() string {
 	return *r.Name
 }
 
-func (r *Role)SingleString() string {
+func (r *Role) String() string {
 	b, _ := json.Marshal(r)
 	return string(b)
 }

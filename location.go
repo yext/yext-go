@@ -139,7 +139,7 @@ type Location struct {
 	Photos    *[]LocationPhoto `json:"photos,omitempty"`
 	VideoUrls *[]string        `json:"videoUrls,omitempty"`
 
-	GoogleAttributes *GoogleAttributes `json:"googleAttributes,omitempty"`
+	GoogleAttributes *LocationGoogleAttributes `json:"googleAttributes,omitempty"`
 
 	// Reviews
 	ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
@@ -674,7 +674,7 @@ func (y Location) GetInsuranceAccepted() (v []string) {
 	return v
 }
 
-func (y Location) GetGoogleAttributes() GoogleAttributes {
+func (y Location) GetGoogleAttributes() LocationGoogleAttributes {
 	if y.GoogleAttributes != nil {
 		return *y.GoogleAttributes
 	}
@@ -816,7 +816,7 @@ type LocationClosed struct {
 	ClosedDate string `json:"closedDate,omitempty"`
 }
 
-func (l LocationClosed) SingleString() string {
+func (l LocationClosed) String() string {
 	return fmt.Sprintf("isClosed: %v, closedDate: '%v'", l.IsClosed, l.ClosedDate)
 }
 
@@ -831,55 +831,17 @@ func (l LocationHolidayHours) String() string {
 	return fmt.Sprintf("Date: '%v', Hours: '%v'", l.Date, l.Hours)
 }
 
-// UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
-type UnorderedStrings []string
-
-// Equal compares UnorderedStrings
-func (a *UnorderedStrings) Equal(b Comparable) bool {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
-			panic(r)
-		}
-	}()
-
-	if a == nil || b == nil {
-		return false
-	}
-
-	var (
-		u = []string(*a)
-		s = []string(*b.(*UnorderedStrings))
-	)
-	if len(u) != len(s) {
-		return false
-	}
-
-	for i := 0; i < len(u); i++ {
-		var found bool
-		for j := 0; j < len(s); j++ {
-			if u[i] == s[j] {
-				found = true
-			}
-		}
-		if !found {
-			return false
-		}
-	}
-	return true
-}
-
-type GoogleAttribute struct {
+type LocationGoogleAttribute struct {
 	Id        *string   `json:"id,omitempty"`
 	OptionIds *[]string `json:"optionIds,omitempty"`
 }
 
-func (g GoogleAttribute) String() string {
+func (g LocationGoogleAttribute) String() string {
 	return fmt.Sprintf("Id: '%v', OptionIds: '%v'", g.Id, g.OptionIds)
 }
 
 // Equal compares GoogleAttribute
-func (a *GoogleAttribute) Equal(b Comparable) bool {
+func (a *LocationGoogleAttribute) Equal(b Comparable) bool {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
@@ -892,8 +854,8 @@ func (a *GoogleAttribute) Equal(b Comparable) bool {
 	}
 
 	var (
-		u = GoogleAttribute(*a)
-		s = GoogleAttribute(*b.(*GoogleAttribute))
+		u = LocationGoogleAttribute(*a)
+		s = LocationGoogleAttribute(*b.(*LocationGoogleAttribute))
 	)
 	if *u.Id != *s.Id {
 		return false
@@ -920,9 +882,9 @@ func (a *GoogleAttribute) Equal(b Comparable) bool {
 	return true
 }
 
-type GoogleAttributes []*GoogleAttribute
+type LocationGoogleAttributes []*LocationGoogleAttribute
 
-func (g GoogleAttributes) String() string {
+func (g LocationGoogleAttributes) String() string {
 	var ret string
 
 	for i, googleAttr := range g {
@@ -937,7 +899,7 @@ func (g GoogleAttributes) String() string {
 }
 
 // Equal compares GoogleAttributes
-func (a *GoogleAttributes) Equal(b Comparable) bool {
+func (a *LocationGoogleAttributes) Equal(b Comparable) bool {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
@@ -950,8 +912,8 @@ func (a *GoogleAttributes) Equal(b Comparable) bool {
 	}
 
 	var (
-		u = []*GoogleAttribute(*a)
-		s = []*GoogleAttribute(*b.(*GoogleAttributes))
+		u = []*LocationGoogleAttribute(*a)
+		s = []*LocationGoogleAttribute(*b.(*LocationGoogleAttributes))
 	)
 	if len(u) != len(s) {
 		return false
@@ -969,4 +931,9 @@ func (a *GoogleAttributes) Equal(b Comparable) bool {
 		}
 	}
 	return true
+}
+
+func ToLocationGoogleAttributes(v []*LocationGoogleAttribute) *LocationGoogleAttributes {
+	u := LocationGoogleAttributes(v)
+	return &u
 }

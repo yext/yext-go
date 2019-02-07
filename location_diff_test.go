@@ -384,162 +384,162 @@ func TestBoolDiffs(t *testing.T) {
 }
 
 type googleAttributesTest struct {
-	baseValue          *GoogleAttributes
-	newValue           *GoogleAttributes
+	baseValue          *LocationGoogleAttributes
+	newValue           *LocationGoogleAttributes
 	isDiff             bool
 	nilIsEmpty         bool
-	expectedFieldValue []*GoogleAttribute
+	expectedFieldValue []*LocationGoogleAttribute
 }
 
 var googleAttributesTests = []googleAttributesTest{
 	{nil, nil, false, false, nil},
 	{
 		baseValue:          nil,
-		newValue:           &GoogleAttributes{},
+		newValue:           &LocationGoogleAttributes{},
 		isDiff:             true,
 		nilIsEmpty:         false,
-		expectedFieldValue: GoogleAttributes{},
+		expectedFieldValue: LocationGoogleAttributes{},
 	},
 	{
 		baseValue:          nil,
-		newValue:           &GoogleAttributes{},
+		newValue:           &LocationGoogleAttributes{},
 		isDiff:             false,
 		nilIsEmpty:         true,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{},
+		baseValue:          &LocationGoogleAttributes{},
 		newValue:           nil,
 		isDiff:             false,
 		nilIsEmpty:         true,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{},
+		baseValue:          &LocationGoogleAttributes{},
 		newValue:           nil,
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
-		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		baseValue:          &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
-		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+		baseValue:          &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 		isDiff:             true,
 		nilIsEmpty:         false,
-		expectedFieldValue: []*GoogleAttribute{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+		expectedFieldValue: []*LocationGoogleAttribute{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:             false,
-		nilIsEmpty:         false,
-		expectedFieldValue: nil,
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{})},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:     true,
 		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:             false,
+		nilIsEmpty:         false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 		},
 	},
 }
@@ -1363,7 +1363,7 @@ func TestLocationNils(t *testing.T) {
 	b.Name = String("")
 	b.Emails = &[]string{}
 	b.Headshot = &LocationPhoto{}
-	b.GoogleAttributes = &GoogleAttributes{}
+	b.GoogleAttributes = &LocationGoogleAttributes{}
 
 	a.nilIsEmpty, b.nilIsEmpty = true, true
 	d, isDiff := a.Diff(b)
