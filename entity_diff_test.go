@@ -994,202 +994,234 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 		},
 		{
-			name: "CFHolidayHours", // TODO this is not real!!
+			name: "CFHours",
 			base: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
+					}),
 				},
 			},
 			new: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-22"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
-				},
-			},
-			isDiff: true,
-			delta: &CustomLocationEntity{
-				CustomEntity: CustomEntity{CFHolidayHours: &[]HolidayHours{
-					HolidayHours{
-						Date:     String("2019-01-22"),
-						IsClosed: NullableBool(true),
-					},
-				},
-				}},
-		},
-		{
-			name: "CFHolidayHours",
-			base: &CustomLocationEntity{
-				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(false),
-						},
-					},
-				},
-			},
-			new: &CustomLocationEntity{
-				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
-						},
-					},
+					}),
 				},
 			},
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
+					}),
 				},
 			},
 		},
 		{
-			name: "CFHolidayHours",
+			name: "CFHours",
 			base: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date: String("2019-01-21"),
-							OpenIntervals: &[]Interval{
-								Interval{
-									Start: "09:00",
-									End:   "16:30",
-								},
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(false),
 							},
 						},
-					},
+					}),
 				},
 			},
 			new: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
+					}),
 				},
 			},
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
+					}),
 				},
 			},
 		},
 		{
-			name: "CFHolidayHours",
+			name: "CFHours",
 			base: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date: String("2019-01-21"),
-							OpenIntervals: &[]Interval{
-								Interval{
-									Start: "09:00",
-									End:   "16:30",
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "16:30",
+									},
 								},
 							},
 						},
-					},
+					}),
 				},
 			},
 			new: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date: String("2019-01-21"),
-							OpenIntervals: &[]Interval{
-								Interval{
-									Start: "09:00",
-									End:   "17:00",
-								},
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
 							},
 						},
-					},
+					}),
 				},
 			},
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date: String("2019-01-21"),
-							OpenIntervals: &[]Interval{
-								Interval{
-									Start: "09:00",
-									End:   "17:00",
-								},
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
 							},
 						},
-					},
+					}),
 				},
 			},
 		},
 		{
-			name: "CFHolidayHours",
+			name: "CFHours",
 			base: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-21"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "16:30",
+									},
+								},
+							},
 						},
-						HolidayHours{
-							Date:     String("2019-01-22"),
-							IsClosed: NullableBool(true),
-						},
-					},
+					}),
 				},
 			},
 			new: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-23"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "17:00",
+									},
+								},
+							},
 						},
-						HolidayHours{
-							Date:     String("2019-01-24"),
-							IsClosed: NullableBool(true),
-						},
-					},
+					}),
 				},
 			},
 			isDiff: true,
 			delta: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFHolidayHours: &[]HolidayHours{
-						HolidayHours{
-							Date:     String("2019-01-23"),
-							IsClosed: NullableBool(true),
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "17:00",
+									},
+								},
+							},
 						},
-						HolidayHours{
-							Date:     String("2019-01-24"),
-							IsClosed: NullableBool(true),
+					}),
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
 						},
-					},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-23"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-24"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-23"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-24"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
 				},
 			},
 		},

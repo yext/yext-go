@@ -18,21 +18,16 @@ func instanceOf(val interface{}) interface{} {
 			val = reflect.ValueOf(val).Elem().Interface()
 			numPointers++
 		}
-		// can we just use val?
-		tmp = val
-		tmp = reflect.New(reflect.TypeOf(tmp)).Interface()
+
+		tmp = reflect.New(reflect.TypeOf(val)).Interface()
 		if numPointers == 1 {
 			return tmp
 		}
 		// This will only work for ** pointers, no *** pointers
 		reflect.ValueOf(ptr).Elem().Set(reflect.ValueOf(tmp))
 		return ptr
-	} else {
-		tmp = val
 	}
-	// i believe this could be simplified to be. to terrified to mess with it atm
-	// reflect.New(reflect.TypeOf(val)).Interface()
-	return reflect.New(reflect.TypeOf(tmp)).Interface()
+	return reflect.New(reflect.TypeOf(val)).Interface()
 }
 
 func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (interface{}, bool) {
@@ -143,7 +138,6 @@ func isNil(v reflect.Value) bool {
 
 // Diff(a, b): a is base, b is new
 func Diff(a Entity, b Entity) (Entity, bool, error) {
-	// TODO: should the below return an error? If not should return an empty b object with entity type set?
 	if a.GetEntityType() != b.GetEntityType() {
 		return nil, true, fmt.Errorf("Entity Types do not match: '%s', '%s'", a.GetEntityType(), b.GetEntityType())
 	}

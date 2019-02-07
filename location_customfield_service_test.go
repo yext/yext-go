@@ -133,17 +133,6 @@ var (
 	}
 )
 
-func makeCustomFields(n int) []*CustomField {
-	var cfs []*CustomField
-
-	for i := 0; i < n; i++ {
-		new := &CustomField{Id: String(strconv.Itoa(i))}
-		cfs = append(cfs, new)
-	}
-
-	return cfs
-}
-
 func TestListAll(t *testing.T) {
 	maxLimit := strconv.Itoa(CustomFieldListMaxLimit)
 
@@ -207,7 +196,7 @@ func TestListAll(t *testing.T) {
 			w.Write(data)
 		})
 
-		client.CustomFieldService.ListAll()
+		client.LocationCustomFieldService.ListAll()
 		if reqs < len(test.reqs) {
 			t.Errorf("Too few requests sent to custom field list - got %d, expected %d", reqs, len(test.reqs))
 		}
@@ -226,7 +215,7 @@ func TestListMismatchCount(t *testing.T) {
 		w.Write(data)
 	})
 
-	rlr, err := client.CustomFieldService.ListAll()
+	rlr, err := client.LocationCustomFieldService.ListAll()
 	if rlr != nil {
 		t.Error("Expected response to be nil when receiving mismatched count and number of custom fields")
 	}

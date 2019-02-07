@@ -19,7 +19,6 @@ type CustomEntity struct {
 	CFSingleOption **string          `json:"cf_SingleOption,omitempty"`
 	CFMultiOption  *UnorderedStrings `json:"cf_MultiOption,omitempty"`
 	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
-	CFHolidayHours *[]HolidayHours   `json:"cf_HolidayHours,omitempty"` // TODO: REMOVE THIS IS NOT REAL
 }
 
 type CustomLocationEntity struct {
@@ -153,7 +152,7 @@ func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	entityService := EntityService{
 		Registry: &EntityRegistry{},
 	}
-	entityService.RegisterEntity("LOCATION", &CustomLocationEntity{}) // TODO should be location
+	entityService.RegisterEntity("location", &CustomLocationEntity{})
 	mapOfStringToInterface := make(map[string]interface{})
 	err := json.Unmarshal([]byte(sampleEntityJSON), &mapOfStringToInterface)
 	if err != nil {
@@ -418,6 +417,6 @@ var sampleEntityJSON = `{
      "folderId": "0",
      "language": "en",
      "countryCode": "US",
-     "entityType": "LOCATION"
+     "entityType": "location"
   }
 }`

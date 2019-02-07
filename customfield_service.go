@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-// TODO: add tests
-
 const customFieldPath = "customfields"
 
 var CustomFieldListMaxLimit = 1000

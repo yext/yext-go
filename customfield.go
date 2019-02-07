@@ -3,7 +3,7 @@ package yext
 const (
 	CUSTOMFIELDTYPE_YESNO          = "BOOLEAN"
 	CUSTOMFIELDTYPE_SINGLELINETEXT = "TEXT"
-	CUSTOMFIELDTYPE_MULTILINETEXT  = "MULTILINE_TEXT" // TODO: I don't think multiline is still a thing?
+	CUSTOMFIELDTYPE_MULTILINETEXT  = "MULTILINE_TEXT"
 	CUSTOMFIELDTYPE_SINGLEOPTION   = "SINGLE_OPTION"
 	CUSTOMFIELDTYPE_URL            = "URL"
 	CUSTOMFIELDTYPE_DATE           = "DATE"
@@ -22,7 +22,7 @@ type CustomField struct {
 	Id                         *string             `json:"id,omitempty"`
 	Type                       string              `json:"type"`
 	Name                       string              `json:"name"`
-	Options                    []CustomFieldOption `json:"options,omitempty"` // Only present for multi-option custom fields
+	Options                    []CustomFieldOption `json:"options,omitempty"` // Only present for option custom fields
 	Group                      string              `json:"group"`
 	Description                string              `json:"description"`
 	AlternateLanguageBehaviour string              `json:"alternateLanguageBehavior"`

@@ -7,8 +7,6 @@ package yext
 
 import (
 	"encoding/json"
-	"reflect"
-	"strings"
 )
 
 const ENTITYTYPE_LOCATION EntityType = "location"
@@ -99,36 +97,6 @@ type LocationEntity struct {
 	// Reviews
 	//ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
-}
-
-func UnmarshalEntityJSON(i interface{}, data []byte) error {
-	var jsonTagToKey = map[string]string{}
-	val := reflect.ValueOf(i).Elem()
-	for i := 0; i < val.Type().NumField(); i++ {
-		field := val.Type().Field(i)
-		tag := strings.Replace(field.Tag.Get("json"), ",omitempty", "", -1)
-		jsonTagToKey[tag] = field.Name
-	}
-
-	var m map[string]interface{}
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		return err
-	}
-
-	for tag, val := range m {
-		if _, ok := jsonTagToKey[tag]; ok && val == nil {
-			v := reflect.ValueOf(i).Elem().FieldByName(jsonTagToKey[tag])
-
-			// Check if double pointer... probably a better way to do this
-			// TODO: Is this necessary?  Maybe not, might work for any number of pointers (*, **, ***, etc)
-			if v.Type().Kind() == reflect.Ptr && v.Type().Elem().Kind() == reflect.Ptr {
-				typedNil := reflect.New(v.Type().Elem())
-				reflect.ValueOf(i).Elem().FieldByName(jsonTagToKey[tag]).Set(reflect.ValueOf(typedNil.Interface()))
-			}
-		}
-	}
-	return nil
 }
 
 func (l *LocationEntity) UnmarshalJSON(data []byte) error {
@@ -329,6 +297,11 @@ type Hours struct {
 	Saturday     **DayHours      `json:"saturday,omitempty"`
 	Sunday       **DayHours      `json:"sunday,omitempty"`
 	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
+}
+
+func (h Hours) String() string {
+	b, _ := json.Marshal(h)
+	return string(b)
 }
 
 type DayHours struct {
