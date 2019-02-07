@@ -421,7 +421,7 @@ func (b *EventEntity) GetCategoryIds() (v UnorderedStrings) {
 	return v
 }
 
-func (e *EventEntity) SingleString() string {
+func (e *EventEntity) String() string {
 	b, _ := json.Marshal(e)
 	return string(b)
 }
