@@ -80,31 +80,6 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 }
 
-func (c *CustomFieldManager) MustSetString(name string, value string, loc *Location) {
-	Must(c.SetString(name, value, loc))
-}
-
-func (c *CustomFieldManager) SetPhoto(name string, v *CustomLocationPhoto, loc *Location) error {
-	_, err := c.Set(name, v, loc)
-	return err
-}
-
-func (c *CustomFieldManager) UnsetPhoto(name string, loc *Location) error {
-	return c.SetPhoto(name, UnsetPhotoValue, loc)
-}
-
-func (c *CustomFieldManager) MustSetPhoto(name string, v *CustomLocationPhoto, loc *Location) {
-	Must(c.SetPhoto(name, v, loc))
-}
-
-func (c *CustomFieldManager) MustUnsetPhoto(name string, loc *Location) {
-	Must(c.SetPhoto(name, UnsetPhotoValue, loc))
-}
-
-func GetSingleOptionPointer(option SingleOption) *SingleOption {
-	return &option
-}
-
 type CustomFieldManager struct {
 	CustomFields []*CustomField
 }

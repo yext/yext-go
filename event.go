@@ -43,11 +43,11 @@ type EventEntity struct {
 	TicketPriceRange   *TicketPriceRange `json:"ticketPriceRange,omitempty"`
 
 	//Lats & Lngs
-	DisplayCoordinate  *Coordinate `json:"yextDisplayCoordinate,omitempty"`
-	RoutableCoordinate *Coordinate `json:"yextRoutableCoordinate,omitempty"`
-	DropoffCoordinate  *Coordinate `json:"yextDropoffCoordinate,omitempty"`
-	WalkableCoordinate *Coordinate `json:"yextWalkableCoordinate,omitempty"`
-	PickupCoordinate   *Coordinate `json:"yextPickupCoordinate,omitempty"`
+	DisplayCoordinate  **Coordinate `json:"yextDisplayCoordinate,omitempty"`
+	RoutableCoordinate **Coordinate `json:"yextRoutableCoordinate,omitempty"`
+	DropoffCoordinate  **Coordinate `json:"yextDropoffCoordinate,omitempty"`
+	WalkableCoordinate **Coordinate `json:"yextWalkableCoordinate,omitempty"`
+	PickupCoordinate   **Coordinate `json:"yextPickupCoordinate,omitempty"`
 
 	//Event Organizer Info
 	OrganizerEmail *string `json:"organizerEmail,omitempty"`
@@ -230,71 +230,81 @@ func (y EventEntity) GetBrands() (v []string) {
 }
 
 func (y EventEntity) GetDisplayLat() float64 {
-	if y.DisplayCoordinate != nil && y.DisplayCoordinate.Latitude != nil {
-		return *y.DisplayCoordinate.Latitude
+	c := GetCoordinate(y.DisplayCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetDisplayLng() float64 {
-	if y.DisplayCoordinate != nil && y.DisplayCoordinate.Longitude != nil {
-		return *y.DisplayCoordinate.Longitude
+	c := GetCoordinate(y.DisplayCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetRoutableLat() float64 {
-	if y.RoutableCoordinate != nil && y.RoutableCoordinate.Latitude != nil {
-		return *y.RoutableCoordinate.Latitude
+	c := GetCoordinate(y.RoutableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetRoutableLng() float64 {
-	if y.RoutableCoordinate != nil && y.RoutableCoordinate.Longitude != nil {
-		return *y.RoutableCoordinate.Longitude
+	c := GetCoordinate(y.RoutableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetDropoffLat() float64 {
-	if y.DropoffCoordinate != nil && y.DropoffCoordinate.Latitude != nil {
-		return *y.DropoffCoordinate.Latitude
+	c := GetCoordinate(y.DropoffCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetDropoffLng() float64 {
-	if y.DropoffCoordinate != nil && y.DropoffCoordinate.Longitude != nil {
-		return *y.DropoffCoordinate.Longitude
+	c := GetCoordinate(y.DropoffCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetPickupLat() float64 {
-	if y.PickupCoordinate != nil && y.PickupCoordinate.Latitude != nil {
-		return *y.PickupCoordinate.Latitude
+	c := GetCoordinate(y.PickupCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetPickupLng() float64 {
-	if y.PickupCoordinate != nil && y.PickupCoordinate.Longitude != nil {
-		return *y.PickupCoordinate.Longitude
+	c := GetCoordinate(y.PickupCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetWalkableLat() float64 {
-	if y.WalkableCoordinate != nil && y.WalkableCoordinate.Latitude != nil {
-		return *y.WalkableCoordinate.Latitude
+	c := GetCoordinate(y.WalkableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
 	}
 	return 0
 }
 
 func (y EventEntity) GetWalkableLng() float64 {
-	if y.WalkableCoordinate != nil && y.WalkableCoordinate.Longitude != nil {
-		return *y.WalkableCoordinate.Longitude
+	c := GetCoordinate(y.WalkableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
 	}
 	return 0
 }
@@ -411,7 +421,7 @@ func (b *EventEntity) GetCategoryIds() (v UnorderedStrings) {
 	return v
 }
 
-func (e *EventEntity)SingleString() string {
+func (e *EventEntity) SingleString() string {
 	b, _ := json.Marshal(e)
 	return string(b)
 }

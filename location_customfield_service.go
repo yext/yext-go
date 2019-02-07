@@ -784,6 +784,14 @@ func (c *LocationCustomFieldManager) UnsetPhoto(name string, loc *Location) erro
 	return c.SetPhoto(name, UnsetPhotoValue, loc)
 }
 
+func (c *LocationCustomFieldManager) MustSetPhoto(name string, v *CustomLocationPhoto, loc *Location) {
+	Must(c.SetPhoto(name, v, loc))
+}
+
+func (c *LocationCustomFieldManager) MustUnsetPhoto(name string, loc *Location) {
+	Must(c.SetPhoto(name, UnsetPhotoValue, loc))
+}
+
 func GetSingleOptionPointer(option SingleOption) *SingleOption {
 	return &option
 }

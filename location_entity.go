@@ -24,7 +24,8 @@ type LocationEntity struct {
 	// Address Fields
 	Name          *string  `json:"name,omitempty"`
 	Address       *Address `json:"address,omitempty"`
-	AddressHidden *bool    `json:"addressHidden,omitempty"`
+	AddressHidden **bool   `json:"addressHidden,omitempty"`
+	ISORegionCode *string  `json:"isoRegionCode,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -77,20 +78,20 @@ type LocationEntity struct {
 	UberTripBranding **UberTripBranding `json:"uberTripBranding,omitempty"`
 
 	// Social Media
-	FacebookCoverPhoto   *LocationPhoto `json:"facebookCoverPhoto,omitempty"`
-	FacebookPageUrl      *string        `json:"facebookPageUrl,omitempty"`
-	FacebookProfilePhoto *LocationPhoto `json:"facebookProfilePhoto,omitempty"`
+	FacebookCoverPhoto   **Image `json:"facebookCoverPhoto,omitempty"`
+	FacebookPageUrl      *string `json:"facebookPageUrl,omitempty"`
+	FacebookProfilePhoto **Image `json:"facebookProfilePhoto,omitempty"`
 
-	GoogleCoverPhoto      *LocationPhoto `json:"googleCoverPhoto,omitempty"`
-	GooglePreferredPhoto  *string        `json:"googlePreferredPhoto,omitempty"`
-	GoogleProfilePhoto    *LocationPhoto `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride *string        `json:"googleWebsiteOverride,omitempty"`
+	GoogleCoverPhoto      **Image `json:"googleCoverPhoto,omitempty"`
+	GooglePreferredPhoto  *string `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto    **Image `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride *string `json:"googleWebsiteOverride,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
 
-	Photos    *[]LocationPhoto `json:"photos,omitempty"`
-	VideoUrls *[]string        `json:"videoUrls,omitempty"`
+	PhotoGallery *[]Photo `json:"photoGallery,omitempty"`
+	Videos       *[]Video `json:"videos,omitempty"`
 
 	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
 
