@@ -238,12 +238,7 @@ func (e *EntityService) CreateWithOptions(y Entity, opts *EntityServiceOptions) 
 	q := u.Query()
 	q.Add("entityType", string(y.GetEntityType()))
 	u.RawQuery = q.Encode()
-	r, err := e.client.DoRequestJSON("POST", u.String(), y, nil)
-	if err != nil {
-		return r, err
-	}
-
-	return r, nil
+	return e.client.DoRequestJSON("POST", u.String(), y, nil)
 }
 
 func (e *EntityService) EditWithOptions(y Entity, id string, opts *EntityServiceOptions) (*Response, error) {
@@ -266,12 +261,7 @@ func (e *EntityService) EditWithOptions(y Entity, id string, opts *EntityService
 }
 
 func (e *EntityService) EditWithId(y Entity, id string) (*Response, error) {
-	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, id), y, nil)
-	if err != nil {
-		return r, err
-	}
-
-	return r, nil
+	return e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, id), y, nil)
 }
 
 func (e *EntityService) Edit(y Entity) (*Response, error) {

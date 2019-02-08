@@ -126,3 +126,65 @@ func TestMustCacheCustomFields(t *testing.T) {
 		}
 	}
 }
+
+var cfm = &CustomFieldManager{
+	CustomFields: []*CustomField{
+		&CustomField{
+			Name: "My Favorite Colors",
+			Type: CUSTOMFIELDTYPE_MULTIOPTION,
+			Id:   String("c_myFavoriteColors"),
+			Options: []CustomFieldOption{
+				CustomFieldOption{
+					Key:   "c_blue",
+					Value: "Blue",
+				},
+				CustomFieldOption{
+					Key:   "c_red",
+					Value: "Red",
+				},
+			},
+		},
+		&CustomField{
+			Name: "My Favorite Food",
+			Type: CUSTOMFIELDTYPE_MULTIOPTION,
+			Id:   String("c_myFavoriteFood"),
+			Options: []CustomFieldOption{
+				CustomFieldOption{
+					Key:   "c_cheese",
+					Value: "Cheese",
+				},
+				CustomFieldOption{
+					Key:   "c_olives",
+					Value: "Olives",
+				},
+			},
+		},
+	},
+}
+
+func TestMustIsMultiOptionSet(t *testing.T) {
+	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_red"}) {
+		t.Error("TestMustIsMultiOptionSet: red is set but got false")
+	}
+	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_blue"}) {
+		t.Error("TestMustIsMultiOptionSet: blue is not set but got true")
+	}
+	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_blue", "c_red"}) {
+		t.Error("TestMustIsMultiOptionSet: red is set but got false")
+	}
+	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{}) {
+		t.Error("TestMustIsMultiOptionSet: red is not set but got true")
+	}
+}
+
+func TestMustIsSingleOptionSet(t *testing.T) {
+	if !cfm.MustIsSingleOptionSet("My Favorite Food", "Cheese", NullableString("c_cheese")) {
+		t.Error("TestMustIsSingleOptionSet: cheese is set but got false")
+	}
+	if cfm.MustIsSingleOptionSet("My Favorite Food", "Olives", NullableString("c_cheese")) {
+		t.Error("TestMustIsSingleOptionSet: olives is not set but got true")
+	}
+	if cfm.MustIsSingleOptionSet("My Favorite Food", "Cheese", NullString()) {
+		t.Error("TestMustIsSingleOptionSet: cheese is not set but got true")
+	}
+}

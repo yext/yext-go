@@ -32,9 +32,9 @@ func (s *CustomFieldService) ListAll() ([]*CustomField, error) {
 
 	if err := listHelper(lr, &ListOptions{Limit: CustomFieldListMaxLimit}); err != nil {
 		return nil, err
-	} else {
-		return customFields, nil
 	}
+	return customFields, nil
+
 }
 
 func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Response, error) {
@@ -194,12 +194,9 @@ func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName s
 	if setOptionIds == nil {
 		return false
 	}
-	optionIds := GetStrings(c.MustMultiOptionIds(fieldName, optionName))
-	if optionIds == nil {
-		return false
-	}
+	optionId := c.MustCustomFieldOptionId(fieldName, optionName)
 	for _, v := range *setOptionIds {
-		if v == optionIds[0] {
+		if v == optionId {
 			return true
 		}
 	}

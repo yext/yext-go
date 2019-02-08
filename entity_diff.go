@@ -12,8 +12,10 @@ func instanceOf(val interface{}) interface{} {
 	)
 
 	if isPtr {
-		var ptr = reflect.New(reflect.TypeOf(val).Elem()).Interface()
-		var numPointers = 0
+		var (
+			ptr         = reflect.New(reflect.TypeOf(val).Elem()).Interface()
+			numPointers = 0
+		)
 		for reflect.ValueOf(val).Kind() == reflect.Ptr {
 			val = reflect.ValueOf(val).Elem().Interface()
 			numPointers++
