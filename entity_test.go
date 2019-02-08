@@ -15,10 +15,11 @@ type CustomEntity struct {
 	CFPhoto        **Photo           `json:"cf_Photo,omitempty"`
 	CFVideos       *[]Video          `json:"cf_Videos,omitempty"`
 	CFVideo        **Video           `json:"cf_Video,omitempty"`
-	CFDate         **Date            `json:"cf_Date,omitempty"`
+	CFDate         *string           `json:"cf_Date,omitempty"`
 	CFSingleOption **string          `json:"cf_SingleOption,omitempty"`
 	CFMultiOption  *UnorderedStrings `json:"cf_MultiOption,omitempty"`
 	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
+	CFText         *string           `json:"cf_Text,omitempty"`
 }
 
 type CustomLocationEntity struct {
@@ -84,7 +85,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: nil}}, `{}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFSingleOption: NullString()}}, `{"cf_SingleOption":null}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFMultiOption: ToUnorderedStrings([]string{})}}, `{"cf_MultiOption":[]}`},
-		{&CustomLocationEntity{CustomEntity: CustomEntity{CFDate: NullDate()}}, `{"cf_Date":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFDate: String("")}}, `{"cf_Date":""}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFVideo: NullVideo()}}, `{"cf_Video":null}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFPhoto: NullPhoto()}}, `{"cf_Photo":null}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFGallery: &[]Photo{}}}, `{"cf_Gallery":[]}`},
@@ -94,6 +95,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"cf_YesNo":null}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"Hello","cf_YesNo":null}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"","cf_YesNo":null}`},
+		{&CustomLocationEntity{CustomEntity: CustomEntity{CFText: String("")}}, `{"cf_Text":""}`},
 	}
 
 	for _, test := range tests {
@@ -126,7 +128,7 @@ func TestEntityJSONDeserialization(t *testing.T) {
 		{`{"cf_TextList":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: &[]string{}}}},
 		{`{"cf_SingleOption":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFSingleOption: NullString()}}},
 		{`{"cf_MultiOption":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFMultiOption: ToUnorderedStrings([]string{})}}},
-		{`{"cf_Date":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFDate: NullDate()}}},
+		{`{"cf_Date":""}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFDate: String("")}}},
 		{`{"cf_Video":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFVideo: NullVideo()}}},
 		{`{"cf_Photo":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFPhoto: NullPhoto()}}},
 		{`{"cf_Gallery":[]}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFGallery: &[]Photo{}}}},
@@ -136,6 +138,7 @@ func TestEntityJSONDeserialization(t *testing.T) {
 		{`{"cf_YesNo":null}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
 		{`{"name":"Hello","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
 		{`{"name":"","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
+		{`{"cf_Text":""}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFText: String("")}}},
 	}
 
 	for _, test := range tests {

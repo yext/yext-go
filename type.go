@@ -133,22 +133,6 @@ func NullInt() **int {
 	return &v
 }
 
-func NullableDate(v *Date) **Date {
-	return &v
-}
-
-func GetDate(v **Date) *Date {
-	if v == nil {
-		return nil
-	}
-	return *v
-}
-
-func NullDate() **Date {
-	var v *Date
-	return &v
-}
-
 func NullableVideo(v *Video) **Video {
 	return &v
 }
