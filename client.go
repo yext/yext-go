@@ -29,6 +29,7 @@ type Client struct {
 
 	LocationService                *LocationService
 	ListService                    *ListService
+	LocationCustomFieldService     *LocationCustomFieldService
 	CustomFieldService             *CustomFieldService
 	FolderService                  *FolderService
 	CategoryService                *CategoryService
@@ -48,6 +49,7 @@ func NewClient(config *Config) *Client {
 
 	c.LocationService = &LocationService{client: c}
 	c.ListService = &ListService{client: c}
+	c.LocationCustomFieldService = &LocationCustomFieldService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
 	c.CategoryService = &CategoryService{client: c}

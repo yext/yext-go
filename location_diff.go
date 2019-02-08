@@ -122,6 +122,7 @@ func getUnderlyingValue(v interface{}) interface{} {
 			return nil
 		}
 		rv = rv.Elem()
+		return getUnderlyingValue(rv.Interface())
 	}
 
 	return rv.Interface()
@@ -147,7 +148,7 @@ func isZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 		if v.IsNil() && !interpretNilAsZeroValue {
 			return false
 		}
-		return isZeroValue(v.Elem(), interpretNilAsZeroValue)
+		return isZeroValue(v.Elem(), true) // Needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
 	case reflect.Struct:
 		for i, n := 0, v.NumField(); i < n; i++ {
 			if !isZeroValue(v.Field(i), true) {

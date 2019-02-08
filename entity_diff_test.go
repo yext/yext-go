@@ -52,7 +52,7 @@ func TestEntityDiff(t *testing.T) {
 	// N) base is zero value (nil is empty), new is nil (nil is empty)
 
 	tests := []diffTest{
-		// *String tests
+		// **String tests
 		diffTest{
 			name:      "*String: equal (A)",
 			property:  "Name",
@@ -162,214 +162,214 @@ func TestEntityDiff(t *testing.T) {
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
-		// *Float tests
+		// **Float tests
 		diffTest{
-			name:      "*Float: equal (A)",
+			name:      "**Float: equal (A)",
 			property:  "YearEstablished",
-			baseValue: Float(2018),
-			newValue:  Float(2018),
+			baseValue: NullableFloat(2018),
+			newValue:  NullableFloat(2018),
 			isDiff:    false,
 		},
 		diffTest{
-			name:       "*Float: not equal (B)",
+			name:       "**Float: not equal (B)",
 			property:   "YearEstablished",
-			baseValue:  Float(2018),
-			newValue:   Float(2006),
+			baseValue:  NullableFloat(2018),
+			newValue:   NullableFloat(2006),
 			isDiff:     true,
-			deltaValue: Float(2006),
+			deltaValue: NullableFloat(2006),
 		},
 		diffTest{
-			name:       "*Float: base is 0, new is not 0 (C)",
+			name:       "**Float: base is 0, new is not 0 (C)",
 			property:   "YearEstablished",
-			baseValue:  Float(0),
-			newValue:   Float(2006),
+			baseValue:  NullableFloat(0),
+			newValue:   NullableFloat(2006),
 			isDiff:     true,
-			deltaValue: Float(2006),
+			deltaValue: NullableFloat(2006),
 		},
 		diffTest{
-			name:       "*Float: base is not 0, new is 0 (D)",
+			name:       "**Float: base is not 0, new is 0 (D)",
 			property:   "YearEstablished",
-			baseValue:  Float(2006),
-			newValue:   Float(0),
+			baseValue:  NullableFloat(2006),
+			newValue:   NullableFloat(0),
 			isDiff:     true,
-			deltaValue: Float(0),
+			deltaValue: NullableFloat(0),
 		},
 		diffTest{
-			name:      "*Float: both are 0 (E)",
+			name:      "**Float: both are 0 (E)",
 			property:  "YearEstablished",
-			baseValue: Float(2018),
+			baseValue: NullableFloat(2018),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:      "*Float: both are nil (F)",
+			name:      "**Float: both are nil (F)",
 			property:  "YearEstablished",
 			baseValue: nil,
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:      "*Float: base is not 0, new is nil (G)",
+			name:      "**Float: base is not 0, new is nil (G)",
 			property:  "YearEstablished",
-			baseValue: Float(1993),
+			baseValue: NullableFloat(1993),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:       "*Float: base is nil, new is not 0 (H)",
+			name:       "**Float: base is nil, new is not 0 (H)",
 			property:   "YearEstablished",
 			baseValue:  nil,
-			newValue:   Float(1993),
+			newValue:   NullableFloat(1993),
 			isDiff:     true,
-			deltaValue: Float(1993),
+			deltaValue: NullableFloat(1993),
 		},
 		diffTest{
-			name:       "*Float: base is nil, new is 0 (I)",
+			name:       "**Float: base is nil, new is 0 (I)",
 			property:   "YearEstablished",
 			baseValue:  nil,
-			newValue:   Float(0),
+			newValue:   NullableFloat(0),
 			isDiff:     true,
-			deltaValue: Float(0),
+			deltaValue: NullableFloat(0),
 		},
 		diffTest{
-			name:      "*Float: base is 0, new is nil (J)",
+			name:      "**Float: base is 0, new is nil (J)",
 			property:  "YearEstablished",
-			baseValue: Float(0),
+			baseValue: NullableFloat(0),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:           "*Float: base is nil (nil is empty), new is 0 (K)",
+			name:           "**Float: base is nil (nil is empty), new is 0 (K)",
 			property:       "YearEstablished",
 			baseValue:      nil,
-			newValue:       Float(0),
+			newValue:       NullableFloat(0),
 			baseNilIsEmpty: true,
 			isDiff:         false,
 		},
 		diffTest{
-			name:           "*Float: base is nil (nil is empty), new is 0 (nil is empty) (L)",
+			name:           "**Float: base is nil (nil is empty), new is 0 (nil is empty) (L)",
 			property:       "YearEstablished",
 			baseValue:      nil,
-			newValue:       Float(0),
+			newValue:       NullableFloat(0),
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
 		diffTest{
-			name:          "*Float: base is 0, new is nil (nil is empty) (M)",
+			name:          "**Float: base is 0, new is nil (nil is empty) (M)",
 			property:      "YearEstablished",
-			baseValue:     Float(0),
+			baseValue:     NullableFloat(0),
 			newValue:      nil,
 			newNilIsEmpty: true,
 			isDiff:        false,
 		},
 		diffTest{
-			name:           "*Float: base is 0 (nil is empty), new is nil (nil is empty) (N)",
+			name:           "**Float: base is 0 (nil is empty), new is nil (nil is empty) (N)",
 			property:       "YearEstablished",
-			baseValue:      Float(0),
+			baseValue:      NullableFloat(0),
 			baseNilIsEmpty: true,
 			newValue:       nil,
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
 
-		// Bool tests
+		// **Bool tests
 		diffTest{
-			name:      "*Bool: both true (A)",
-			property:  "SuppressAddress",
-			baseValue: Bool(true),
-			newValue:  Bool(true),
+			name:      "**Bool: both true (A)",
+			property:  "Closed",
+			baseValue: NullableBool(true),
+			newValue:  NullableBool(true),
 			isDiff:    false,
 		},
 		diffTest{
-			name:      "*Bool: both false (A/E)",
-			property:  "SuppressAddress",
-			baseValue: Bool(false),
-			newValue:  Bool(false),
+			name:      "**Bool: both false (A/E)",
+			property:  "Closed",
+			baseValue: NullableBool(false),
+			newValue:  NullableBool(false),
 			isDiff:    false,
 		},
 		diffTest{
-			name:       "*Bool: not equal, base true, new false (B/D)",
-			property:   "SuppressAddress",
-			baseValue:  Bool(true),
-			newValue:   Bool(false),
+			name:       "**Bool: not equal, base true, new false (B/D)",
+			property:   "Closed",
+			baseValue:  NullableBool(true),
+			newValue:   NullableBool(false),
 			isDiff:     true,
-			deltaValue: Bool(false),
+			deltaValue: NullableBool(false),
 		},
 		diffTest{
-			name:       "*Bool: not equal, base is false, new is true (B/C)",
-			property:   "SuppressAddress",
-			baseValue:  Bool(false),
-			newValue:   Bool(true),
+			name:       "**Bool: not equal, base is false, new is true (B/C)",
+			property:   "Closed",
+			baseValue:  NullableBool(false),
+			newValue:   NullableBool(true),
 			isDiff:     true,
-			deltaValue: Bool(true),
+			deltaValue: NullableBool(true),
 		},
 		diffTest{
-			name:      "*Bool: both are nil (F)",
-			property:  "SuppressAddress",
+			name:      "**Bool: both are nil (F)",
+			property:  "Closed",
 			baseValue: nil,
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:      "*Bool: base is non-zero, new is nil (G)",
-			property:  "SuppressAddress",
-			baseValue: Bool(true),
+			name:      "**Bool: base is non-zero, new is nil (G)",
+			property:  "Closed",
+			baseValue: NullableBool(true),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:       "*Bool: base is nil, new is non-zero value (H)",
-			property:   "SuppressAddress",
+			name:       "**Bool: base is nil, new is non-zero value (H)",
+			property:   "Closed",
 			baseValue:  nil,
-			newValue:   Bool(true),
+			newValue:   NullableBool(true),
 			isDiff:     true,
-			deltaValue: Bool(true),
+			deltaValue: NullableBool(true),
 		},
 		diffTest{
-			name:       "*Bool: base is nil, new is zero value (I)",
-			property:   "SuppressAddress",
+			name:       "**Bool: base is nil, new is zero value (I)",
+			property:   "Closed",
 			baseValue:  nil,
-			newValue:   Bool(false),
+			newValue:   NullableBool(false),
 			isDiff:     true,
-			deltaValue: Bool(false),
+			deltaValue: NullableBool(false),
 		},
 		diffTest{
-			name:      "*Bool: base is zero value, new is nil (J)",
-			property:  "SuppressAddress",
-			baseValue: Bool(false),
+			name:      "**Bool: base is zero value, new is nil (J)",
+			property:  "Closed",
+			baseValue: NullableBool(false),
 			newValue:  nil,
 			isDiff:    false,
 		},
 		diffTest{
-			name:           "*Bool: base is nil (nil is empty), new is zero value (K)",
-			property:       "SuppressAddress",
+			name:           "**Bool: base is nil (nil is empty), new is zero value (K)",
+			property:       "Closed",
 			baseValue:      nil,
-			newValue:       Bool(false),
+			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
 			isDiff:         false,
 		},
 		diffTest{
-			name:           "*Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
-			property:       "SuppressAddress",
+			name:           "**Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
+			property:       "Closed",
 			baseValue:      nil,
-			newValue:       Bool(false),
+			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
 		diffTest{
-			name:          "*Bool: base is zero value, new is nil (nil is empty) (L)",
-			property:      "SuppressAddress",
-			baseValue:     Bool(false),
+			name:          "**Bool: base is zero value, new is nil (nil is empty) (L)",
+			property:      "Closed",
+			baseValue:     NullableBool(false),
 			newValue:      nil,
 			newNilIsEmpty: true,
 			isDiff:        false,
 		},
 		diffTest{
-			name:           "*Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
-			property:       "SuppressAddress",
-			baseValue:      Bool(false),
+			name:           "**Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
+			property:       "Closed",
+			baseValue:      NullableBool(false),
 			newValue:       nil,
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
@@ -629,6 +629,14 @@ func TestEntityDiff(t *testing.T) {
 			isDiff:     true,
 			deltaValue: &[]string{},
 		},
+		diffTest{
+			name:       "List: not equal (B)",
+			property:   "CFTextList",
+			baseValue:  &[]string{"a", "b"},
+			newValue:   &[]string{"b", "c"},
+			isDiff:     true,
+			deltaValue: &[]string{"b", "c"},
+		},
 		// Comparable tests (Unordered Strings)
 		diffTest{
 			name:      "UnorderedStrings: equal (ordered) (A)",
@@ -772,20 +780,20 @@ func TestEntityDiff(t *testing.T) {
 			property: "BaseEntity",
 			baseValue: BaseEntity{
 				Meta: &EntityMeta{
-					Id:          String("CTG"),
-					CategoryIds: Strings([]string{"123"}),
+					Id:       String("CTG"),
+					FolderId: String("123"),
 				},
 			},
 			newValue: BaseEntity{
 				Meta: &EntityMeta{
-					Id:          String("CTG"),
-					CategoryIds: Strings([]string{"123", "456"}),
+					Id:       String("CTG"),
+					FolderId: String("456"),
 				},
 			},
 			isDiff: true,
 			deltaValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("456"),
 				},
 			},
 		},
@@ -794,12 +802,12 @@ func TestEntityDiff(t *testing.T) {
 			property: "BaseEntity",
 			baseValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("123"),
 				},
 			},
 			newValue: BaseEntity{
 				Meta: &EntityMeta{
-					CategoryIds: Strings([]string{"123", "456"}),
+					FolderId: String("123"),
 				},
 			},
 			isDiff: false,
@@ -918,6 +926,736 @@ func TestEntityDiffComplex(t *testing.T) {
 			new:    custom4,
 			isDiff: false,
 		},
+		{
+			name: "Address, partial diff",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						Line1: String("7900 Westpark"),
+						City:  String("McLean"),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						Line1: String("7900 Westpark"),
+						City:  String(""),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						City: String(""),
+					},
+				},
+			},
+		},
+		{
+			name: "CFGallery",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFGallery: &[]Photo{
+						Photo{
+							Description: String("Description 1"),
+						},
+						Photo{
+							Description: String("Description 2"),
+						},
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFGallery: &[]Photo{
+						Photo{
+							Description: String("New Description 1"),
+						},
+						Photo{
+							Description: String("Description 2"),
+						},
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFGallery: &[]Photo{
+						Photo{
+							Description: String("New Description 1"),
+						},
+						Photo{
+							Description: String("Description 2"),
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(false),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "16:30",
+									},
+								},
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "16:30",
+									},
+								},
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "17:00",
+									},
+								},
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date: String("2019-01-21"),
+								OpenIntervals: &[]Interval{
+									Interval{
+										Start: "09:00",
+										End:   "17:00",
+									},
+								},
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "CFHours",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-21"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-22"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-23"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-24"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFHours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("2019-01-23"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("2019-01-24"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "Hours Closed Change",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(false),
+						}),
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(false),
+						}),
+					}),
+				},
+			},
+		},
+		{
+			name: "Holiday Hours Date Change",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("01-23-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-22-2019"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("01-23-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-22-2019"),
+								IsClosed: NullableBool(true),
+							},
+							HolidayHours{
+								Date:     String("01-23-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+		},
+		{
+			name: "Hours Change",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "20:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "20:00",
+								},
+							},
+						}),
+					}),
+				},
+			},
+		},
+		{
+			name: "Hours Change (**DayHours) is nil -> null",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+					}),
+				},
+			},
+		},
+		{
+			name: "Hours Change null -> value",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+					}),
+				},
+			},
+		},
+		{
+			name: "Hours No Change (showing nil is not the same as **DayHours(nil) )",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    nil,
+						Tuesday:   nil,
+						Wednesday: nil,
+						Thursday:  nil,
+						Friday:    nil,
+						Saturday:  nil,
+						Sunday:    nil,
+						HolidayHours: &[]HolidayHours{
+							HolidayHours{
+								Date:     String("01-21-2019"),
+								IsClosed: NullableBool(true),
+							},
+						},
+					}),
+				},
+			},
+			isDiff: false,
+		},
+
+		{
+			name: "Name",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Name: String("CTG"),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Name: String("CTG2"),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Name: String("CTG2"),
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -925,14 +1663,64 @@ func TestEntityDiffComplex(t *testing.T) {
 			delta, isDiff, _ := Diff(test.base, test.new)
 			if isDiff != test.isDiff {
 				t.Log(delta)
-				t.Errorf("Expected isDiff: %t. Got: %t", test.isDiff, isDiff)
+				t.Errorf("Expected isDiff: %t.\nGot: %t", test.isDiff, isDiff)
 			} else if test.isDiff == false && delta != nil {
-				t.Errorf("Expected isDiff: %t. Got delta: %v", test.isDiff, delta)
+				t.Errorf("Expected isDiff: %t.\nGot delta: %v", test.isDiff, delta)
 			} else if isDiff {
 				if !reflect.DeepEqual(delta, test.delta) {
-					t.Errorf("Expected delta: %v. Got: %v", test.delta, delta)
+					t.Errorf("Expected delta: %v.\nGot: %v", test.delta, delta)
 				}
 			}
 		})
+	}
+}
+
+func TestInstanceOf(t *testing.T) {
+	var (
+		b = String("apple")
+		i = instanceOf(b)
+	)
+	if _, ok := i.(*string); !ok {
+		t.Error("Expected *string")
+	}
+
+	var (
+		h = &[]HolidayHours{
+			HolidayHours{
+				IsClosed: NullableBool(true),
+			},
+		}
+		j = instanceOf(h)
+	)
+	if _, ok := j.(*[]HolidayHours); !ok {
+		t.Error("Expected *[]HolidayHours")
+	}
+
+	var (
+		hours = NullableHours(&Hours{
+			Monday: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(true),
+			}),
+		})
+		k = instanceOf(hours)
+	)
+	if iHours, ok := k.(**Hours); !ok {
+		t.Error("Expected **Hours")
+	} else if *iHours == nil {
+		t.Errorf("*Hours is nil")
+	} else if GetHours(iHours) == nil {
+		t.Error("**Hours instance is nil")
+	}
+
+	var (
+		address = &Address{
+			Line1: String("7900 Westpark"),
+		}
+		l = instanceOf(address)
+	)
+	if iAddress, ok := l.(*Address); !ok {
+		t.Error("Expected *Address")
+	} else if iAddress == nil {
+		t.Error("*Address instance is nil")
 	}
 }

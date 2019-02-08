@@ -5,17 +5,34 @@ import (
 	"fmt"
 )
 
-func defaultEntityRegistry() Registry {
+type EntityRegistry Registry
+
+func defaultEntityRegistry() *EntityRegistry {
 	registry := make(Registry)
 	registry.Register(string(ENTITYTYPE_LOCATION), &Location{})
 	registry.Register(string(ENTITYTYPE_EVENT), &Event{})
-	return registry
+	entityRegistry := EntityRegistry(registry)
+	return &entityRegistry
 }
 
-func toEntityTypes(entities []interface{}, registry Registry) ([]Entity, error) {
+func (r *EntityRegistry) RegisterEntity(t EntityType, entity interface{}) {
+	registry := Registry(*r)
+	registry.Register(string(t), entity)
+}
+
+func (r *EntityRegistry) InitializeEntity(t EntityType) (Entity, error) {
+	registry := Registry(*r)
+	i, err := registry.Initialize(string(t))
+	if err != nil {
+		return nil, err
+	}
+	return i.(Entity), nil
+}
+
+func (r *EntityRegistry) ToEntityTypes(entities []interface{}) ([]Entity, error) {
 	var types = []Entity{}
 	for _, entityInterface := range entities {
-		entity, err := toEntityType(entityInterface, registry)
+		entity, err := r.ToEntityType(entityInterface)
 		if err != nil {
 			return nil, err
 		}
@@ -24,7 +41,7 @@ func toEntityTypes(entities []interface{}, registry Registry) ([]Entity, error) 
 	return types, nil
 }
 
-func toEntityType(entity interface{}, registry Registry) (Entity, error) {
+func (r *EntityRegistry) ToEntityType(entity interface{}) (Entity, error) {
 	// Determine Entity Type
 	var entityValsByKey = entity.(map[string]interface{})
 	meta, ok := entityValsByKey["meta"]
@@ -38,7 +55,8 @@ func toEntityType(entity interface{}, registry Registry) (Entity, error) {
 		return nil, fmt.Errorf("Unable to find entityType attribute in %v\nFor Entity: %v", metaByKey, entity)
 	}
 
-	entityObj, err := registry.Create(entityType.(string))
+	var registry = Registry(*r)
+	entityObj, err := registry.Initialize(entityType.(string))
 	if err != nil {
 		// Unable to create an instace of entityType, use RawEntity instead
 		entityObj = &RawEntity{}

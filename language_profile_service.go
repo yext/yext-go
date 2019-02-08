@@ -8,7 +8,7 @@ const entityProfilesPath = "entityprofiles"
 
 type LanguageProfileService struct {
 	client   *Client
-	registry Registry
+	registry *EntityRegistry
 }
 
 type LanguageProfileListResponse struct {
@@ -20,7 +20,7 @@ func (l *LanguageProfileService) RegisterDefaultEntities() {
 }
 
 func (l *LanguageProfileService) RegisterEntity(t EntityType, entity interface{}) {
-	l.registry.Register(string(t), entity)
+	l.registry.RegisterEntity(t, entity)
 }
 
 func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageProfile, *Response, error) {
@@ -30,7 +30,7 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageP
 		return nil, r, err
 	}
 
-	entity, err := toEntityType(v, l.registry)
+	entity, err := l.registry.ToEntityType(v)
 	if err != nil {
 		return nil, r, err
 	}
@@ -49,7 +49,7 @@ func (l *LanguageProfileService) List(id string) ([]*LanguageProfile, *Response,
 		return nil, r, err
 	}
 
-	typedProfiles, err := toEntityTypes(v.Profiles, l.registry)
+	typedProfiles, err := l.registry.ToEntityTypes(v.Profiles)
 	if err != nil {
 		return nil, r, err
 	}

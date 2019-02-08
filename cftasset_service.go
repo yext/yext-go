@@ -33,7 +33,7 @@ func (a *CFTAssetService) RegisterAssetValue(t AssetType, assetValue interface{}
 }
 
 func (a *CFTAssetService) CreateAssetValue(t AssetType) (interface{}, error) {
-	return a.registry.Create(string(t))
+	return a.registry.Initialize(string(t))
 }
 
 func (a *CFTAssetService) toAssetsWithValues(assets []*CFTAsset) error {

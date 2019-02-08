@@ -10,12 +10,26 @@ func instanceOf(val interface{}) interface{} {
 		isPtr = reflect.ValueOf(val).Kind() == reflect.Ptr
 		tmp   interface{}
 	)
+
 	if isPtr {
-		tmp = reflect.ValueOf(val).Elem().Interface()
-	} else {
-		tmp = val
+		var (
+			ptr         = reflect.New(reflect.TypeOf(val).Elem()).Interface()
+			numPointers = 0
+		)
+		for reflect.ValueOf(val).Kind() == reflect.Ptr {
+			val = reflect.ValueOf(val).Elem().Interface()
+			numPointers++
+		}
+
+		tmp = reflect.New(reflect.TypeOf(val)).Interface()
+		if numPointers == 1 {
+			return tmp
+		}
+		// This will only work for ** pointers, no *** pointers
+		reflect.ValueOf(ptr).Elem().Set(reflect.ValueOf(tmp))
+		return ptr
 	}
-	return reflect.New(reflect.TypeOf(tmp)).Interface()
+	return reflect.New(reflect.TypeOf(val)).Interface()
 }
 
 func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (interface{}, bool) {
@@ -87,12 +101,12 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			// Handle case where new is &Address{} and base is &Address{"Line1"}
 			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
 				isDiff = true
-				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
+				indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 			} else {
 				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
 				if diff {
 					isDiff = true
-					reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d))
+					indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
 				}
 			}
 			continue
@@ -103,8 +117,8 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 		}
 
 		if !reflect.DeepEqual(aI, bI) {
-			reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(valB)
 			isDiff = true
+			indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 		}
 	}
 	return delta, isDiff
@@ -126,7 +140,6 @@ func isNil(v reflect.Value) bool {
 
 // Diff(a, b): a is base, b is new
 func Diff(a Entity, b Entity) (Entity, bool, error) {
-	// TODO: should the below return an error? If not should return an empty b object with entity type set?
 	if a.GetEntityType() != b.GetEntityType() {
 		return nil, true, fmt.Errorf("Entity Types do not match: '%s', '%s'", a.GetEntityType(), b.GetEntityType())
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"strings"
 )
 
 const (
@@ -13,13 +14,20 @@ const (
 
 type EntityService struct {
 	client   *Client
-	registry Registry
+	Registry *EntityRegistry
 }
 
 type EntityListOptions struct {
 	ListOptions
 	SearchID            string
 	ResolvePlaceholders bool
+	EntityTypes         []string
+}
+
+// Used for Create and Edit
+type EntityServiceOptions struct {
+	TemplateId     string   `json:"templateId,omitempty"`
+	TemplateFields []string `json:"templateFields,omitempty"`
 }
 
 type EntityListResponse struct {
@@ -30,23 +38,23 @@ type EntityListResponse struct {
 }
 
 func (e *EntityService) RegisterDefaultEntities() {
-	e.registry = defaultEntityRegistry()
+	e.Registry = defaultEntityRegistry()
 }
 
 func (e *EntityService) RegisterEntity(t EntityType, entity interface{}) {
-	e.registry.Register(string(t), entity)
+	e.Registry.RegisterEntity(t, entity)
 }
 
-func (e *EntityService) CreateEntity(t EntityType) (interface{}, error) {
-	return e.registry.Create(string(t))
+func (e *EntityService) InitializeEntity(t EntityType) (Entity, error) {
+	return e.Registry.InitializeEntity(t)
 }
 
 func (e *EntityService) ToEntityTypes(entities []interface{}) ([]Entity, error) {
-	return toEntityTypes(entities, e.registry)
+	return e.Registry.ToEntityTypes(entities)
 }
 
 func (e *EntityService) ToEntityType(entity interface{}) (Entity, error) {
-	return toEntityType(entity, e.registry)
+	return e.Registry.ToEntityType(entity)
 }
 
 // TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented
@@ -112,6 +120,28 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 	return v, r, nil
 }
 
+func addEntityServiceOptions(requrl string, opts *EntityServiceOptions) (string, error) {
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return "", err
+	}
+
+	if opts == nil {
+		return requrl, nil
+	}
+
+	q := u.Query()
+	if opts.TemplateId != "" {
+		q.Add("templateId", opts.TemplateId)
+	}
+	if len(opts.TemplateFields) > 0 {
+		q.Add("templateFields", strings.Join(opts.TemplateFields, ","))
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
+
 func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error) {
 	if opts == nil {
 		return requrl, nil
@@ -128,6 +158,9 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	}
 	if opts.ResolvePlaceholders {
 		q.Add("resolvePlaceholders", "true")
+	}
+	if len(opts.EntityTypes) > 0 {
+		q.Add("entityTypes", strings.Join(opts.EntityTypes, ","))
 	}
 	u.RawQuery = q.Encode()
 
@@ -187,8 +220,39 @@ func (e *EntityService) Create(y Entity) (*Response, error) {
 	return r, nil
 }
 
-func (e *EntityService) EditWithId(id string, y Entity) (*Response, error) {
-	r, err := e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, id), y, nil)
+func (e *EntityService) CreateWithOptions(y Entity, opts *EntityServiceOptions) (*Response, error) {
+	var (
+		requrl = entityPath
+		err    error
+	)
+
+	requrl, err = addEntityServiceOptions(requrl, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return nil, err
+	}
+	q := u.Query()
+	q.Add("entityType", string(y.GetEntityType()))
+	u.RawQuery = q.Encode()
+	return e.client.DoRequestJSON("POST", u.String(), y, nil)
+}
+
+func (e *EntityService) EditWithOptions(y Entity, id string, opts *EntityServiceOptions) (*Response, error) {
+	var (
+		requrl = fmt.Sprintf("%s/%s", entityPath, id)
+		err    error
+	)
+
+	requrl, err = addEntityServiceOptions(requrl, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := e.client.DoRequestJSON("PUT", requrl, y, nil)
 	if err != nil {
 		return r, err
 	}
@@ -196,6 +260,10 @@ func (e *EntityService) EditWithId(id string, y Entity) (*Response, error) {
 	return r, nil
 }
 
+func (e *EntityService) EditWithId(y Entity, id string) (*Response, error) {
+	return e.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", entityPath, id), y, nil)
+}
+
 func (e *EntityService) Edit(y Entity) (*Response, error) {
-	return e.EditWithId(y.GetEntityId(), y)
+	return e.EditWithId(y, y.GetEntityId())
 }
