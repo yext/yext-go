@@ -10,6 +10,13 @@ import (
 	"fmt"
 )
 
+type LocationType *string
+
+var LOCATIONTYPE_LOCATION LocationType = String("LOCATION")
+var LOCATIONTYPE_HEALTHCARE_PROFESSIONAL LocationType = String("HEALTHCARE PROFESSIONAL")
+var LOCATIONTYPE_HEALTHCARE_FACILITY LocationType = String("HEALTHCARE FACILITY")
+var LOCATIONTYPE_RESTAURANT LocationType = String("RESTAURANT")
+
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type Location struct {
