@@ -1,13 +1,13 @@
 package yext
 
 type Reviewer struct {
-	LocationId *string      `json:"locationId,omitempty"`
-	FirstName  *string      `json:"firstName,omitempty"`
-	LastName   *string      `json:"lastName,omitempty"`
-	Contact    *string      `json:"contact,omitempty"`
-	Image      *bool        `json:"image,omitempty"`
-	TemplateId *string      `json:"templateId,omitempty"`
-	LabelIds   []*string    `json:"labelIds,omitempty"`
+	LocationId *string   `json:"locationId,omitempty"`
+	FirstName  *string   `json:"firstName,omitempty"`
+	LastName   *string   `json:"lastName,omitempty"`
+	Contact    *string   `json:"contact,omitempty"`
+	Image      *bool     `json:"image,omitempty"`
+	TemplateId *string   `json:"templateId,omitempty"`
+	LabelIds   []*string `json:"labelIds,omitempty"`
 }
 
 type Review struct {
@@ -27,6 +27,20 @@ type Review struct {
 	LabelIds           *[]int         `json:"labelIds"`
 	ExternalId         *string        `json:"externalId"`
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
+}
+
+type ReviewCreate struct {
+	LocationId     *string  `json:"locationId"`
+	AccountId      *string  `json:"accountId"`
+	Rating         *float64 `json:"rating"`
+	Content        *string  `json:"content"`
+	AuthorName     *string  `json:"authorName"`
+	AuthorEmail    *string  `json:"authorEmail,omitempty"`
+	Status         *string  `json:"status,omitempty"`
+	FlagStatus     *string  `json:"flagStatus,omitempty"`
+	ReviewLanguage *string  `json:"reviewLanguage,omitempty"`
+	TransationId   *string  `json:"transactionId,omitempty"`
+	Date           *string  `json:"date,omitempty"`
 }
 
 type Comment struct {
