@@ -287,10 +287,13 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if hoursParts[1] == HoursClosed {
 		return Weekday(weekdayInt), HoursClosed, nil
 	}
-	hours := strings.Join(hoursParts[1:], ":")
-	if len(hours) != hoursLen {
-		hours = "0" + hours
+	// Pad hours with leading 0s
+	for i := 1; i < len(hoursParts); i += 2 {
+		if len(hoursParts[i])+len(hoursParts[i+1]) != 4 {
+			hoursParts[i] = "0" + hoursParts[i]
+		}
 	}
+	hours := strings.Join(hoursParts[1:], ":")
 	return Weekday(weekdayInt), hours, nil
 }
 

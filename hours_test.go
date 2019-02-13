@@ -59,6 +59,18 @@ func TestHoursHelperFromString(t *testing.T) {
 			},
 		},
 		{
+			Have: "2:9:00:18:00,3:9:00:18:00,4:9:00:18:00,5:9:00:18:00,6:9:00:18:00,7:10:00:2:00",
+			Want: &LocationHoursHelper{
+				Sunday:    []string{"closed"},
+				Monday:    []string{"09:00:18:00"},
+				Tuesday:   []string{"09:00:18:00"},
+				Wednesday: []string{"09:00:18:00"},
+				Thursday:  []string{"09:00:18:00"},
+				Friday:    []string{"09:00:18:00"},
+				Saturday:  []string{"10:00:02:00"},
+			},
+		},
+		{
 			Have: "",
 			Want: &LocationHoursHelper{
 				Sunday:    nil,
