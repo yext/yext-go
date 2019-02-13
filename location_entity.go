@@ -11,6 +11,11 @@ import (
 
 const ENTITYTYPE_LOCATION EntityType = "location"
 
+// Entity types for custom fields must be MACRO_CASED
+// TODO: wait for completion of this item: https://yexttest.atlassian.net/browse/AO-3660 (ETC End of February 2019)
+// After item is copmleted up the vparam and (hopefully) delete this line and remove all references to it.
+const ENTITYTYPE_LOCATION_CF EntityType = "LOCATION"
+
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type LocationEntity struct {
