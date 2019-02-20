@@ -205,8 +205,8 @@ func (l *ReviewService) CreateInvitation(jsonData []*Reviewer) ([]*ReviewCreateI
 	return v, r, nil
 }
 
-func (l *ReviewService) CreateReview(jsonData []*ReviewCreate) ([]*ReviewCreateReviewResponse, *Response, error) {
-	var v []*ReviewCreateReviewResponse
+func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
+	var v *ReviewCreateReviewResponse
 	r, err := l.client.DoRequestJSON("POST", reviewsPath, jsonData, &v)
 	if err != nil {
 		return nil, r, err
