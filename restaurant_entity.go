@@ -61,7 +61,6 @@ type RestaurantEntity struct {
 	FeaturedMessage **FeaturedMessage `json:"featuredMessage,omitempty"`
 
 	// Uber
-	//UberClientId         *string `json:"uberClientId,omitempty"`
 	UberLink         **UberLink         `json:"uberLink,omitempty"`
 	UberTripBranding **UberTripBranding `json:"uberTripBranding,omitempty"`
 
@@ -84,7 +83,7 @@ type RestaurantEntity struct {
 	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
 
 	// Reviews
-	//ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
+	ReviewGenerationUrl  *string `json:"reviewGenerationUrl,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
 }
 
@@ -344,12 +343,12 @@ func (r RestaurantEntity) GetMenus() (v *Lists) {
 	return GetLists(r.Menus)
 }
 
-// func (r RestaurantEntity) GetReviewBalancingURL() string {
-// 	if r.ReviewBalancingURL != nil {
-// 		return *r.ReviewBalancingURL
-// 	}
-// 	return ""
-// }
+func (r RestaurantEntity) GetReviewGenerationUrl() string {
+	if r.ReviewGenerationUrl != nil {
+		return *r.ReviewGenerationUrl
+	}
+	return ""
+}
 
 func (r RestaurantEntity) GetFirstPartyReviewPage() string {
 	if r.FirstPartyReviewPage != nil {
