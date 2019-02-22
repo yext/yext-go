@@ -9,8 +9,9 @@ type EntityRegistry Registry
 
 func defaultEntityRegistry() *EntityRegistry {
 	registry := make(Registry)
-	registry.Register(string(ENTITYTYPE_LOCATION), &Location{})
-	registry.Register(string(ENTITYTYPE_EVENT), &Event{})
+	registry.Register(string(ENTITYTYPE_LOCATION), &LocationEntity{})
+	registry.Register(string(ENTITYTYPE_EVENT), &EventEntity{})
+	registry.Register(string(ENTITYTYPE_RESTAURANT), &RestaurantEntity{})
 	entityRegistry := EntityRegistry(registry)
 	return &entityRegistry
 }

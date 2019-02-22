@@ -78,7 +78,6 @@ type LocationEntity struct {
 	FeaturedMessage **FeaturedMessage `json:"featuredMessage,omitempty"`
 
 	// Uber
-	//UberClientId         *string `json:"uberClientId,omitempty"`
 	UberLink         **UberLink         `json:"uberLink,omitempty"`
 	UberTripBranding **UberTripBranding `json:"uberTripBranding,omitempty"`
 
@@ -101,7 +100,7 @@ type LocationEntity struct {
 	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
 
 	// Reviews
-	//ReviewBalancingURL   *string `json:"reviewBalancingURL,omitempty"`
+	ReviewGenerationUrl  *string `json:"reviewGenerationUrl,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
 }
 
@@ -733,12 +732,12 @@ func (y LocationEntity) GetMenus() (v *Lists) {
 	return GetLists(y.Menus)
 }
 
-// func (y LocationEntity) GetReviewBalancingURL() string {
-// 	if y.ReviewBalancingURL != nil {
-// 		return *y.ReviewBalancingURL
-// 	}
-// 	return ""
-// }
+func (y LocationEntity) GetReviewGenerationUrl() string {
+	if y.ReviewGenerationUrl != nil {
+		return *y.ReviewGenerationUrl
+	}
+	return ""
+}
 
 func (y LocationEntity) GetFirstPartyReviewPage() string {
 	if y.FirstPartyReviewPage != nil {
@@ -831,7 +830,7 @@ func (y LocationEntity) GetGoogleAttributes() map[string][]string {
 
 func (y LocationEntity) GetHolidayHours() []HolidayHours {
 	h := GetHours(y.Hours)
-	if h != nil {
+	if h != nil && h.HolidayHours != nil {
 		return *h.HolidayHours
 	}
 	return nil

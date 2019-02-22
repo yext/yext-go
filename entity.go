@@ -39,13 +39,29 @@ func (b *BaseEntity) GetEntityType() EntityType {
 }
 
 func (b *BaseEntity) GetFolderId() string {
+	if b == nil || b.Meta == nil {
+		return ""
+	}
 	if b.Meta.FolderId != nil {
 		return *b.Meta.FolderId
 	}
 	return ""
 }
 
+func (b *BaseEntity) GetCountryCode() string {
+	if b == nil || b.Meta == nil {
+		return ""
+	}
+	if b.Meta.CountryCode != nil {
+		return *b.Meta.CountryCode
+	}
+	return ""
+}
+
 func (b *BaseEntity) GetLabels() (v UnorderedStrings) {
+	if b == nil || b.Meta == nil {
+		return nil
+	}
 	if b.Meta.Labels != nil {
 		v = *b.Meta.Labels
 	}

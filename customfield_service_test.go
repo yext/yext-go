@@ -163,16 +163,16 @@ var cfm = &CustomFieldManager{
 }
 
 func TestMustIsMultiOptionSet(t *testing.T) {
-	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_red"}) {
+	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", ToUnorderedStrings([]string{"c_red"})) {
 		t.Error("TestMustIsMultiOptionSet: red is set but got false")
 	}
-	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_blue"}) {
+	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", ToUnorderedStrings([]string{"c_blue"})) {
 		t.Error("TestMustIsMultiOptionSet: blue is not set but got true")
 	}
-	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{"c_blue", "c_red"}) {
+	if !cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", ToUnorderedStrings([]string{"c_blue", "c_red"})) {
 		t.Error("TestMustIsMultiOptionSet: red is set but got false")
 	}
-	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", &[]string{}) {
+	if cfm.MustIsMultiOptionSet("My Favorite Colors", "Red", ToUnorderedStrings([]string{})) {
 		t.Error("TestMustIsMultiOptionSet: red is not set but got true")
 	}
 }
