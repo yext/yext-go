@@ -543,6 +543,13 @@ func (y LocationEntity) GetRegion() string {
 	return ""
 }
 
+func (y LocationEntity) GetCountryCode() string {
+	if y.BaseEntity.Meta != nil && y.BaseEntity.Meta.CountryCode != nil {
+		return GetString(y.BaseEntity.Meta.CountryCode)
+	}
+	return ""
+}
+
 func (y LocationEntity) GetPostalCode() string {
 	if y.Address != nil && y.Address.PostalCode != nil {
 		return GetString(y.Address.PostalCode)
