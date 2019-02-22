@@ -831,7 +831,7 @@ func (y LocationEntity) GetGoogleAttributes() map[string][]string {
 
 func (y LocationEntity) GetHolidayHours() []HolidayHours {
 	h := GetHours(y.Hours)
-	if h != nil {
+	if h != nil && h.HolidayHours != nil {
 		return *h.HolidayHours
 	}
 	return nil

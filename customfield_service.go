@@ -181,16 +181,16 @@ func (c *CustomFieldManager) NullSingleOption() **string {
 	return NullString()
 }
 
-func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *[]string {
+func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *UnorderedStrings {
 	var optionIds = []string{}
 	for _, optionName := range optionNames {
 		id := c.MustCustomFieldOptionId(fieldName, optionName)
 		optionIds = append(optionIds, id)
 	}
-	return &optionIds
+	return ToUnorderedStrings(optionIds)
 }
 
-func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *[]string) bool {
+func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
 	if setOptionIds == nil {
 		return false
 	}
@@ -203,8 +203,8 @@ func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName s
 	return false
 }
 
-func (c *CustomFieldManager) NullMultiOption() *[]string {
-	return &[]string{}
+func (c *CustomFieldManager) NullMultiOption() *UnorderedStrings {
+	return ToUnorderedStrings([]string{})
 }
 
 func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {
