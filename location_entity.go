@@ -387,7 +387,7 @@ func (h *Hours) GetDayHours(w Weekday) *DayHours {
 	return nil
 }
 
-func (h *Hours) SetClosedAllWeek() {
+func (h *Hours) SetClosedAllWeek() *Hours {
 	h.SetClosed(Sunday)
 	h.SetClosed(Monday)
 	h.SetClosed(Tuesday)
@@ -395,6 +395,7 @@ func (h *Hours) SetClosedAllWeek() {
 	h.SetClosed(Thursday)
 	h.SetClosed(Friday)
 	h.SetClosed(Saturday)
+	return h
 }
 
 func (h *Hours) SetClosed(w Weekday) {
