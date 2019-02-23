@@ -309,6 +309,12 @@ func (h Hours) String() string {
 	return string(b)
 }
 
+func NewHoursClosedAllWeek() *Hours {
+	h := &Hours{}
+	h.SetClosedAllWeek()
+	return h
+}
+
 type DayHours struct {
 	OpenIntervals *[]Interval `json:"openIntervals,omitempty"`
 	IsClosed      **bool      `json:"isClosed,omitempty"`
