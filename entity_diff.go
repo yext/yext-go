@@ -81,9 +81,10 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			comparableB, bOk := bI.(Comparable)
 			if aOk && bOk {
 				if !comparableA.Equal(comparableB) {
-					return b, true
+					isDiff = true
+					indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 				}
-				return nil, false
+				continue
 			}
 		}
 

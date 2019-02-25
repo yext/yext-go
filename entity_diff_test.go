@@ -1656,6 +1656,63 @@ func TestEntityDiffComplex(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "Meta",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							CountryCode: String("US"),
+							Labels:      ToUnorderedStrings([]string{"label1"}),
+						},
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							CountryCode: String("US"),
+							Labels:      ToUnorderedStrings([]string{"label1", "label2"}),
+						},
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							Labels: ToUnorderedStrings([]string{"label1", "label2"}),
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Meta",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							CountryCode: String("US"),
+							Labels:      ToUnorderedStrings([]string{"label1"}),
+						},
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							CountryCode: String("US"),
+							Labels:      ToUnorderedStrings([]string{"label1"}),
+						},
+					},
+				},
+			},
+			isDiff: false,
+		},
 	}
 
 	for _, test := range tests {
