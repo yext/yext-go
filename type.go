@@ -209,7 +209,9 @@ func (a *UnorderedStrings) Equal(b Comparable) bool {
 		}
 	}()
 
-	if a == nil || b == nil {
+	if a == nil && b == nil {
+		return true
+	} else if a == nil || b == nil {
 		return false
 	}
 
