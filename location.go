@@ -710,18 +710,18 @@ func (y Location) IsClosed() bool {
 }
 
 //Education is an entry in EducationList which represents a location's (person's) education history
-type Education struct {
+type LocationEducation struct {
 	InstitutionName string `json:"institutionName,omitempty"`
 	Type            string `json:"type,omitempty"`
 	YearCompleted   string `json:"yearCompleted,omitempty"`
 }
 
-func (e Education) String() string {
+func (e LocationEducation) String() string {
 	return fmt.Sprintf("Institution Name: '%v', Type: '%v', Year Completed: '%v'", e.InstitutionName, e.Type, e.YearCompleted)
 }
 
 // Equal compares Education
-func (a *Education) Equal(b Comparable) bool {
+func (a *LocationEducation) Equal(b Comparable) bool {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
@@ -734,8 +734,8 @@ func (a *Education) Equal(b Comparable) bool {
 	}
 
 	var (
-		u = Education(*a)
-		s = Education(*b.(*Education))
+		u = LocationEducation(*a)
+		s = LocationEducation(*b.(*LocationEducation))
 	)
 	if u.InstitutionName != s.InstitutionName {
 		return false
@@ -752,7 +752,7 @@ func (a *Education) Equal(b Comparable) bool {
 	return true
 }
 
-type EducationList []*Education
+type EducationList []*LocationEducation
 
 func (e EducationList) String() string {
 	var ret string
@@ -782,8 +782,8 @@ func (a *EducationList) Equal(b Comparable) bool {
 	}
 
 	var (
-		u = []*Education(*a)
-		s = []*Education(*b.(*EducationList))
+		u = []*LocationEducation(*a)
+		s = []*LocationEducation(*b.(*EducationList))
 	)
 	if len(u) != len(s) {
 		return false

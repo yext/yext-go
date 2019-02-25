@@ -236,6 +236,14 @@ func (a *UnorderedStrings) Equal(b Comparable) bool {
 }
 
 func ToUnorderedStrings(v []string) *UnorderedStrings {
+	if v == nil {
+		return nil
+	}
+	u := UnorderedStrings(v)
+	return &u
+}
+
+func NullableUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
 }
