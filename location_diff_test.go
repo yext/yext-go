@@ -1343,6 +1343,15 @@ func TestLabels(t *testing.T) {
 				},
 				WantDiff: true,
 			},
+			Scenario{
+				A: &Location{
+					LabelIds: nil,
+				},
+				B: &Location{
+					LabelIds: nil,
+				},
+				WantDiff: false,
+			},
 		}
 	)
 
