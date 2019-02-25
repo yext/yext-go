@@ -495,6 +495,13 @@ func (y LocationEntity) GetId() string {
 	return ""
 }
 
+func (y LocationEntity) GetCategoryIds() (v []string) {
+	if y.CategoryIds != nil {
+		v = *y.CategoryIds
+	}
+	return v
+}
+
 func (y LocationEntity) GetName() string {
 	if y.Name != nil {
 		return GetString(y.Name)
