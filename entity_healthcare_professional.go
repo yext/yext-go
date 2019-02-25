@@ -14,8 +14,6 @@ const ENTITYTYPE_HEALTHCAREPROFESSIONAL EntityType = "healthcareProfessional"
 
 const ENTITYTYPE_HEALTHCAREPROFESSIONAL_CF EntityType = "HEALTHCARE_PROFESSIONAL"
 
-// Location is the representation of a Location in Yext Location Manager.
-// For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type HealthcareProfessionalEntity struct {
 	BaseEntity
 
