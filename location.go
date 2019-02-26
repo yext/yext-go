@@ -16,6 +16,7 @@ var LOCATIONTYPE_LOCATION LocationType = String("LOCATION")
 var LOCATIONTYPE_HEALTHCARE_PROFESSIONAL LocationType = String("HEALTHCARE_PROFESSIONAL")
 var LOCATIONTYPE_HEALTHCARE_FACILITY LocationType = String("HEALTHCARE_FACILITY")
 var LOCATIONTYPE_RESTAURANT LocationType = String("RESTAURANT")
+var LOCATIONTYPE_EVENT LocationType = String("EVENT")
 
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
