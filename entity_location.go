@@ -341,6 +341,13 @@ func (d *DayHours) SetClosed() {
 	d.OpenIntervals = nil
 }
 
+func (d *DayHours) GetIntervals() []Interval {
+	if d != nil && d.OpenIntervals != nil {
+		return *d.OpenIntervals
+	}
+	return nil
+}
+
 func (d *DayHours) AddHours(start string, end string) {
 	intervals := []Interval{}
 	d.IsClosed = nil
@@ -374,6 +381,9 @@ func NewInterval(start string, end string) *Interval {
 }
 
 func (h *Hours) GetDayHours(w Weekday) *DayHours {
+	if h == nil {
+		return nil
+	}
 	switch w {
 	case Sunday:
 		return GetDayHours(h.Sunday)
