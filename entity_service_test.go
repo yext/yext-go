@@ -54,60 +54,66 @@ func TestEntityListOptions(t *testing.T) {
 		opts                *EntityListOptions
 		limit               string
 		token               string
-		searchID            string
+		searchIDs           string
 		entityTypes         string
 		resolvePlaceholders bool
 	}{
 		{
-			opts:     nil,
-			limit:    "",
-			token:    "",
-			searchID: "",
+			opts:      nil,
+			limit:     "",
+			token:     "",
+			searchIDs: "",
 		},
 		{
 			// The values are technically 0,0, but that doesn't make any sense in the context of a list request
-			opts:     &EntityListOptions{ListOptions: ListOptions{}},
-			limit:    "",
-			token:    "",
-			searchID: "",
+			opts:      &EntityListOptions{ListOptions: ListOptions{}},
+			limit:     "",
+			token:     "",
+			searchIDs: "",
 		},
 		{
-			opts:     &EntityListOptions{ListOptions: ListOptions{Limit: 10}},
-			limit:    "10",
-			token:    "",
-			searchID: "",
+			opts:      &EntityListOptions{ListOptions: ListOptions{Limit: 10}},
+			limit:     "10",
+			token:     "",
+			searchIDs: "",
 		},
 		{
 			opts:        &EntityListOptions{EntityTypes: []string{"location"}},
 			limit:       "",
 			token:       "",
-			searchID:    "",
+			searchIDs:   "",
 			entityTypes: "location",
 		},
 		{
 			opts:        &EntityListOptions{EntityTypes: []string{"location,event"}},
 			limit:       "",
 			token:       "",
-			searchID:    "",
+			searchIDs:   "",
 			entityTypes: "location,event",
 		},
 		{
-			opts:     &EntityListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
-			limit:    "",
-			token:    "qwerty1234",
-			searchID: "",
+			opts:      &EntityListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
+			limit:     "",
+			token:     "qwerty1234",
+			searchIDs: "",
 		},
 		{
-			opts:     &EntityListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
-			limit:    "42",
-			token:    "asdfgh4321",
-			searchID: "",
+			opts:      &EntityListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
+			limit:     "42",
+			token:     "asdfgh4321",
+			searchIDs: "",
 		},
 		{
-			opts:     &EntityListOptions{SearchID: "1234", ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
-			limit:    "42",
-			token:    "asdfgh4321",
-			searchID: "1234",
+			opts:      &EntityListOptions{SearchIDs: []string{"1234"}},
+			limit:     "",
+			token:     "",
+			searchIDs: "1234",
+		},
+		{
+			opts:      &EntityListOptions{SearchIDs: []string{"1234", "5678"}, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
+			limit:     "42",
+			token:     "asdfgh4321",
+			searchIDs: "1234,5678",
 		},
 		{
 			opts:                &EntityListOptions{ResolvePlaceholders: true, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
@@ -126,8 +132,8 @@ func TestEntityListOptions(t *testing.T) {
 			if v := r.URL.Query().Get("pageToken"); v != test.token {
 				t.Errorf("Wanted token %s, got %s", test.token, v)
 			}
-			if v := r.URL.Query().Get("searchId"); v != test.searchID {
-				t.Errorf("Wanted searchId %s, got %s", test.searchID, v)
+			if v := r.URL.Query().Get("searchIds"); v != test.searchIDs {
+				t.Errorf("Wanted searchId %s, got %s", test.searchIDs, v)
 			}
 			if v := r.URL.Query().Get("entityTypes"); v != test.entityTypes {
 				t.Errorf("Wanted entityTypes %s, got %s", test.entityTypes, v)

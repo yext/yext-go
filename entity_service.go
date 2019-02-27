@@ -19,7 +19,7 @@ type EntityService struct {
 
 type EntityListOptions struct {
 	ListOptions
-	SearchID            string
+	SearchIDs           []string
 	ResolvePlaceholders bool
 	EntityTypes         []string
 }
@@ -153,8 +153,8 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	}
 
 	q := u.Query()
-	if opts.SearchID != "" {
-		q.Add("searchId", opts.SearchID)
+	if len(opts.SearchIDs) > 0 {
+		q.Add("searchIds", strings.Join(opts.SearchIDs, ","))
 	}
 	if opts.ResolvePlaceholders {
 		q.Add("resolvePlaceholders", "true")
