@@ -61,266 +61,266 @@ type ReviewLabel struct {
 	Name *string `json:"name"`
 }
 
-func (y *Review) GetId() int {
+func (y Review) GetId() int {
 	if y.Id != nil {
 		return *y.Id
 	}
 	return 0
 }
 
-func (y *Review) GetLocationId() string {
+func (y Review) GetLocationId() string {
 	if y.LocationId != nil {
 		return *y.LocationId
 	}
 	return ""
 }
 
-func (y *Review) GetPublisherId() string {
+func (y Review) GetPublisherId() string {
 	if y.PublisherId != nil {
 		return *y.PublisherId
 	}
 	return ""
 }
 
-func (y *Review) GetRating() float64 {
+func (y Review) GetRating() float64 {
 	if y.Rating != nil {
 		return *y.Rating
 	}
 	return -1
 }
 
-func (y *Review) GetTitle() string {
+func (y Review) GetTitle() string {
 	if y.Title != nil {
 		return *y.Title
 	}
 	return ""
 }
 
-func (y *Review) GetContent() string {
+func (y Review) GetContent() string {
 	if y.Content != nil {
 		return *y.Content
 	}
 	return ""
 }
 
-func (y *Review) GetAuthorName() string {
+func (y Review) GetAuthorName() string {
 	if y.AuthorName != nil {
 		return *y.AuthorName
 	}
 	return ""
 }
 
-func (y *Review) GetAuthorEmail() string {
+func (y Review) GetAuthorEmail() string {
 	if y.AuthorEmail != nil {
 		return *y.AuthorEmail
 	}
 	return ""
 }
 
-func (y *Review) GetURL() string {
+func (y Review) GetURL() string {
 	if y.URL != nil {
 		return *y.URL
 	}
 	return ""
 }
 
-func (y *Review) GetPublisherDate() int {
+func (y Review) GetPublisherDate() int {
 	if y.PublisherDate != nil {
 		return *y.PublisherDate
 	}
 	return 0
 }
 
-func (y *Review) GetLastYextUpdateDate() int {
+func (y Review) GetLastYextUpdateDate() int {
 	if y.LastYextUpdateDate != nil {
 		return *y.LastYextUpdateDate
 	}
 	return 0
 }
 
-func (y *Review) GetStatus() string {
+func (y Review) GetStatus() string {
 	if y.Status != nil {
 		return *y.Status
 	}
 	return ""
 }
 
-func (y *Review) GetLabelIds() (v []int) {
+func (y Review) GetLabelIds() (v []int) {
 	if y.LabelIds != nil {
 		v = *y.LabelIds
 	}
 	return v
 }
 
-func (y *Review) GetExternalId() string {
+func (y Review) GetExternalId() string {
 	if y.ExternalId != nil {
 		return *y.ExternalId
 	}
 	return ""
 }
 
-func (y *Review) GetReviewLabels() (v []ReviewLabel) {
+func (y Review) GetReviewLabels() (v []ReviewLabel) {
 	if y.ReviewLabels != nil {
 		v = *y.ReviewLabels
 	}
 	return v
 }
 
-func (y *Review) GetComments() (v []Comment) {
+func (y Review) GetComments() (v []Comment) {
 	if y.Comments != nil {
 		v = *y.Comments
 	}
 	return v
 }
 
-func (y *Comment) GetId() int {
+func (y Comment) GetId() int {
 	if y.Id != nil {
 		return *y.Id
 	}
 	return 0
 }
 
-func (y *Comment) GetParentId() int {
+func (y Comment) GetParentId() int {
 	if y.ParentId != nil {
 		return *y.ParentId
 	}
 	return 0
 }
 
-func (y *Comment) GetPublisherDate() int {
+func (y Comment) GetPublisherDate() int {
 	if y.PublisherDate != nil {
 		return *y.PublisherDate
 	}
 	return 0
 }
 
-func (y *Comment) GetAuthorName() string {
+func (y Comment) GetAuthorName() string {
 	if y.AuthorName != nil {
 		return *y.AuthorName
 	}
 	return ""
 }
 
-func (y *Comment) GetAuthorEmail() string {
+func (y Comment) GetAuthorEmail() string {
 	if y.AuthorEmail != nil {
 		return *y.AuthorEmail
 	}
 	return ""
 }
 
-func (y *Comment) GetAuthorRole() string {
+func (y Comment) GetAuthorRole() string {
 	if y.AuthorRole != nil {
 		return *y.AuthorRole
 	}
 	return ""
 }
 
-func (y *Comment) GetContent() string {
+func (y Comment) GetContent() string {
 	if y.Content != nil {
 		return *y.Content
 	}
 	return ""
 }
 
-func (y *Comment) GetVisibility() string {
+func (y Comment) GetVisibility() string {
 	if y.Visibility != nil {
 		return *y.Visibility
 	}
 	return ""
 }
 
-func (y *ReviewLabel) GetId() int {
+func (y ReviewLabel) GetId() int {
 	if y.Id != nil {
 		return *y.Id
 	}
 	return 0
 }
 
-func (y *ReviewLabel) GetName() string {
+func (y ReviewLabel) GetName() string {
 	if y.Name != nil {
 		return *y.Name
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetLocationId() string {
+func (y ReviewCreate) GetLocationId() string {
 	if y.LocationId != nil {
 		return *y.LocationId
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetAccountId() string {
+func (y ReviewCreate) GetAccountId() string {
 	if y.AccountId != nil {
 		return *y.AccountId
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetRating() float64 {
+func (y ReviewCreate) GetRating() float64 {
 	if y.Rating != nil {
 		return *y.Rating
 	}
 	return 0
 }
 
-func (y *ReviewCreate) GetContent() string {
+func (y ReviewCreate) GetContent() string {
 	if y.Content != nil {
 		return *y.Content
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetAuthorName() string {
+func (y ReviewCreate) GetAuthorName() string {
 	if y.AuthorName != nil {
 		return *y.AuthorName
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetAuthorEmail() string {
+func (y ReviewCreate) GetAuthorEmail() string {
 	if y.AuthorEmail != nil {
 		return *y.AuthorEmail
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetStatus() string {
+func (y ReviewCreate) GetStatus() string {
 	if y.Status != nil {
 		return *y.Status
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetFlagStatus() string {
+func (y ReviewCreate) GetFlagStatus() string {
 	if y.FlagStatus != nil {
 		return *y.FlagStatus
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetReviewLanguage() string {
+func (y ReviewCreate) GetReviewLanguage() string {
 	if y.ReviewLanguage != nil {
 		return *y.ReviewLanguage
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetTransactionId() string {
+func (y ReviewCreate) GetTransactionId() string {
 	if y.TransactionId != nil {
 		return *y.TransactionId
 	}
 	return ""
 }
 
-func (y *ReviewCreate) GetDate() string {
+func (y ReviewCreate) GetDate() string {
 	if y.Date != nil {
 		return *y.Date
 	}
 	return ""
 }
 
-func (y *ReviewCreate) String() string {
+func (y ReviewCreate) String() string {
 	b, _ := json.Marshal(y)
 	return string(b)
 }

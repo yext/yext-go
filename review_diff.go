@@ -20,7 +20,7 @@ func (a *ReviewCreate) Diff(b *ReviewCreate) (d *ReviewCreate, diff bool) {
 			valB  = bValue.Field(i)
 		)
 
-		if valB.IsNil() || nameA == "Id" {
+		if valB.IsNil() {
 			continue
 		}
 
