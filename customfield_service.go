@@ -182,12 +182,23 @@ func (c *CustomFieldManager) NullSingleOption() **string {
 }
 
 func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *UnorderedStrings {
-	var optionIds = []string{}
-	for _, optionName := range optionNames {
-		id := c.MustCustomFieldOptionId(fieldName, optionName)
-		optionIds = append(optionIds, id)
-	}
-	return ToUnorderedStrings(optionIds)
+    var optionIds = []string{}
+    for _, optionName := range optionNames {
+        id := c.MustCustomFieldOptionId(fieldName, optionName)
+
+        shouldAddOptionId := true
+        for _, optionId := range optionIds {
+            if id == optionId { // Don't add duplicate option ids
+                shouldAddOptionId = false
+                break
+            }
+        }
+
+        if shouldAddOptionId {
+            optionIds = append(optionIds, id)
+        }
+    }
+    return ToUnorderedStrings(optionIds)
 }
 
 func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
