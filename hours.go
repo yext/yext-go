@@ -84,6 +84,25 @@ func LocationHoursHelperFromString(str string) (*LocationHoursHelper, error) {
 	return hoursHelper, nil
 }
 
+func LocationHoursHelperFromStringPartial(str string) (*LocationHoursHelper, error) {
+	var (
+		hoursHelper  = &LocationHoursHelper{}
+		hoursForDays = strings.Split(str, ",")
+	)
+	if len(str) == 0 {
+		return hoursHelper, nil
+	}
+	for _, hoursForDay := range hoursForDays {
+		weekday, hours, err := parseWeekdayAndHoursFromString(hoursForDay)
+		if err != nil {
+			return nil, err
+		}
+		hoursHelper.AppendHours(weekday, hours)
+	}
+
+	return hoursHelper, nil
+}
+
 func MustLocationHoursHelperFromString(str string) *LocationHoursHelper {
 	hoursHelper, err := LocationHoursHelperFromString(str)
 	if err != nil {
@@ -211,11 +230,46 @@ func (h *LocationHoursHelper) StructSerialize() **Hours {
 
 }
 
+func (h *LocationHoursHelper) StructSerializePartial() **Hours {
+	if h.HoursAreAllUnspecified() {
+		return NullHours()
+	}
+	hours := &Hours{}
+	hours.Sunday = NullableDayHours(h.StructSerializeDayPartial(Sunday))
+	hours.Monday = NullableDayHours(h.StructSerializeDayPartial(Monday))
+	hours.Tuesday = NullableDayHours(h.StructSerializeDayPartial(Tuesday))
+	hours.Wednesday = NullableDayHours(h.StructSerializeDayPartial(Wednesday))
+	hours.Thursday = NullableDayHours(h.StructSerializeDayPartial(Thursday))
+	hours.Friday = NullableDayHours(h.StructSerializeDayPartial(Friday))
+	hours.Saturday = NullableDayHours(h.StructSerializeDayPartial(Saturday))
+	return NullableHours(hours)
+
+}
+
 func (h *LocationHoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
 	if h.HoursAreUnspecified(weekday) || h.HoursAreClosed(weekday) || len(h.GetHours(weekday)) == 0 {
 		return &DayHours{
 			IsClosed: NullableBool(true),
 		}
+	}
+	var d = &DayHours{}
+	intervals := []Interval{}
+	for _, interval := range h.GetHours(weekday) {
+		parts := strings.Split(interval, ":")
+		intervals = append(intervals,
+			Interval{
+				Start: fmt.Sprintf("%s:%s", parts[0], parts[1]),
+				End:   fmt.Sprintf("%s:%s", parts[2], parts[3]),
+			},
+		)
+	}
+	d.OpenIntervals = &intervals
+	return d
+}
+
+func (h *LocationHoursHelper) StructSerializeDayPartial(weekday Weekday) *DayHours {
+	if h.HoursAreUnspecified(weekday) || h.HoursAreClosed(weekday) || len(h.GetHours(weekday)) == 0 {
+		return nil
 	}
 	var d = &DayHours{}
 	intervals := []Interval{}
