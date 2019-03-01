@@ -268,8 +268,13 @@ func (h *LocationHoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
 }
 
 func (h *LocationHoursHelper) StructSerializeDayPartial(weekday Weekday) *DayHours {
-	if h.HoursAreUnspecified(weekday) || h.HoursAreClosed(weekday) || len(h.GetHours(weekday)) == 0 {
+	if h.HoursAreUnspecified(weekday) || len(h.GetHours(weekday)) == 0 {
 		return nil
+	}
+	if h.HoursAreClosed(weekday) {
+		return &DayHours{
+			IsClosed: NullableBool(true),
+		}
 	}
 	var d = &DayHours{}
 	intervals := []Interval{}
