@@ -53,19 +53,19 @@ type HealthcareProfessionalEntity struct {
 	PaymentOptions      *[]string `json:"paymentOptions,omitempty"`
 
 	// Healthcare
-	FirstName            *string        `json:"firstName,omitempty"`
-	MiddleName           *string        `json:"middleName,omitempty"`
-	LastName             *string        `json:"lastName,omitempty"`
-	Gender               *string        `json:"gender,omitempty"`
-	Headshot             *LocationPhoto `json:"headshot,omitempty"`
-	AcceptingNewPatients *bool          `json:"acceptingNewPatients,omitempty"`
-	AdmittingHospitals   *[]string      `json:"admittingHospitals,omitempty"`
-	ConditionsTreated    *[]string      `json:"conditionsTreated,omitempty"`
-	InsuranceAccepted    *[]string      `json:"insuranceAccepted,omitempty"`
-	NPI                  *string        `json:"npi,omitempty"`
-	OfficeName           *string        `json:"officeName,omitempty"`
-	Degrees              *[]string      `json:"degrees,omitempty"`
-	EducationList        *[]Education   `json:"educationList,omitempty"`
+	FirstName            *string      `json:"firstName,omitempty"`
+	MiddleName           *string      `json:"middleName,omitempty"`
+	LastName             *string      `json:"lastName,omitempty"`
+	Gender               *string      `json:"gender,omitempty"`
+	Headshot             **Image      `json:"headshot,omitempty"`
+	AcceptingNewPatients *bool        `json:"acceptingNewPatients,omitempty"`
+	AdmittingHospitals   *[]string    `json:"admittingHospitals,omitempty"`
+	ConditionsTreated    *[]string    `json:"conditionsTreated,omitempty"`
+	InsuranceAccepted    *[]string    `json:"insuranceAccepted,omitempty"`
+	NPI                  *string      `json:"npi,omitempty"`
+	OfficeName           *string      `json:"officeName,omitempty"`
+	Degrees              *[]string    `json:"degrees,omitempty"`
+	EducationList        *[]Education `json:"educationList,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`

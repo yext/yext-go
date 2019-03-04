@@ -1657,6 +1657,20 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 		},
 		{
+			name: "Phone",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					MainPhone: String("7032985819"),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					MainPhone: String("7032985819"),
+				},
+			},
+			isDiff: false,
+		},
+		{
 			name: "Meta",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
@@ -1707,6 +1721,42 @@ func TestEntityDiffComplex(t *testing.T) {
 						Meta: &EntityMeta{
 							CountryCode: String("US"),
 							Labels:      ToUnorderedStrings([]string{"label1"}),
+						},
+					},
+				},
+			},
+			isDiff: false,
+		},
+		{
+			name: "PhotoGallery",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					PhotoGallery: &[]Photo{
+						Photo{
+							Image: &Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg?context=bWFzdGVyfHJvb3R8MTA3NDM1fGltYWdlL2pwZWd8aGI2L2gzNi84Nzk2NTg2NTQxMDg2LmpwZ3w5MmI1ZTAzZmZhYjc4ODBiNTk2NWMxZGIyZWE5Yjc3N2RhMGE4MjNjZjM2YzU0MjQ0NmE2NWQ5ODZmODcxZGEy"),
+							},
+						},
+						Photo{
+							Image: &Image{
+								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg?context=bWFzdGVyfHJvb3R8OTU0ODN8aW1hZ2UvanBlZ3xoZGMvaDg2Lzg3OTY1ODgxNzk0ODYuanBnfDRkZGIyMTVmZjNiYTI2NGYyNTc0ODdjMDZjM2ZkZTU3YWVlYjBhYWM5MjkwMWM1MjRiMjIyYmM2NWVkODI3MzI"),
+							},
+						},
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					PhotoGallery: &[]Photo{
+						Photo{
+							Image: &Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg?context=bWFzdGVyfHJvb3R8MTA3NDM1fGltYWdlL2pwZWd8aGI2L2gzNi84Nzk2NTg2NTQxMDg2LmpwZ3w5MmI1ZTAzZmZhYjc4ODBiNTk2NWMxZGIyZWE5Yjc3N2RhMGE4MjNjZjM2YzU0MjQ0NmE2NWQ5ODZmODcxZGEy"),
+							},
+						},
+						Photo{
+							Image: &Image{
+								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg?context=bWFzdGVyfHJvb3R8OTU0ODN8aW1hZ2UvanBlZ3xoZGMvaDg2Lzg3OTY1ODgxNzk0ODYuanBnfDRkZGIyMTVmZjNiYTI2NGYyNTc0ODdjMDZjM2ZkZTU3YWVlYjBhYWM5MjkwMWM1MjRiMjIyYmM2NWVkODI3MzI"),
+							},
 						},
 					},
 				},
