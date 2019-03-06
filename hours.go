@@ -197,7 +197,7 @@ func (h *LocationHoursHelper) StringSerializeDay(weekday Weekday) string {
 
 func (h *LocationHoursHelper) StructSerialize() **Hours {
 	if h.HoursAreAllUnspecified() {
-		return NullHours()
+		return NullRegularHours()
 	}
 	hours := &Hours{}
 	hours.Sunday = NullableDayHours(h.StructSerializeDay(Sunday))

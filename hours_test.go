@@ -454,7 +454,7 @@ func TestStructSerialize(t *testing.T) {
 				Friday:    nil,
 				Saturday:  nil,
 			},
-			Want: NullHours(),
+			Want: NullRegularHours(),
 		},
 	}
 

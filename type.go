@@ -197,6 +197,20 @@ func NullHours() **Hours {
 	return &v
 }
 
+func NullRegularHours() **Hours {
+	var v *Hours
+	v = &Hours{
+		Sunday:    NullDayHours(),
+		Monday:    NullDayHours(),
+		Tuesday:   NullDayHours(),
+		Wednesday: NullDayHours(),
+		Thursday:  NullDayHours(),
+		Friday:    NullDayHours(),
+		Saturday:  NullDayHours(),
+	}
+	return NullableHours(v)
+}
+
 // UnorderedStrings masks []string properties for which Order doesn't matter, such as LabelIds
 type UnorderedStrings []string
 
