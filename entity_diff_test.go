@@ -1785,7 +1785,7 @@ func TestEntityDiffComplex(t *testing.T) {
 func TestInstanceOf(t *testing.T) {
 	var (
 		b = String("apple")
-		i = instanceOf(b)
+		i = InstanceOf(b)
 	)
 	if _, ok := i.(*string); !ok {
 		t.Error("Expected *string")
@@ -1797,7 +1797,7 @@ func TestInstanceOf(t *testing.T) {
 				IsClosed: NullableBool(true),
 			},
 		}
-		j = instanceOf(h)
+		j = InstanceOf(h)
 	)
 	if _, ok := j.(*[]HolidayHours); !ok {
 		t.Error("Expected *[]HolidayHours")
@@ -1809,7 +1809,7 @@ func TestInstanceOf(t *testing.T) {
 				IsClosed: NullableBool(true),
 			}),
 		})
-		k = instanceOf(hours)
+		k = InstanceOf(hours)
 	)
 	if iHours, ok := k.(**Hours); !ok {
 		t.Error("Expected **Hours")
@@ -1823,7 +1823,7 @@ func TestInstanceOf(t *testing.T) {
 		address = &Address{
 			Line1: String("7900 Westpark"),
 		}
-		l = instanceOf(address)
+		l = InstanceOf(address)
 	)
 	if iAddress, ok := l.(*Address); !ok {
 		t.Error("Expected *Address")
