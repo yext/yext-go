@@ -1,6 +1,8 @@
 package yext
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type EntityType string
 
@@ -120,7 +122,7 @@ func (r *RawEntity) GetLanguage() string {
 func (r *RawEntity) GetAccountId() string {
 	if m, ok := (*r)["meta"]; ok {
 		meta := m.(map[string]interface{})
-		if a, ok := meta["account"]; ok {
+		if a, ok := meta["accountId"]; ok {
 			return a.(string)
 		}
 	}
