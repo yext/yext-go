@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func instanceOf(val interface{}) interface{} {
+func InstanceOf(val interface{}) interface{} {
 	var (
 		isPtr = reflect.ValueOf(val).Kind() == reflect.Ptr
 		tmp   interface{}
@@ -36,17 +36,17 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 	var (
 		aV, bV = reflect.ValueOf(a), reflect.ValueOf(b)
 		isDiff = false
-		delta  = instanceOf(a)
+		delta  = InstanceOf(a)
 	)
 
 	if aV.Kind() == reflect.Ptr {
-		aV = indirect(aV)
+		aV = Indirect(aV)
 	}
 	if bV.Kind() == reflect.Ptr {
 		if bV.IsNil() {
 			return delta, isDiff
 		}
-		bV = indirect(bV)
+		bV = Indirect(bV)
 	}
 
 	var (
@@ -65,7 +65,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		if isNil(valB) {
+		if IsNil(valB) {
 			continue
 		}
 
@@ -76,13 +76,13 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 		aI, bI := valA.Interface(), valB.Interface()
 		// Comparable does not handle the nil is empty case:
 		// So if valA is nil, don't call comparable (valB checked for nil above)
-		if !isNil(valA) {
+		if !IsNil(valA) {
 			comparableA, aOk := aI.(Comparable)
 			comparableB, bOk := bI.(Comparable)
 			if aOk && bOk {
 				if !comparableA.Equal(comparableB) {
 					isDiff = true
-					indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
+					Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 				}
 				continue
 			}
@@ -98,41 +98,41 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			}
 			continue
 			// If it's a pointer to a struct we need to handle it in a special way:
-		} else if valA.Kind() == reflect.Ptr && indirect(valA).Kind() == reflect.Struct {
+		} else if valA.Kind() == reflect.Ptr && Indirect(valA).Kind() == reflect.Struct {
 			// Handle case where new is &Address{} and base is &Address{"Line1"}
-			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
+			if IsZeroValue(valB, nilIsEmptyB) && !IsZeroValue(valA, nilIsEmptyA) {
 				isDiff = true
-				indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
+				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 			} else {
 				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
 				if diff {
 					isDiff = true
-					indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
+					Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
 				}
 			}
 			continue
 		}
 
-		if isZeroValue(valA, nilIsEmptyA) && isZeroValue(valB, nilIsEmptyB) {
+		if IsZeroValue(valA, nilIsEmptyA) && IsZeroValue(valB, nilIsEmptyB) {
 			continue
 		}
 
 		if !reflect.DeepEqual(aI, bI) {
 			isDiff = true
-			indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
+			Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 		}
 	}
 	return delta, isDiff
 }
 
-func indirect(v reflect.Value) reflect.Value {
+func Indirect(v reflect.Value) reflect.Value {
 	for v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
 	return v
 }
 
-func isNil(v reflect.Value) bool {
+func IsNil(v reflect.Value) bool {
 	if v.Kind() == reflect.Ptr {
 		return v.IsNil()
 	}

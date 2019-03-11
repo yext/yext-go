@@ -57,6 +57,11 @@ func (e *EntityService) ToEntityType(entity interface{}) (Entity, error) {
 	return e.Registry.ToEntityType(entity)
 }
 
+func (e *EntityService) WithClient(c *Client) *EntityService {
+	e.client = c
+	return e
+}
+
 // TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	var entities []Entity

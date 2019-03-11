@@ -64,6 +64,12 @@ type LocationEntity struct {
 	RoutableCoordinate **Coordinate `json:"routableCoordinate,omitempty"`
 	PickupCoordinate   **Coordinate `json:"pickupCoordinate,omitempty"`
 
+	YextDisplayCoordinate  **Coordinate `json:"yextDisplayCoordinate,omitempty"`
+	YextDropoffCoordinate  **Coordinate `json:"yextDropoffCoordinate,omitempty"`
+	YextWalkableCoordinate **Coordinate `json:"yextWalkableCoordinate,omitempty"`
+	YextRoutableCoordinate **Coordinate `json:"yextRoutableCoordinate,omitempty"`
+	YextPickupCoordinate   **Coordinate `json:"yextPickupCoordinate,omitempty"`
+
 	// Lists
 	Bios         **Lists `json:"bios,omitempty"`
 	Calendars    **Lists `json:"calendars,omitempty"`
@@ -723,6 +729,38 @@ func (y LocationEntity) GetRoutableLat() float64 {
 
 func (y LocationEntity) GetRoutableLng() float64 {
 	c := GetCoordinate(y.RoutableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
+	}
+	return 0
+}
+
+func (y LocationEntity) GetYextDisplayLat() float64 {
+	c := GetCoordinate(y.YextDisplayCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
+	}
+	return 0
+}
+
+func (y LocationEntity) GetYextDisplayLng() float64 {
+	c := GetCoordinate(y.YextDisplayCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
+	}
+	return 0
+}
+
+func (y LocationEntity) GetYextRoutableLat() float64 {
+	c := GetCoordinate(y.YextRoutableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
+	}
+	return 0
+}
+
+func (y LocationEntity) GetYextRoutableLng() float64 {
+	c := GetCoordinate(y.YextRoutableCoordinate)
 	if c != nil {
 		return GetNullableFloat(c.Longitude)
 	}

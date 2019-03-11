@@ -1738,7 +1738,7 @@ func TestIsZeroValue(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if isZeroValue := isZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty); test.want != isZeroValue {
+			if isZeroValue := IsZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty); test.want != isZeroValue {
 				t.Errorf(`Expected IsZeroValue: %t\nGot:%t`, test.want, isZeroValue)
 			}
 		})
