@@ -267,3 +267,8 @@ func (e *EntityService) EditWithId(y Entity, id string) (*Response, error) {
 func (e *EntityService) Edit(y Entity) (*Response, error) {
 	return e.EditWithId(y, y.GetEntityId())
 }
+
+// Delete sends a request to the Knowledge Entities API to delete an entity with a given id
+func (e *EntityService) Delete(id string) (*Response, error) {
+	return e.client.DoRequestJSON("DELETE", fmt.Sprintf("%s/%s", entityPath, id), nil, nil)
+}
