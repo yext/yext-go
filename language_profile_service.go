@@ -23,7 +23,7 @@ func (l *LanguageProfileService) RegisterEntity(t EntityType, entity interface{}
 	l.registry.RegisterEntity(t, entity)
 }
 
-func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageProfile, *Response, error) {
+func (l *LanguageProfileService) Get(id string, languageCode string) (*Entity, *Response, error) {
 	var v map[string]interface{}
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), &v)
 	if err != nil {
@@ -36,13 +36,13 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*LanguageP
 	}
 	setNilIsEmpty(entity)
 
-	return &LanguageProfile{Entity: entity}, r, nil
+	return &entity, r, nil
 }
 
-func (l *LanguageProfileService) List(id string) ([]*LanguageProfile, *Response, error) {
+func (l *LanguageProfileService) List(id string) ([]*Entity, *Response, error) {
 	var (
 		v        LanguageProfileListResponse
-		profiles = []*LanguageProfile{}
+		profiles = []*Entity{}
 	)
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityProfilesPath, id), &v)
 	if err != nil {
@@ -55,7 +55,7 @@ func (l *LanguageProfileService) List(id string) ([]*LanguageProfile, *Response,
 	}
 	for _, profile := range typedProfiles {
 		setNilIsEmpty(profile)
-		profiles = append(profiles, &LanguageProfile{Entity: profile})
+		profiles = append(profiles, &profile)
 	}
 	return profiles, r, nil
 }
