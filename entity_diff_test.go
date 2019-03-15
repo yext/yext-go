@@ -1763,6 +1763,34 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			isDiff: false,
 		},
+		{
+			name: "MultiLine",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFMultiLine: String(""),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFMultiLine: String(""),
+				},
+			},
+			isDiff: false,
+		},
+		{
+			name: "MultiLine",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFMultiLine: String("Bachelors of Science from Florida International University    Doctor of Optometry from Nova Southeastern University"),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFMultiLine: String("Bachelors of Science from Florida International University    Doctor of Optometry from Nova Southeastern University"),
+				},
+			},
+			isDiff: false,
+		},
 	}
 
 	for _, test := range tests {

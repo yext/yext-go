@@ -60,12 +60,7 @@ func (l *LanguageProfileService) List(id string) ([]*Entity, *Response, error) {
 	return profiles, r, nil
 }
 
-func (l *LanguageProfileService) Upsert(entity Entity, languageCode string) (*Response, error) {
-	id := entity.GetEntityId()
-	if id == "" {
-		return nil, fmt.Errorf("entity profile service upsert: profile object had no id")
-	}
-
+func (l *LanguageProfileService) Upsert(entity Entity, id string, languageCode string) (*Response, error) {
 	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), entity, nil)
 	if err != nil {
 		return r, err

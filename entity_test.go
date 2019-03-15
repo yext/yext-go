@@ -20,6 +20,7 @@ type CustomEntity struct {
 	CFMultiOption  *UnorderedStrings `json:"cf_MultiOption,omitempty"`
 	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
 	CFText         *string           `json:"cf_Text,omitempty"`
+	CFMultiLine    *string           `json:"cf_MultiLineText,omitempty"`
 }
 
 type CustomLocationEntity struct {
