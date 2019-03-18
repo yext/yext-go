@@ -51,10 +51,10 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*Entity, *
 	return &entity, r, nil
 }
 
-func (l *LanguageProfileService) List(id string) ([]*Entity, *Response, error) {
+func (l *LanguageProfileService) List(id string) ([]Entity, *Response, error) {
 	var (
 		v        LanguageProfileListResponse
-		profiles = []*Entity{}
+		profiles = []Entity{}
 	)
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%s", entityProfilesPath, id), &v)
 	if err != nil {
@@ -67,12 +67,12 @@ func (l *LanguageProfileService) List(id string) ([]*Entity, *Response, error) {
 	}
 	for _, profile := range typedProfiles {
 		setNilIsEmpty(profile)
-		profiles = append(profiles, &profile)
+		profiles = append(profiles, profile)
 	}
 	return profiles, r, nil
 }
 
-func (e *LanguageProfileService) ListAllPaginated(opts *EntityListOptions) ([]Entity, error) {
+func (l *LanguageProfileService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 	var entities []Entity
 	if opts == nil {
 		opts = &EntityListOptions{}
@@ -80,7 +80,7 @@ func (e *LanguageProfileService) ListAllPaginated(opts *EntityListOptions) ([]En
 	opts.ListOptions = ListOptions{Limit: EntityListMaxLimit}
 	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
 		opts.ListOptions = *listOptions
-		resp, _, err := e.ListAll(opts)
+		resp, _, err := l.listAllHelper(opts)
 		if err != nil {
 			return "", err
 		}
@@ -97,7 +97,7 @@ func (e *LanguageProfileService) ListAllPaginated(opts *EntityListOptions) ([]En
 	return entities, nil
 }
 
-func (l *LanguageProfileService) ListAll(opts *EntityListOptions) (*LanguageProfileListAllResponse, *Response, error) {
+func (l *LanguageProfileService) listAllHelper(opts *EntityListOptions) (*LanguageProfileListAllResponse, *Response, error) {
 	var (
 		requrl = entityProfilesPath
 		err    error
