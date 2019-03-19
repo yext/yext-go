@@ -32,7 +32,7 @@ func InstanceOf(val interface{}) interface{} {
 	return reflect.New(reflect.TypeOf(val)).Interface()
 }
 
-func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (interface{}, bool) {
+func GenericDiff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (interface{}, bool) {
 	var (
 		aV, bV = reflect.ValueOf(a), reflect.ValueOf(b)
 		isDiff = false
@@ -91,7 +91,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 		// First, use recursion to handle a field that is a struct or a pointer to a struct
 		// If Kind() == struct, this is likely an embedded struct
 		if valA.Kind() == reflect.Struct {
-			d, diff := diff(valA.Addr().Interface(), valB.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
+			d, diff := GenericDiff(valA.Addr().Interface(), valB.Addr().Interface(), nilIsEmptyA, nilIsEmptyB)
 			if diff {
 				isDiff = true
 				reflect.ValueOf(delta).Elem().FieldByName(nameA).Set(reflect.ValueOf(d).Elem())
@@ -104,7 +104,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 				isDiff = true
 				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 			} else {
-				d, diff := diff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
+				d, diff := GenericDiff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
 				if diff {
 					isDiff = true
 					Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
@@ -156,7 +156,7 @@ func Diff(a Entity, b Entity) (Entity, bool, error) {
 		return nil, true, fmt.Errorf("Entity Types do not match: '%s', '%s'", a.GetEntityType(), b.GetEntityType())
 	}
 
-	delta, isDiff := diff(a, b, getNilIsEmpty(a), getNilIsEmpty(b))
+	delta, isDiff := GenericDiff(a, b, GetNilIsEmpty(a), GetNilIsEmpty(b))
 	if !isDiff {
 		return nil, isDiff, nil
 	}
