@@ -196,7 +196,7 @@ func setNilIsEmpty(i interface{}) {
 	}
 }
 
-func getNilIsEmpty(i interface{}) bool {
+func GetNilIsEmpty(i interface{}) bool {
 	m := reflect.ValueOf(i).MethodByName("GetNilIsEmpty")
 	if m.IsValid() {
 		values := m.Call([]reflect.Value{})

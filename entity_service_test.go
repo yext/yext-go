@@ -37,12 +37,12 @@ func TestSetNilIsEmpty(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		before := getNilIsEmpty(test.i)
+		before := GetNilIsEmpty(test.i)
 		if before != test.before {
 			t.Errorf("Before set nil is empty: Expected %t, got %t", test.before, before)
 		}
 		setNilIsEmpty(test.i)
-		after := getNilIsEmpty(test.i)
+		after := GetNilIsEmpty(test.i)
 		if after != test.after {
 			t.Errorf("After set nil is empty: Expected %t, got %t", test.after, after)
 		}
