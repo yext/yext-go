@@ -182,23 +182,23 @@ func (c *CustomFieldManager) NullSingleOption() **string {
 }
 
 func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *UnorderedStrings {
-    var optionIds = []string{}
-    for _, optionName := range optionNames {
-        id := c.MustCustomFieldOptionId(fieldName, optionName)
+	var optionIds = []string{}
+	for _, optionName := range optionNames {
+		id := c.MustCustomFieldOptionId(fieldName, optionName)
 
-        shouldAddOptionId := true
-        for _, optionId := range optionIds {
-            if id == optionId { // Don't add duplicate option ids
-                shouldAddOptionId = false
-                break
-            }
-        }
+		shouldAddOptionId := true
+		for _, optionId := range optionIds {
+			if id == optionId { // Don't add duplicate option ids
+				shouldAddOptionId = false
+				break
+			}
+		}
 
-        if shouldAddOptionId {
-            optionIds = append(optionIds, id)
-        }
-    }
-    return ToUnorderedStrings(optionIds)
+		if shouldAddOptionId {
+			optionIds = append(optionIds, id)
+		}
+	}
+	return ToUnorderedStrings(optionIds)
 }
 
 func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
@@ -216,6 +216,67 @@ func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName s
 
 func (c *CustomFieldManager) NullMultiOption() *UnorderedStrings {
 	return ToUnorderedStrings([]string{})
+}
+
+func (c *CustomFieldManager) GetMultiOptionNames(fieldName string, optionIds *UnorderedStrings) ([]string, error) {
+	optionNames := []string{}
+	for _, optionId := range *optionIds {
+		optionName, err := c.CustomFieldOptionName(fieldName, optionId)
+		if err != nil {
+			return nil, err
+		}
+		optionNames = append(optionNames, optionName)
+	}
+	return optionNames, nil
+}
+
+// MustGetMultiOptionNames returns a slice containing the names of the options that are set
+// Example Use:
+// Custom field name: "Available Breeds"
+// Custom field option ID to name map: {
+//		"2421": "Labrador Retriever",
+//		"2422": "Chihuahua",
+//		"2423": "Boston Terrier"
+// }
+// Custom field options that are set: "2421" and "2422"
+// cfmanager.MustGetMultiOptionNames("Available Breeds", loc.AvailableBreeds) returns ["Labrador Retriever", "Chihuahua"]
+func (c *CustomFieldManager) MustGetMultiOptionNames(fieldName string, options *UnorderedStrings) []string {
+	if ids, err := c.GetMultiOptionNames(fieldName, options); err != nil {
+		panic(err)
+	} else {
+		return ids
+	}
+}
+
+func (c *CustomFieldManager) GetSingleOptionName(fieldName string, optionId **string) (string, error) {
+	if GetNullableString(optionId) == "" {
+		return "", nil
+	}
+
+	optionName, err := c.CustomFieldOptionName(fieldName, GetNullableString(optionId))
+	if err != nil {
+		return "", err
+	}
+	return optionName, nil
+}
+
+// MustGetSingleOptionName returns the name of a set option. It returns an empty string if the single
+// option is unset (i.e. if its value is a NullString)
+// Example Use:
+// Custom field name: "Dog Height"
+// Custom field option ID to name map: {
+//		"1423": "Tall",
+//		"1424": "Short",
+// }
+// Custom field option that is set: "1424"
+// cfmanager.MustGetSingleOptionName("Dog Height", loc.DogHeight) returns "Short"
+//
+func (c *CustomFieldManager) MustGetSingleOptionName(fieldName string, optionId **string) string {
+	if id, err := c.GetSingleOptionName(fieldName, optionId); err != nil {
+		panic(err)
+	} else {
+		return id
+	}
 }
 
 func (c *CustomFieldManager) CustomFieldOptionName(cfName string, optionId string) (string, error) {

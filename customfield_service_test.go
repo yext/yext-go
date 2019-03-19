@@ -3,6 +3,7 @@ package yext
 import (
 	"encoding/json"
 	"net/http"
+	"reflect"
 	"strconv"
 	"testing"
 )
@@ -142,6 +143,10 @@ var cfm = &CustomFieldManager{
 					Key:   "c_red",
 					Value: "Red",
 				},
+				CustomFieldOption{
+					Key:   "c_green",
+					Value: "Green",
+				},
 			},
 		},
 		&CustomField{
@@ -156,6 +161,10 @@ var cfm = &CustomFieldManager{
 				CustomFieldOption{
 					Key:   "c_olives",
 					Value: "Olives",
+				},
+				CustomFieldOption{
+					Key:   "c_chickenFingers",
+					Value: "Chicken Fingers",
 				},
 			},
 		},
@@ -186,5 +195,49 @@ func TestMustIsSingleOptionSet(t *testing.T) {
 	}
 	if cfm.MustIsSingleOptionSet("My Favorite Food", "Cheese", NullString()) {
 		t.Error("TestMustIsSingleOptionSet: cheese is not set but got true")
+	}
+}
+
+func TestMustGetMultiOptionNames(t *testing.T) {
+	tests := []struct {
+		got  []string
+		want []string
+	}{
+		{
+			got:  cfm.MustGetMultiOptionNames("My Favorite Food", ToUnorderedStrings([]string{"c_cheese", "c_chickenFingers"})),
+			want: []string{"Cheese", "Chicken Fingers"},
+		},
+		{
+			got:  cfm.MustGetMultiOptionNames("My Favorite Colors", ToUnorderedStrings([]string{})),
+			want: []string{},
+		},
+	}
+
+	for _, test := range tests {
+		if !reflect.DeepEqual(test.got, test.want) {
+			t.Errorf("TestMustGetMultiOptionNames: wanted %v, got %v", test.want, test.got)
+		}
+	}
+}
+
+func TestMustGetSingleOptionName(t *testing.T) {
+	tests := []struct {
+		got  string
+		want string
+	}{
+		{
+			got:  cfm.MustGetSingleOptionName("My Favorite Food", NullableString("c_chickenFingers")),
+			want: "Chicken Fingers",
+		},
+		{
+			got:  cfm.MustGetSingleOptionName("My Favorite Colors", NullString()),
+			want: "",
+		},
+	}
+
+	for _, test := range tests {
+		if test.got != test.want {
+			t.Errorf("TestMustGetSingleOptionName: wanted %s, got %s", test.want, test.got)
+		}
 	}
 }
