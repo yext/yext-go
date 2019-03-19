@@ -65,7 +65,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		if isNil(valB) {
+		if IsNil(valB) {
 			continue
 		}
 
@@ -76,7 +76,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 		aI, bI := valA.Interface(), valB.Interface()
 		// Comparable does not handle the nil is empty case:
 		// So if valA is nil, don't call comparable (valB checked for nil above)
-		if !isNil(valA) {
+		if !IsNil(valA) {
 			comparableA, aOk := aI.(Comparable)
 			comparableB, bOk := bI.(Comparable)
 			if aOk && bOk {
@@ -100,7 +100,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			// If it's a pointer to a struct we need to handle it in a special way:
 		} else if valA.Kind() == reflect.Ptr && Indirect(valA).Kind() == reflect.Struct {
 			// Handle case where new is &Address{} and base is &Address{"Line1"}
-			if isZeroValue(valB, nilIsEmptyB) && !isZeroValue(valA, nilIsEmptyA) {
+			if IsZeroValue(valB, nilIsEmptyB) && !IsZeroValue(valA, nilIsEmptyA) {
 				isDiff = true
 				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
 			} else {
@@ -113,7 +113,7 @@ func diff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (int
 			continue
 		}
 
-		if isZeroValue(valA, nilIsEmptyA) && isZeroValue(valB, nilIsEmptyB) {
+		if IsZeroValue(valA, nilIsEmptyA) && IsZeroValue(valB, nilIsEmptyB) {
 			continue
 		}
 
@@ -132,7 +132,7 @@ func Indirect(v reflect.Value) reflect.Value {
 	return v
 }
 
-func isNil(v reflect.Value) bool {
+func IsNil(v reflect.Value) bool {
 	if v.Kind() == reflect.Ptr {
 		return v.IsNil()
 	}
