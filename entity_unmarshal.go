@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func recur(i interface{}, m map[string]interface{}) interface{} {
+func unmarshal(i interface{}, m map[string]interface{}) interface{} {
 	var jsonTagToKey = map[string]string{}
 	val := Indirect(reflect.ValueOf(i))
 	for i := 0; i < val.Type().NumField(); i++ {
@@ -31,7 +31,7 @@ func recur(i interface{}, m map[string]interface{}) interface{} {
 				}
 			} else if vMap, ok := val.(map[string]interface{}); ok {
 				v := Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag])
-				r := recur(v.Interface(), vMap)
+				r := unmarshal(v.Interface(), vMap)
 				Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag]).Set(reflect.ValueOf(r))
 			}
 		}
@@ -45,6 +45,6 @@ func UnmarshalEntityJSON(i interface{}, data []byte) error {
 	if err != nil {
 		return err
 	}
-	i = recur(i, m)
+	i = unmarshal(i, m)
 	return nil
 }
