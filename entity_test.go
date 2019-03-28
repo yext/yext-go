@@ -413,6 +413,10 @@ var sampleEntityJSON = `{
      "latitude": 38.9243983751914,
      "longitude": -77.2178385786886
   },
+	"googleAttributes": {
+		"wi_fi": ["free_wi_fi"],
+		"welcomes_dogs": ["true"]
+	},
   "meta": {
      "accountId": "3549951188342570541",
      "uid": "b3JxON",
