@@ -52,10 +52,11 @@ type LocationEntity struct {
 	Brands              *[]string `json:"brands,omitempty"`
 	Products            *[]string `json:"products,omitempty"`
 	Services            *[]string `json:"services,omitempty"`
-	Specialties         *[]string `json:"specialties,omitempty"`
-	Languages           *[]string `json:"languages,omitempty"`
-	Logo                **Image   `json:"logo,omitempty"`
-	PaymentOptions      *[]string `json:"paymentOptions,omitempty"`
+	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
+	Specialties    *[]string `json:"specialities,omitempty"`
+	Languages      *[]string `json:"languages,omitempty"`
+	Logo           **Image   `json:"logo,omitempty"`
+	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
