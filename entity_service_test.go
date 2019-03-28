@@ -57,12 +57,14 @@ func TestEntityListOptions(t *testing.T) {
 		searchIDs           string
 		entityTypes         string
 		resolvePlaceholders bool
+		filter              string
 	}{
 		{
 			opts:      nil,
 			limit:     "",
 			token:     "",
 			searchIDs: "",
+			filter:    "",
 		},
 		{
 			// The values are technically 0,0, but that doesn't make any sense in the context of a list request
@@ -70,12 +72,14 @@ func TestEntityListOptions(t *testing.T) {
 			limit:     "",
 			token:     "",
 			searchIDs: "",
+			filter:    "",
 		},
 		{
 			opts:      &EntityListOptions{ListOptions: ListOptions{Limit: 10}},
 			limit:     "10",
 			token:     "",
 			searchIDs: "",
+			filter:    "",
 		},
 		{
 			opts:        &EntityListOptions{EntityTypes: []string{"location"}},
@@ -83,6 +87,7 @@ func TestEntityListOptions(t *testing.T) {
 			token:       "",
 			searchIDs:   "",
 			entityTypes: "location",
+			filter:      "",
 		},
 		{
 			opts:        &EntityListOptions{EntityTypes: []string{"location,event"}},
@@ -90,36 +95,42 @@ func TestEntityListOptions(t *testing.T) {
 			token:       "",
 			searchIDs:   "",
 			entityTypes: "location,event",
+			filter:      "",
 		},
 		{
 			opts:      &EntityListOptions{ListOptions: ListOptions{PageToken: "qwerty1234"}},
 			limit:     "",
 			token:     "qwerty1234",
 			searchIDs: "",
+			filter:    "",
 		},
 		{
 			opts:      &EntityListOptions{ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
 			limit:     "42",
 			token:     "asdfgh4321",
 			searchIDs: "",
+			filter:    "",
 		},
 		{
 			opts:      &EntityListOptions{SearchIDs: []string{"1234"}},
 			limit:     "",
 			token:     "",
 			searchIDs: "1234",
+			filter:    "",
 		},
 		{
 			opts:      &EntityListOptions{SearchIDs: []string{"1234", "5678"}, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
 			limit:     "42",
 			token:     "asdfgh4321",
 			searchIDs: "1234,5678",
+			filter:    "",
 		},
 		{
-			opts:                &EntityListOptions{ResolvePlaceholders: true, ListOptions: ListOptions{Limit: 42, PageToken: "asdfgh4321"}},
-			limit:               "42",
-			token:               "asdfgh4321",
-			resolvePlaceholders: true,
+			opts:      &EntityListOptions{Filter: `{"c_emergencyWatch":{"$eq":true}}`},
+			limit:     "",
+			token:     "",
+			searchIDs: "",
+			filter:    `{"c_emergencyWatch":{"$eq":true}}`,
 		},
 	}
 
@@ -141,6 +152,9 @@ func TestEntityListOptions(t *testing.T) {
 			v := r.URL.Query().Get("resolvePlaceholders")
 			if v == "true" && !test.resolvePlaceholders || v == "" && test.resolvePlaceholders || v == "false" && test.resolvePlaceholders {
 				t.Errorf("Wanted resolvePlaceholders %t, got %s", test.resolvePlaceholders, v)
+			}
+			if v := r.URL.Query().Get("filter"); v != test.filter {
+				t.Errorf("Wanted filter %s, got %s", test.filter, v)
 			}
 		})
 

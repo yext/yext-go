@@ -22,6 +22,7 @@ type EntityListOptions struct {
 	SearchIDs           []string
 	ResolvePlaceholders bool
 	EntityTypes         []string
+	Filter              string
 }
 
 // Used for Create and Edit
@@ -166,6 +167,9 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	}
 	if len(opts.EntityTypes) > 0 {
 		q.Add("entityTypes", strings.Join(opts.EntityTypes, ","))
+	}
+	if len(opts.Filter) > 0 {
+		q.Add("filter", opts.Filter)
 	}
 	u.RawQuery = q.Encode()
 
