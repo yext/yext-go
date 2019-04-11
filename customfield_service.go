@@ -170,6 +170,9 @@ func (c *CustomFieldManager) MustCustomFieldOptionId(fieldName, optionName strin
 }
 
 func (c *CustomFieldManager) MustSingleOptionId(fieldName, optionName string) **string {
+	if optionName == "" {
+		return c.NullSingleOption()
+	}
 	id := c.MustCustomFieldOptionId(fieldName, optionName)
 	return NullableString(id)
 }
@@ -184,6 +187,9 @@ func (c *CustomFieldManager) NullSingleOption() **string {
 }
 
 func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ...string) *UnorderedStrings {
+	if len(optionNames) == 0 {
+		return c.NullMultiOption()
+	}
 	var optionIds = []string{}
 	for _, optionName := range optionNames {
 		id := c.MustCustomFieldOptionId(fieldName, optionName)
