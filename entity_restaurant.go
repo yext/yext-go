@@ -37,7 +37,7 @@ type RestaurantEntity struct {
 	YearEstablished     **float64 `json:"yearEstablished,omitempty"`
 	Services            *[]string `json:"services,omitempty"`
 	Languages           *[]string `json:"languages,omitempty"`
-	Logo                **Image   `json:"logo,omitempty"`
+	Logo                **Photo   `json:"logo,omitempty"`
 	PaymentOptions      *[]string `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs

@@ -55,7 +55,7 @@ type LocationEntity struct {
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
 	Specialties    *[]string `json:"specialities,omitempty"`
 	Languages      *[]string `json:"languages,omitempty"`
-	Logo           **Image   `json:"logo,omitempty"`
+	Logo           **Photo   `json:"logo,omitempty"`
 	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
 
 	// Lats & Lngs
