@@ -22,6 +22,7 @@ type EntityListOptions struct {
 	SearchIDs           []string
 	ResolvePlaceholders bool
 	EntityTypes         []string
+	Fields              []string
 	Filter              string
 }
 
@@ -161,6 +162,9 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	q := u.Query()
 	if len(opts.SearchIDs) > 0 {
 		q.Add("searchIds", strings.Join(opts.SearchIDs, ","))
+	}
+	if len(opts.Fields) > 0 {
+		q.Add("fields", strings.Join(opts.Fields, ","))
 	}
 	if opts.ResolvePlaceholders {
 		q.Add("resolvePlaceholders", "true")
