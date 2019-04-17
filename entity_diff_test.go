@@ -1576,6 +1576,109 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 		},
 		{
+			name: "Hours Change unspecified -> null hours",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullHours(),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullHours(),
+				},
+			},
+		},
+		{
+			name: "Hours Change unspecified -> null hours",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullHours(),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullHours(),
+				},
+			},
+		},
+		{
+			name: "Hours Change unspecified -> null hours",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday:    NullDayHours(),
+						Tuesday:   NullDayHours(),
+						Wednesday: NullDayHours(),
+						Thursday:  NullDayHours(),
+						Friday:    NullDayHours(),
+						Saturday:  NullDayHours(),
+						Sunday:    NullDayHours(),
+					}),
+				},
+			},
+			isDiff: false,
+		},
+		{
 			name: "Hours No Change (showing nil is not the same as **DayHours(nil) )",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
@@ -1636,7 +1739,143 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			isDiff: false,
 		},
-
+		{
+			name: "Hours Closed to Open",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Friday: NullableDayHours(&DayHours{
+							IsClosed: NullableBool(true),
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Monday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Tuesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Wednesday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Thursday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Friday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Saturday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+						Sunday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Hours: NullableHours(&Hours{
+						Friday: NullableDayHours(&DayHours{
+							OpenIntervals: &[]Interval{
+								Interval{
+									Start: "08:00",
+									End:   "19:00",
+								},
+							},
+						}),
+					}),
+				},
+			},
+		},
 		{
 			name: "Name",
 			base: &CustomLocationEntity{

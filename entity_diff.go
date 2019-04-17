@@ -69,6 +69,13 @@ func GenericDiff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB boo
 			continue
 		}
 
+		// if valB **(nil) aka null and valA is not
+		if IsUnderlyingNil(valB) && !IsUnderlyingNil(valA) {
+			isDiff = true
+			Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
+			continue
+		}
+
 		if !valB.CanSet() {
 			continue
 		}
@@ -134,6 +141,16 @@ func Indirect(v reflect.Value) reflect.Value {
 
 func IsNil(v reflect.Value) bool {
 	if v.Kind() == reflect.Ptr {
+		return v.IsNil()
+	}
+	return false
+}
+
+func IsUnderlyingNil(v reflect.Value) bool {
+	if v.Kind() == reflect.Ptr {
+		if v.Elem().Kind() == reflect.Ptr {
+			return IsUnderlyingNil(v.Elem())
+		}
 		return v.IsNil()
 	}
 	return false
