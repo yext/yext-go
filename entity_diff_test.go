@@ -462,9 +462,8 @@ func TestEntityDiff(t *testing.T) {
 			baseValue: &Address{
 				Line1: String("7900 Westpark Dr"),
 			},
-			newValue:   &Address{},
-			isDiff:     true,
-			deltaValue: &Address{},
+			newValue: &Address{}, // This will make no change when sent to API, no not a diff
+			isDiff:   false,
 		},
 		diffTest{
 			name:      "Address: both are empty struct (E)",
@@ -952,6 +951,64 @@ func TestEntityDiffComplex(t *testing.T) {
 					},
 				},
 			},
+		},
+		{
+			name: "Address, partial diff",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						Line1: String(""),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						Line1: String(""),
+						City:  String("McLean"),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					Address: &Address{
+						City: String("McLean"),
+					},
+				},
+			},
+		},
+		{
+			name: "Address, partial diff",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							EntityType: ENTITYTYPE_LOCATION,
+						},
+					},
+					Address: &Address{
+						Line1:      String(""),
+						Line2:      String(""),
+						City:       String(""),
+						Region:     String("VA"),
+						PostalCode: String("20182"),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					BaseEntity: BaseEntity{
+						Meta: &EntityMeta{
+							EntityType: ENTITYTYPE_LOCATION,
+						},
+					},
+					Address: &Address{
+						Line1: String(""),
+					},
+				},
+			},
+			isDiff: false,
 		},
 		{
 			name: "CFGallery",

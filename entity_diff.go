@@ -106,16 +106,10 @@ func GenericDiff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB boo
 			continue
 			// If it's a pointer to a struct we need to handle it in a special way:
 		} else if valA.Kind() == reflect.Ptr && Indirect(valA).Kind() == reflect.Struct {
-			// Handle case where new is &Address{} and base is &Address{"Line1"}
-			if IsZeroValue(valB, nilIsEmptyB) && !IsZeroValue(valA, nilIsEmptyA) {
+			d, diff := GenericDiff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
+			if diff {
 				isDiff = true
-				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(valB)
-			} else {
-				d, diff := GenericDiff(valA.Interface(), valB.Interface(), nilIsEmptyA, nilIsEmptyB)
-				if diff {
-					isDiff = true
-					Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
-				}
+				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(d))
 			}
 			continue
 		}
