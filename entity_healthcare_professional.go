@@ -509,6 +509,13 @@ func (y HealthcareProfessionalEntity) GetHolidayHours() []HolidayHours {
 	return nil
 }
 
+func (y HealthcareProfessionalEntity) GetNPI() string {
+	if y.NPI != nil {
+		return *y.NPI
+	}
+	return ""
+}
+
 func (y HealthcareProfessionalEntity) IsClosed() bool {
 	return GetNullableBool(y.Closed)
 }
