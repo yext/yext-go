@@ -263,3 +263,9 @@ func NullableUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
 }
+
+func DatePtr(d Date) *Date {
+    p := new(Date)
+    *p = d
+    return p
+}
