@@ -284,7 +284,7 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if err != nil {
 		return -1, "", fmt.Errorf("Error parsing weekday hours from string; unable to convert index to num: %s", err)
 	}
-	if hoursParts[1] == HoursClosed {
+	if strings.ToLower(hoursParts[1]) == HoursClosed {
 		return Weekday(weekdayInt), HoursClosed, nil
 	}
 	// Pad hours with leading 0s
