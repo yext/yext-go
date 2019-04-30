@@ -31,6 +31,7 @@ type LocationEntity struct {
 	Address       *Address `json:"address,omitempty"`
 	AddressHidden **bool   `json:"addressHidden,omitempty"`
 	ISORegionCode *string  `json:"isoRegionCode,omitempty"`
+	Geomodifier   *string  `json:"geomodifier,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
