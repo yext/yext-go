@@ -154,6 +154,91 @@ func TestEntityJSONDeserialization(t *testing.T) {
 	}
 }
 
+func TestSetLabels(t *testing.T) {
+	var tests = []struct {
+		Destination *LocationEntity
+		Source      *LocationEntity
+		Want        *LocationEntity
+	}{
+		{
+			Destination: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+			Source: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+			Want: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		test.Destination.SetLabelsWithUnorderedStrings(test.Source.GetLabels())
+		if _, isDiff, _ := Diff(test.Want, test.Destination); isDiff {
+			t.Errorf("SetLabelsWithUnorderedStrings: Wanted %v Got %v", test.Want, test.Destination)
+		}
+	}
+
+	var labelTests = []struct {
+		Entity *LocationEntity
+		Labels []string
+		Want   *LocationEntity
+	}{
+		{
+			Entity: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+			Labels: []string{},
+			Want: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: ToUnorderedStrings([]string{}),
+					},
+				},
+			},
+		},
+		{
+			Entity: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+			Labels: nil,
+			Want: &LocationEntity{
+				BaseEntity: BaseEntity{
+					Meta: &EntityMeta{
+						Labels: nil,
+					},
+				},
+			},
+		},
+	}
+	for _, test := range labelTests {
+		test.Entity.SetLabels(test.Labels)
+		if _, isDiff, _ := Diff(test.Want, test.Entity); isDiff {
+			t.Errorf("SetLabels: Wanted %v Got %v", test.Want, test.Entity)
+		}
+	}
+}
+
 func TestEntitySampleJSONResponseDeserialization(t *testing.T) {
 	entityService := EntityService{
 		Registry: &EntityRegistry{},

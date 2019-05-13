@@ -76,7 +76,9 @@ func (b *BaseEntity) SetLabels(v []string) {
 }
 
 func (b *BaseEntity) SetLabelsWithUnorderedStrings(v UnorderedStrings) {
-	b.Meta.Labels = &v
+	if v != nil {
+		b.Meta.Labels = &v
+	}
 }
 
 func (b *BaseEntity) GetNilIsEmpty() bool {
