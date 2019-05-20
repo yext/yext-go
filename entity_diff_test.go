@@ -2060,6 +2060,120 @@ func TestEntityDiffComplex(t *testing.T) {
 			isDiff: false,
 		},
 		{
+			name: "Photo",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+			isDiff: false,
+		},
+		{
+			name: "Photo with Base from Yext API",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url:       String("http://a.mktgcdn.com/p/AVreuCLGkLDSRJpj1RgHhrPF7LPaC3iDAjz6WWXMxwk/206x309.jpg"),
+							SourceUrl: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+			isDiff: false,
+		},
+		{
+			name: "Photo with Base from Yext API",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url:       String("http://a.mktgcdn.com/p/AVreuCLGkLDSRJpj1RgHhrPF7LPaC3iDAjz6WWXMxwk/206x309.jpg"),
+							SourceUrl: String("https://not-the-same.jpg"),
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url: String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+						},
+					}),
+				},
+			},
+		},
+		// Ideally, the below test would just return the Alternate Text in the delta, and not the Url
+		// But ensuring that happens would require a much larger code change
+		{
+			name: "Photo with Base from Yext API",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url:           String("http://a.mktgcdn.com/p/AVreuCLGkLDSRJpj1RgHhrPF7LPaC3iDAjz6WWXMxwk/206x309.jpg"),
+							SourceUrl:     String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+							AlternateText: String("Old Alternate Text"),
+						},
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url:           String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+							AlternateText: String("New Alternate Text"),
+						},
+					}),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFPhoto: NullablePhoto(&Photo{
+						Image: &Image{
+							Url:           String("https://s3.amazonaws.com/devk-photos/photos/18123037_retina.jpg"),
+							AlternateText: String("New Alternate Text"),
+						},
+					}),
+				},
+			},
+		},
+		{
 			name: "MultiLine",
 			base: &CustomLocationEntity{
 				CustomEntity: CustomEntity{

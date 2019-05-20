@@ -174,6 +174,13 @@ func (y HealthcareProfessionalEntity) GetId() string {
 	return ""
 }
 
+func (y HealthcareProfessionalEntity) GetCategoryIds() (v []string) {
+	if y.CategoryIds != nil {
+		v = *y.CategoryIds
+	}
+	return v
+}
+
 func (y HealthcareProfessionalEntity) GetName() string {
 	if y.Name != nil {
 		return GetString(y.Name)
@@ -514,6 +521,27 @@ func (y HealthcareProfessionalEntity) GetNPI() string {
 		return *y.NPI
 	}
 	return ""
+}
+
+func (y HealthcareProfessionalEntity) GetAdmittingHospitals() (v []string) {
+	if y.AdmittingHospitals != nil {
+		v = *y.AdmittingHospitals
+	}
+	return v
+}
+
+func (y HealthcareProfessionalEntity) GetConditionsTreated() (v []string) {
+	if y.ConditionsTreated != nil {
+		v = *y.ConditionsTreated
+	}
+	return v
+}
+
+func (y HealthcareProfessionalEntity) GetInsuranceAccepted() (v []string) {
+	if y.InsuranceAccepted != nil {
+		v = *y.InsuranceAccepted
+	}
+	return v
 }
 
 func (y HealthcareProfessionalEntity) IsClosed() bool {

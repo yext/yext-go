@@ -7,6 +7,7 @@ package yext
 
 import (
 	"encoding/json"
+	"log"
 )
 
 const ENTITYTYPE_LOCATION EntityType = "location"
@@ -208,6 +209,7 @@ type Photo struct {
 type Image struct {
 	Url           *string `json:"url,omitempty"`
 	AlternateText *string `json:"alternateText,omitempty"`
+	SourceUrl     *string `json:"sourceUrl,omitempty"`
 }
 
 func NullableImage(i *Image) **Image {
@@ -224,6 +226,26 @@ func GetImage(i **Image) *Image {
 func NullImage() **Image {
 	i := &Image{}
 	return &i
+}
+
+// If source URL is filled in, Image came from Yext API and source URL should be
+// used for comparison as URL is the mktg cdn generated URL
+func (a *Image) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a.SourceUrl != nil {
+		a.Url = a.SourceUrl
+		a.SourceUrl = nil
+		_, isDiff := GenericDiff(a, b, false, false)
+		return !isDiff
+	}
+	_, isDiff := GenericDiff(a, b, false, false)
+	return !isDiff
 }
 
 type Address struct {
