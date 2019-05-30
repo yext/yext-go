@@ -516,6 +516,20 @@ func (y HealthcareProfessionalEntity) GetNPI() string {
 	return ""
 }
 
+func (y HealthcareProfessionalEntity) GetAdmittingHospitals() (v []string) {
+	if y.AdmittingHospitals != nil {
+		v = *y.AdmittingHospitals
+	}
+	return v
+}
+
 func (y HealthcareProfessionalEntity) IsClosed() bool {
 	return GetNullableBool(y.Closed)
+}
+
+func (y HealthcareProfessionalEntity) GetCategoryIds() (v []string) {
+	if y.CategoryIds != nil {
+		v = *y.CategoryIds
+	}
+	return v
 }
