@@ -6,6 +6,21 @@ import (
 	"testing"
 )
 
+var CustomLocationEntityCFManager = &CustomFieldManager{
+	CustomFields: []*CustomField{
+		&CustomField{
+			Name: "CF Url",
+			Type: CUSTOMFIELDTYPE_URL,
+			Id:   String("cf_Url"),
+		},
+		&CustomField{
+			Name: "CF Text",
+			Type: CUSTOMFIELDTYPE_SINGLELINETEXT,
+			Id:   String("cf_Text"),
+		},
+	},
+}
+
 type CustomEntity struct {
 	CFHours        **Hours           `json:"cf_Hours,omitempty"`
 	CFUrl          *string           `json:"cf_Url,omitempty"`

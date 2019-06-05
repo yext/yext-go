@@ -241,3 +241,61 @@ func TestMustGetSingleOptionName(t *testing.T) {
 		}
 	}
 }
+
+func TestSetCustomField(t *testing.T) {
+	tests := []struct {
+		FieldName string
+		Value     interface{}
+		Entity    *CustomLocationEntity
+		Want      *CustomLocationEntity
+	}{
+		{
+			FieldName: "CF Text",
+			Value:     String("New Text"),
+			Entity: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFUrl: String("www.yext.com"),
+				},
+			},
+			Want: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFUrl:  String("www.yext.com"),
+					CFText: String("New Text"),
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		CustomLocationEntityCFManager.SetCustomFieldValue(&test.Entity.CustomEntity, test.FieldName, test.Value)
+		if delta, diff, _ := Diff(test.Entity, test.Want); diff {
+			t.Errorf("TestSetCustomField:\nWanted: %v\nGot: %v\nDelta: %v", test.Want, test.Entity, delta)
+		}
+	}
+}
+
+func TestGetCustomField(t *testing.T) {
+	tests := []struct {
+		FieldName string
+		Entity    *CustomLocationEntity
+		Want      interface{}
+	}{
+		{
+			FieldName: "CF Text",
+			Entity: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFUrl:  String("www.yext.com"),
+					CFText: String("New Text"),
+				},
+			},
+			Want: String("New Text"),
+		},
+	}
+
+	for _, test := range tests {
+		got := CustomLocationEntityCFManager.GetCustomFieldValue(&test.Entity.CustomEntity, test.FieldName)
+		if !reflect.DeepEqual(got, test.Want) {
+			t.Errorf("TestGetCustomField:\nWanted: %v\nGot: %v", test.Want, got)
+		}
+	}
+}

@@ -326,12 +326,44 @@ func (c *CustomFieldService) MustCacheCustomFields() []*CustomField {
 	return slice
 }
 
-func (c *CustomFieldManager) SetCustomField(i interface{}, fieldName string, valToSet reflect.Value) interface{} {
+// SetCustomFieldValue sets the value of a given custom field (fieldName)
+// A pointer to the custom entity (&CustomEntity) should be passed in as the customEntity interface{}
+func (c *CustomFieldManager) SetCustomFieldValue(customEntity interface{}, fieldName string, valToSet interface{}) {
 	cfId := c.MustCustomFieldId(fieldName)
-	return SetFieldByJSONTag(i, cfId, valToSet)
+	SetFieldByJSONTag(customEntity, cfId, valToSet)
 }
 
-func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet reflect.Value) interface{} {
+func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet interface{}) {
+	var (
+		valueOfValToSet = reflect.ValueOf(valToSet)
+		v               = Indirect(reflect.ValueOf(i))
+		t               = v.Type()
+		num             = v.NumField()
+	)
+
+	for n := 0; n < num; n++ {
+		var (
+			field = t.Field(n)
+			name  = field.Name
+			tag   = strings.Replace(field.Tag.Get("json"), ",omitempty", "", -1)
+			val   = v.Field(n)
+		)
+		if tag == fieldTag {
+			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(valueOfValToSet)
+		} else {
+			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(val)
+		}
+	}
+}
+
+// GetCustomFieldValue gets the value of a given custom field (fieldName)
+// A pointer to the custom entity (&CustomEntity) should be passed in as the customEntity interface{}
+func (c *CustomFieldManager) GetCustomFieldValue(customEntity interface{}, fieldName string) interface{} {
+	cfId := c.MustCustomFieldId(fieldName)
+	return GetFieldByJSONTag(customEntity, cfId)
+}
+
+func GetFieldByJSONTag(i interface{}, fieldTag string) interface{} {
 	var (
 		v   = Indirect(reflect.ValueOf(i))
 		t   = v.Type()
@@ -343,14 +375,10 @@ func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet reflect.Value) i
 			field = t.Field(n)
 			name  = field.Name
 			tag   = strings.Replace(field.Tag.Get("json"), ",omitempty", "", -1)
-			val   = v.Field(n)
 		)
 		if tag == fieldTag {
-			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(valToSet)
-			return Indirect(reflect.ValueOf(i)).Interface()
-		} else {
-			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(val)
+			return Indirect(reflect.ValueOf(i)).FieldByName(name).Interface()
 		}
 	}
-	return Indirect(reflect.ValueOf(i)).Interface()
+	return nil
 }
