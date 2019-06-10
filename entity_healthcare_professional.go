@@ -10,9 +10,13 @@ import (
 	"fmt"
 )
 
-const ENTITYTYPE_HEALTHCAREPROFESSIONAL EntityType = "healthcareProfessional"
-
-const ENTITYTYPE_HEALTHCAREPROFESSIONAL_CF EntityType = "HEALTHCARE_PROFESSIONAL"
+const (
+	ENTITYTYPE_HEALTHCAREPROFESSIONAL    EntityType = "healthcareProfessional"
+	ENTITYTYPE_HEALTHCAREPROFESSIONAL_CF EntityType = "HEALTHCARE_PROFESSIONAL"
+	GENDER_MALE                                     = "MALE"
+	GENDER_FEMALE                                   = "FEMALE"
+	GENDER_UNSPECIFIED                              = "UNSPECIFIED"
+)
 
 type HealthcareProfessionalEntity struct {
 	BaseEntity
@@ -57,7 +61,7 @@ type HealthcareProfessionalEntity struct {
 	FirstName            *string           `json:"firstName,omitempty"`
 	MiddleName           *string           `json:"middleName,omitempty"`
 	LastName             *string           `json:"lastName,omitempty"`
-	Gender               *string           `json:"gender,omitempty"`
+	Gender               **string          `json:"gender,omitempty"`
 	Headshot             **Image           `json:"headshot,omitempty"`
 	AcceptingNewPatients *bool             `json:"acceptingNewPatients,omitempty"`
 	AdmittingHospitals   *[]string         `json:"admittingHospitals,omitempty"`
