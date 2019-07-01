@@ -60,6 +60,10 @@ func (b *BaseEntity) GetCountryCode() string {
 	return ""
 }
 
+// GetLabels returns a list of labels.
+// Labels are stored in the system by ID, not by name
+// Given a label "Example Label" with ID "123"
+// This function will return a list containing ["123"]
 func (b *BaseEntity) GetLabels() (v UnorderedStrings) {
 	if b == nil || b.Meta == nil {
 		return nil
@@ -70,6 +74,11 @@ func (b *BaseEntity) GetLabels() (v UnorderedStrings) {
 	return v
 }
 
+// SetLabels takes a list of strings.
+// Labels are stored in the system by ID, not by name
+// This means that passing the name of the label will not work, labels must be passed by ID
+// Given a label "Example Label" with ID "123"
+// You must pass a list containing "123" for the Label "Example Label" to get set in the platform
 func (b *BaseEntity) SetLabels(v []string) {
 	l := UnorderedStrings(v)
 	b.SetLabelsWithUnorderedStrings(l)
