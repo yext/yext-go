@@ -11,11 +11,10 @@ import (
 )
 
 const (
-	ENTITYTYPE_HEALTHCAREPROFESSIONAL    EntityType = "healthcareProfessional"
-	ENTITYTYPE_HEALTHCAREPROFESSIONAL_CF EntityType = "HEALTHCARE_PROFESSIONAL"
-	GENDER_MALE                                     = "MALE"
-	GENDER_FEMALE                                   = "FEMALE"
-	GENDER_UNSPECIFIED                              = "UNSPECIFIED"
+	ENTITYTYPE_HEALTHCAREPROFESSIONAL EntityType = "healthcareProfessional"
+	GENDER_MALE                                  = "MALE"
+	GENDER_FEMALE                                = "FEMALE"
+	GENDER_UNSPECIFIED                           = "UNSPECIFIED"
 )
 
 type HealthcareProfessionalEntity struct {
