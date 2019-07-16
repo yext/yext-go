@@ -15,6 +15,7 @@ func defaultEntityRegistry() *EntityRegistry {
 	registry.Register(string(ENTITYTYPE_HEALTHCAREPROFESSIONAL), &HealthcareProfessionalEntity{})
 	registry.Register(string(ENTITYTYPE_HEALTHCAREFACILITY), &HealthcareFacilityEntity{})
 	registry.Register(string(ENTITYTYPE_ATM), &ATMEntity{})
+	registry.Register(string(ENTITYTYPE_HOTEL), &HotelEntity{})
 	entityRegistry := EntityRegistry(registry)
 	return &entityRegistry
 }
