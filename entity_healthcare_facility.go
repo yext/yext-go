@@ -1,20 +1,10 @@
 package yext
 
-// TODO
-// * Need better custom field accessors and helpers
-// * The API will accept some things and return them in a different format - this makes diff'ing difficult:
-// ** Phone: Send in 540-444-4444, get back 5404444444
-
 import (
 	"encoding/json"
 )
 
 const ENTITYTYPE_HEALTHCAREFACILITY EntityType = "healthcareFacility"
-
-// Entity types for custom fields must be MACRO_CASED
-// TODO: wait for completion of this item: https://yexttest.atlassian.net/browse/AO-3660 (ETC End of February 2019)
-// After item is copmleted up the vparam and (hopefully) delete this line and remove all references to it.
-const ENTITYTYPE_HEALTHCAREFACILITY_CF EntityType = "HEALTHCARE_FACILITY"
 
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
