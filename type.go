@@ -165,6 +165,20 @@ func NullPhoto() **Photo {
 	return &v
 }
 
+func GetDate(v *Date) string {
+	if v == nil {
+		return ""
+	}
+	return string(*v)
+}
+
+func GetNullableDate(v **Date) string {
+	if v == nil || *v == nil {
+		return ""
+	}
+	return string(**v)
+}
+
 func NullableDailyTimes(v *DailyTimes) **DailyTimes {
 	return &v
 }
