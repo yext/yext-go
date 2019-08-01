@@ -1283,6 +1283,69 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 		},
 		{
+			name: "CFImage",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFImage: NullableImage(&Image{
+						Url: String("www.yext.com"),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFImage: NullImage(),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFImage: NullImage(),
+				},
+			},
+		},
+		{
+			name: "New FeaturedMessage is Null",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					FeaturedMessage: NullableFeaturedMessage(&FeaturedMessage{
+						Url: String("Featured Message"),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					FeaturedMessage: NullFeaturedMessage(),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					FeaturedMessage: NullFeaturedMessage(),
+				},
+			},
+		},
+		{
+			name: "New Website is Null",
+			base: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					WebsiteUrl: NullableWebsite(&Website{
+						Url: String("Website"),
+					}),
+				},
+			},
+			new: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					WebsiteUrl: NullWebsite(),
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				LocationEntity: LocationEntity{
+					WebsiteUrl: NullWebsite(),
+				},
+			},
+		},
+		{
 			name: "Hours Closed Change",
 			base: &CustomLocationEntity{
 				LocationEntity: LocationEntity{
@@ -2172,7 +2235,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("New image"),
 							},
 						),
@@ -2185,7 +2248,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("New image"),
 							},
 						),
@@ -2200,7 +2263,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("Initial image to update"),
 							},
 						),
@@ -2212,7 +2275,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/autocare-hero.jpg"),
 								AlternateText: String("Updated image"),
 							},
 						),
@@ -2225,7 +2288,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/autocare-hero.jpg"),
 								AlternateText: String("Updated image"),
 							},
 						),
@@ -2240,7 +2303,7 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("Initial image to clear"),
 							},
 						),
@@ -2260,33 +2323,6 @@ func TestEntityDiffComplex(t *testing.T) {
 					CFType: &CFT{
 						Image: NullImage(),
 					},
-				},
-			},
-		},
-		{
-			name: "CFT",
-			base: &CustomLocationEntity{
-				CustomEntity: CustomEntity{
-					CFType: &CFT{
-						Text: String("Old custom field type text"),
-						Image: NullableImage(
-							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
-								AlternateText: String("Initial image to clear"),
-							},
-						),
-					},
-				},
-			},
-			new: &CustomLocationEntity{
-				CustomEntity: CustomEntity{
-					CFType: &CFT{},
-				},
-			},
-			isDiff: true,
-			delta: &CustomLocationEntity{
-				CustomEntity: CustomEntity{
-					CFType: &CFT{},
 				},
 			},
 		},
@@ -2298,7 +2334,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						Text: String("Initial custom field type text to update"),
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("Initial image"),
 							},
 						),
@@ -2329,7 +2365,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						Text: String("Initial custom field type text"),
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("Initial image"),
 							},
 						),
@@ -2342,7 +2378,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						Text: String("Initial custom field type text"),
 						Image: NullableImage(
 							&Image{
-								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								Url:           String("https://www.napaonline.com/medias/about-hero.jpg"),
 								AlternateText: String("Initial image"),
 							},
 						),

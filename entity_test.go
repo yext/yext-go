@@ -42,6 +42,7 @@ type CustomEntity struct {
 	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
 	CFText         *string           `json:"cf_Text,omitempty"`
 	CFMultiLine    *string           `json:"cf_MultiLineText,omitempty"`
+	CFImage        **Image           `json:"cf_Image,omitempty"`
 	CFType         *CFT              `json:"cf_Type,omitempty"`
 }
 
