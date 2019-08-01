@@ -21,6 +21,12 @@ var CustomLocationEntityCFManager = &CustomFieldManager{
 	},
 }
 
+type CFT struct {
+	Text  *string `json:"cft_text,omitempty"`
+	Image **Image `json:"cft_image,omitempty"`
+	Bool  **bool  `json:"cft_bool,omitempty"`
+}
+
 type CustomEntity struct {
 	CFHours        **Hours           `json:"cf_Hours,omitempty"`
 	CFUrl          *string           `json:"cf_Url,omitempty"`
@@ -36,6 +42,7 @@ type CustomEntity struct {
 	CFYesNo        **bool            `json:"cf_YesNo,omitempty"`
 	CFText         *string           `json:"cf_Text,omitempty"`
 	CFMultiLine    *string           `json:"cf_MultiLineText,omitempty"`
+	CFType         *CFT              `json:"cf_Type,omitempty"`
 }
 
 type CustomLocationEntity struct {

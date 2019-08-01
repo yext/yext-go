@@ -2087,6 +2087,270 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			isDiff: false,
 		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Initial custom field type text"),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Initial custom field type text"),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Text to clear"),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String(""),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String(""),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Old custom field type text"),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("New custom field type text"),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("New custom field type text"),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("New image"),
+							},
+						),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("New image"),
+							},
+						),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image to update"),
+							},
+						),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg"),
+								AlternateText: String("Updated image"),
+							},
+						),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/autocare-hero.jpg"),
+								AlternateText: String("Updated image"),
+							},
+						),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image to clear"),
+							},
+						),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullImage(),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Image: NullImage(),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Old custom field type text"),
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image to clear"),
+							},
+						),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Initial custom field type text to update"),
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image"),
+							},
+						),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Updated custom field type text"),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Updated custom field type text"),
+					},
+				},
+			},
+		},
+		{
+			name: "CFT",
+			base: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Initial custom field type text"),
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image"),
+							},
+						),
+					},
+				},
+			},
+			new: &CustomLocationEntity{
+				CustomEntity: CustomEntity{
+					CFType: &CFT{
+						Text: String("Initial custom field type text"),
+						Image: NullableImage(
+							&Image{
+								Url: String("https://www.napaonline.com/medias/about-hero.jpg"),
+								AlternateText: String("Initial image"),
+							},
+						),
+					},
+				},
+			},
+			isDiff: false,
+		},
 	}
 
 	for _, test := range tests {
