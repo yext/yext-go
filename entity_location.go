@@ -146,7 +146,7 @@ func GetUberLink(u **UberLink) *UberLink {
 }
 
 func NullUberLink() **UberLink {
-	u := &UberLink{}
+	var u *UberLink
 	return &u
 }
 
@@ -168,7 +168,7 @@ func GetUberTripBranding(u **UberTripBranding) *UberTripBranding {
 }
 
 func NullUberTripBranding() **UberTripBranding {
-	u := &UberTripBranding{}
+	var u *UberTripBranding
 	return &u
 }
 
@@ -189,7 +189,7 @@ func GetLists(l **Lists) *Lists {
 }
 
 func NullLists() **Lists {
-	l := &Lists{}
+	var l *Lists
 	return &l
 }
 
@@ -217,7 +217,7 @@ func GetImage(i **Image) *Image {
 }
 
 func NullImage() **Image {
-	i := &Image{}
+	var i *Image
 	return &i
 }
 
@@ -249,7 +249,7 @@ func GetFeaturedMessage(f **FeaturedMessage) *FeaturedMessage {
 }
 
 func NullFeaturedMessage() **FeaturedMessage {
-	f := &FeaturedMessage{}
+	var f *FeaturedMessage
 	return &f
 }
 
@@ -271,7 +271,7 @@ func GetWebsite(w **Website) *Website {
 }
 
 func NullWebsite() **Website {
-	w := &Website{}
+	var w *Website
 	return &w
 }
 
@@ -292,7 +292,7 @@ func GetCoordinate(c **Coordinate) *Coordinate {
 }
 
 func NullCoordinate() **Coordinate {
-	c := &Coordinate{}
+	var c *Coordinate
 	return &c
 }
 
