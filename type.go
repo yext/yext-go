@@ -149,6 +149,22 @@ func NullVideo() **Video {
 	return &v
 }
 
+func NullableVideoUrl(v *VideoUrl) **VideoUrl {
+	return &v
+}
+
+func GetVideoUrl(v **VideoUrl) *VideoUrl {
+	if v == nil {
+		return nil
+	}
+	return *v
+}
+
+func NullVideoUrl() **VideoUrl {
+	var v *VideoUrl
+	return &v
+}
+
 func NullablePhoto(v *Photo) **Photo {
 	return &v
 }
