@@ -246,12 +246,44 @@ func TestSetCustomField(t *testing.T) {
 	tests := []struct {
 		FieldName string
 		Value     interface{}
-		Entity    *CustomLocationEntity
-		Want      *CustomLocationEntity
+		Entity    Entity
+		Want      Entity
 	}{
 		{
 			FieldName: "CF Text",
 			Value:     String("New Text"),
+			Entity: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					CFUrl: String("www.yext.com"),
+				},
+			},
+			Want: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					CFUrl:  String("www.yext.com"),
+					CFText: String("New Text"),
+				},
+			},
+		},
+		{
+			FieldName: "New Field",
+			Value:     String("New Field Value"),
+			Entity: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					CFUrl: String("www.yext.com"),
+				},
+			},
+			Want: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					CFUrl: String("www.yext.com"),
+					UnknownFields: &map[string]interface{}{
+						"c_newField": String("New Field Value"),
+					},
+				},
+			},
+		},
+		{
+			FieldName: "New Field",
+			Value:     String("New Field Value"),
 			Entity: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
 					CFUrl: String("www.yext.com"),
@@ -259,15 +291,18 @@ func TestSetCustomField(t *testing.T) {
 			},
 			Want: &CustomLocationEntity{
 				CustomEntity: CustomEntity{
-					CFUrl:  String("www.yext.com"),
-					CFText: String("New Text"),
+					CFUrl: String("www.yext.com"),
 				},
 			},
 		},
 	}
 
 	for _, test := range tests {
-		CustomLocationEntityCFManager.SetCustomFieldValue(&test.Entity.CustomEntity, test.FieldName, test.Value)
+		if c, ok := test.Entity.(*CustomLocationEntity); ok {
+			CustomLocationEntityCFManager.SetCustomFieldValue(&c.CustomEntity, test.FieldName, test.Value)
+		} else if c, ok := test.Entity.(*CustomLocationEntityWithUnknownFields); ok {
+			CustomLocationEntityCFManager.SetCustomFieldValue(&c.CustomEntityWithUnknownFields, test.FieldName, test.Value)
+		}
 		if delta, diff, _ := Diff(test.Entity, test.Want); diff {
 			t.Errorf("TestSetCustomField:\nWanted: %v\nGot: %v\nDelta: %v", test.Want, test.Entity, delta)
 		}
@@ -277,7 +312,7 @@ func TestSetCustomField(t *testing.T) {
 func TestGetCustomField(t *testing.T) {
 	tests := []struct {
 		FieldName string
-		Entity    *CustomLocationEntity
+		Entity    Entity
 		Want      interface{}
 	}{
 		{
@@ -290,10 +325,27 @@ func TestGetCustomField(t *testing.T) {
 			},
 			Want: String("New Text"),
 		},
+		{
+			FieldName: "New Field",
+			Entity: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					CFUrl: String("www.yext.com"),
+					UnknownFields: &map[string]interface{}{
+						"c_newField": String("New Field Value"),
+					},
+				},
+			},
+			Want: String("New Field Value"),
+		},
 	}
 
 	for _, test := range tests {
-		got := CustomLocationEntityCFManager.GetCustomFieldValue(&test.Entity.CustomEntity, test.FieldName)
+		var got interface{}
+		if c, ok := test.Entity.(*CustomLocationEntity); ok {
+			got = CustomLocationEntityCFManager.MustGetCustomFieldValue(&c.CustomEntity, test.FieldName)
+		} else if c, ok := test.Entity.(*CustomLocationEntityWithUnknownFields); ok {
+			got = CustomLocationEntityCFManager.MustGetCustomFieldValue(&c.CustomEntityWithUnknownFields, test.FieldName)
+		}
 		if !reflect.DeepEqual(got, test.Want) {
 			t.Errorf("TestGetCustomField:\nWanted: %v\nGot: %v", test.Want, got)
 		}

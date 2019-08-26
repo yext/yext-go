@@ -328,12 +328,22 @@ func (c *CustomFieldService) MustCacheCustomFields() []*CustomField {
 
 // SetCustomFieldValue sets the value of a given custom field (fieldName)
 // A pointer to the custom entity (&CustomEntity) should be passed in as the customEntity interface{}
-func (c *CustomFieldManager) SetCustomFieldValue(customEntity interface{}, fieldName string, valToSet interface{}) {
-	cfId := c.MustCustomFieldId(fieldName)
-	SetFieldByJSONTag(customEntity, cfId, valToSet)
+func (c *CustomFieldManager) SetCustomFieldValue(customEntity interface{}, fieldName string, valToSet interface{}) error {
+	cfId, err := c.CustomFieldId(fieldName)
+	if err != nil {
+		return err
+	}
+	return SetFieldByJSONTag(customEntity, cfId, valToSet)
 }
 
-func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet interface{}) {
+func (c *CustomFieldManager) MustSetCustomFieldValue(customEntity interface{}, fieldName string, valToSet interface{}) {
+	err := c.SetCustomFieldValue(customEntity, fieldName, valToSet)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet interface{}) error {
 	var (
 		valueOfValToSet = reflect.ValueOf(valToSet)
 		v               = Indirect(reflect.ValueOf(i))
@@ -346,24 +356,42 @@ func SetFieldByJSONTag(i interface{}, fieldTag string, valToSet interface{}) {
 			field = t.Field(n)
 			name  = field.Name
 			tag   = strings.Replace(field.Tag.Get("json"), ",omitempty", "", -1)
-			val   = v.Field(n)
 		)
 		if tag == fieldTag {
 			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(valueOfValToSet)
-		} else {
-			Indirect(reflect.ValueOf(i)).FieldByName(name).Set(val)
+			return nil
 		}
 	}
+
+	if Indirect(reflect.ValueOf(i)).FieldByName("UnknownFields").CanSet() {
+		unknownFields := Indirect(reflect.ValueOf(i)).FieldByName("UnknownFields").Interface().(*map[string]interface{})
+		if unknownFields == nil {
+			unknownFields = &map[string]interface{}{}
+		}
+		u := *unknownFields
+		u[fieldTag] = valToSet
+		Indirect(reflect.ValueOf(i)).FieldByName("UnknownFields").Set(reflect.ValueOf(&u))
+		return nil
+	}
+	return fmt.Errorf("SetFieldByJSONTag: cannot find field with JSON tag %s", fieldTag)
 }
 
 // GetCustomFieldValue gets the value of a given custom field (fieldName)
 // A pointer to the custom entity (&CustomEntity) should be passed in as the customEntity interface{}
-func (c *CustomFieldManager) GetCustomFieldValue(customEntity interface{}, fieldName string) interface{} {
+func (c *CustomFieldManager) GetCustomFieldValue(customEntity interface{}, fieldName string) (interface{}, error) {
 	cfId := c.MustCustomFieldId(fieldName)
 	return GetFieldByJSONTag(customEntity, cfId)
 }
 
-func GetFieldByJSONTag(i interface{}, fieldTag string) interface{} {
+func (c *CustomFieldManager) MustGetCustomFieldValue(customEntity interface{}, fieldName string) interface{} {
+	v, err := c.GetCustomFieldValue(customEntity, fieldName)
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
+
+func GetFieldByJSONTag(i interface{}, fieldTag string) (interface{}, error) {
 	var (
 		v   = Indirect(reflect.ValueOf(i))
 		t   = v.Type()
@@ -377,8 +405,19 @@ func GetFieldByJSONTag(i interface{}, fieldTag string) interface{} {
 			tag   = strings.Replace(field.Tag.Get("json"), ",omitempty", "", -1)
 		)
 		if tag == fieldTag {
-			return Indirect(reflect.ValueOf(i)).FieldByName(name).Interface()
+			return Indirect(reflect.ValueOf(i)).FieldByName(name).Interface(), nil
 		}
 	}
-	return nil
+
+	if Indirect(reflect.ValueOf(i)).FieldByName("UnknownFields").CanSet() {
+		unknownFields := Indirect(reflect.ValueOf(i)).FieldByName("UnknownFields").Interface().(*map[string]interface{})
+		if unknownFields == nil {
+			return nil, nil
+		}
+		u := *unknownFields
+		if v, ok := u[fieldTag]; ok {
+			return v, nil
+		}
+	}
+	return nil, fmt.Errorf("GetFieldByJSONTag: cannot find field with JSON tag %s", fieldTag)
 }

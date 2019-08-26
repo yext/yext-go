@@ -121,6 +121,10 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 	entities := []Entity{}
 	for _, entity := range typedEntities {
 		setNilIsEmpty(entity)
+		// entity, err = HydrateUnknownFields(entity, e.client.CustomFieldService.CustomFieldManager.CustomFields)
+		// if err != nil {
+		// 	return nil, r, err
+		// }
 		entities = append(entities, entity)
 	}
 	v.typedEntites = entities
@@ -193,6 +197,12 @@ func (e *EntityService) Get(id string) (Entity, *Response, error) {
 	}
 
 	setNilIsEmpty(entity)
+
+	// TODO:  should cache custom fields on entity service
+	entity, err = HydrateUnknownFields(entity, e.client.CustomFieldService.CustomFieldManager.CustomFields)
+	if err != nil {
+		return nil, r, err
+	}
 
 	return entity, r, nil
 }

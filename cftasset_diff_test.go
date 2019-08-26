@@ -1,8 +1,6 @@
 package yext
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestAssetDiff(t *testing.T) {
 	tests := []struct {

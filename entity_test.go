@@ -2,7 +2,6 @@ package yext
 
 import (
 	"encoding/json"
-	"reflect"
 	"testing"
 )
 
@@ -17,6 +16,16 @@ var CustomLocationEntityCFManager = &CustomFieldManager{
 			Name: "CF Text",
 			Type: CUSTOMFIELDTYPE_SINGLELINETEXT,
 			Id:   String("cf_Text"),
+		},
+		&CustomField{
+			Name: "New Field",
+			Type: CUSTOMFIELDTYPE_SINGLELINETEXT,
+			Id:   String("c_newField"),
+		},
+		&CustomField{
+			Name: "Unknown Field 1",
+			Type: CUSTOMFIELDTYPE_YESNO,
+			Id:   String("c_unknownField1"),
 		},
 	},
 }
@@ -61,7 +70,32 @@ func (y *CustomLocationEntity) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (y CustomLocationEntity) String() string {
+func (y *CustomLocationEntity) MarshalJSON() ([]byte, error) {
+	data, err := json.Marshal(&y.LocationEntity)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]interface{}
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		return nil, err
+	}
+	custom, err := json.Marshal(&y.CustomEntity)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(custom, &m)
+	if err != nil {
+		return nil, err
+	}
+	marshalledData, err := json.Marshal(m)
+	if err != nil {
+		return nil, err
+	}
+	return marshalledData, nil
+}
+
+func (y *CustomLocationEntity) String() string {
 	b, _ := json.Marshal(y)
 	return string(b)
 }
@@ -76,7 +110,92 @@ func (c *CustomEntity) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &a); err != nil {
 		return err
 	}
-	return UnmarshalEntityJSON(c, data)
+
+	if err := UnmarshalEntityJSON(c, data); err != nil {
+		return err
+	}
+	return nil
+}
+
+type CustomEntityWithUnknownFields struct {
+	CFHours        **Hours                 `json:"cf_Hours,omitempty"`
+	CFUrl          *string                 `json:"cf_Url,omitempty"`
+	CFDailyTimes   **DailyTimes            `json:"cf_DailyTimes,omitempty"`
+	CFTextList     *[]string               `json:"cf_TextList,omitempty"`
+	CFGallery      *[]Photo                `json:"cf_Gallery,omitempty"`
+	CFPhoto        **Photo                 `json:"cf_Photo,omitempty"`
+	CFVideos       *[]Video                `json:"cf_Videos,omitempty"`
+	CFVideo        **Video                 `json:"cf_Video,omitempty"`
+	CFDate         *string                 `json:"cf_Date,omitempty"`
+	CFSingleOption **string                `json:"cf_SingleOption,omitempty"`
+	CFMultiOption  *UnorderedStrings       `json:"cf_MultiOption,omitempty"`
+	CFYesNo        **bool                  `json:"cf_YesNo,omitempty"`
+	CFText         *string                 `json:"cf_Text,omitempty"`
+	CFMultiLine    *string                 `json:"cf_MultiLineText,omitempty"`
+	UnknownFields  *map[string]interface{} `json:"-"`
+}
+
+type CustomLocationEntityWithUnknownFields struct {
+	LocationEntity
+	CustomEntityWithUnknownFields
+}
+
+func (y *CustomLocationEntityWithUnknownFields) UnmarshalJSON(bytes []byte) error {
+	if err := json.Unmarshal(bytes, &y.LocationEntity); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(bytes, &y.CustomEntityWithUnknownFields); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (y *CustomLocationEntityWithUnknownFields) MarshalJSON() ([]byte, error) {
+	type Alias CustomLocationEntityWithUnknownFields
+	data, err := json.Marshal(&struct {
+		*Alias
+	}{
+		Alias: (*Alias)(y),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var m map[string]interface{}
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		return nil, err
+	}
+
+	if y.UnknownFields != nil {
+		for key, val := range *y.UnknownFields {
+			m[key] = val
+		}
+	}
+
+	return json.Marshal(m)
+}
+
+func (y *CustomLocationEntityWithUnknownFields) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
+}
+
+func (c *CustomEntityWithUnknownFields) UnmarshalJSON(data []byte) error {
+	type Alias CustomEntityWithUnknownFields
+	a := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+
+	if err := UnmarshalCustomEntityJSON(c, data); err != nil {
+		return err
+	}
+	return nil
 }
 
 func entityToJSONString(entity Entity) (error, string) {
@@ -103,7 +222,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Languages: &[]string{"English"}}}, `{"languages":["English"]}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: nil}}, `{}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullHours()}}, `{"hours":null}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullableHours(&Hours{Monday: NullDayHours(), Tuesday: NullDayHours(), Wednesday: NullDayHours(), Thursday: NullDayHours(), Friday: NullDayHours(), Saturday: NullDayHours(), Sunday: NullDayHours()})}}, `{"hours":{"monday":null,"tuesday":null,"wednesday":null,"thursday":null,"friday":null,"saturday":null,"sunday":null}}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullableHours(&Hours{Monday: NullDayHours(), Tuesday: NullDayHours(), Wednesday: NullDayHours(), Thursday: NullDayHours(), Friday: NullDayHours(), Saturday: NullDayHours(), Sunday: NullDayHours()})}}, `{"hours":{"friday":null,"monday":null,"saturday":null,"sunday":null,"thursday":null,"tuesday":null,"wednesday":null}}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: String("")}}, `{"cf_Url":""}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: nil}}, `{}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: &[]string{}}}, `{"cf_TextList":[]}`},
@@ -118,9 +237,10 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFDailyTimes: NullDailyTimes()}}, `{"cf_DailyTimes":null}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFHours: NullHours()}}, `{"cf_Hours":null}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"cf_YesNo":null}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"Hello","cf_YesNo":null}`},
-		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"name":"","cf_YesNo":null}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"cf_YesNo":null,"name":"Hello"}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}, `{"cf_YesNo":null,"name":""}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFText: String("")}}, `{"cf_Text":""}`},
+		{&CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField": true}}}, `{"c_UnknownField":true}`},
 	}
 
 	for _, test := range tests {
@@ -138,7 +258,7 @@ func TestEntityJSONDeserialization(t *testing.T) {
 		want Entity
 	}
 
-	tests := []test{
+	testsForKnownFields := []test{
 		{`{}`, &CustomLocationEntity{}},
 		{`{"emails": []}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{})}}},
 		{`{"emails": ["bob@email.com", "sue@email.com"]}`, &CustomLocationEntity{LocationEntity: LocationEntity{Emails: Strings([]string{"bob@email.com", "sue@email.com"})}}},
@@ -165,14 +285,62 @@ func TestEntityJSONDeserialization(t *testing.T) {
 		{`{"name":"Hello","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
 		{`{"name":"","cf_YesNo":null}`, &CustomLocationEntity{LocationEntity: LocationEntity{Name: String("")}, CustomEntity: CustomEntity{CFYesNo: NullBool()}}},
 		{`{"cf_Text":""}`, &CustomLocationEntity{CustomEntity: CustomEntity{CFText: String("")}}},
+		{`{"c_UnknownField":true}`, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField": true}}}},
+		{`{"c_UnknownField1":true,"c_UnknownField2":"Something"}`, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField1": true, "c_UnknownField2": "Something"}}}},
+		{`{"name":"Hello", "c_UnknownField1":true,"c_UnknownField2":"Something"}`, &CustomLocationEntityWithUnknownFields{LocationEntity: LocationEntity{Name: String("Hello")}, CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField1": true, "c_UnknownField2": "Something"}}}},
 	}
 
-	for _, test := range tests {
-		v := &CustomLocationEntity{}
+	for _, test := range testsForKnownFields {
+		v := &CustomLocationEntityWithUnknownFields{}
+		var wantString string
+		if c, ok := test.want.(*CustomLocationEntity); ok {
+			wantString = c.String()
+		}
+		if c, ok := test.want.(*CustomLocationEntityWithUnknownFields); ok {
+			wantString = c.String()
+		}
 		if err := json.Unmarshal([]byte(test.json), v); err != nil {
 			t.Error("Unable to deserialize", test.json, "from JSON:", err)
-		} else if !reflect.DeepEqual(v, test.want) {
-			t.Errorf("json.Unmarshal()\nGot:      %s\nExpected: %s", v, test.want)
+		} else if v.String() != wantString {
+			t.Errorf("json.Unmarshal()\nGot:      %s\nExpected: %s", v, wantString)
+		}
+	}
+
+	type unknownFieldsTest struct {
+		json          string
+		unmarshalInto Entity
+		want          Entity
+	}
+
+	testsForUnkownKnownFields := []unknownFieldsTest{
+		{`{"cf_Text":""}`, &CustomLocationEntityWithUnknownFields{}, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{CFText: String("")}}},
+		{`{"c_UnknownField":true}`, &CustomLocationEntityWithUnknownFields{}, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField": true}}}},
+		{`{"c_UnknownField1":true,"c_UnknownField2":"Something"}`, &CustomLocationEntityWithUnknownFields{}, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{UnknownFields: &map[string]interface{}{"c_UnknownField1": true, "c_UnknownField2": "Something"}}}},
+		{`{"cf_Text":"Text","c_UnknownField":true}`, &CustomLocationEntityWithUnknownFields{}, &CustomLocationEntityWithUnknownFields{CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{CFText: String("Text"), UnknownFields: &map[string]interface{}{"c_UnknownField": NullableBool(true)}}}},
+		{`{"c_UnknownField1":true,"c_UnknownField2":"Something"}`, &CustomLocationEntity{}, &CustomLocationEntity{}},
+		{`{"cf_Text":"Text","c_UnknownField":true}`, &CustomLocationEntity{}, &CustomLocationEntity{CustomEntity: CustomEntity{CFText: String("Text")}}},
+	}
+
+	for _, test := range testsForUnkownKnownFields {
+		var wantString string
+		if c, ok := test.want.(*CustomLocationEntity); ok {
+			wantString = c.String()
+		}
+		if c, ok := test.want.(*CustomLocationEntityWithUnknownFields); ok {
+			wantString = c.String()
+		}
+		if err := json.Unmarshal([]byte(test.json), &test.unmarshalInto); err != nil {
+			t.Error("Unable to deserialize", test.json, "from JSON:", err)
+		}
+		var gotString string
+		if c, ok := test.unmarshalInto.(*CustomLocationEntity); ok {
+			gotString = c.String()
+		}
+		if c, ok := test.unmarshalInto.(*CustomLocationEntityWithUnknownFields); ok {
+			gotString = c.String()
+		}
+		if gotString != wantString {
+			t.Errorf("json.Unmarshal()\nGot:      %s\nExpected: %s", gotString, wantString)
 		}
 	}
 }
@@ -259,6 +427,44 @@ func TestSetLabels(t *testing.T) {
 		if _, isDiff, _ := Diff(test.Want, test.Entity); isDiff {
 			t.Errorf("SetLabels: Wanted %v Got %v", test.Want, test.Entity)
 		}
+	}
+}
+
+func TestHydrateUnknownFields(t *testing.T) {
+	tests := []struct {
+		name string
+		base Entity
+		new  Entity
+	}{
+		{
+			name: "Unknown Fields: different types",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": true,
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			//	raw, _ := ConvertToRawEntity(test.base)
+			got, err := HydrateUnknownFields(test.base, CustomLocationEntityCFManager.CustomFields)
+			if err != nil {
+				t.Errorf("HydrateUnknownFields: got err %s", err)
+			} else if _, isDiff, _ := Diff(test.new, got); isDiff {
+				t.Errorf("HydrateUnknownFields: got %v, wanted %v", got, test.new)
+
+			}
+		})
 	}
 }
 

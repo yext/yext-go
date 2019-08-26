@@ -1,8 +1,11 @@
 package yext
 
 import (
+	"log"
 	"reflect"
 	"testing"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 type diffTest struct {
@@ -831,6 +834,7 @@ func TestEntityDiff(t *testing.T) {
 			}
 			delta, isDiff, _ := Diff(baseEntity, newEntity)
 			if isDiff != test.isDiff {
+				log.Println("delta", delta)
 				t.Errorf("Expected isDiff: %t. Got: %t", test.isDiff, isDiff)
 			} else if test.isDiff == false && delta != nil {
 				t.Errorf("Expected isDiff: %t. Got delta: %v", test.isDiff, delta)
@@ -874,10 +878,10 @@ func TestEntityDiffComplex(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		base   *CustomLocationEntity
-		new    *CustomLocationEntity
+		base   Entity
+		new    Entity
 		isDiff bool
-		delta  *CustomLocationEntity
+		delta  Entity
 	}{
 		{
 			name:   "equal",
@@ -2387,6 +2391,214 @@ func TestEntityDiffComplex(t *testing.T) {
 			},
 			isDiff: false,
 		},
+		{
+			name: "Unknown Fields: no change",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+			isDiff: false,
+		},
+		{
+			name: "Unknown Fields: expect delta because field is new",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField2": NullableBool(false),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField2": NullableBool(false),
+					},
+				},
+			},
+		},
+		{
+			name: "Unknown Fields: expect delta",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(false),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(false),
+					},
+				},
+			},
+		},
+		{
+			name: "Unknown Fields: expect delta",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(false),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(false),
+					},
+				},
+			},
+		},
+		{
+			name: "Unknown Fields: different types, same underlying value",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": true,
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+					},
+				},
+			},
+			isDiff: false,
+			// delta: &CustomLocationEntityWithUnknownFields{
+			// 	CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+			// 		UnknownFields: &map[string]interface{}{
+			// 			"c_unknownField1": NullableBool(true),
+			// 		},
+			// 	},
+			// },
+		},
+		{
+			name: "Unknown Fields: one field changed",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullableBool(true),
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullBool(),
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": NullBool(),
+					},
+				},
+			},
+		},
+		{
+			name: "Unknown Fields: complex custom field with no change",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": &CFT{
+							Text: String("Original Text"),
+							Bool: NullableBool(true),
+						},
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": &CFT{
+							Text: String("Original Text"),
+							Bool: NullableBool(true),
+						},
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			isDiff: false,
+		},
+		// At this time, partial updates for structs is not supported
+		{
+			name: "Unknown Fields: complex custom field change",
+			base: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": &CFT{
+							Text: String("Original Text"),
+							Bool: NullableBool(true),
+						},
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			new: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": &CFT{
+							Text: String("New Text"),
+							Bool: NullableBool(true),
+						},
+						"c_unknownField2": NullableBool(true),
+					},
+				},
+			},
+			isDiff: true,
+			delta: &CustomLocationEntityWithUnknownFields{
+				CustomEntityWithUnknownFields: CustomEntityWithUnknownFields{
+					UnknownFields: &map[string]interface{}{
+						"c_unknownField1": &CFT{
+							Text: String("New Text"),
+							Bool: NullableBool(true),
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -2399,6 +2611,8 @@ func TestEntityDiffComplex(t *testing.T) {
 				t.Errorf("Expected isDiff: %t.\nGot delta: %v", test.isDiff, delta)
 			} else if isDiff {
 				if !reflect.DeepEqual(delta, test.delta) {
+					spew.Dump(test.delta)
+					spew.Dump(delta)
 					t.Errorf("Expected delta: %v.\nGot: %v", test.delta, delta)
 				}
 			}

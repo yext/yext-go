@@ -65,6 +65,14 @@ func GenericDiff(a interface{}, b interface{}, nilIsEmptyA bool, nilIsEmptyB boo
 			continue
 		}
 
+		if nameA == "UnknownFields" {
+			if unknownFieldsDelta, unknownFieldsAreDifferent := compareUnknownFields(valA.Interface().(*map[string]interface{}), valB.Interface().(*map[string]interface{})); unknownFieldsAreDifferent {
+				isDiff = true
+				Indirect(reflect.ValueOf(delta)).FieldByName(nameA).Set(reflect.ValueOf(unknownFieldsDelta))
+			}
+			continue
+		}
+
 		if IsNil(valB) {
 			continue
 		}
@@ -172,4 +180,54 @@ func Diff(a Entity, b Entity) (Entity, bool, error) {
 		return nil, isDiff, nil
 	}
 	return delta.(Entity), isDiff, nil
+}
+
+// At this time, compareUnknownFields does not support partial updates for a given field
+// This means that if an unknown field is a struct, if one or more fields of that struct
+// has changed, even if other fields have remained the same, all fields will still be sent
+//
+func compareUnknownFields(a *map[string]interface{}, b *map[string]interface{}) (*map[string]interface{}, bool) {
+	if a == nil && b != nil {
+		return b, true
+	} else if b == nil {
+		return nil, false
+	}
+
+	var (
+		isDiff = false
+		delta  = make(map[string]interface{})
+		mapA   = *a
+		mapB   = *b
+	)
+	for key, mapValB := range mapB {
+		mapValA, ok := mapA[key]
+		if !ok { // key is not in mapA
+			isDiff = true
+			delta[key] = mapValB
+		} else { // key exists in both maps so need to compare values
+			aI := reflect.ValueOf(mapValA).Interface()
+			bI := reflect.ValueOf(mapValB).Interface()
+			comparableA, aOk := aI.(Comparable)
+			comparableB, bOk := bI.(Comparable)
+			if aOk && bOk {
+				if !comparableA.Equal(comparableB) {
+					isDiff = true
+					delta[key] = mapValB
+				}
+			}
+			underlyingValA := Indirect(reflect.ValueOf(mapValA))
+			underlyingValB := Indirect(reflect.ValueOf(mapValB))
+			if !underlyingValA.IsValid() || !underlyingValB.IsValid() {
+				isDiff = true
+				delta[key] = mapValB
+			} else if !reflect.DeepEqual(underlyingValA.Interface(), underlyingValB.Interface()) {
+				isDiff = true
+				delta[key] = mapValB
+			}
+		}
+	}
+	if isDiff {
+		return &delta, true
+	}
+	return nil, false
 }
