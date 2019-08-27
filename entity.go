@@ -114,7 +114,11 @@ func (r *RawEntity) GetEntityType() EntityType {
 	if m, ok := (*r)["meta"]; ok {
 		meta := m.(map[string]interface{})
 		if t, ok := meta["entityType"]; ok {
-			return EntityType(t.(string))
+			if s, isString := t.(string); isString {
+				return EntityType(s)
+			} else if _, isEntityType := t.(EntityType); isEntityType {
+				return t.(EntityType)
+			}
 		}
 	}
 	return EntityType("")
