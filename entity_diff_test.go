@@ -2406,6 +2406,70 @@ func TestEntityDiffComplex(t *testing.T) {
 	}
 }
 
+func TestRawEntityDiff(t *testing.T) {
+	tests := []struct {
+		name   string
+		base   *RawEntity
+		new    *RawEntity
+		isDiff bool
+		delta  *RawEntity
+	}{
+		{
+			name: "equal",
+			base: &RawEntity{
+				"name": "yext",
+			},
+			new: &RawEntity{
+				"name": "yext",
+			},
+			isDiff: false,
+		},
+		{
+			name: "not equal",
+			base: &RawEntity{
+				"name": String("yext"),
+			},
+			new: &RawEntity{
+				"name": "new yext",
+			},
+			isDiff: true,
+			delta: &RawEntity{
+				"name": "new yext",
+			},
+		},
+		{
+			name: "field within field equal",
+			base: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			new: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			isDiff: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			delta, isDiff, _ := Diff(test.base, test.new)
+			if isDiff != test.isDiff {
+				t.Log(delta)
+				t.Errorf("Expected isDiff: %t.\nGot: %t", test.isDiff, isDiff)
+			} else if test.isDiff == false && delta != nil {
+				t.Errorf("Expected isDiff: %t.\nGot delta: %v", test.isDiff, delta)
+			} else if isDiff {
+				if !reflect.DeepEqual(delta, test.delta) {
+					t.Errorf("Expected delta: %v.\nGot: %v", test.delta, delta)
+				}
+			}
+		})
+	}
+}
+
 func TestInstanceOf(t *testing.T) {
 	var (
 		b = String("apple")

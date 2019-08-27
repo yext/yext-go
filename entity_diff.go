@@ -167,9 +167,56 @@ func Diff(a Entity, b Entity) (Entity, bool, error) {
 		return nil, true, fmt.Errorf("Entity Types do not match: '%s', '%s'", a.GetEntityType(), b.GetEntityType())
 	}
 
+	// TODO (cdworak): GenericDiff cannot handle map (RawEntity is map)
+	rawA, okA := a.(*RawEntity)
+	rawB, okB := b.(*RawEntity)
+	if okA && okB {
+		delta, isDiff := RawEntityDiff(*rawA, *rawB, GetNilIsEmpty(a), GetNilIsEmpty(b))
+		if !isDiff {
+			return nil, isDiff, nil
+		}
+		rawDelta := RawEntity(delta)
+		return &rawDelta, isDiff, nil
+	}
+
 	delta, isDiff := GenericDiff(a, b, GetNilIsEmpty(a), GetNilIsEmpty(b))
 	if !isDiff {
 		return nil, isDiff, nil
 	}
 	return delta.(Entity), isDiff, nil
+}
+
+func RawEntityDiff(a map[string]interface{}, b map[string]interface{}, nilIsEmptyA bool, nilIsEmptyB bool) (map[string]interface{}, bool) {
+	var (
+		aAsMap = a
+		bAsMap = b
+		delta  = map[string]interface{}{}
+		isDiff = false
+	)
+
+	for key, bVal := range bAsMap {
+		if key == "nilIsEmpty" {
+			continue
+		}
+		if aVal, ok := aAsMap[key]; ok {
+			_, aIsMap := aVal.(map[string]interface{})
+			_, bIsMap := bVal.(map[string]interface{})
+			if aIsMap && bIsMap {
+				subFieldsDelta, subFieldsAreDiff := RawEntityDiff(aVal.(map[string]interface{}), bVal.(map[string]interface{}), nilIsEmptyA, nilIsEmptyB)
+				if subFieldsAreDiff {
+					delta[key] = subFieldsDelta
+					isDiff = true
+				}
+			} else {
+				if !reflect.DeepEqual(aVal, bVal) {
+					delta[key] = bVal
+					isDiff = true
+				}
+			}
+		}
+	}
+	if isDiff {
+		return delta, true
+	}
+	return nil, false
 }
