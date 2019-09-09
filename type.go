@@ -279,3 +279,32 @@ func NullableUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
 }
+
+// Ternary is used for single-option fields that could have one of three
+// options (aside from being unset): "Yes", "No", and "Not Applicable"
+
+type Ternary string
+
+const (
+	Yes           Ternary = "YES"
+	No            Ternary = "NO"
+	NotApplicable Ternary = "NOT_APPLICABLE"
+	Unset         Ternary = ""
+)
+
+func NullableTernary(v Ternary) **Ternary {
+	y := &v
+	return &y
+}
+
+func GetNullableTernary(v **Ternary) Ternary {
+	if v == nil || *v == nil {
+		return Unset
+	}
+	return **v
+}
+
+func NullTernary() **Ternary {
+	var v *Ternary
+	return &v
+}
