@@ -203,6 +203,15 @@ type Photo struct {
 type Image struct {
 	Url           *string `json:"url,omitempty"`
 	AlternateText *string `json:"alternateText,omitempty"`
+	Width         *int          `json:"width,omitempty"`
+	Height        *int          `json:"height,omitempty"`
+	Thumbnails    *[]Thumbnail  `json:"thumnails,omitempty"`
+}
+
+type Thumbnail struct {
+	Url           *string `json:"url,omitempty"`
+	Width         *int    `json:"width,omitempty"`
+	Height        *int    `json:"height,omitempty"`
 }
 
 func NullableImage(i *Image) **Image {
