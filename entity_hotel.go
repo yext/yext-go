@@ -210,6 +210,8 @@ const (
 	OptionValetParkingAvailable          = "VALET_PARKING_AVAILABLE"
 	OptionAirportShuttleAvailableForFree = "AIRPORT_SHUTTLE_AVAILABLE_FOR_FREE"
 	OptionAirportShuttleAvailable        = "AIRPORT_SHUTTLE_AVAILABLE"
+	OptionBreakfastAvailable             = "BREAKFAST_AVAILABLE"
+	OptionBreakfastAvailableForFree      = "BREAKFAST_AVAILABLE_FOR_FREE"
 
 	// Multi-option IDs
 	OptionWiFiInPublicAreas  = "WIFI_IN_PUBLIC_AREAS"
