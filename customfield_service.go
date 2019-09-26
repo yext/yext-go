@@ -209,6 +209,31 @@ func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ..
 	return ToUnorderedStrings(optionIds)
 }
 
+func (c *CustomFieldManager) GetMultiOptionIds(fieldName string, optionNames ...string) (*UnorderedStrings, error) {
+    if len(optionNames) == 0 {
+        return c.NullMultiOption()
+    }
+    var optionIds = []string{}
+    for _, optionName := range optionNames {
+        id, err := c.CustomFieldOptionId(fieldName, optionName)
+        if err != nil {
+            return nil, err
+        }
+        shouldAddOptionId := true
+        for _, optionId := range optionIds {
+            if id == optionId { // Don't add duplicate option ids
+                shouldAddOptionId = false
+                break
+            }
+        }
+
+        if shouldAddOptionId {
+            optionIds = append(optionIds, id)
+        }
+    }
+    return ToUnorderedStrings(optionIds), nil
+}
+
 func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
 	if setOptionIds == nil {
 		return false
