@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+
+    multierror "github.com/hashicorp/go-multierror"
 )
 
 const customFieldPath = "customfields"
@@ -207,6 +209,33 @@ func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ..
 		}
 	}
 	return ToUnorderedStrings(optionIds)
+}
+
+func (c *CustomFieldManager) GetMultiOptionIds(fieldName string, optionNames ...string) (*UnorderedStrings, error) {
+    var errs *multierror.Error
+    if len(optionNames) == 0 {
+        return c.NullMultiOption(), nil
+    }
+    var optionIds = []string{}
+    for _, optionName := range optionNames {
+        id, err := c.CustomFieldOptionId(fieldName, optionName)
+        if err != nil {
+            errs = multierror.Append(errs, err)
+            continue
+        }
+        shouldAddOptionId := true
+        for _, optionId := range optionIds {
+            if id == optionId { // Don't add duplicate option ids
+                shouldAddOptionId = false
+                break
+            }
+        }
+
+        if shouldAddOptionId {
+            optionIds = append(optionIds, id)
+        }
+    }
+    return ToUnorderedStrings(optionIds), errs.ErrorOrNil()
 }
 
 func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
