@@ -47,11 +47,11 @@ type HotelEntity struct {
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
 
-	GoogleCoverPhoto      **Image `json:"googleCoverPhoto,omitempty"`
-    	GooglePreferredPhoto  *string `json:"googlePreferredPhoto,omitempty"`
-    	GoogleProfilePhoto    **Image `json:"googleProfilePhoto,omitempty"`
-    	GoogleWebsiteOverride *string `json:"googleWebsiteOverride,omitempty"`
-    	GoogleAttributes *map[string][]string `json:"googleAttributes,omitempty"`
+	GoogleCoverPhoto      **Image              `json:"googleCoverPhoto,omitempty"`
+	GooglePreferredPhoto  *string              `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto    **Image              `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride *string              `json:"googleWebsiteOverride,omitempty"`
+	GoogleAttributes      *map[string][]string `json:"googleAttributes,omitempty"`
 
 	// Media
 	Logo         **Photo  `json:"logo,omitempty"`
@@ -218,6 +218,8 @@ const (
 	OptionAirportShuttleAvailable        = "AIRPORT_SHUTTLE_AVAILABLE"
 	OptionBreakfastAvailable             = "BREAKFAST_AVAILABLE"
 	OptionBreakfastAvailableForFree      = "BREAKFAST_AVAILABLE_FOR_FREE"
+	OptionWiFiAvailable                  = "WIFI_AVAILABLE"
+	OptionWiFiAvailableForFree           = "WIFI_AVAILABLE_FOR_FREE"
 
 	// Multi-option IDs
 	OptionWiFiInPublicAreas  = "WIFI_IN_PUBLIC_AREAS"
