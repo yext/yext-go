@@ -12,7 +12,8 @@ const reviewsPath = "reviews"
 const reviewInvitePath = "reviewinvites"
 
 var (
-	ReviewListMaxLimit = 50
+	ReviewListMaxLimit     = 50
+	InvitationListMaxLimit = 100
 )
 
 type ReviewService struct {
@@ -47,6 +48,16 @@ type ReviewListResponse struct {
 	NextPageToken string    `json:"nextPageToken"`
 }
 
+type InvitationListResponse struct {
+	Invitations []*Invitation `json:"invitations"`
+	CountEmail  int           `json:"countEmail"`
+	CountSMS    int           `json:"countSMS"`
+	Sent        int           `json:"sent"`
+	Opened      int           `json:"opened"`
+	Clicked     int           `json:"clicked"`
+	Responded   int           `json:"responded"`
+}
+
 type ReviewCreateInvitationResponse struct {
 	Id         string `json:"id"`
 	LocationId string `json:"locationId"`
@@ -57,6 +68,16 @@ type ReviewCreateInvitationResponse struct {
 	TemplateId int    `json:"templateId"`
 	Status     string `json:"status"`
 	Details    string `json:"details"`
+}
+
+type InvitationListOptions struct {
+	ListOptions
+	LocationIds    []string
+	FolderIds      []string
+	LocationLabels []string
+	TemplateIds    []string
+	Status         string
+	Type           string
 }
 
 type ReviewCreateReviewResponse struct {
@@ -195,6 +216,16 @@ func (l *ReviewService) Get(id int) (*Review, *Response, error) {
 	return &v, r, nil
 }
 
+func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
+	var v *ReviewCreateReviewResponse
+	r, err := l.client.DoRequestJSON("POST", reviewsPath, jsonData, &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return v, r, nil
+}
+
 func (l *ReviewService) CreateInvitation(jsonData []*Reviewer) ([]*ReviewCreateInvitationResponse, *Response, error) {
 	var v []*ReviewCreateInvitationResponse
 	r, err := l.client.DoRequestJSON("POST", reviewInvitePath, jsonData, &v)
@@ -205,12 +236,116 @@ func (l *ReviewService) CreateInvitation(jsonData []*Reviewer) ([]*ReviewCreateI
 	return v, r, nil
 }
 
-func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
-	var v *ReviewCreateReviewResponse
-	r, err := l.client.DoRequestJSON("POST", reviewsPath, jsonData, &v)
+func (l *ReviewService) GetInvitation(id int) (*Invitation, *Response, error) {
+	var i Invitation
+	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%d", reviewInvitePath, id), &i)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return &i, r, nil
+}
+
+func addInvitationListOptions(requrl string, opts *InvitationListOptions) (string, error) {
+	u, err := url.Parse(requrl)
+	if err != nil {
+		return "", nil
+	}
+
+	if opts == nil {
+		return requrl, nil
+	}
+
+	q := u.Query()
+	if opts.LocationIds != nil {
+		q.Add("locationIds", strings.Join(opts.LocationIds, ","))
+	}
+	if opts.FolderIds != nil {
+		q.Add("folderIds", strings.Join(opts.FolderIds, ","))
+	}
+	if opts.LocationLabels != nil {
+		q.Add("locationLabels", strings.Join(opts.LocationLabels, ","))
+	}
+	if opts.TemplateIds != nil {
+		q.Add("templateIds", strings.Join(opts.TemplateIds, ","))
+	}
+	if opts.Status != "" {
+		q.Add("status", opts.Status)
+	}
+	if opts.Type != "" {
+		q.Add("type", opts.Type)
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
+
+func (l *ReviewService) ListInvitations(opts *InvitationListOptions) (*InvitationListResponse, *Response, error) {
+	requrl, err := addInvitationListOptions(reviewInvitePath, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if opts != nil {
+		requrl, err = addListOptions(requrl, &opts.ListOptions)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	v := &InvitationListResponse{}
+	r, err := l.client.DoRequest("GET", requrl, v)
 	if err != nil {
 		return nil, r, err
 	}
 
 	return v, r, nil
+}
+
+func (l *ReviewService) ListAllInvitationsWithOptions(opts *InvitationListOptions) ([]*Invitation, *Response, error) {
+	var (
+		invitations []*Invitation
+		lo          = opts
+	)
+
+	if lo == nil {
+		lo = &InvitationListOptions{}
+	}
+
+	lo.ListOptions = ListOptions{Limit: InvitationListMaxLimit, DisableCountValidation: true}
+
+	// var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
+	//
+	// }
+	return invitations, nil, nil
+
+	// var (
+	// 	reviews []*Review
+	// 	lo      = rlOpts
+	// )
+	// if lo == nil {
+	// 	lo = &ReviewListOptions{}
+	// }
+	//
+	// lo.ListOptions = ListOptions{Limit: ReviewListMaxLimit, DisableCountValidation: true}
+	//
+	// var lg tokenListRetriever = func(opts *ListOptions) (string, error) {
+	// 	lo.ListOptions = *opts
+	// 	rlr, _, err := l.List(lo)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+	// 	reviews = append(reviews, rlr.Reviews...)
+	// 	return rlr.NextPageToken, err
+	// }
+	//
+	// if err := tokenListHelper(lg, &lo.ListOptions); err != nil {
+	// 	return nil, err
+	// } else {
+	// 	return reviews, nil
+	// }
+}
+
+func (l *ReviewService) ListAllInvitations() ([]*Invitation, *Response, error) {
+	return l.ListAllInvitationsWithOptions(nil)
 }

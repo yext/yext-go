@@ -31,6 +31,27 @@ type Review struct {
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
 }
 
+type Invitation struct {
+	Id         string `json:"id"`
+	LocationId string `json:"locationId"`
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	Contact    string `json:"contact"`
+	Image      bool   `json:"image"`
+	TemplateId int    `json:"templateId"`
+	Status     string `json:"status"`
+	Details    string `json:"details"`
+	Language   string `json:"language"`
+	PartnerId  string `json:"partnerId"`
+	Type       string `json:"type"`
+	Requested  int    `json:"requested"`
+	Sent       int    `json:"sent"`
+	Opened     int    `json:"opened"`
+	Clicked    int    `json:"clicked"`
+	Responded  int    `json:"responded"`
+	ReviewId   string `json:"reviewId"`
+}
+
 type ReviewCreate struct {
 	LocationId     *string  `json:"locationId"`
 	AccountId      *string  `json:"accountId"`
