@@ -44,10 +44,11 @@ type HealthcareFacilityEntity struct {
 	Products            *[]string `json:"products,omitempty"`
 	Services            *[]string `json:"services,omitempty"`
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
-	Specialties    *[]string `json:"specialities,omitempty"`
-	Languages      *[]string `json:"languages,omitempty"`
-	Logo           **Photo   `json:"logo,omitempty"`
-	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
+	Specialties       *[]string `json:"specialities,omitempty"`
+	Languages         *[]string `json:"languages,omitempty"`
+	Logo              **Photo   `json:"logo,omitempty"`
+	PaymentOptions    *[]string `json:"paymentOptions,omitempty"`
+	InsuranceAccepted *[]string `json:"insuranceAccepted,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
