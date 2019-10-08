@@ -15,12 +15,6 @@ const ENTITYTYPE_LOCATION EntityType = "location"
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
 type LocationEntity struct {
 	BaseEntity
-
-	// Admin
-	CategoryIds *[]string `json:"categoryIds,omitempty"`
-	Closed      **bool    `json:"closed,omitempty"`
-	Keywords    *[]string `json:"keywords,omitempty"`
-
 	// Address Fields
 	Name          *string  `json:"name,omitempty"`
 	Address       *Address `json:"address,omitempty"`
@@ -39,8 +33,9 @@ type LocationEntity struct {
 	Emails         *[]string `json:"emails,omitempty"`
 
 	// Location Info
-	Description         *string   `json:"description,omitempty"`
 	Hours               **Hours   `json:"hours,omitempty"`
+	Closed              **bool    `json:"closed,omitempty"`
+	Description         *string   `json:"description,omitempty"`
 	AdditionalHoursText *string   `json:"additionalHoursText,omitempty"`
 	YearEstablished     **float64 `json:"yearEstablished,omitempty"`
 	Associations        *[]string `json:"associations,omitempty"`
@@ -49,10 +44,15 @@ type LocationEntity struct {
 	Products            *[]string `json:"products,omitempty"`
 	Services            *[]string `json:"services,omitempty"`
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
-	Specialties    *[]string `json:"specialities,omitempty"`
+	Specialties *[]string `json:"specialities,omitempty"`
+
 	Languages      *[]string `json:"languages,omitempty"`
 	Logo           **Photo   `json:"logo,omitempty"`
 	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
+
+	// Admin
+	Keywords    *[]string `json:"keywords,omitempty"`
+	CategoryIds *[]string `json:"categoryIds,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
