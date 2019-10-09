@@ -41,6 +41,7 @@ type EventEntity struct {
 	VenueName          *string           `json:"venueName,omitempty"`
 	TicketAvailability *string           `json:"ticketAvailability,omitempty"`
 	TicketPriceRange   *TicketPriceRange `json:"ticketPriceRange,omitempty"`
+	Performers         *[]string         `json:"performers,omitempty"`
 
 	//Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"yextDisplayCoordinate,omitempty"`
