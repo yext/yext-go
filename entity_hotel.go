@@ -110,13 +110,15 @@ type HotelEntity struct {
 	ElectricChargingStation **Ternary `json:"electricChargingStation,omitempty"`
 
 	// Policies
-	PaymentOptions    *[]string `json:"paymentOptions,omitempty"`
-	AllInclusive      **string  `json:"allInclusive,omitempty"`
-	PetsAllowed       **string  `json:"petsAllowed,omitempty"`
-	KidsStayFree      **Ternary `json:"kidsStayFree,omitempty"`
-	SmokeFreeProperty **Ternary `json:"smokeFreeProperty,omitempty"`
-	CatsAllowed       **Ternary `json:"catsAllowed,omitempty"`
-	DogsAllowed       **Ternary `json:"dogsAllowed,omitempty"`
+	PaymentOptions          *[]string `json:"paymentOptions,omitempty"`
+	AllInclusive            **string  `json:"allInclusive,omitempty"`
+	PetsAllowed             **string  `json:"petsAllowed,omitempty"`
+	KidsStayFree            **Ternary `json:"kidsStayFree,omitempty"`
+	MaxAgeOfKidsStayFree    **int     `json:"maxAgeOfKidsStayFree,omitempty"`
+	MaxNumberOfKidsStayFree **int     `json:"maxNumberOfKidsStayFree,omitempty"`
+	SmokeFreeProperty       **Ternary `json:"smokeFreeProperty,omitempty"`
+	CatsAllowed             **Ternary `json:"catsAllowed,omitempty"`
+	DogsAllowed             **Ternary `json:"dogsAllowed,omitempty"`
 
 	// Food and Drink
 	RoomService     **string          `json:"roomService,omitempty"`
@@ -190,6 +192,7 @@ type HotelEntity struct {
 
 	// Accessibility
 	WheelchairAccessible **Ternary         `json:"wheelchairAccessible,omitempty"`
+	MobilityAccessible   **Ternary         `json:"mobilityAccessible,omitempty"`
 	AccessibilityDetails *UnorderedStrings `json:"accessibilityDetails,omitempty"`
 }
 
@@ -220,6 +223,9 @@ const (
 	OptionBreakfastAvailableForFree      = "BREAKFAST_AVAILABLE_FOR_FREE"
 	OptionWiFiAvailable                  = "WIFI_AVAILABLE"
 	OptionWiFiAvailableForFree           = "WIFI_AVAILABLE_FOR_FREE"
+	OptionBuffetBreakfast                = "BUFFET_BREAKFAST"
+	OptionBuffetDinner                   = "BUFFET_DINNER"
+	OptionBuffet                         = "BUFFET"
 
 	// Multi-option IDs
 	OptionWiFiInPublicAreas  = "WIFI_IN_PUBLIC_AREAS"
