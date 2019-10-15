@@ -201,17 +201,17 @@ type Photo struct {
 }
 
 type Image struct {
-	Url           *string `json:"url,omitempty"`
-	AlternateText *string `json:"alternateText,omitempty"`
-	Width         *int          `json:"width,omitempty"`
-	Height        *int          `json:"height,omitempty"`
-	Thumbnails    *[]Thumbnail  `json:"thumnails,omitempty"`
+	Url           *string      `json:"url,omitempty"`
+	AlternateText *string      `json:"alternateText,omitempty"`
+	Width         *int         `json:"width,omitempty"`
+	Height        *int         `json:"height,omitempty"`
+	Thumbnails    *[]Thumbnail `json:"thumnails,omitempty"`
 }
 
 type Thumbnail struct {
-	Url           *string `json:"url,omitempty"`
-	Width         *int    `json:"width,omitempty"`
-	Height        *int    `json:"height,omitempty"`
+	Url    *string `json:"url,omitempty"`
+	Width  *int    `json:"width,omitempty"`
+	Height *int    `json:"height,omitempty"`
 }
 
 func NullableImage(i *Image) **Image {
@@ -324,6 +324,12 @@ func (h Hours) String() string {
 func NewHoursClosedAllWeek() *Hours {
 	h := &Hours{}
 	h.SetClosedAllWeek()
+	return h
+}
+
+func NewHoursUnspecifiedAllWeek() *Hours {
+	h := &Hours{}
+	h.SetUnspecifiedAllWeek()
 	return h
 }
 
@@ -446,22 +452,53 @@ func (h *Hours) SetClosed(w Weekday) {
 	}
 }
 
+func (h *Hours) SetUnspecifiedAllWeek() {
+	h.SetUnspecified(Sunday)
+	h.SetUnspecified(Monday)
+	h.SetUnspecified(Tuesday)
+	h.SetUnspecified(Wednesday)
+	h.SetUnspecified(Thursday)
+	h.SetUnspecified(Friday)
+	h.SetUnspecified(Saturday)
+}
+
 func (h *Hours) SetUnspecified(w Weekday) {
 	switch w {
 	case Sunday:
-		h.Sunday = nil
+		h.Sunday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Monday:
-		h.Monday = nil
+		h.Monday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Tuesday:
-		h.Tuesday = nil
+		h.Tuesday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Wednesday:
-		h.Wednesday = nil
+		h.Wednesday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Thursday:
-		h.Thursday = nil
+		h.Thursday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Friday:
-		h.Friday = nil
+		h.Friday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	case Saturday:
-		h.Saturday = nil
+		h.Saturday = NullableDayHours(&DayHours{
+			OpenIntervals: nil,
+			IsClosed:      nil,
+		})
 	}
 }
 
