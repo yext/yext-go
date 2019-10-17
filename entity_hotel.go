@@ -215,6 +215,8 @@ const (
 	OptionFitnessCenterAvailableForFree  = "FITNESS_CENTER_AVAILABLE_FOR_FREE"
 	OptionParkingAvailableForFree        = "PARKING_AVAILABLE_FOR_FREE"
 	OptionParkingAvailable               = "PARKING_AVAILABLE"
+	OptionSelfParkingAvailableForFree    = "SELF_PARKING_AVAILABLE_FOR_FREE"
+	OptionSelfParkingAvailable           = "SELF_PARKING_AVAILABLE"
 	OptionValetParkingAvailableForFree   = "VALET_PARKING_AVAILABLE_FOR_FREE"
 	OptionValetParkingAvailable          = "VALET_PARKING_AVAILABLE"
 	OptionAirportShuttleAvailableForFree = "AIRPORT_SHUTTLE_AVAILABLE_FOR_FREE"
@@ -226,6 +228,10 @@ const (
 	OptionBuffetBreakfast                = "BUFFET_BREAKFAST"
 	OptionBuffetDinner                   = "BUFFET_DINNER"
 	OptionBuffet                         = "BUFFET"
+	OptionPrivateCarService              = "PRIVATE_CAR_SERVICE"
+	OptionPrivateCarServiceForFree       = "PRIVATE_CAR_SERVICE_FOR_FREE"
+	OptionWatercraftRentals              = "WATERCRAFT_RENTALS"
+	OptionWatercraftRentalsForFree       = "WATERCRAFT_RENTALS_FOR_FREE"
 
 	// Multi-option IDs
 	OptionWiFiInPublicAreas      = "WIFI_IN_PUBLIC_AREAS"
