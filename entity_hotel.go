@@ -228,10 +228,11 @@ const (
 	OptionBuffet                         = "BUFFET"
 
 	// Multi-option IDs
-	OptionWiFiInPublicAreas  = "WIFI_IN_PUBLIC_AREAS"
-	OptionAccessibleParking  = "ACCESSIBLE_PARKING"
-	OptionAccessibleElevator = "ACCESSIBLE_ELEVATOR"
-	OptionAccessiblePool     = "ACCESSIBLE_POOL"
+	OptionWiFiInPublicAreas      = "WIFI_IN_PUBLIC_AREAS"
+	OptionPublicInternetTerminal = "PUBLIC_INTERNET_TERMINAL"
+	OptionAccessibleParking      = "ACCESSIBLE_PARKING"
+	OptionAccessibleElevator     = "ACCESSIBLE_ELEVATOR"
+	OptionAccessiblePool         = "ACCESSIBLE_POOL"
 )
 
 func (h *HotelEntity) UnmarshalJSON(data []byte) error {
