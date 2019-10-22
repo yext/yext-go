@@ -91,13 +91,13 @@ type HotelEntity struct {
 	BeachFrontProperty **Ternary `json:"beachFrontProperty,omitempty"`
 
 	// Services
-	ClassificationRating    **int     `json:"classificationRating,omitempty"`
-	FrontDesk               **string  `json:"frontDesk,omitempty"`
-	Laundry                 **string  `json:"laundry,omitempty"`
-	Housekeeping            **string  `json:"housekeeping,omitempty"`
-	Parking                 **string  `json:"parking,omitempty"`
-	SelfParking             **string  `json:"selfParking,omitempty"`
-	ValetParking            **string  `json:"valetParking,omitempty"`
+	ClassificationRating    *string   `json:"classificationRating,omitempty"`
+	FrontDesk               *string   `json:"frontDesk,omitempty"`
+	Laundry                 *string   `json:"laundry,omitempty"`
+	Housekeeping            *string   `json:"housekeeping,omitempty"`
+	Parking                 *string   `json:"parking,omitempty"`
+	SelfParking             *string   `json:"selfParking,omitempty"`
+	ValetParking            *string   `json:"valetParking,omitempty"`
 	Concierge               **Ternary `json:"concierge,omitempty"`
 	Elevator                **Ternary `json:"elevator,omitempty"`
 	BaggageStorage          **Ternary `json:"baggageStorage,omitempty"`
@@ -111,8 +111,8 @@ type HotelEntity struct {
 
 	// Policies
 	PaymentOptions          *[]string `json:"paymentOptions,omitempty"`
-	AllInclusive            **string  `json:"allInclusive,omitempty"`
-	PetsAllowed             **string  `json:"petsAllowed,omitempty"`
+	AllInclusive            *string   `json:"allInclusive,omitempty"`
+	PetsAllowed             *string   `json:"petsAllowed,omitempty"`
 	KidsStayFree            **Ternary `json:"kidsStayFree,omitempty"`
 	MaxAgeOfKidsStayFree    **int     `json:"maxAgeOfKidsStayFree,omitempty"`
 	MaxNumberOfKidsStayFree **int     `json:"maxNumberOfKidsStayFree,omitempty"`
@@ -121,9 +121,9 @@ type HotelEntity struct {
 	DogsAllowed             **Ternary `json:"dogsAllowed,omitempty"`
 
 	// Food and Drink
-	RoomService     **string          `json:"roomService,omitempty"`
+	RoomService     *string           `json:"roomService,omitempty"`
 	RestaurantCount **int             `json:"restaurantCount,omitempty"`
-	Breakfast       **string          `json:"breakfast,omitempty"`
+	Breakfast       *string           `json:"breakfast,omitempty"`
 	TableService    **Ternary         `json:"tableService,omitempty"`
 	Bar             **Ternary         `json:"bar,omitempty"`
 	VendingMachine  **Ternary         `json:"vendingMachine,omitempty"`
@@ -143,7 +143,7 @@ type HotelEntity struct {
 	LifeGuard        **Ternary `json:"lifeguard,omitempty"`
 
 	// Wellness
-	FitnessCenter     **string  `json:"fitnessCenter,omitempty"`
+	FitnessCenter     *string   `json:"fitnessCenter,omitempty"`
 	EllipticalMachine **Ternary `json:"ellipticalMachine,omitempty"`
 	Treadmill         **Ternary `json:"treadmill,omitempty"`
 	WeightMachine     **Ternary `json:"weightMachine,omitempty"`
@@ -155,8 +155,8 @@ type HotelEntity struct {
 	DoctorOnCall      **Ternary `json:"doctorOnCall,omitempty"`
 
 	// Activities
-	Bicycles        **string  `json:"bicycles,omitempty"`
-	WaterCraft      **string  `json:"watercraft,omitempty"`
+	Bicycles        *string   `json:"bicycles,omitempty"`
+	WaterCraft      *string   `json:"watercraft,omitempty"`
 	GameRoom        **Ternary `json:"gameRoom,omitempty"`
 	Nightclub       **Ternary `json:"nightclub,omitempty"`
 	Casino          **Ternary `json:"casino,omitempty"`
@@ -171,8 +171,8 @@ type HotelEntity struct {
 	PrivateBeach    **Ternary `json:"privateBeach,omitempty"`
 
 	// Transportation
-	AirportShuttle    **string  `json:"airportShuttle,omitempty"`
-	PrivateCarService **string  `json:"privateCarService,omitempty"`
+	AirportShuttle    *string   `json:"airportShuttle,omitempty"`
+	PrivateCarService *string   `json:"privateCarService,omitempty"`
 	AirportTransfer   **Ternary `json:"airportTransfer,omitempty"`
 	LocalShuttle      **Ternary `json:"localShuttle,omitempty"`
 	CarRental         **Ternary `json:"carRental,omitempty"`
@@ -183,7 +183,7 @@ type HotelEntity struct {
 	KidsClub           **Ternary `json:"kidsClub,omitempty"`
 
 	// Connectivity
-	WiFiAvailable **string          `json:"wifiAvailable,omitempty"`
+	WiFiAvailable *string           `json:"wifiAvailable,omitempty"`
 	WiFiDetails   *UnorderedStrings `json:"wifiDetails,omitempty"`
 
 	// Business
