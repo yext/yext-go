@@ -15,6 +15,7 @@ type Reviewer struct {
 type Review struct {
 	Id                 *int           `json:"id"`
 	LocationId         *string        `json:"locationId"`
+	AccountId          *string        `json:"accountId"`
 	PublisherId        *string        `json:"publisherId"`
 	Rating             *float64       `json:"rating"`
 	Title              *string        `json:"title"`
@@ -23,13 +24,16 @@ type Review struct {
 	AuthorEmail        *string        `json:"authorEmail"`
 	URL                *string        `json:"url"`
 	PublisherDate      *int           `json:"publisherDate"`
-	LastYextUpdateDate *int           `json:"lastYextUpdateDate"`
+	LastYextUpdateTime *int           `json:"lastYextUpdateTime"`
 	Status             *string        `json:"status"`
+	FlagStatus         *string        `json:"flagStatus"`
+	ReviewLanguage     *string        `json:"reviewLanguage"`
 	Comments           *[]Comment     `json:"comments"`
 	LabelIds           *[]int         `json:"labelIds"`
 	ExternalId         *string        `json:"externalId"`
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
-	ReviewLanguage     *string        `json:"reviewLanguage"`
+	ReviewType         *string        `json:"reviewType"`
+	Recommendation     *string        `json:"recommendation"`
 	TransactionId      *string        `json:"transactionId"`
 }
 
@@ -73,6 +77,13 @@ func (y Review) GetId() int {
 func (y Review) GetLocationId() string {
 	if y.LocationId != nil {
 		return *y.LocationId
+	}
+	return ""
+}
+
+func (y Review) GetAccountId() string {
+	if y.AccountId != nil {
+		return *y.AccountId
 	}
 	return ""
 }
@@ -133,9 +144,9 @@ func (y Review) GetPublisherDate() int {
 	return 0
 }
 
-func (y Review) GetLastYextUpdateDate() int {
-	if y.LastYextUpdateDate != nil {
-		return *y.LastYextUpdateDate
+func (y Review) GetLastYextUpdateTime() int {
+	if y.LastYextUpdateTime != nil {
+		return *y.LastYextUpdateTime
 	}
 	return 0
 }
@@ -145,6 +156,27 @@ func (y Review) GetStatus() string {
 		return *y.Status
 	}
 	return ""
+}
+
+func (y Review) GetFlagStatus() string {
+	if y.FlagStatus != nil {
+		return *y.FlagStatus
+	}
+	return ""
+}
+
+func (y Review) GetReviewLanguage() string {
+	if y.ReviewLanguage != nil {
+		return *y.ReviewLanguage
+	}
+	return ""
+}
+
+func (y Review) GetComments() (v []Comment) {
+	if y.Comments != nil {
+		v = *y.Comments
+	}
+	return v
 }
 
 func (y Review) GetLabelIds() (v []int) {
@@ -168,25 +200,25 @@ func (y Review) GetReviewLabels() (v []ReviewLabel) {
 	return v
 }
 
-func (y Review) GetReviewLanguage() string {
-    if y.ReviewLanguage != nil {
-        return *y.ReviewLanguage
-    }
-    return ""
+func (y Review) GetReviewType() string {
+	if y.ReviewType != nil {
+		return *y.ReviewType
+	}
+	return ""
+}
+
+func (y Review) GetRecommendation() string {
+	if y.Recommendation != nil {
+		return *y.Recommendation
+	}
+	return ""
 }
 
 func (y Review) GetTransactionId() string {
-    if y.TransactionId != nil {
-        return *y.TransactionId
-    }
-    return ""
-}
-
-func (y Review) GetComments() (v []Comment) {
-	if y.Comments != nil {
-		v = *y.Comments
+	if y.TransactionId != nil {
+		return *y.TransactionId
 	}
-	return v
+	return ""
 }
 
 func (y Comment) GetId() int {
