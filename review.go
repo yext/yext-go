@@ -29,6 +29,8 @@ type Review struct {
 	LabelIds           *[]int         `json:"labelIds"`
 	ExternalId         *string        `json:"externalId"`
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
+	ReviewLanguage     *string        `json:"reviewLanguage"`
+	TransactionId      *string        `json:"transactionId"`
 }
 
 type ReviewCreate struct {
@@ -164,6 +166,20 @@ func (y Review) GetReviewLabels() (v []ReviewLabel) {
 		v = *y.ReviewLabels
 	}
 	return v
+}
+
+func (y Review) GetReviewLanguage() string {
+    if y.ReviewLanguage != nil {
+        return *y.ReviewLanguage
+    }
+    return ""
+}
+
+func (y Review) GetTransactionId() string {
+    if y.TransactionId != nil {
+        return *y.TransactionId
+    }
+    return ""
 }
 
 func (y Review) GetComments() (v []Comment) {
