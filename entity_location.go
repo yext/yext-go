@@ -268,6 +268,11 @@ type Website struct {
 	PreferDisplayUrl **bool  `json:"preferDisplayUrl,omitempty"`
 }
 
+func (y Photo) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
+}
+
 func NullableWebsite(w *Website) **Website {
 	return &w
 }
