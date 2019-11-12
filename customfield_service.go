@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-    multierror "github.com/hashicorp/go-multierror"
+	multierror "github.com/hashicorp/go-multierror"
 )
 
 const customFieldPath = "customfields"
@@ -82,6 +82,19 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 	delete(asMap, "id")
 	delete(asMap, "type")
 	return s.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
+}
+
+func (s *CustomFieldService) Delete(cf *CustomField) (*Response, error) {
+	asJSON, err := json.Marshal(cf)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	return s.client.DoRequestJSON("DELETE", fmt.Sprintf("%s/%s", customFieldPath, cf.GetId()), asMap, nil)
 }
 
 type CustomFieldManager struct {
@@ -212,30 +225,30 @@ func (c *CustomFieldManager) MustMultiOptionIds(fieldName string, optionNames ..
 }
 
 func (c *CustomFieldManager) GetMultiOptionIds(fieldName string, optionNames ...string) (*UnorderedStrings, error) {
-    var errs *multierror.Error
-    if len(optionNames) == 0 {
-        return c.NullMultiOption(), nil
-    }
-    var optionIds = []string{}
-    for _, optionName := range optionNames {
-        id, err := c.CustomFieldOptionId(fieldName, optionName)
-        if err != nil {
-            errs = multierror.Append(errs, err)
-            continue
-        }
-        shouldAddOptionId := true
-        for _, optionId := range optionIds {
-            if id == optionId { // Don't add duplicate option ids
-                shouldAddOptionId = false
-                break
-            }
-        }
+	var errs *multierror.Error
+	if len(optionNames) == 0 {
+		return c.NullMultiOption(), nil
+	}
+	var optionIds = []string{}
+	for _, optionName := range optionNames {
+		id, err := c.CustomFieldOptionId(fieldName, optionName)
+		if err != nil {
+			errs = multierror.Append(errs, err)
+			continue
+		}
+		shouldAddOptionId := true
+		for _, optionId := range optionIds {
+			if id == optionId { // Don't add duplicate option ids
+				shouldAddOptionId = false
+				break
+			}
+		}
 
-        if shouldAddOptionId {
-            optionIds = append(optionIds, id)
-        }
-    }
-    return ToUnorderedStrings(optionIds), errs.ErrorOrNil()
+		if shouldAddOptionId {
+			optionIds = append(optionIds, id)
+		}
+	}
+	return ToUnorderedStrings(optionIds), errs.ErrorOrNil()
 }
 
 func (c *CustomFieldManager) MustIsMultiOptionSet(fieldName string, optionName string, setOptionIds *UnorderedStrings) bool {
