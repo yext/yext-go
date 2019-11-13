@@ -68,6 +68,14 @@ func NewClient(config *Config) *Client {
 	return c
 }
 
+// Default Client but with empty entity registries so that all entities are treated as Raw Entities
+func NewRawEntityClient(config *Config) *Client {
+	c := NewClient(config)
+	c.EntityService.Registry = &EntityRegistry{}
+	c.LanguageProfileService.registry = &EntityRegistry{}
+	return c
+}
+
 // TODO: The account (e.g. /v2/account/me/locations) vs raw (e.g. /v2/categories)
 // URL distiction is present in the API.  We currently have the NewXXX and DoXXX
 // helpers split as well, but that probably isn't necessary.  We could have the
