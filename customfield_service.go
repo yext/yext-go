@@ -65,7 +65,6 @@ func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	delete(asMap, "id")
 	return s.client.DoRequestJSON("POST", customFieldPath, asMap, nil)
 }
 
