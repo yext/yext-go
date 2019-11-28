@@ -29,17 +29,18 @@ type Location struct {
 	nilIsEmpty bool
 
 	// Address Fields
-	Name            *string `json:"locationName,omitempty"`
-	Address         *string `json:"address,omitempty"`
-	Address2        *string `json:"address2,omitempty"`
-	DisplayAddress  *string `json:"displayAddress,omitempty"`
-	City            *string `json:"city,omitempty"`
-	State           *string `json:"state,omitempty"`
-	Sublocality     *string `json:"sublocality,omitempty"`
-	Zip             *string `json:"zip,omitempty"`
-	CountryCode     *string `json:"countryCode,omitempty"`
-	SuppressAddress *bool   `json:"suppressAddress,omitempty"`
-	ISORegionCode   *string `json:"isoRegionCode,omitempty"`
+	Name            *string   `json:"locationName,omitempty"`
+	AlternateNames  *[]string `json:"alternateNames,omitempty"`
+	Address         *string   `json:"address,omitempty"`
+	Address2        *string   `json:"address2,omitempty"`
+	DisplayAddress  *string   `json:"displayAddress,omitempty"`
+	City            *string   `json:"city,omitempty"`
+	State           *string   `json:"state,omitempty"`
+	Sublocality     *string   `json:"sublocality,omitempty"`
+	Zip             *string   `json:"zip,omitempty"`
+	CountryCode     *string   `json:"countryCode,omitempty"`
+	SuppressAddress *bool     `json:"suppressAddress,omitempty"`
+	ISORegionCode   *string   `json:"isoRegionCode,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
