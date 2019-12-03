@@ -13,10 +13,11 @@ type EventEntity struct {
 	CategoryIds *UnorderedStrings `json:"categoryIds,omitempty"`
 
 	// Address Fields
-	Name          *string  `json:"name,omitempty"`
-	Address       *Address `json:"address,omitempty"`
-	AddressHidden *bool    `json:"addressHidden,omitempty"`
-	ISORegionCode *string  `json:"isoRegionCode,omitempty"`
+	Name           *string  `json:"name,omitempty"`
+	Address        *Address `json:"address,omitempty"`
+	AddressHidden  *bool    `json:"addressHidden,omitempty"`
+	ISORegionCode  *string  `json:"isoRegionCode,omitempty"`
+	LinkedLocation *string  `json:"linkedLocation,omitempty"`
 
 	// Other Contact Info
 	MainPhone      *string `json:"mainPhone,omitempty"`
