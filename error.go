@@ -81,7 +81,7 @@ func IsNotFoundError(err error) bool {
 			}
 		}
 	} else if e, ok := err.(*Error); ok {
-		if e.Code == 2000 || e.Code == 6004 {
+		if e.Code == 2000 || e.Code == 6004 || e.Code == 2238 {
 			return true
 		}
 	}
