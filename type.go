@@ -275,6 +275,13 @@ func ToUnorderedStrings(v []string) *UnorderedStrings {
 	return &u
 }
 
+func GetUnorderedStrings(v *UnorderedStrings) []string {
+    if v == nil {
+        return []string{}
+    }
+    return *v
+}
+
 func NullableUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
 	return &u
