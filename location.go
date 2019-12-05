@@ -655,7 +655,7 @@ func (y Location) IsClosed() bool {
 // LocationPhoto represents a photo associated with a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm#Photo
 type LocationPhoto struct {
-	Url             string `json:"url,omitempty"`
+	Url             string `json:"url"`
 	Description     string `json:"description,omitempty"`
 	AlternateText   string `json:"alternateText,omitempty"`
 	ClickThroughUrl string `json:"clickthroughUrl,omitempty"`
