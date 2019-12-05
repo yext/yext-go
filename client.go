@@ -27,16 +27,21 @@ type ListOptions struct {
 type Client struct {
 	Config *Config
 
-	LocationService        *LocationService
-	ListService            *ListService
-	CustomFieldService     *CustomFieldService
-	FolderService          *FolderService
-	CategoryService        *CategoryService
-	UserService            *UserService
-	ReviewService          *ReviewService
-	LanguageProfileService *LanguageProfileService
-	AssetService           *AssetService
-	AnalyticsService       *AnalyticsService
+	LocationService                *LocationService
+	ListService                    *ListService
+	LocationCustomFieldService     *LocationCustomFieldService
+	CustomFieldService             *CustomFieldService
+	FolderService                  *FolderService
+	CategoryService                *CategoryService
+	UserService                    *UserService
+	ApprovalGroupsService          *ApprovalGroupsService
+	ReviewService                  *ReviewService
+	LocationLanguageProfileService *LocationLanguageProfileService
+	AssetService                   *AssetService
+	CFTAssetService                *CFTAssetService
+	AnalyticsService               *AnalyticsService
+	EntityService                  *EntityService
+	LanguageProfileService         *LanguageProfileService
 }
 
 func NewClient(config *Config) *Client {
@@ -44,15 +49,30 @@ func NewClient(config *Config) *Client {
 
 	c.LocationService = &LocationService{client: c}
 	c.ListService = &ListService{client: c}
+	c.LocationCustomFieldService = &LocationCustomFieldService{client: c}
 	c.CustomFieldService = &CustomFieldService{client: c}
 	c.FolderService = &FolderService{client: c}
 	c.CategoryService = &CategoryService{client: c}
 	c.UserService = &UserService{client: c}
+	c.ApprovalGroupsService = &ApprovalGroupsService{client: c}
 	c.ReviewService = &ReviewService{client: c}
-	c.LanguageProfileService = &LanguageProfileService{client: c}
+	c.LocationLanguageProfileService = &LocationLanguageProfileService{client: c}
 	c.AssetService = &AssetService{client: c}
+	c.CFTAssetService = &CFTAssetService{client: c}
+	c.CFTAssetService.RegisterDefaultAssetValues()
 	c.AnalyticsService = &AnalyticsService{client: c}
+	c.EntityService = &EntityService{client: c}
+	c.EntityService.RegisterDefaultEntities()
+	c.LanguageProfileService = &LanguageProfileService{client: c}
+	c.LanguageProfileService.RegisterDefaultEntities()
+	return c
+}
 
+// Default Client but with empty entity registries so that all entities are treated as Raw Entities
+func NewRawEntityClient(config *Config) *Client {
+	c := NewClient(config)
+	c.EntityService.Registry = &EntityRegistry{}
+	c.LanguageProfileService.registry = &EntityRegistry{}
 	return c
 }
 
@@ -326,7 +346,7 @@ func tokenListHelper(lr tokenListRetriever, opts *ListOptions) error {
 func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	u, err := url.Parse(requrl)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	if opts == nil {

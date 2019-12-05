@@ -194,7 +194,7 @@ var baseLocation Location = Location{
 	Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 	ProductListIds:         &[]string{"1234", "5678"},
 	Closed: &LocationClosed{
-		IsClosed: false,
+		IsClosed: Bool(false),
 	},
 	CustomFields: map[string]interface{}{
 		"1234": "ding",
@@ -252,7 +252,7 @@ func TestDiffIdentical(t *testing.T) {
 		Photos:                 &[]LocationPhoto{examplePhoto, examplePhoto, examplePhoto},
 		ProductListIds:         &[]string{"1234", "5678"},
 		Closed: &LocationClosed{
-			IsClosed: false,
+			IsClosed: Bool(false),
 		},
 		CustomFields: map[string]interface{}{
 			"1234": "ding",
@@ -384,162 +384,162 @@ func TestBoolDiffs(t *testing.T) {
 }
 
 type googleAttributesTest struct {
-	baseValue          *GoogleAttributes
-	newValue           *GoogleAttributes
+	baseValue          *LocationGoogleAttributes
+	newValue           *LocationGoogleAttributes
 	isDiff             bool
 	nilIsEmpty         bool
-	expectedFieldValue []*GoogleAttribute
+	expectedFieldValue []*LocationGoogleAttribute
 }
 
 var googleAttributesTests = []googleAttributesTest{
 	{nil, nil, false, false, nil},
 	{
 		baseValue:          nil,
-		newValue:           &GoogleAttributes{},
+		newValue:           &LocationGoogleAttributes{},
 		isDiff:             true,
 		nilIsEmpty:         false,
-		expectedFieldValue: GoogleAttributes{},
+		expectedFieldValue: LocationGoogleAttributes{},
 	},
 	{
 		baseValue:          nil,
-		newValue:           &GoogleAttributes{},
+		newValue:           &LocationGoogleAttributes{},
 		isDiff:             false,
 		nilIsEmpty:         true,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{},
+		baseValue:          &LocationGoogleAttributes{},
 		newValue:           nil,
 		isDiff:             false,
 		nilIsEmpty:         true,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{},
+		baseValue:          &LocationGoogleAttributes{},
 		newValue:           nil,
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
-		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		baseValue:          &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue:          &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
-		newValue:           &GoogleAttributes{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+		baseValue:          &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})}},
+		newValue:           &LocationGoogleAttributes{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 		isDiff:             true,
 		nilIsEmpty:         false,
-		expectedFieldValue: []*GoogleAttribute{&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
+		expectedFieldValue: []*LocationGoogleAttribute{&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})}},
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{OptionIds: Strings([]string{"true"}), Id: String("has_delivery")},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:             false,
-		nilIsEmpty:         false,
-		expectedFieldValue: nil,
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-			&GoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-		isDiff:     true,
-		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
-		},
-	},
-	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
-		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:             false,
 		nilIsEmpty:         false,
 		expectedFieldValue: nil,
 	},
 	{
-		baseValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 		},
-		newValue: &GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{})},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
 		},
 		isDiff:     true,
 		nilIsEmpty: false,
-		expectedFieldValue: GoogleAttributes{
-			&GoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"true"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+			&LocationGoogleAttribute{Id: String("has_delivery"), OptionIds: Strings([]string{"true"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: nil},
+		},
+		isDiff:             false,
+		nilIsEmpty:         false,
+		expectedFieldValue: nil,
+	},
+	{
+		baseValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
+		},
+		newValue: &LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{})},
+		},
+		isDiff:     true,
+		nilIsEmpty: false,
+		expectedFieldValue: LocationGoogleAttributes{
+			&LocationGoogleAttribute{Id: String("has_catering"), OptionIds: Strings([]string{"false"})},
 		},
 	},
 }
@@ -796,14 +796,14 @@ type customFieldsTest struct {
 }
 
 var baseCustomFields = map[string]interface{}{
-	"62150": Gallery{
-		&Photo{
+	"62150": CustomLocationGallery{
+		&CustomLocationPhoto{
 			ClickThroughURL: "https://locations.yext.com",
 			Description:     "This is the caption",
 			Url:             "http://a.mktgcdn.com/p-sandbox/gRcmaehu-FoJtL3Ld6vNjYHpbZxmPSYZ1cTEF_UU7eY/1247x885.png",
 		},
 	},
-	"62151": Photo{
+	"62151": CustomLocationPhoto{
 		ClickThroughURL: "https://locations.yext.com",
 		Description:     "This is a caption on a single!",
 		Url:             "http://a.mktgcdn.com/p-sandbox/bSZ_mKhfFYGih6-ry5mtbwB_JbKu930kFxHOaQRwZC4/1552x909.png",
@@ -1079,23 +1079,23 @@ var closedTests = []closedTest{
 	{
 		nil,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		false,
@@ -1104,7 +1104,7 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		nil,
@@ -1114,33 +1114,33 @@ var closedTests = []closedTest{
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   false,
+			IsClosed:   Bool(false),
 			ClosedDate: "1/1/2001",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   false,
+			IsClosed:   Bool(false),
 			ClosedDate: "1/1/2001",
 		},
 	},
 	{
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2001",
 		},
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2002",
 		},
 		true,
 		false,
 		&LocationClosed{
-			IsClosed:   true,
+			IsClosed:   Bool(true),
 			ClosedDate: "1/1/2002",
 		},
 	},
@@ -1173,10 +1173,10 @@ func TestClosedDiffs(t *testing.T) {
 			t.Errorf("%v\ndelta was nil but expected %v\n", data.formatErrorBase(i), formatClosed(data.expectedFieldValue))
 		} else if d != nil && data.expectedFieldValue == nil {
 			t.Errorf("%v\ndelta was not nil but expected nil\n diff:%v\n", data.formatErrorBase(i), d)
-		} else if d.Closed.IsClosed != data.expectedFieldValue.IsClosed {
-			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
+		} else if GetBool(d.Closed.IsClosed) != GetBool(data.expectedFieldValue.IsClosed) {
+			t.Errorf("%v\ndiff was %v\n", data.formatErrorBase(i), d)
 		} else if d.Closed.ClosedDate != data.expectedFieldValue.ClosedDate {
-			t.Errorf("%v\ndiff was%v\n", data.formatErrorBase(i), d)
+			t.Errorf("%v\ndiff was %v\n", data.formatErrorBase(i), d)
 		}
 	}
 }
@@ -1199,6 +1199,73 @@ func TestComplexIdentical(t *testing.T) {
 	}
 	if delta != nil {
 		t.Errorf("Expected nil delta but was non-nil, delta was:\n%v\n", delta)
+	}
+}
+
+func TestDiffIds(t *testing.T) {
+	tests := []struct {
+		BaseLoc *Location
+		NewLoc  *Location
+		IsDiff  bool
+		Delta   *Location
+	}{
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id: String("2"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id: String("2"),
+			},
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id: String("1"),
+			},
+			IsDiff: false,
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id:   String("2"),
+				Name: String("New Name"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id:   String("2"),
+				Name: String("New Name"),
+			},
+		},
+		{
+			BaseLoc: &Location{
+				Id: String("1"),
+			},
+			NewLoc: &Location{
+				Id:   String("1"),
+				Name: String("New Name"),
+			},
+			IsDiff: true,
+			Delta: &Location{
+				Id:   String("1"), // Historically, even though there is no diff in the Id, we always want the Id set
+				Name: String("New Name"),
+			},
+		},
+	}
+	for _, test := range tests {
+		delta, isDiff := test.BaseLoc.Diff(test.NewLoc)
+		if isDiff != test.IsDiff {
+			t.Errorf("Expected %t but was %t, delta was:\n%v\n", test.IsDiff, isDiff, delta)
+		} else if test.IsDiff && !reflect.DeepEqual(test.Delta, delta) {
+			t.Errorf("Expected %v for delta, delta was \n%v\n", test.Delta, delta)
+		}
 	}
 }
 
@@ -1276,6 +1343,15 @@ func TestLabels(t *testing.T) {
 				},
 				WantDiff: true,
 			},
+			Scenario{
+				A: &Location{
+					LabelIds: nil,
+				},
+				B: &Location{
+					LabelIds: nil,
+				},
+				WantDiff: false,
+			},
 		}
 	)
 
@@ -1296,7 +1372,7 @@ func TestLocationNils(t *testing.T) {
 	b.Name = String("")
 	b.Emails = &[]string{}
 	b.Headshot = &LocationPhoto{}
-	b.GoogleAttributes = &GoogleAttributes{}
+	b.GoogleAttributes = &LocationGoogleAttributes{}
 
 	a.nilIsEmpty, b.nilIsEmpty = true, true
 	d, isDiff := a.Diff(b)
@@ -1323,10 +1399,10 @@ func TestCustomFieldPointerComparison(t *testing.T) {
 	a, b := *new(Location), new(Location)
 	a.Id = String("blah")
 	a.CustomFields = map[string]interface{}{
-		"1": Hours{Hours: "1:09:00:18:00"},
+		"1": CustomLocationHours{Hours: "1:09:00:18:00"},
 	}
 	b.CustomFields = map[string]interface{}{
-		"1": &Hours{Hours: "1:09:00:18:00"},
+		"1": &CustomLocationHours{Hours: "1:09:00:18:00"},
 	}
 
 	a.hydrated, b.hydrated = true, true
@@ -1498,5 +1574,173 @@ func TestHoursAreEquivalentDiff(t *testing.T) {
 		if _, isDiff := a.Diff(b); isDiff != test.WantDiff {
 			t.Errorf(`Diff("%s", "%s")=%t, wanted %t`, stringify(test.A), stringify(test.B), isDiff, test.WantDiff)
 		}
+	}
+}
+
+func TestIsZeroValue(t *testing.T) {
+	tests := []struct {
+		name       string
+		i          interface{}
+		nilIsEmpty bool
+		want       bool
+	}{
+		{
+			name: "Non-Empty String",
+			i:    "CTG",
+			want: false,
+		},
+		{
+			name:       "Non-Empty String (nil is empty)",
+			i:          "CTG",
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "Empty String",
+			i:    "",
+			want: true,
+		},
+		{
+			name:       "Empty String (nil is empty)",
+			i:          "",
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "Empty String",
+			i:    "",
+			want: true,
+		},
+		{
+			name: "Nil *string",
+			i:    (*string)(nil),
+			want: false,
+		},
+		{
+			name:       "Nil *string (nil is empty)",
+			i:          (*string)(nil),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "Empty *string",
+			i:    String(""),
+			want: true,
+		},
+		{
+			name:       "Empty *string (nil is empty)",
+			i:          String(""),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "nil ptr to *Address struct ",
+			i:    (*Address)(nil),
+			want: false,
+		},
+		{
+			name:       "nil ptr to *Address struct (nil is empty)",
+			i:          (*Address)(nil),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "empty *Address struct",
+			i:    &Address{},
+			want: true,
+		},
+		{
+			name:       "empty *Address struct (nil is empty)",
+			i:          &Address{},
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "non-empty *Address struct",
+			i: &Address{
+				Line1: String("7900 Westpark"),
+			},
+			want: false,
+		},
+		{
+			name: "non-empty *Address struct with empty values",
+			i: &Address{
+				Line1: String(""),
+			},
+			want: true,
+		},
+		{
+			name: "*Address struct with empty values (nil is empty)",
+			i: &Address{
+				Line1: String(""),
+			},
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "*Address struct with zero values",
+			i: &Address{
+				Line1:       String(""),
+				Line2:       String(""),
+				City:        String(""),
+				Region:      String(""),
+				Sublocality: String(""),
+				PostalCode:  String(""),
+			},
+			want: true,
+		},
+		{
+			name: "struct with zero values (*Address)",
+			i: &Address{
+				Line1:       String(""),
+				Line2:       String(""),
+				City:        String(""),
+				Region:      String(""),
+				Sublocality: String(""),
+				PostalCode:  String(""),
+			},
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name: "list",
+			i: &[]HolidayHours{
+				HolidayHours{
+					Date:     String("01-21-2019"),
+					IsClosed: NullableBool(true),
+				},
+			},
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "**struct",
+			i: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(true),
+			}),
+			nilIsEmpty: true,
+			want:       false,
+		},
+		{
+			name: "**struct",
+			i: NullableDayHours(&DayHours{
+				IsClosed: NullableBool(false),
+			}),
+			nilIsEmpty: true,
+			want:       true,
+		},
+		{
+			name:       "**struct",
+			i:          NullDayHours(),
+			nilIsEmpty: false,
+			want:       true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if isZeroValue := IsZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty); test.want != isZeroValue {
+				t.Errorf(`Expected IsZeroValue: %t\nGot:%t`, test.want, isZeroValue)
+			}
+		})
 	}
 }
