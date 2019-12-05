@@ -73,6 +73,26 @@ func (e Errors) Warnings() []*Error {
 	return warnings
 }
 
+//ToUserFriendlyMessage Will return a string describing the error that can be displayed to end users
+func ToUserFriendlyMessage(err error) string {
+	var message string
+	if e, ok := err.(Errors); ok {
+		for _, innerError := range e {
+			if message != "" {
+				message = message + ", "
+			}
+			message = message + ToUserFriendlyMessage(innerError)
+		}
+	} else if e, ok := err.(*Error); ok {
+		message = e.Message
+	} else if e, ok := err.(Error); ok {
+		message = e.Message
+	} else {
+		message = err.Error()
+	}
+	return message
+}
+
 func IsNotFoundError(err error) bool {
 	if e, ok := err.(Errors); ok {
 		for _, innerError := range e {
@@ -82,6 +102,36 @@ func IsNotFoundError(err error) bool {
 		}
 	} else if e, ok := err.(*Error); ok {
 		if e.Code == 2000 || e.Code == 6004 || e.Code == 2238 {
+			return true
+		}
+	}
+	return false
+}
+
+//IsBusinessError Returns true if the validation/processing that takes place on Yext's servers failed
+// It will return false if the server could not be reached or other protocol error occurs
+func IsBusinessError(err error) bool {
+	if e, ok := err.(Errors); ok {
+		for _, innerError := range e {
+			if IsBusinessError(innerError) {
+				return true
+			}
+		}
+	} else if _, ok := err.(*Error); ok {
+		return true
+	}
+	return false
+}
+
+func IsFatalBusinessError(err error) bool {
+	if e, ok := err.(Errors); ok {
+		for _, innerError := range e {
+			if IsFatalBusinessError(innerError) {
+				return true
+			}
+		}
+	} else if e, ok := err.(*Error); ok {
+		if e.Type == ErrorTypeFatal {
 			return true
 		}
 	}

@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -109,5 +110,65 @@ func TestErrorsFromString(t *testing.T) {
 				}
 			}
 		}
+	}
+}
+
+func TestToUserFriendlyMessage(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{name: "Non-Yext errors should use default processing",
+			args: args{err: errors.New("test")},
+			want: "test",
+		},
+		{name: "Single Yext error should work",
+			args: args{err: Error{
+				Message:     "test",
+				Code:        0,
+				Type:        ErrorTypeNonFatal,
+				RequestUUID: "testing-UUID",
+			}},
+			want: "test",
+		},
+		{name: "Error list with single error should work",
+			args: args{err: Errors{
+				&Error{
+					Message:     "test",
+					Code:        0,
+					Type:        ErrorTypeNonFatal,
+					RequestUUID: "testing-UUID",
+				},
+			}},
+			want: "test",
+		},
+		{name: "Error list with multiple error should list all errors comma separated",
+			args: args{err: Errors{
+				&Error{
+					Message:     "test",
+					Code:        0,
+					Type:        ErrorTypeNonFatal,
+					RequestUUID: "testing-UUID",
+				},
+				&Error{
+					Message:     "message 2",
+					Code:        0,
+					Type:        ErrorTypeNonFatal,
+					RequestUUID: "testing-UUID",
+				},
+			}},
+			want: "test, message 2",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToUserFriendlyMessage(tt.args.err); got != tt.want {
+				t.Errorf("ToUserFriendlyMessage() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
