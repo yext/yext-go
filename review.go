@@ -35,6 +35,7 @@ type Review struct {
 	ReviewType         *string        `json:"reviewType"`
 	Recommendation     *string        `json:"recommendation"`
 	TransactionId      *string        `json:"transactionId"`
+	InvitationId       *string        `json:"invitationId"`
 }
 
 type ReviewCreate struct {
