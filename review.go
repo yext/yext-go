@@ -26,6 +26,7 @@ type Review struct {
 	LabelIds           *[]int         `json:"labelIds"`
 	ExternalId         *string        `json:"externalId"`
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
+	InvitationId       *string        `json:"invitationId"`
 }
 
 type Comment struct {
