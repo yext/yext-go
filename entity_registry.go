@@ -31,6 +31,7 @@ func (r *EntityRegistry) InitializeEntity(t EntityType) (Entity, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return i.(Entity), nil
 }
 
