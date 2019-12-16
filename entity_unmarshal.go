@@ -2,6 +2,7 @@ package yext
 
 import (
 	"encoding/json"
+	"log"
 	"reflect"
 	"strings"
 )
@@ -28,6 +29,13 @@ func unmarshal(i interface{}, m map[string]interface{}) interface{} {
 							t = t.Elem()
 						}
 						typedNil := reflect.New(t)
+
+						defer func() {
+							if r := recover(); r != nil {
+								log.Fatalf("Error while unmarshaling field '%s': %s", jsonTagToKey[tag], r)
+							}
+						}()
+
 						Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag]).Set(reflect.ValueOf(typedNil.Interface()))
 					}
 				} else if vMap, ok := val.(map[string]interface{}); ok {
