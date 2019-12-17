@@ -101,47 +101,41 @@ func (b *BaseEntity) SetNilIsEmpty(val bool) {
 type RawEntity map[string]interface{}
 
 func (r *RawEntity) GetEntityId() string {
-	if m, ok := (*r)["meta"]; ok {
-		meta := m.(map[string]interface{})
-		if id, ok := meta["id"]; ok {
-			return id.(string)
-		}
+	v := r.GetValue([]string{"meta", "id"})
+	if v == nil {
+		return ""
 	}
-	return ""
+	return v.(string)
 }
 
 func (r *RawEntity) GetEntityType() EntityType {
-	if m, ok := (*r)["meta"]; ok {
-		meta := m.(map[string]interface{})
-		if t, ok := meta["entityType"]; ok {
-			if s, isString := t.(string); isString {
-				return EntityType(s)
-			} else if _, isEntityType := t.(EntityType); isEntityType {
-				return t.(EntityType)
-			}
-		}
+	v := r.GetValue([]string{"meta", "entityType"})
+	if v == nil {
+		return ""
 	}
-	return EntityType("")
+	if _, ok := v.(string); ok {
+		return EntityType(v.(string))
+	}
+	if _, ok := v.(EntityType); ok {
+		return v.(EntityType)
+	}
+	return ""
 }
 
 func (r *RawEntity) GetLanguage() string {
-	if m, ok := (*r)["meta"]; ok {
-		meta := m.(map[string]interface{})
-		if l, ok := meta["language"]; ok {
-			return l.(string)
-		}
+	v := r.GetValue([]string{"meta", "language"})
+	if v == nil {
+		return ""
 	}
-	return ""
+	return v.(string)
 }
 
 func (r *RawEntity) GetAccountId() string {
-	if m, ok := (*r)["meta"]; ok {
-		meta := m.(map[string]interface{})
-		if a, ok := meta["accountId"]; ok {
-			return a.(string)
-		}
+	v := r.GetValue([]string{"meta", "accountId"})
+	if v == nil {
+		return ""
 	}
-	return ""
+	return v.(string)
 }
 
 func ConvertToRawEntity(e Entity) (*RawEntity, error) {
@@ -155,4 +149,59 @@ func ConvertToRawEntity(e Entity) (*RawEntity, error) {
 		return nil, err
 	}
 	return &raw, nil
+}
+
+func (r *RawEntity) GetValue(keys []string) interface{} {
+	if len(keys) == 0 {
+		return nil
+	}
+	m := (map[string]interface{})(*r)
+	return getValue(m, keys, 0)
+}
+
+func getValue(m map[string]interface{}, keys []string, index int) interface{} {
+	for k, v := range m {
+		if k == keys[index] {
+			if index == len(keys)-1 {
+				return v
+			} else {
+				return getValue((v).(map[string]interface{}), keys, index+1)
+			}
+		}
+	}
+	return nil
+}
+
+func (r *RawEntity) SetValue(keys []string, val interface{}) error {
+	if len(keys) == 0 {
+		return nil
+	}
+	m := (map[string]interface{})(*r)
+	v, err := setValue(m, keys, 0, val)
+	if err != nil {
+		return err
+	}
+	raw := RawEntity(v)
+	r = &raw
+	return nil
+}
+
+func setValue(m map[string]interface{}, keys []string, index int, val interface{}) (map[string]interface{}, error) {
+	if m == nil {
+		return nil, nil
+	}
+	if index == len(keys)-1 {
+		m[keys[index]] = val
+	} else {
+		if _, ok := m[keys[index]]; !ok {
+			m[keys[index]] = map[string]interface{}{}
+		}
+		v, err := setValue(m[keys[index]].(map[string]interface{}), keys, index+1, val)
+		if err != nil {
+			return v, err
+		}
+		m[keys[index]] = v
+	}
+
+	return m, nil
 }

@@ -338,6 +338,10 @@ func (y HotelEntity) GetPostalCode() string {
 	return ""
 }
 
+func (y HotelEntity) GetMainPhone() string {
+	return GetString(y.MainPhone)
+}
+
 func (y HotelEntity) GetFeaturedMessage() string {
 	f := GetFeaturedMessage(y.FeaturedMessage)
 	if f != nil {
