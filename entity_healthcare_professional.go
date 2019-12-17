@@ -87,6 +87,7 @@ type HealthcareProfessionalEntity struct {
 	// Urls
 	WebsiteUrl      **Website         `json:"websiteUrl,omitempty"`
 	FeaturedMessage **FeaturedMessage `json:"featuredMessage,omitempty"`
+	ReservationUrl  **Website         `json:"reservationUrl,omitempty"`
 
 	// Uber
 	UberLink         **UberLink         `json:"uberLink,omitempty"`
@@ -319,6 +320,22 @@ func (y HealthcareProfessionalEntity) GetWebsiteUrl() string {
 
 func (y HealthcareProfessionalEntity) GetDisplayWebsiteUrl() string {
 	w := GetWebsite(y.WebsiteUrl)
+	if w != nil {
+		return GetString(w.DisplayUrl)
+	}
+	return ""
+}
+
+func (y HealthcareProfessionalEntity) GetReservationUrl() string {
+	w := GetWebsite(y.ReservationUrl)
+	if w != nil {
+		return GetString(w.Url)
+	}
+	return ""
+}
+
+func (y HealthcareProfessionalEntity) GetDisplayReservationUrl() string {
+	w := GetWebsite(y.ReservationUrl)
 	if w != nil {
 		return GetString(w.DisplayUrl)
 	}
