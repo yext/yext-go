@@ -156,3 +156,12 @@ func ConvertToRawEntity(e Entity) (*RawEntity, error) {
 	}
 	return &raw, nil
 }
+
+func ConvertStringsToEntityTypes(types []string) []EntityType {
+	entityTypes := []EntityType{}
+	for _, stringType := range types {
+		entityTypes = append(entityTypes, EntityType(stringType))
+	}
+
+	return entityTypes
+}
