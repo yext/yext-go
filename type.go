@@ -315,3 +315,10 @@ func NullTernary() **Ternary {
 	var v *Ternary
 	return &v
 }
+
+func NullableTernaryFromBool(b bool) **Ternary {
+	if b {
+		return NullableTernary(Yes)
+	}
+	return NullableTernary(No)
+}

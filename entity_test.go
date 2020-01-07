@@ -538,3 +538,96 @@ var sampleEntityJSON = `{
      "entityType": "location"
   }
 }`
+
+func TestGetValue(t *testing.T) {
+	var tests = []struct {
+		Raw  *RawEntity
+		Keys []string
+		Want interface{}
+	}{
+		{
+			Raw: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			Keys: []string{"meta", "entityType"},
+			Want: "location",
+		},
+		{
+			Raw: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			Keys: []string{"meta", "id"},
+			Want: nil,
+		},
+	}
+
+	for _, test := range tests {
+		got := test.Raw.GetValue(test.Keys)
+		if got != test.Want {
+			t.Errorf("Got: %v, Wanted: %v", got, test.Want)
+		}
+	}
+}
+
+func TestSetValue(t *testing.T) {
+	var tests = []struct {
+		Raw   *RawEntity
+		Keys  []string
+		Value interface{}
+		Want  *RawEntity
+	}{
+		{
+			Raw: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			Keys:  []string{"meta", "entityType"},
+			Value: "hotel",
+			Want: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "hotel",
+				},
+			},
+		},
+		{
+			Raw: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+				},
+			},
+			Keys:  []string{"meta", "id"},
+			Value: "1234",
+			Want: &RawEntity{
+				"meta": map[string]interface{}{
+					"entityType": "location",
+					"id":         "1234",
+				},
+			},
+		},
+		{
+			Raw:   &RawEntity{},
+			Keys:  []string{"meta", "id"},
+			Value: "1234",
+			Want: &RawEntity{
+				"meta": map[string]interface{}{
+					"id": "1234",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		err := test.Raw.SetValue(test.Keys, test.Value)
+		if err != nil {
+			t.Errorf("Got err: %s", err)
+		}
+		if delta, isDiff := RawEntityDiff(*test.Raw, *test.Want, false, false); isDiff {
+			t.Errorf("Got: %v, Wanted: %v, Delta: %v", test.Raw, test.Want, delta)
+		}
+	}
+}

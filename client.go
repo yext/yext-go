@@ -208,10 +208,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		// Rehydrate the request body since it might have been drained by the previous attempt
 		req.Body = ioutil.NopCloser(bytes.NewBuffer(originalRequestBody))
 
-		if c.Config.Logger != nil {
-			c.Config.Logger.Log(fmt.Printf("%+v", req))
-		}
-
 		resp, err := c.Config.HTTPClient.Do(req)
 		if err != nil {
 			resultError = err
@@ -244,7 +240,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 				hitRateLimit = true
 				if rateLimitWait > 0 {
 					if c.Config.Logger != nil {
-						c.Config.Logger.Log(fmt.Sprintf("rate limit hit, waiting for %d seconds", rateLimitWait))
+						c.Config.Logger.Log(fmt.Sprintf("rate limit hit, waiting for %d minutes", rateLimitWait/60))
 					}
 					c.Config.Clock.Sleep(time.Duration(rateLimitWait+1) * time.Second)
 				}
