@@ -205,3 +205,12 @@ func setValue(m map[string]interface{}, keys []string, index int, val interface{
 
 	return m, nil
 }
+
+func ConvertStringsToEntityTypes(types []string) []EntityType {
+	entityTypes := []EntityType{}
+	for _, stringType := range types {
+		entityTypes = append(entityTypes, EntityType(stringType))
+	}
+
+	return entityTypes
+}
