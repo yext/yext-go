@@ -191,7 +191,6 @@ type HotelEntity struct {
 	BusinessCenter   **Ternary `json:"businessCenter,omitempty"`
 
 	// Accessibility
-	WheelchairAccessible **Ternary         `json:"wheelchairAccessible,omitempty"`
 	MobilityAccessible   **Ternary         `json:"mobilityAccessible,omitempty"`
 	AccessibilityDetails *UnorderedStrings `json:"accessibilityDetails,omitempty"`
 }
