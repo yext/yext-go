@@ -39,6 +39,7 @@ type RestaurantEntity struct {
 	Languages           *[]string `json:"languages,omitempty"`
 	Logo                **Photo   `json:"logo,omitempty"`
 	PaymentOptions      *[]string `json:"paymentOptions,omitempty"`
+	Geomodifier         *string   `json:"geomodifier,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
@@ -402,6 +403,13 @@ func (r RestaurantEntity) GetPaymentOptions() (v []string) {
 		v = *r.PaymentOptions
 	}
 	return v
+}
+
+func (r RestaurantEntity) GetGeomodifier() string {
+	if r.Geomodifier != nil {
+		return GetString(r.Geomodifier)
+	}
+	return ""
 }
 
 func (r RestaurantEntity) GetVideos() (v []Video) {
