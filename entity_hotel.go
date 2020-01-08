@@ -231,6 +231,8 @@ const (
 	OptionPrivateCarServiceForFree       = "PRIVATE_CAR_SERVICE_FOR_FREE"
 	OptionWatercraftRentals              = "WATERCRAFT_RENTALS"
 	OptionWatercraftRentalsForFree       = "WATERCRAFT_RENTALS_FOR_FREE"
+	OptionAllInclusiveRatesAvailable     = "ALL_INCLUSIVE_RATES_AVAILABLE"
+	OptionAllInclusiveRatesOnly          = "ALL_INCLUSIVE_RATES_ONLY"
 
 	// Multi-option IDs
 	OptionWiFiInPublicAreas      = "WIFI_IN_PUBLIC_AREAS"
