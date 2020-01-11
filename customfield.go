@@ -1,5 +1,7 @@
 package yext
 
+import "fmt"
+
 const (
 	CUSTOMFIELDTYPE_YESNO          = "BOOLEAN"
 	CUSTOMFIELDTYPE_SINGLELINETEXT = "TEXT"
@@ -34,4 +36,28 @@ func (c CustomField) GetId() string {
 		return ""
 	}
 	return *c.Id
+}
+
+type EntityList UnorderedStrings
+
+func (l EntityList) CustomFieldTag() string {
+	return CUSTOMFIELDTYPE_ENTITYLIST
+}
+
+func (m EntityList) Equal(c Comparable) bool {
+	var n EntityList
+	switch v := c.(type) {
+	case EntityList:
+		n = v
+	case *EntityList:
+		n = *v
+	default:
+		panic(fmt.Errorf("%v is not a EntityList is %T", c, c))
+	}
+	if len(m) != len(n) {
+		return false
+	}
+	a := UnorderedStrings(m)
+	b := UnorderedStrings(n)
+	return (&a).Equal(&b)
 }
