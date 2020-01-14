@@ -1,6 +1,7 @@
 package yext
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -144,7 +145,18 @@ func (l *LanguageProfileService) listAllHelper(opts *EntityListOptions) (*Langua
 }
 
 func (l *LanguageProfileService) Upsert(entity Entity, id string, languageCode string) (*Response, error) {
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), entity, nil)
+	asJSON, err := json.Marshal(entity)
+	if err != nil {
+		return nil, err
+	}
+	var asMap map[string]interface{}
+	err = json.Unmarshal(asJSON, &asMap)
+	if err != nil {
+		return nil, err
+	}
+	delete(asMap["meta"].(map[string]interface{}), "id")
+
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), asMap, nil)
 	if err != nil {
 		return r, err
 	}
