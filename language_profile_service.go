@@ -154,7 +154,9 @@ func (l *LanguageProfileService) Upsert(entity Entity, id string, languageCode s
 	if err != nil {
 		return nil, err
 	}
-	delete(asMap["meta"].(map[string]interface{}), "id")
+	if _, ok := asMap["meta"]; ok {
+		delete(asMap["meta"].(map[string]interface{}), "id")
+	}
 
 	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), asMap, nil)
 	if err != nil {
