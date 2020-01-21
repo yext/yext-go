@@ -230,9 +230,11 @@ type MenuListSection struct {
 
 type Menu struct {
 	ListItem
-	Cost     *Cost      `json:"cost,omitempty"`
-	Photo    *ListPhoto `json:"photo,omitempty"`
-	Calories *Calories  `json:"calories,omitempty"`
+	Cost      *Cost      `json:"cost,omitempty"`
+	Photo     *ListPhoto `json:"photo,omitempty"`
+	Calories  *Calories  `json:"calories,omitempty"`
+	Url       *string    `json:"url,omitempty"`
+	Allergens *[]string  `json:"allergens,omitempty"`
 }
 
 type BioList struct {
