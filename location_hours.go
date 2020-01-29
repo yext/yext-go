@@ -7,12 +7,14 @@ import (
 	"time"
 )
 
+// Legacy hours format used for Yext v2 locations API
+
 const (
-	HoursClosedAllWeek = "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"
-	HoursOpen24Hours   = "00:00:00:00"
-	HoursClosed        = "closed"
-	HoursFormat        = "15:04"
-	hoursLen           = 11 // XX:XX:XX:XX format
+	LocationHoursClosedAllWeek = "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"
+	LocationHoursOpen24Hours   = "00:00:00:00"
+	LocationHoursClosed        = "closed"
+	HoursFormat                = "15:04"
+	hoursLen                   = 11 // XX:XX:XX:XX format
 )
 
 type Weekday int
@@ -132,7 +134,7 @@ func (h *LocationHoursHelper) AppendHours(weekday Weekday, hours string) {
 }
 
 func (h *LocationHoursHelper) SetClosed(weekday Weekday) {
-	h.SetHours(weekday, []string{HoursClosed})
+	h.SetHours(weekday, []string{LocationHoursClosed})
 }
 
 func (h *LocationHoursHelper) SetUnspecified(weekday Weekday) {
@@ -140,7 +142,7 @@ func (h *LocationHoursHelper) SetUnspecified(weekday Weekday) {
 }
 
 func (h *LocationHoursHelper) SetOpen24Hours(weekday Weekday) {
-	h.SetHours(weekday, []string{HoursOpen24Hours})
+	h.SetHours(weekday, []string{LocationHoursOpen24Hours})
 }
 
 func (h *LocationHoursHelper) GetHours(weekday Weekday) []string {
@@ -185,7 +187,7 @@ func (h *LocationHoursHelper) StringSerializeDay(weekday Weekday) string {
 	}
 	var hoursStrings = []string{}
 	if h.GetHours(weekday) == nil || len(h.GetHours(weekday)) == 0 || h.HoursAreClosed(weekday) {
-		return fmt.Sprintf("%d:%s", weekday, HoursClosed)
+		return fmt.Sprintf("%d:%s", weekday, LocationHoursClosed)
 	}
 	for _, hours := range h.GetHours(weekday) {
 		if len(hours) != hoursLen {
@@ -285,8 +287,8 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if err != nil {
 		return -1, "", fmt.Errorf("Error parsing weekday hours from string; unable to convert index to num: %s", err)
 	}
-	if strings.ToLower(hoursParts[1]) == HoursClosed {
-		return Weekday(weekdayInt), HoursClosed, nil
+	if strings.ToLower(hoursParts[1]) == LocationHoursClosed {
+		return Weekday(weekdayInt), LocationHoursClosed, nil
 	}
 	// Pad hours with leading 0s
 	for i := 1; i < len(hoursParts); i += 2 {
@@ -337,12 +339,12 @@ func (h *LocationHoursHelper) HoursAreUnspecified(weekday Weekday) bool {
 
 func (h *LocationHoursHelper) HoursAreClosed(weekday Weekday) bool {
 	var hours = h.GetHours(weekday)
-	return hours != nil && len(hours) == 1 && hours[0] == HoursClosed
+	return hours != nil && len(hours) == 1 && hours[0] == LocationHoursClosed
 }
 
 func (h *LocationHoursHelper) HoursAreOpen24Hours(weekday Weekday) bool {
 	var hours = h.GetHours(weekday)
-	return hours != nil && len(hours) == 1 && hours[0] == HoursOpen24Hours
+	return hours != nil && len(hours) == 1 && hours[0] == LocationHoursOpen24Hours
 }
 
 func ParseAndFormatHours(tFormat string, openHours string, closeHours string) (string, error) {
