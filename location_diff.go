@@ -164,8 +164,8 @@ func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 }
 
 var closedHoursEquivalents = map[string]struct{}{
-	"":                 struct{}{},
-	HoursClosedAllWeek: struct{}{},
+	"":                         struct{}{},
+	LocationHoursClosedAllWeek: struct{}{},
 }
 
 func HoursAreEquivalent(a, b string) bool {
