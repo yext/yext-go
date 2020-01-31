@@ -161,7 +161,7 @@ type CostOptions struct {
 
 type Calories struct {
 	Type    string `json:"type,omitempty"`
-	Calorie int    `json:"calorie,omitempty"`
+	Calorie *int   `json:"calorie,omitempty"`
 	RangeTo int    `json:"rangeTo,omitempty"`
 }
 
