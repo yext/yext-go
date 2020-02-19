@@ -47,6 +47,9 @@ type HotelEntity struct {
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
 
+	FacebookCoverPhoto   **Image `json:"facebookCoverPhoto,omitempty"`
+	FacebookProfilePhoto **Image `json:"facebookProfilePhoto,omitempty"`
+
 	GoogleCoverPhoto      **Image              `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string              `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    **Image              `json:"googleProfilePhoto,omitempty"`
