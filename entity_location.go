@@ -9,7 +9,21 @@ import (
 	"encoding/json"
 )
 
-const ENTITYTYPE_LOCATION EntityType = "location"
+const (
+	ENTITYTYPE_LOCATION          EntityType = "location"
+	FACEBOOKCTA_TYPE_BOOKNOW                = "BOOK_NOW"
+	FACEBOOKCTA_TYPE_CALLNOW                = "CALL_NOW"
+	FACEBOOKCTA_TYPE_CONTACTUS              = "CONTACT_US"
+	FACEBOOKCTA_TYPE_LEARNMORE              = "LEARN_MORE"
+	FACEBOOKCTA_TYPE_OFF                    = "NONE"
+	FACEBOOKCTA_TYPE_PLAYGAME               = "PLAY_GAME"
+	FACEBOOKCTA_TYPE_SENDEMAIL              = "SEND_EMAIL"
+	FACEBOOKCTA_TYPE_SENDMESSAGE            = "SEND_MESSAGE"
+	FACEBOOKCTA_TYPE_SHOPNOW                = "SHOP_NOW"
+	FACEBOOKCTA_TYPE_SIGNUP                 = "SIGN_UP"
+	FACEBOOKCTA_TYPE_USEAPP                 = "USE_APP"
+	FACEBOOKCTA_TYPE_WATCHVIDEO             = "WATCH_VIDEO"
+)
 
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
@@ -85,9 +99,10 @@ type LocationEntity struct {
 	UberTripBranding **UberTripBranding `json:"uberTripBranding,omitempty"`
 
 	// Social Media
-	FacebookCoverPhoto   **Image `json:"facebookCoverPhoto,omitempty"`
-	FacebookPageUrl      *string `json:"facebookPageUrl,omitempty"`
-	FacebookProfilePhoto **Image `json:"facebookProfilePhoto,omitempty"`
+	FacebookCallToAction **FacebookCTA `json:"facebookCallToAction,omitempty"`
+	FacebookCoverPhoto   **Image       `json:"facebookCoverPhoto,omitempty"`
+	FacebookPageUrl      *string       `json:"facebookPageUrl,omitempty"`
+	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
 
 	GoogleCoverPhoto      **Image `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string `json:"googlePreferredPhoto,omitempty"`
@@ -120,6 +135,20 @@ func (l *LocationEntity) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return UnmarshalEntityJSON(l, data)
+}
+
+type FacebookCTA struct {
+	Type  *string `json:"type,omitempty"`
+	Value *string `json:"value,omitempty"`
+}
+
+func NullableFacebookCTA(f *FacebookCTA) **FacebookCTA {
+	return &f
+}
+
+func NullFacebookCTA() **FacebookCTA {
+	var f *FacebookCTA
+	return &f
 }
 
 type Video struct {
