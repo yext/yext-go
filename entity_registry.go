@@ -61,8 +61,15 @@ func (r *EntityRegistry) ToEntityType(entity interface{}) (Entity, error) {
 		return nil, fmt.Errorf("Unable to find entityType attribute in %v\nFor Entity: %v", metaByKey, entity)
 	}
 
-	var registry = Registry(*r)
-	entityObj, err := registry.Initialize(entityType.(string))
+	return r.ToSpecifiedEntityType(entity, EntityType(entityType.(string)))
+}
+
+func (r *EntityRegistry) ToSpecifiedEntityType(entity interface{}, entityType EntityType) (Entity, error) {
+	var (
+		entityValsByKey = entity.(map[string]interface{})
+		registry        = Registry(*r)
+	)
+	entityObj, err := registry.Initialize(string(entityType))
 	if err != nil {
 		// Unable to create an instace of entityType, use RawEntity instead
 		entityObj = &RawEntity{}
