@@ -23,22 +23,20 @@ func unmarshal(i interface{}, m map[string]interface{}) interface{} {
 					v := Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag])
 
 					// Check if double pointer
-					if v.Type().Kind() == reflect.Ptr {
-						t := v.Type()
-						if t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
-							for t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
-								t = t.Elem()
-							}
-							typedNil := reflect.New(t)
-
-							defer func() {
-								if r := recover(); r != nil {
-									log.Fatalf("Error while unmarshaling field '%s': %s", jsonTagToKey[tag], r)
-								}
-							}()
-
-							Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag]).Set(reflect.ValueOf(typedNil.Interface()))
+					t := v.Type()
+					if t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
+						for t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
+							t = t.Elem()
 						}
+						typedNil := reflect.New(t)
+
+						defer func() {
+							if r := recover(); r != nil {
+								log.Fatalf("Error while unmarshaling field '%s': %s", jsonTagToKey[tag], r)
+							}
+						}()
+
+						Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag]).Set(reflect.ValueOf(typedNil.Interface()))
 					}
 				} else if vMap, ok := val.(map[string]interface{}); ok {
 					v := Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag])
