@@ -23,8 +23,8 @@ func unmarshal(i interface{}, m map[string]interface{}) interface{} {
 					v := Indirect(reflect.ValueOf(i)).FieldByName(jsonTagToKey[tag])
 
 					// Check if double pointer
-					if v.Type().Kind() == reflect.Ptr {
-						t := v.Type()
+					t := v.Type()
+					if t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
 						for t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Ptr {
 							t = t.Elem()
 						}
