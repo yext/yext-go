@@ -280,7 +280,8 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 		return -1, "", fmt.Errorf("Error parsing weekday and hours from string: string has 0 length")
 	}
 	hoursParts := strings.Split(str, ":")
-	if len(hoursParts) == 0 {
+
+	if len(hoursParts) != 5 && len(hoursParts) != 2{
 		return -1, "", fmt.Errorf("Error parsing weekday and hours from string: string in unexpectd format")
 	}
 	weekdayInt, err := strconv.Atoi(hoursParts[0])
@@ -291,10 +292,8 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 		return Weekday(weekdayInt), LocationHoursClosed, nil
 	}
 	// Pad hours with leading 0s
-	for i := 1; i < len(hoursParts); i += 2 {
-		if len(hoursParts[i])+len(hoursParts[i+1]) != 4 {
-			hoursParts[i] = "0" + hoursParts[i]
-		}
+	for i, _ := range hoursParts{
+		hoursParts[i] = fmt.Sprintf("%02s",hoursParts[i])
 	}
 	hours := strings.Join(hoursParts[1:], ":")
 	return Weekday(weekdayInt), hours, nil
