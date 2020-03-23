@@ -61,9 +61,5 @@ type AnalyticsReportResponse struct {
 func (a *AnalyticsService) Create(req *AnalyticsReportRequest) (*AnalyticsReportResponse, *Response, error) {
 	arr := &AnalyticsReportResponse{}
 	r, err := a.client.DoRequestJSON("POST", analyticsPath, req, arr)
-	if err != nil {
-		return nil, r, err
-	}
-
-	return arr, r, nil
+	return arr, r, err
 }
