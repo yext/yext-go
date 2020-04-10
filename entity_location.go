@@ -350,6 +350,7 @@ type Hours struct {
 	Saturday     **DayHours      `json:"saturday,omitempty"`
 	Sunday       **DayHours      `json:"sunday,omitempty"`
 	HolidayHours *[]HolidayHours `json:"holidayHours,omitempty"`
+	ReopenDate   *string         `json:"reopenDate,omitempty"`
 }
 
 func (h Hours) String() string {

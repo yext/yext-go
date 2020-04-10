@@ -214,9 +214,9 @@ func RawEntityDiff(a map[string]interface{}, b map[string]interface{}, nilIsEmpt
 				}
 			}
 		} else {
-            delta[key] = bVal
-            isDiff = true
-        }
+			delta[key] = bVal
+			isDiff = true
+		}
 	}
 	if isDiff {
 		return delta, true
