@@ -5,15 +5,15 @@ import (
 )
 
 type User struct {
-	Id           *string `json:"id,omitempty"`        // req in post
-	FirstName    *string `json:"firstName,omitempty"` // req in post
-	LastName     *string `json:"lastName,omitempty"`  // req in post
-	UserName     *string `json:"username,omitempty"`
-	EmailAddress *string `json:"emailAddress,omitempty"` // req in post
-	PhoneNumber  *string `json:"phoneNumber,omitempty"`
-	Password     *string `json:"password,omitempty"`
-	SSO          *bool   `json:"sso,omitempty"`
-	ACLs         []ACL   `json:"acl,omitempty"`
+	Id            *string `json:"id,omitempty"`        // req in post
+	FirstName     *string `json:"firstName,omitempty"` // req in post
+	LastName      *string `json:"lastName,omitempty"`  // req in post
+	UserName      *string `json:"username,omitempty"`
+	EmailAddress  *string `json:"emailAddress,omitempty"` // req in post
+	PhoneNumber   *string `json:"phoneNumber,omitempty"`
+	Password      *string `json:"password,omitempty"`
+	SSO           *bool   `json:"sso,omitempty"`
+	ACLs          []ACL   `json:"acl,omitempty"`
 	LastLoginDate *string `json:"lastLoginDate,omitempty"`
 }
 
