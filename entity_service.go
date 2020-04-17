@@ -30,6 +30,7 @@ type EntityListOptions struct {
 type EntityServiceOptions struct {
 	TemplateId     string   `json:"templateId,omitempty"`
 	TemplateFields []string `json:"templateFields,omitempty"`
+	Format         string   `json:"format,omitempty"`
 }
 
 type EntityListResponse struct {
@@ -140,6 +141,9 @@ func addEntityServiceOptions(requrl string, opts *EntityServiceOptions) (string,
 	q := u.Query()
 	if opts.TemplateId != "" {
 		q.Add("templateId", opts.TemplateId)
+	}
+	if opts.Format != "" {
+		q.Add("format", opts.Format)
 	}
 	if len(opts.TemplateFields) > 0 {
 		q.Add("templateFields", strings.Join(opts.TemplateFields, ","))
