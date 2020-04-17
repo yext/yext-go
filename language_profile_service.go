@@ -145,6 +145,10 @@ func (l *LanguageProfileService) listAllHelper(opts *EntityListOptions) (*Langua
 }
 
 func (l *LanguageProfileService) Upsert(entity Entity, id string, languageCode string) (*Response, error) {
+	return l.UpsertWithOptions(entity, id, languageCode, nil)
+}
+
+func (l *LanguageProfileService) UpsertWithOptions(entity Entity, id string, languageCode string, opts *EntityServiceOptions) (*Response, error) {
 	asJSON, err := json.Marshal(entity)
 	if err != nil {
 		return nil, err
@@ -158,7 +162,13 @@ func (l *LanguageProfileService) Upsert(entity Entity, id string, languageCode s
 		delete(asMap["meta"].(map[string]interface{}), "id")
 	}
 
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode), asMap, nil)
+	requrl := fmt.Sprintf("%s/%s/%s", entityProfilesPath, id, languageCode)
+	requrl, err = addEntityServiceOptions(requrl, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := l.client.DoRequestJSON("PUT", requrl, asMap, nil)
 	if err != nil {
 		return r, err
 	}
