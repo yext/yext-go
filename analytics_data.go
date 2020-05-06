@@ -53,6 +53,10 @@ type AnalyticsData struct {
 	IstShareOfIntelligentSearch           *float64 `json:"Ist Share Of Intelligent Search"`
 	LocationId                            *string  `json:"location_id"`
 	Month                                 *string  `json:"month"`
+	ResponseTime                          *int     `json:"Response Time (Hours)"`
+	ResponseRate                          *int     `json:"Response Rate"`
+	PartnerSite                           *string  `json:"site"`
+	CumulativeRating                      *float64 `json:"Cumulative Rating"`
 }
 
 func (y AnalyticsData) GetProfileViews() int {
