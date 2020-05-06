@@ -11,6 +11,10 @@ import (
 )
 
 const (
+	EDUCATION_FELLOWSHIP                         = "FELLOWSHIP"
+	EDUCATION_INTERNSHIP                         = "INTERNSHIP"
+	EDUCATION_MEDICAL_SCHOOL                     = "MEDICAL_SCHOOL"
+	EDUCATION_RESIDENCY                          = "RESIDENCY"
 	ENTITYTYPE_HEALTHCAREPROFESSIONAL EntityType = "healthcareProfessional"
 	GENDER_MALE                                  = "MALE"
 	GENDER_FEMALE                                = "FEMALE"
