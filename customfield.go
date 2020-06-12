@@ -24,8 +24,8 @@ type CustomFieldValidation struct {
 	MaxCharLength   int      `json:"maxCharLength,omitempty"`
 	MinItemCount    int      `json:"minItemCount,omitempty"`
 	MaxItemCount    int      `json:"maxItemCount,omitempty"`
-	MinValue        int      `json:"minValue,omitempty"`
-	MaxValue        int      `json:"maxValue,omitempty"`
+	MinValue        float64  `json:"minValue,omitempty"`
+	MaxValue        float64  `json:"maxValue,omitempty"`
 	MinDate         string   `json:"minDate,omitempty"`
 	MaxDate         string   `json:"maxDate,omitempty"`
 	AspectRatio     string   `json:"aspectRatio,omitempty"`
