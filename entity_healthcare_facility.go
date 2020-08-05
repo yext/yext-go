@@ -295,6 +295,14 @@ func (y HealthcareFacilityEntity) GetTelehealthUrl() string {
 	return ""
 }
 
+func (y HealthcareFacilityEntity) GetDisplayTelehealthUrl() string {
+	w := GetWebsite(y.TelehealthUrl)
+	if w != nil {
+		return GetString(w.DisplayUrl)
+	}
+	return ""
+}
+
 func (y HealthcareFacilityEntity) GetHours() *Hours {
 	return GetHours(y.Hours)
 }
