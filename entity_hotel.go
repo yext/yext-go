@@ -134,7 +134,9 @@ type HotelEntity struct {
 
 	// Pools
 	IndoorPoolCount  **int     `json:"indoorPoolCount,omitempty"`
+	IndoorPools      **Ternary `json:"indoorPools,omitempty"`
 	OutdoorPoolCount **int     `json:"outdoorPoolCount,omitempty"`
+	OutdoorPools     **Ternary `json:"outdoorPools,omitempty"`
 	HotTub           **Ternary `json:"hotTub,omitempty"`
 	WaterSlide       **Ternary `json:"waterslide,omitempty"`
 	LazyRiver        **Ternary `json:"lazyRiver,omitempty"`
