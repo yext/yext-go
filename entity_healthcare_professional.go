@@ -339,6 +339,14 @@ func (y HealthcareProfessionalEntity) GetReservationUrl() string {
 	return ""
 }
 
+func (y HealthcareProfessionalEntity) GetDisplayReservationUrl() string {
+	w := GetWebsite(y.ReservationUrl)
+	if w != nil {
+		return GetString(w.DisplayUrl)
+	}
+	return ""
+}
+
 func (y HealthcareProfessionalEntity) GetTelehealthUrl() string {
 	w := GetWebsite(y.TelehealthUrl)
 	if w != nil {
@@ -347,8 +355,8 @@ func (y HealthcareProfessionalEntity) GetTelehealthUrl() string {
 	return ""
 }
 
-func (y HealthcareProfessionalEntity) GetDisplayReservationUrl() string {
-	w := GetWebsite(y.ReservationUrl)
+func (y HealthcareProfessionalEntity) GetDisplayTelehealthUrl() string {
+	w := GetWebsite(y.TelehealthUrl)
 	if w != nil {
 		return GetString(w.DisplayUrl)
 	}
