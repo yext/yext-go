@@ -73,7 +73,7 @@ type HealthcareFacilityEntity struct {
 	MenuUrl         **Website         `json:"menuUrl,omitempty"`
 	OrderUrl        **Website         `json:"orderUrl,omitempty"`
 	ReservationUrl  **Website         `json:"reservationUrl,omitempty"`
-	TelehealthUrl   **Website         `json:"telehealthUrl,omitempty"`
+	TelehealthUrl   *string           `json:"telehealthUrl,omitempty"`
 	WebsiteUrl      **Website         `json:"websiteUrl,omitempty"`
 	FeaturedMessage **FeaturedMessage `json:"featuredMessage,omitempty"`
 
@@ -283,22 +283,6 @@ func (y HealthcareFacilityEntity) GetReservationUrl() string {
 	w := GetWebsite(y.ReservationUrl)
 	if w != nil {
 		return GetString(w.Url)
-	}
-	return ""
-}
-
-func (y HealthcareFacilityEntity) GetTelehealthUrl() string {
-	w := GetWebsite(y.TelehealthUrl)
-	if w != nil {
-		return GetString(w.Url)
-	}
-	return ""
-}
-
-func (y HealthcareFacilityEntity) GetDisplayTelehealthUrl() string {
-	w := GetWebsite(y.TelehealthUrl)
-	if w != nil {
-		return GetString(w.DisplayUrl)
 	}
 	return ""
 }
