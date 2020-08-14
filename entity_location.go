@@ -30,11 +30,12 @@ const (
 type LocationEntity struct {
 	BaseEntity
 	// Address Fields
-	Name          *string  `json:"name,omitempty"`
-	Address       *Address `json:"address,omitempty"`
-	AddressHidden **bool   `json:"addressHidden,omitempty"`
-	ISORegionCode *string  `json:"isoRegionCode,omitempty"`
-	Geomodifier   *string  `json:"geomodifier,omitempty"`
+	Name               *string  `json:"name,omitempty"`
+	Address            *Address `json:"address,omitempty"`
+	AddressHidden      **bool   `json:"addressHidden,omitempty"`
+	ISORegionCode      *string  `json:"isoRegionCode,omitempty"`
+	Geomodifier        *string  `json:"geomodifier,omitempty"`
+	BlackOwnedBusiness **bool   `json:"blackOwnedBusiness,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -47,16 +48,17 @@ type LocationEntity struct {
 	Emails         *[]string `json:"emails,omitempty"`
 
 	// Location Info
-	Hours               **Hours   `json:"hours,omitempty"`
-	Closed              **bool    `json:"closed,omitempty"`
-	Description         *string   `json:"description,omitempty"`
-	AdditionalHoursText *string   `json:"additionalHoursText,omitempty"`
-	YearEstablished     **float64 `json:"yearEstablished,omitempty"`
-	Associations        *[]string `json:"associations,omitempty"`
-	Certifications      *[]string `json:"certifications,omitempty"`
-	Brands              *[]string `json:"brands,omitempty"`
-	Products            *[]string `json:"products,omitempty"`
-	Services            *[]string `json:"services,omitempty"`
+	Hours                     **Hours           `json:"hours,omitempty"`
+	Closed                    **bool            `json:"closed,omitempty"`
+	Description               *string           `json:"description,omitempty"`
+	AdditionalHoursText       *string           `json:"additionalHoursText,omitempty"`
+	YearEstablished           **float64         `json:"yearEstablished,omitempty"`
+	Associations              *[]string         `json:"associations,omitempty"`
+	Certifications            *[]string         `json:"certifications,omitempty"`
+	Brands                    *[]string         `json:"brands,omitempty"`
+	Products                  *[]string         `json:"products,omitempty"`
+	Services                  *[]string         `json:"services,omitempty"`
+	PickupAndDeliveryServices *UnorderedStrings `json:"pickupAndDeliveryServices,omitempty"`
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
 	Specialties *[]string `json:"specialities,omitempty"`
 
