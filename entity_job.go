@@ -10,17 +10,23 @@ type JobEntity struct {
 	BaseEntity
 
 	//Job Info
-	Name           *string   `json:"name,omitempty"`
-	Description    *string   `json:"description,omitempty"`
-	Timezone       *string   `json:"timezone,omitempty"`
-	EmploymentType *string   `json:"employmentType,omitempty"`
-	DatePosted     *string   `json:"datePosted,omitempty"`
-	ValidThrough   *string   `json:"validThrough,omitempty"`
-	Keywords       *[]string `json:"keywords,omitempty"`
+	Name           *string      `json:"name,omitempty"`
+	Description    *string      `json:"description,omitempty"`
+	Timezone       *string      `json:"timezone,omitempty"`
+	EmploymentType *string      `json:"employmentType,omitempty"`
+	DatePosted     *string      `json:"datePosted,omitempty"`
+	ValidThrough   *string      `json:"validThrough,omitempty"`
+	Keywords       *[]string    `json:"keywords,omitempty"`
+	Location       *JobLocation `json:"location,omitempty"`
 
 	// Urls
 	ApplicationURL *string `json:"applicationURL,omitempty"`
 	LandingPageURL *string `json:"landingPageUrl,omitempty"`
+}
+
+type JobLocation struct {
+	ExistingLocation *string `json:"existingLocation,omitempty"`
+	ExternalLocation *string `json:"externalLocation,omitempty"`
 }
 
 func (j JobEntity) GetId() string {
@@ -82,6 +88,20 @@ func (j JobEntity) GetApplicationURL() string {
 func (j JobEntity) GetLandingPageUrl() string {
 	if j.LandingPageURL != nil {
 		return *j.LandingPageURL
+	}
+	return ""
+}
+
+func (j JobEntity) GetExistingLocation() string {
+	if j.Location != nil && j.Location.ExistingLocation != nil {
+		return *j.Location.ExistingLocation
+	}
+	return ""
+}
+
+func (j JobEntity) GetExternalLocation() string {
+	if j.Location != nil && j.Location.ExternalLocation != nil {
+		return *j.Location.ExternalLocation
 	}
 	return ""
 }
