@@ -20,7 +20,7 @@ type JobEntity struct {
 	Location       *JobLocation `json:"location,omitempty"`
 
 	// Urls
-	ApplicationURL *string `json:"applicationURL,omitempty"`
+	ApplicationURL *string `json:"applicationUrl,omitempty"`
 	LandingPageURL *string `json:"landingPageUrl,omitempty"`
 }
 
