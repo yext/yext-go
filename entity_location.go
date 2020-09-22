@@ -30,12 +30,13 @@ const (
 type LocationEntity struct {
 	BaseEntity
 	// Address Fields
-	Name               *string  `json:"name,omitempty"`
-	Address            *Address `json:"address,omitempty"`
-	AddressHidden      **bool   `json:"addressHidden,omitempty"`
-	ISORegionCode      *string  `json:"isoRegionCode,omitempty"`
-	Geomodifier        *string  `json:"geomodifier,omitempty"`
-	BlackOwnedBusiness **bool   `json:"blackOwnedBusiness,omitempty"`
+	Name               *string             `json:"name,omitempty"`
+	Address            *Address            `json:"address,omitempty"`
+	AddressHidden      **bool              `json:"addressHidden,omitempty"`
+	ISORegionCode      *string             `json:"isoRegionCode,omitempty"`
+	ServiceAreaPlaces  *[]ServiceAreaPlace `json:"serviceAreaPlaces,omitempty"`
+	Geomodifier        *string             `json:"geomodifier,omitempty"`
+	BlackOwnedBusiness **bool              `json:"blackOwnedBusiness,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -999,4 +1000,9 @@ func (y HolidayHours) String() string {
 
 func ToHolidayHours(y []HolidayHours) *[]HolidayHours {
 	return &y
+}
+
+type ServiceAreaPlace struct {
+	Name *string `json:"name"`
+	Type *string `json:"type"`
 }
