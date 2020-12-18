@@ -2,7 +2,6 @@ package yext
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type EntityType string
@@ -208,39 +207,37 @@ func setValue(m map[string]interface{}, keys []string, index int, val interface{
 }
 
 func (r *RawEntity) RemoveEntry(keys []string) error {
-    if len(keys) == 0 {
-        return nil
-    }
-    m := (map[string]interface{})(*r)
-    fmt.Println(m)
-    v, err := removeEntry(m, keys, 0)
-    fmt.Println(v)
-    if err != nil {
-        return err
-    }
-    raw := RawEntity(v)
-    r = &raw
-    return nil
+	if len(keys) == 0 {
+		return nil
+	}
+	m := (map[string]interface{})(*r)
+	v, err := removeEntry(m, keys, 0)
+	if err != nil {
+		return err
+	}
+	raw := RawEntity(v)
+	r = &raw
+	return nil
 }
 
 func removeEntry(m map[string]interface{}, keys []string, index int) (map[string]interface{}, error) {
-    if m == nil {
-        return nil, nil
-    }
-    if index == len(keys)-1 {
-        delete(m, keys[index])
-    } else {
-        if _, ok := m[keys[index]]; !ok {
-            m[keys[index]] = map[string]interface{}{}
-        }
-        v, err := removeEntry(m[keys[index]].(map[string]interface{}), keys, index+1)
-        if err != nil {
-            return v, err
-        }
-        m[keys[index]] = v
-    }
+	if m == nil {
+		return nil, nil
+	}
+	if index == len(keys)-1 {
+		delete(m, keys[index])
+	} else {
+		if _, ok := m[keys[index]]; !ok {
+			m[keys[index]] = map[string]interface{}{}
+		}
+		v, err := removeEntry(m[keys[index]].(map[string]interface{}), keys, index+1)
+		if err != nil {
+			return v, err
+		}
+		m[keys[index]] = v
+	}
 
-    return m, nil
+	return m, nil
 }
 
 func ConvertStringsToEntityTypes(types []string) []EntityType {
