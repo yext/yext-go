@@ -236,6 +236,7 @@ type Photo struct {
 
 type Image struct {
 	Url           *string      `json:"url,omitempty"`
+	SourceUrl     *string      `json:"sourceUrl,omitempty"`
 	AlternateText *string      `json:"alternateText,omitempty"`
 	Width         *int         `json:"width,omitempty"`
 	Height        *int         `json:"height,omitempty"`
