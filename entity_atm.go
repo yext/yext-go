@@ -32,6 +32,7 @@ type ATMEntity struct {
 
 	// Location Info
 	Hours               **Hours `json:"hours,omitempty"`
+	DriveThroughHours   **Hours `json:"driveThroughHours,omitempty"`
 	AdditionalHoursText *string `json:"additionalHoursText,omitempty"`
 	Logo                **Photo `json:"logo,omitempty"`
 
