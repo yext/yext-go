@@ -1008,3 +1008,18 @@ type ServiceAreaPlace struct {
 	Name *string `json:"name"`
 	Type *string `json:"type"`
 }
+
+type CTA struct {
+	Text     *string `json:"label,omitempty"`
+	URL      *string `json:"link,omitempty"`
+	LinkType *string `json:"linkType,omitempty"`
+}
+
+func (y CTA) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
+}
+
+func ToCTA(c CTA) *CTA {
+	return &c
+}
