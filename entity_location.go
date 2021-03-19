@@ -1023,3 +1023,8 @@ func (y CTA) String() string {
 func ToCTA(c CTA) *CTA {
 	return &c
 }
+
+func NullableCTA(c CTA) **CTA {
+	p := &c
+	return &p
+}
