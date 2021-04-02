@@ -24,7 +24,7 @@ type AnalyticsData struct {
 	GooglePhoneCalls                      *int     `json:"Google Phone Calls"`
 	YelpCustomerActions                   *int     `json:"Yelp Customer Actions"`
 	AverageRating                         *float64 `json:"Average Rating"`
-	NewReviews                            *int     `json:"New Reviews"`
+	NewReviews                            *int     `json:"Reviews"`
 	StorepagesSessions                    *int     `json:"Storepages Sessions"`
 	StorepagesPageviews                   *int     `json:"Storepages Pageviews"`
 	StorepagesDrivingdirections           *int     `json:"Storepages Drivingdirections"`
@@ -56,7 +56,7 @@ type AnalyticsData struct {
 	ResponseTime                          *int     `json:"Response Time (Hours)"`
 	ResponseRate                          *int     `json:"Response Rate"`
 	PartnerSite                           *string  `json:"site"`
-	CumulativeRating                      *float64 `json:"Cumulative Rating"`
+	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
 }
 
 func (y AnalyticsData) GetProfileViews() int {
