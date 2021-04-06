@@ -12,6 +12,28 @@ const (
 	EntityListMaxLimit = 50
 )
 
+type RichTextFormat int
+
+const (
+	RichTextFormatDefault RichTextFormat = iota
+	RichTextFormatHTML
+	RichTextFormatMarkdown
+	RichTextFormatNone
+)
+
+func (r RichTextFormat) ToString() string {
+	switch r {
+	case RichTextFormatHTML:
+		return "html"
+	case RichTextFormatMarkdown:
+		return "markdown"
+	case RichTextFormatNone:
+		return "none"
+	default:
+		return ""
+	}
+}
+
 type EntityService struct {
 	client   *Client
 	Registry *EntityRegistry
@@ -24,6 +46,7 @@ type EntityListOptions struct {
 	EntityTypes         []string
 	Fields              []string
 	Filter              string
+	Format              RichTextFormat
 }
 
 // Used for Create and Edit
@@ -179,6 +202,10 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	if len(opts.Filter) > 0 {
 		q.Add("filter", opts.Filter)
 	}
+	if opts.Format != RichTextFormatDefault {
+		q.Add("format", opts.Format.ToString())
+	}
+
 	u.RawQuery = q.Encode()
 
 	return u.String(), nil

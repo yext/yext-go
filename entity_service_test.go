@@ -58,6 +58,7 @@ func TestEntityListOptions(t *testing.T) {
 		entityTypes         string
 		resolvePlaceholders bool
 		filter              string
+		format              string
 	}{
 		{
 			opts:      nil,
@@ -132,6 +133,14 @@ func TestEntityListOptions(t *testing.T) {
 			searchIDs: "",
 			filter:    `{"c_emergencyWatch":{"$eq":true}}`,
 		},
+		{
+			opts:      &EntityListOptions{Format: RichTextFormatNone},
+			limit:     "",
+			token:     "",
+			searchIDs: "",
+			filter:    "",
+			format:    "none",
+		},
 	}
 
 	for _, test := range tests {
@@ -155,6 +164,9 @@ func TestEntityListOptions(t *testing.T) {
 			}
 			if v := r.URL.Query().Get("filter"); v != test.filter {
 				t.Errorf("Wanted filter %s, got %s", test.filter, v)
+			}
+			if v := r.URL.Query().Get("format"); v != test.format {
+				t.Errorf("Wanted format '%s', got '%s'", test.format, v)
 			}
 		})
 
