@@ -151,6 +151,31 @@ func ConvertToRawEntity(e Entity) (*RawEntity, error) {
 	return &raw, nil
 }
 
+func (r *RawEntity) IsZeroValue() bool {
+    m := (map[string]interface{})(*r)
+    return rawEntityIsZeroValue(m)
+}
+
+// Function that recursively checks each field on a RawEntity to determine if the entity overall is empty or not
+// keys with nil values should still cause this func to return true
+func rawEntityIsZeroValue(rawEntity map[string]interface{}) bool {
+    for _, v := range rawEntity {
+        if v != nil {
+            // if v is a map, it means we've got a nested field, so we need to recurse to check the subfields of that map too
+            if m, ok := v.(map[string]interface{}); ok {
+                return rawEntityIsZeroValue(m)
+            } else {
+                // if the value we're looking at isn't nil AND isn't a map (nested field), we can assume this field on
+                // the raw entity has some value, therefore the whole entity is not zero value
+                return false
+            }
+        }
+    }
+
+    // if we never encounter a field with a value in the above, it's an empty rawEntity so we can return true
+    return true
+}
+
 func (r *RawEntity) GetValue(keys []string) interface{} {
 	if len(keys) == 0 {
 		return nil
