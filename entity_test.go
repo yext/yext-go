@@ -539,6 +539,164 @@ var sampleEntityJSON = `{
   }
 }`
 
+func TestRawEntityIsZeroValue(t *testing.T) {
+	var tests = []struct {
+		Name string
+		Raw  *RawEntity
+		Want bool
+	}{
+		{
+			Name: "Zero - Empty entity",
+			Raw:  &RawEntity{},
+			Want: true,
+		},
+		{
+			Name: "Zero - Empty single field",
+			Raw: &RawEntity{
+				"name": nil,
+			},
+			Want: true,
+		},
+		{
+			Name: "Zero - Empty nested map field",
+			Raw: &RawEntity{
+				"address": map[string]interface{}{
+					"line1": nil,
+				},
+			},
+			Want: true,
+		},
+		{
+			Name: "Zero - Empty nested slice subfield",
+			Raw: &RawEntity{
+				"hours": map[string]interface{}{
+					"monday": map[string]interface{}{
+						"openIntervals": []interface{}{
+							map[string]interface{}{
+								"start": nil,
+								"end":   nil,
+							},
+						},
+					},
+				},
+			},
+			Want: true,
+		},
+		{
+			Name: "Zero - double empty nested slice subfield",
+			Raw: &RawEntity{
+				"providerData": []interface{}{
+					[]interface{}{
+						map[string]interface{}{
+							"name": nil,
+						},
+					},
+					map[string]interface{}{
+						"name": nil,
+						"id":   nil,
+					},
+				},
+			},
+			Want: true,
+		},
+		{
+			Name: "Not Zero - valid single field",
+			Raw: &RawEntity{
+				"name": "Name",
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - valid single field (but it has zero value - empty string)",
+			Raw: &RawEntity{
+				"name": "",
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - valid single field (but it has zero value - false)",
+			Raw: &RawEntity{
+				"closed": false,
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - valid nested slice subfield",
+			Raw: &RawEntity{
+				"hours": map[string]interface{}{
+					"monday": map[string]interface{}{
+						"openIntervals": []interface{}{
+							map[string]interface{}{
+								"start": "10:00",
+								"end":   "18:00",
+							},
+						},
+					},
+				},
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - valid slice subfield, even with one invalid element",
+			Raw: &RawEntity{
+				"providerData": []interface{}{
+					map[string]interface{}{
+						"name": nil,
+						"id":   nil,
+					},
+					map[string]interface{}{
+						"name": "Name",
+					},
+				},
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - double nested slice subfield, even with one invalid element in each slice",
+			Raw: &RawEntity{
+				"providerData": []interface{}{
+					[]interface{}{
+						map[string]interface{}{
+							"name": false,
+						},
+						map[string]interface{}{
+							"name": nil,
+						},
+					},
+					map[string]interface{}{
+						"name": nil,
+						"id":   nil,
+					},
+				},
+			},
+			Want: false,
+		},
+		{
+			Name: "Not Zero - double nested slice subfield, even with one invalid element",
+			Raw: &RawEntity{
+				"providerData": []interface{}{
+					[]interface{}{
+						map[string]interface{}{
+							"name": nil,
+						},
+					},
+					map[string]interface{}{
+						"name": "",
+					},
+				},
+			},
+			Want: false,
+		},
+	}
+
+	for _, test := range tests {
+		got := test.Raw.IsZeroValue()
+		if got != test.Want {
+			t.Errorf("Got: %v, Wanted: %v", got, test.Want)
+		}
+	}
+}
+
 func TestGetValue(t *testing.T) {
 	var tests = []struct {
 		Raw  *RawEntity
