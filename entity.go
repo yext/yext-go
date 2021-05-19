@@ -152,28 +152,55 @@ func ConvertToRawEntity(e Entity) (*RawEntity, error) {
 }
 
 func (r *RawEntity) IsZeroValue() bool {
-    m := (map[string]interface{})(*r)
-    return rawEntityIsZeroValue(m)
+	m := (map[string]interface{})(*r)
+	return rawEntityIsZeroValue(m)
 }
 
 // Function that recursively checks each field on a RawEntity to determine if the entity overall is empty or not
-// keys with nil values should still cause this func to return true
-func rawEntityIsZeroValue(rawEntity map[string]interface{}) bool {
-    for _, v := range rawEntity {
-        if v != nil {
-            // if v is a map, it means we've got a nested field, so we need to recurse to check the subfields of that map too
-            if m, ok := v.(map[string]interface{}); ok {
-                return rawEntityIsZeroValue(m)
-            } else {
-                // if the value we're looking at isn't nil AND isn't a map (nested field), we can assume this field on
-                // the raw entity has some value, therefore the whole entity is not zero value
-                return false
-            }
-        }
-    }
+// keys with nil or slices with nil elements values should still cause this func to return true
+func rawEntityIsZeroValue(rawEntity interface{}) bool {
+	// should only ever pass in maps or slices to this, so don't need to check other types
+	if m, ok := rawEntity.(map[string]interface{}); ok {
+		for _, v := range m {
+			if v != nil {
+				// if v is a map or a slice, it means we've got a nested field,
+				// so we need to recurse to check the subfields of it too
+				if mapSubfield, ok := v.(map[string]interface{}); ok {
+					return rawEntityIsZeroValue(mapSubfield)
+				} else if sliceSubfield, ok := v.([]interface{}); ok {
+					return rawEntityIsZeroValue(sliceSubfield)
+				} else {
+					// if the value we're looking at isn't nil AND isn't a map or slice (nested field), we can assume
+					// this field on the raw entity has some value, therefore the whole entity is not zero value
+					return false
+				}
+			}
+		}
+	} else if s, ok := rawEntity.([]interface{}); ok {
+		// if we're looking at a slice, need to check all elements in the slice. if any of them
+		// aren't zero, the toggle isZero
+		isZero := true
+		for _, e := range s {
+			if e != nil {
+				if mapSubfield, ok := e.(map[string]interface{}); ok {
+					isZero = rawEntityIsZeroValue(mapSubfield)
+				} else if sliceSubfield, ok := e.([]interface{}); ok {
+					isZero = rawEntityIsZeroValue(sliceSubfield)
+				} else {
+					isZero = false
+				}
+			}
+			// if this current element isn't zero, slice isn't zero, return false
+			// if this current elemtn IS zero, continue on in the slice
+			if isZero == false {
+				return isZero
+			}
+		}
+		return isZero
+	}
 
-    // if we never encounter a field with a value in the above, it's an empty rawEntity so we can return true
-    return true
+	// if we never encounter a field with a non-zero value in the above, it's an empty rawEntity so we can return true
+	return true
 }
 
 func (r *RawEntity) GetValue(keys []string) interface{} {
