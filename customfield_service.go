@@ -297,6 +297,40 @@ func (c *CustomFieldManager) MustGetMultiOptionNames(fieldName string, options *
 	}
 }
 
+func (c *CustomFieldManager) GetAllOptionNames(fieldName string) ([]string, error) {
+	var (
+		cf, err     = c.CustomField(fieldName)
+		optionNames = []string{}
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, option := range cf.Options {
+		optionNames = append(optionNames, option.Value)
+	}
+
+	return optionNames, nil
+}
+
+// MustGetAllOptionNames returns all the option names for a given Single or Multi Option Select field.
+// It returns an empty slice if the field has no options
+// Example Use:
+// Custom field name: "Dog Height"
+// Custom field option ID to name map: {
+//		"1423": "Tall",
+//		"1424": "Short",
+// }
+// cfmanager.MustGetAllOptionNames("Dog Height") returns []string{"Tall', "Short"}
+//
+func (c *CustomFieldManager) MustGetAllOptionNames(fieldName string) []string {
+	if names, err := c.GetAllOptionNames(fieldName); err != nil {
+		panic(err)
+	} else {
+		return names
+	}
+}
+
 func (c *CustomFieldManager) GetSingleOptionName(fieldName string, optionId **string) (string, error) {
 	if GetNullableString(optionId) == "" {
 		return "", nil
