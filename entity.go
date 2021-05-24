@@ -166,9 +166,13 @@ func rawEntityIsZeroValue(rawEntity interface{}) bool {
 				// if v is a map or a slice, it means we've got a nested field,
 				// so we need to recurse to check the subfields of it too
 				if mapSubfield, ok := v.(map[string]interface{}); ok {
-					return rawEntityIsZeroValue(mapSubfield)
+					if !rawEntityIsZeroValue(mapSubfield) {
+						return false
+					}
 				} else if sliceSubfield, ok := v.([]interface{}); ok {
-					return rawEntityIsZeroValue(sliceSubfield)
+					if !rawEntityIsZeroValue(sliceSubfield) {
+						return false
+					}
 				} else {
 					// if the value we're looking at isn't nil AND isn't a map or slice (nested field), we can assume
 					// this field on the raw entity has some value, therefore the whole entity is not zero value

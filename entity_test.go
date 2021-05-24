@@ -687,6 +687,26 @@ func TestRawEntityIsZeroValue(t *testing.T) {
 			},
 			Want: false,
 		},
+		{
+			Name: "Disney ETL Test that was failing",
+			Raw: &RawEntity{
+				"c_oSID":         "80007922",
+				"c_propertyType": "land",
+				"c_storeName":    "frontierland",
+				"description":    "",
+				"hours":          map[string]interface{}{},
+				"meta": map[string]interface{}{
+					"entityType": "location",
+					"id":         "80007922;entityType=land",
+					"labels": []interface{}{
+						"83533",
+					},
+				},
+				"name":         "Frontierland",
+				"photoGallery": []interface{}{},
+			},
+			Want: false,
+		},
 	}
 
 	for _, test := range tests {
