@@ -32,8 +32,8 @@ type HelpArticle struct {
 	Timezone *string `json:"timezone,omitempty"`
 }
 
-func (j *HelpArticle) String() string {
-	b, _ := json.Marshal(j)
+func (h *HelpArticle) String() string {
+	b, _ := json.Marshal(h)
 	return string(b)
 }
 
