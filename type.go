@@ -322,3 +322,8 @@ func NullableTernaryFromBool(b bool) **Ternary {
 	}
 	return NullableTernary(No)
 }
+
+func ToDate(s string) *Date {
+	d := Date(s)
+	return &d
+}

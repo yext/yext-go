@@ -51,11 +51,6 @@ func (u Url) CustomFieldTag() string {
 
 type Date string
 
-func ToDate(s string) *Date {
-	d := Date(s)
-	return &d
-}
-
 func (d Date) CustomFieldTag() string {
 	return CUSTOMFIELDTYPE_DATE
 }
