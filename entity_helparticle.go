@@ -13,12 +13,13 @@ type HelpArticle struct {
 	Keywords *[]string `json:"keywords,omitempty"` // LIST
 
 	// Content
-	Name             *string `json:"name,omitempty"`             // STRING
 	Body             *string `json:"body,omitempty"`             // RICH_TEXT
+	LandingPageUrl   *string `json:"landingPageUrl,omitempty"`   // STRING
+	Name             *string `json:"name,omitempty"`             // STRING
+	Promoted         **bool  `json:"promoted,omitempty"`         // BOOl
 	ShortDescription *string `json:"shortDescription,omitempty"` // STRING
 	VoteCount        *int    `json:"voteCount,omitempty"`        // STRING
 	VoteSum          *int    `json:"voteSum,omitempty"`          // STRING
-	Promoted         **bool  `json:"promoted,omitempty"`         // BOOl
 
 	ExternalArticlePostDate   *Date `json:"externalArticlePostDate,omitempty"`
 	ExternalArticleUpdateDate *Date `json:"externalArticleUpdateDate,omitempty"`
@@ -47,6 +48,13 @@ func (h HelpArticle) GetId() string {
 func (h HelpArticle) GetName() string {
 	if h.Name != nil {
 		return *h.Name
+	}
+	return ""
+}
+
+func (h HelpArticle) GetLandingPageUrl() string {
+	if h.LandingPageUrl != nil {
+		return GetString(h.LandingPageUrl)
 	}
 	return ""
 }
