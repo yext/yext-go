@@ -1,6 +1,9 @@
 package yext
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func NullableBool(v bool) **bool {
 	p := &v
@@ -284,6 +287,62 @@ func GetUnorderedStrings(v *UnorderedStrings) []string {
 
 func NullableUnorderedStrings(v []string) *UnorderedStrings {
 	u := UnorderedStrings(v)
+	return &u
+}
+
+type UnorderedSlices []interface{}
+
+// Equal compares UnorderedSlices
+func (a *UnorderedSlices) Equal(b Comparable) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Value of A: %+v, Value of B:%+v, Type Of A: %T, Type Of B: %T\n", a, b, a, b)
+			panic(r)
+		}
+	}()
+
+	if a == nil && (b.(*UnorderedSlices) == nil) {
+		return true
+	} else if a == nil || (b.(*UnorderedSlices) == nil) {
+		return false
+	}
+
+	var (
+		aItems    = *a
+		bItemsPtr = b.(*UnorderedSlices)
+		bItems    = *bItemsPtr
+	)
+
+	if len(aItems) != len(bItems) {
+		return true
+	}
+
+	for _, aItem := range aItems {
+		found := false
+		for _, bItem := range bItems {
+			_, isDiff := GenericDiff(aItem, bItem, false, false)
+			if !isDiff {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+func ToUnorderedSlices(v interface{}) *UnorderedSlices {
+	if v == nil {
+		return nil
+	}
+	val := reflect.ValueOf(v)
+
+	s := []interface{}{}
+	for i := 0; i < val.Len(); i++ {
+		s = append(s, val.Index(i).Interface().(interface{}))
+	}
+	u := UnorderedSlices(s)
 	return &u
 }
 
