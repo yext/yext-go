@@ -19,18 +19,18 @@ type AnalyticsData struct {
 	InstagramPosts                        *int     `json:"Instagram Posts"`
 	GoogleSearchQueries                   *int     `json:"Google Search Queries"`
 	GoogleSearchViews                     *int     `json:"Google Search Views"`
-	GoogleMapViews                        *int     `json:"Google Map Views"`
+	GoogleMapViews                        *int     `json:"Google Maps Views"`
 	GoogleCustomerActions                 *int     `json:"Google Customer Actions"`
 	GooglePhoneCalls                      *int     `json:"Google Phone Calls"`
 	YelpCustomerActions                   *int     `json:"Yelp Customer Actions"`
 	AverageRating                         *float64 `json:"Average Rating"`
 	NewReviews                            *int     `json:"Reviews"`
 	StorepagesSessions                    *int     `json:"Storepages Sessions"`
-	StorepagesPageviews                   *int     `json:"Storepages Pageviews"`
-	StorepagesDrivingdirections           *int     `json:"Storepages Drivingdirections"`
-	StorepagesPhonecalls                  *int     `json:"Storepages Phonecalls"`
-	StorepagesCalltoactionclicks          *int     `json:"Storepages Calltoactionclicks"`
-	StorepagesClickstowebsite             *int     `json:"Storepages Clickstowebsite"`
+	StorepagesPageviews                   *int     `json:"Pages Views"`
+	StorepagesDrivingdirections           *int     `json:"Driving Directions"`
+	StorepagesPhonecalls                  *int     `json:"Taps to Call"`
+	StorepagesCalltoactionclicks          *int     `json:"Call to Action Clicks"`
+	StorepagesClickstowebsite             *int     `json:"Clicks to Website"`
 	StorepagesEventEventtype              *int     `json:"Storepages Event Eventtype"`
 	ProfileUpdates                        *int     `json:"Profile Updates"`
 	PublisherSuggestions                  *int     `json:"Publisher Suggestions"`
