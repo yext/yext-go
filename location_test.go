@@ -30,7 +30,7 @@ func TestJSONSerialization(t *testing.T) {
 		{&Location{Languages: &[]string{}}, `{"languages":[]}`},
 		{&Location{Languages: &[]string{"English"}}, `{"languages":["English"]}`},
 		{&Location{HolidayHours: nil}, `{}`},
-		{&Location{HolidayHours: &[]HolidayHours{}}, `{"holidayHours":[]}`},
+		{&Location{HolidayHours: &[]LocationHolidayHours{}}, `{"holidayHours":[]}`},
 	}
 
 	for _, test := range tests {

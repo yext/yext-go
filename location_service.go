@@ -135,10 +135,14 @@ func addGetOptions(requrl string, opts *LocationListOptions) (string, error) {
 }
 
 func (l *LocationService) Edit(y *Location) (*Response, error) {
-	if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
+	return l.EditWithId(y.GetId(), y)
+}
+
+func (l *LocationService) EditWithId(id string, y *Location) (*Response, error) {
+	if err := validateLocationCustomFieldsKeys(y.CustomFields); err != nil {
 		return nil, err
 	}
-	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", locationsPath, y.GetId()), y, nil)
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%s", locationsPath, id), y, nil)
 	if err != nil {
 		return r, err
 	}
@@ -147,7 +151,7 @@ func (l *LocationService) Edit(y *Location) (*Response, error) {
 }
 
 func (l *LocationService) Create(y *Location) (*Response, error) {
-	if err := validateCustomFieldsKeys(y.CustomFields); err != nil {
+	if err := validateLocationCustomFieldsKeys(y.CustomFields); err != nil {
 		return nil, err
 	}
 	r, err := l.client.DoRequestJSON("POST", fmt.Sprintf("%s", locationsPath), y, nil)
