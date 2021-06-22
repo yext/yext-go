@@ -199,6 +199,9 @@ type HotelEntity struct {
 	// Accessibility
 	MobilityAccessible   **Ternary         `json:"mobilityAccessible,omitempty"`
 	AccessibilityDetails *UnorderedStrings `json:"accessibilityDetails,omitempty"`
+
+	// Minimized Contact
+	DigitalGuestRoomKeys **Ternary `json:"digitalGuestRoomKeys,omitempty"`
 }
 
 const (
