@@ -39,6 +39,7 @@ type Client struct {
 	LocationLanguageProfileService *LocationLanguageProfileService
 	AssetService                   *AssetService
 	CFTAssetService                *CFTAssetService
+	ActivityLogService             *ActivityLogService
 	AnalyticsService               *AnalyticsService
 	EntityService                  *EntityService
 	LanguageProfileService         *LanguageProfileService
@@ -60,6 +61,7 @@ func NewClient(config *Config) *Client {
 	c.AssetService = &AssetService{client: c}
 	c.CFTAssetService = &CFTAssetService{client: c}
 	c.CFTAssetService.RegisterDefaultAssetValues()
+	c.ActivityLogService = &ActivityLogService{client: c}
 	c.AnalyticsService = &AnalyticsService{client: c}
 	c.EntityService = &EntityService{client: c}
 	c.EntityService.RegisterDefaultEntities()
