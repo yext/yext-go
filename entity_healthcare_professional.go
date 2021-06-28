@@ -107,6 +107,7 @@ type HealthcareProfessionalEntity struct {
 	GooglePreferredPhoto  *string `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    **Image `json:"googleProfilePhoto,omitempty"`
 	GoogleWebsiteOverride *string `json:"googleWebsiteOverride,omitempty"`
+	GooglePlaceId         *string `json:"googlePlaceId,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
