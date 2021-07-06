@@ -56,3 +56,19 @@ func (y ActivityLog) GetActor() string {
 	}
 	return ""
 }
+
+func (y ActivityLog) GetActorDetailsName() string {
+	if y.ActorDetails.Name != nil {
+		return *y.ActorDetails.Name
+	}
+
+	return ""
+}
+
+func (y ActivityLog) GetActorDetailsEmail() string {
+	if y.ActorDetails.Email != nil {
+		return *y.ActorDetails.Email
+	}
+
+	return ""
+}
