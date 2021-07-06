@@ -17,6 +17,7 @@ type AnalyticsData struct {
 	FacebookPostImpressions               *int     `json:"Facebook Post Impressions"`
 	FoursquareDailyCheckins               *int     `json:"Foursquare Daily Checkins"`
 	InstagramPosts                        *int     `json:"Instagram Posts"`
+	GoogleQueryType                       *string  `json:"google_query_type"`
 	GoogleSearchQueries                   *int     `json:"Google Search Queries"`
 	GoogleSearchViews                     *int     `json:"Google Search Views"`
 	GoogleMapViews                        *int     `json:"Google Maps Views"`
@@ -176,6 +177,13 @@ func (y AnalyticsData) GetGoogleSearchQueries() int {
 		return *y.GoogleSearchQueries
 	}
 	return 0
+}
+
+func (y AnalyticsData) GetGoogleQueryType() string {
+	if y.GoogleQueryType != nil {
+		return *y.GoogleQueryType
+	}
+	return ""
 }
 
 func (y AnalyticsData) GetGoogleSearchViews() int {
