@@ -8,6 +8,7 @@ package yext
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -558,4 +559,38 @@ func (y HealthcareProfessionalEntity) GetCategoryIds() (v []string) {
 		v = *y.CategoryIds
 	}
 	return v
+}
+
+// sets all degrees that are valid
+// returns invalid degrees
+// handle parseError for invalid degrees outside of function call
+func (y *HealthcareProfessionalEntity) SetValidDegrees(degrees []string) []string {
+	var (
+		invalidDegrees   = []string{}
+		validDegrees     = []string{}
+		validYextDegrees = []string{"ANP", "APN", "APRN", "ARNP", "CNM", "CNP", "CNS", "CPNP", "CRNA", "CRNP", "DC",
+			"DDS", "DMD", "DO", "DPM", "DVM", "FNP", "GNP", "LAC", "LPN", "MBA", "MBBS", "MD",
+			"MPH", "ND", "NP", "OD", "PA", "PAC", "PHARMD", "PHD", "PNP", "PSYD", "VMD", "WHNP"}
+	)
+
+	contains := func(list []string, item string) bool {
+		for _, l := range list {
+			if l == item {
+				return true
+			}
+		}
+		return false
+	}
+
+	for _, degree := range degrees {
+		if contains(validYextDegrees, strings.ToUpper(degree)) {
+			validDegrees = append(validDegrees, degree)
+		} else {
+			invalidDegrees = append(invalidDegrees, degree)
+		}
+	}
+
+	y.Degrees = ToUnorderedStrings(validDegrees)
+
+	return invalidDegrees
 }
