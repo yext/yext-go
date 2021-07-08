@@ -12,7 +12,7 @@ type ActivityLog struct {
 
 type ActorDetail struct {
 	Name  *string `json:"name"`
-	Email *string `json:"emails"`
+	Email *string `json:"email"`
 }
 
 func (y ActivityLog) GetTimeStamp() int {

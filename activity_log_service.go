@@ -24,7 +24,8 @@ type ActivityLogService struct {
 }
 
 type ActivityLogResponse struct {
-	Data []*ActivityLog `json:"activities"`
+	Count *int           `json:"count"`
+	Data  []*ActivityLog `json:"activities"`
 }
 
 type ActivityFilter struct {
