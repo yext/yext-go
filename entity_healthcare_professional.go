@@ -594,3 +594,10 @@ func (y *HealthcareProfessionalEntity) SetValidDegrees(degrees []string) []strin
 
 	return invalidDegrees
 }
+
+func (y HealthcareProfessionalEntity) GetGooglePlaceId() string {
+	if y.GooglePlaceId != nil {
+		return *y.GooglePlaceId
+	}
+	return ""
+}
