@@ -92,6 +92,7 @@ type HealthcareFacilityEntity struct {
 	GooglePreferredPhoto  *string `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    **Image `json:"googleProfilePhoto,omitempty"`
 	GoogleWebsiteOverride *string `json:"googleWebsiteOverride,omitempty"`
+	GooglePlaceId         *string `json:"googlePlaceId,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
@@ -418,6 +419,13 @@ func (y HealthcareFacilityEntity) GetReviewGenerationUrl() string {
 func (y HealthcareFacilityEntity) GetFirstPartyReviewPage() string {
 	if y.FirstPartyReviewPage != nil {
 		return *y.FirstPartyReviewPage
+	}
+	return ""
+}
+
+func (y HealthcareFacilityEntity) GetGooglePlaceId() string {
+	if y.GooglePlaceId != nil {
+		return *y.GooglePlaceId
 	}
 	return ""
 }
