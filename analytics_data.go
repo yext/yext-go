@@ -27,7 +27,7 @@ type AnalyticsData struct {
 	AverageRating                         *float64 `json:"Average Rating"`
 	NewReviews                            *int     `json:"Reviews"`
 	StorepagesSessions                    *int     `json:"Storepages Sessions"`
-	StorepagesPageviews                   *int     `json:"Pages Views"`
+	StorepagesPageviews                   *int     `json:"Page Views"`
 	StorepagesDrivingdirections           *int     `json:"Driving Directions"`
 	StorepagesPhonecalls                  *int     `json:"Taps to Call"`
 	StorepagesCalltoactionclicks          *int     `json:"Call to Action Clicks"`
@@ -224,6 +224,13 @@ func (y AnalyticsData) GetYelpCustomerActions() int {
 func (y AnalyticsData) GetAverageRating() float64 {
 	if y.AverageRating != nil {
 		return *y.AverageRating
+	}
+	return -1
+}
+
+func (y AnalyticsData) GetCumulativeRating() float64 {
+	if y.CumulativeRating != nil {
+		return *y.CumulativeRating
 	}
 	return -1
 }
