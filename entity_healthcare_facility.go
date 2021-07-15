@@ -50,6 +50,7 @@ type HealthcareFacilityEntity struct {
 	PaymentOptions       *[]string `json:"paymentOptions,omitempty"`
 	InsuranceAccepted    *[]string `json:"insuranceAccepted,omitempty"`
 	AcceptingNewPatients **bool    `json:"acceptingNewPatients,omitempty"`
+	NPI                  *string   `json:"npi,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
@@ -526,4 +527,11 @@ func (y HealthcareFacilityEntity) GetHolidayHours() []HolidayHours {
 
 func (y HealthcareFacilityEntity) IsClosed() bool {
 	return GetNullableBool(y.Closed)
+}
+
+func (y HealthcareFacilityEntity) GetNPI() string {
+	if y.NPI != nil {
+		return GetString(y.NPI)
+	}
+	return ""
 }
