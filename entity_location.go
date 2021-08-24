@@ -37,6 +37,7 @@ type LocationEntity struct {
 	ServiceAreaPlaces  *[]ServiceAreaPlace `json:"serviceAreaPlaces,omitempty"`
 	Geomodifier        *string             `json:"geomodifier,omitempty"`
 	BlackOwnedBusiness **bool              `json:"blackOwnedBusiness,omitempty"`
+	Impressum          *string             `json:"impressum,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
