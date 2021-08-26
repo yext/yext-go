@@ -58,6 +58,14 @@ type AnalyticsData struct {
 	ResponseRate                          *int     `json:"Response Rate"`
 	PartnerSite                           *string  `json:"site"`
 	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
+	Competitor                            *string  `json:"competitor"`
+}
+
+func (y AnalyticsData) GetCompetitor() string {
+	if y.Competitor != nil {
+		return *y.Competitor
+	}
+	return ""
 }
 
 func (y AnalyticsData) GetProfileViews() int {
