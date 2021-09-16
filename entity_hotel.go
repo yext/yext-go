@@ -200,8 +200,27 @@ type HotelEntity struct {
 	MobilityAccessible   **Ternary         `json:"mobilityAccessible,omitempty"`
 	AccessibilityDetails *UnorderedStrings `json:"accessibilityDetails,omitempty"`
 
-	// Minimized Contact
-	DigitalGuestRoomKeys **Ternary `json:"digitalGuestRoomKeys,omitempty"`
+	// Covid & Cleanliness Fields
+	DigitalGuestRoomKeys                  **Ternary `json:"digitalGuestRoomKeys,omitempty"`
+	CommonAreasAdvancedCleaning           **Ternary `json:"commonAreasEnhancedCleaning,omitempty"`
+	GuestRoomsEnhancedCleaning            **Ternary `json:"guestRoomsEnhancedCleaning,omitempty"`
+	CommercialGradeDisinfectantUsed       **Ternary `json:"commercialGradeDisinfectantUsed,omitempty"`
+	EmployeesTrainedInCleaningProcedures  **Ternary `json:"employeesTrainedInCleaningProcedures,omitempty"`
+	EmployeesTrainedInHandWashing         **Ternary `json:"employeesTrainedInHandWashing,omitempty"`
+	EmployeesWearProtectiveEquipment      **Ternary `json:"employeesWearProtectiveEquipment,omitempty"`
+	HighTouchItemsRemovedFromGuestRooms   **Ternary `json:"highTouchItemsRemovedFromGuestRooms,omitempty"`
+	PlasticKeycardsDisinfectedOrDiscarded **Ternary `json:"plasticKeycardsDisinfectedOrDiscarded,omitempty"`
+	ContactlessCheckInCheckOut            **Ternary `json:"contactlessCheckinOrCheckout,omitempty"`
+	PhysicalDistancingRequired            **Ternary `json:"physicalDistancingRequired,omitempty"`
+	PlexiglassUsed                        **Ternary `json:"plexiglassUsed,omitempty"`
+	LimitedOccupancyInSharedAreas         **Ternary `json:"limitedOccupancyInSharedAreas,omitempty"`
+	PrivateSpacesInWellnessAreas          **Ternary `json:"privateSpacesInWellnessAreas,omitempty"`
+	CommonAreasArrangedForDistancing      **Ternary `json:"commonAreasArrangedForDistancing,omitempty"`
+	SanitizerAvailable                    **Ternary `json:"sanitizerAvailable,omitempty"`
+	MasksRequired                         **Ternary `json:"masksRequired,omitempty"`
+	IndividuallyPackagedMealsAvailable    **Ternary `json:"individuallyPackagedMealsAvailable,omitempty"`
+	DisposableFlatware                    **Ternary `json:"disposableFlatware,omitempty"`
+	SingleUseMenus                        **Ternary `json:"singleUseMenus,omitempty"`
 }
 
 const (
