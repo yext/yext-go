@@ -34,7 +34,7 @@ type RestaurantEntity struct {
 	Description         *string   `json:"description,omitempty"`
 	Hours               **Hours   `json:"hours,omitempty"`
 	AdditionalHoursText *string   `json:"additionalHoursText,omitempty"`
-	DeliveryHours       **Hours   `json:"deliveryHours,omitempty"`
+	ProfileDeliveryHours   **Hours   `json:"deliveryHours,omitempty"`
 	YearEstablished     **float64 `json:"yearEstablished,omitempty"`
 	Services            *[]string `json:"services,omitempty"`
 	Languages           *[]string `json:"languages,omitempty"`
