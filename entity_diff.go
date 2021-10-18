@@ -202,9 +202,9 @@ func RawEntityDiff(a map[string]interface{}, b map[string]interface{}, nilIsEmpt
 			_, aIsMap := aVal.(map[string]interface{})
 			_, bIsMap := bVal.(map[string]interface{})
 			if aIsMap && bIsMap {
-				subFieldsDelta, subFieldsAreDiff := RawEntityDiff(aVal.(map[string]interface{}), bVal.(map[string]interface{}), nilIsEmptyA, nilIsEmptyB)
+				_, subFieldsAreDiff := RawEntityDiff(aVal.(map[string]interface{}), bVal.(map[string]interface{}), nilIsEmptyA, nilIsEmptyB)
 				if subFieldsAreDiff {
-					delta[key] = subFieldsDelta
+					delta[key] = bVal
 					isDiff = true
 				}
 			} else {
