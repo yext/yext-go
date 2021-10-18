@@ -128,6 +128,7 @@ type LocationEntity struct {
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
 
 	TimeZoneUtcOffset *string `json:"timeZoneUtcOffset,omitempty"`
+	Timezone          *string `json:"timezone,omitempty"`
 }
 
 func (l *LocationEntity) UnmarshalJSON(data []byte) error {
