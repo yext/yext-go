@@ -570,8 +570,8 @@ func (y *HealthcareProfessionalEntity) SetValidDegrees(degrees []string) []strin
 		invalidDegrees   = []string{}
 		validDegrees     = []string{}
 		validYextDegrees = []string{"ANP", "APN", "APRN", "ARNP", "CNM", "CNP", "CNS", "CPNP", "CRNA", "CRNP", "DC",
-			"DDS", "DMD", "DO", "DPM", "DVM", "FNP", "GNP", "LAC", "LPN", "MBA", "MBBS", "MD",
-			"MPH", "ND", "NP", "OD", "PA", "PAC", "PHARMD", "PHD", "PNP", "PSYD", "VMD", "WHNP"}
+			"DDS", "DMD", "DNP", "DO", "DPM", "DVM", "FNP", "GNP", "LAC", "LPN", "MBA", "MBBS", "MD",
+			"MPH", "ND", "NNP", "NP", "OD", "PA", "PAC", "PHARMD", "PHD", "PNP", "PSYD", "VMD", "WHNP"}
 	)
 
 	contains := func(list []string, item string) bool {
