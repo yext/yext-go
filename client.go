@@ -276,7 +276,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		}
 
 		if err != nil {
-			return resultResponse, err
+			errWithResponse := fmt.Errorf("request response: %v\n error: %s\n", resp, err.Error())
+			return resultResponse, errWithResponse
 		} else if len(resultResponse.Meta.Errors) > 0 {
 			return resultResponse, resultResponse.Meta.Errors
 		} else {
