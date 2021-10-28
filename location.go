@@ -144,7 +144,7 @@ type Location struct {
 	GoogleCoverPhoto      *LocationPhoto `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string        `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    *LocationPhoto `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride *string        `json:"googleWebsiteOverride,omitempty"`
+	GoogleWebsiteOverride **string       `json:"googleWebsiteOverride,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`

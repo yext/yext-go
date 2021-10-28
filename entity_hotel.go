@@ -53,7 +53,7 @@ type HotelEntity struct {
 	GoogleCoverPhoto      **Image              `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string              `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    **Image              `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride *string              `json:"googleWebsiteOverride,omitempty"`
+	GoogleWebsiteOverride **string             `json:"googleWebsiteOverride,omitempty"`
 	GoogleAttributes      *map[string][]string `json:"googleAttributes,omitempty"`
 
 	// Media
