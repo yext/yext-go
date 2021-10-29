@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strconv"
 	"strings"
@@ -276,7 +277,11 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		}
 
 		if err != nil {
-			errWithResponse := fmt.Errorf("request response: %v\n error: %s\n", resp, err.Error())
+			b, ioError := httputil.DumpResponse(resp, true)
+			if ioError != nil {
+				return resultResponse, err
+			}
+			errWithResponse := fmt.Errorf("request response: %v\n error: %s\n", string(b), err.Error())
 			return resultResponse, errWithResponse
 		} else if len(resultResponse.Meta.Errors) > 0 {
 			return resultResponse, resultResponse.Meta.Errors
