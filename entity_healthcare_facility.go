@@ -92,7 +92,7 @@ type HealthcareFacilityEntity struct {
 	GoogleCoverPhoto       **Image           `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto   *string           `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto     **Image           `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride  *string           `json:"googleWebsiteOverride,omitempty"`
+	GoogleWebsiteOverride  **string          `json:"googleWebsiteOverride,omitempty"`
 	GooglePlaceId          *string           `json:"googlePlaceId,omitempty"`
 	GoogleMyBusinessLabels *UnorderedStrings `json:"googleMyBusinessLabels,omitempty"`
 
