@@ -10,14 +10,15 @@ type JobEntity struct {
 	BaseEntity
 
 	//Job Info
-	Name           *string      `json:"name,omitempty"`
-	Description    *string      `json:"description,omitempty"`
-	Timezone       *string      `json:"timezone,omitempty"`
-	EmploymentType *string      `json:"employmentType,omitempty"`
-	DatePosted     *string      `json:"datePosted,omitempty"`
-	ValidThrough   *string      `json:"validThrough,omitempty"`
-	Keywords       *[]string    `json:"keywords,omitempty"`
-	Location       *JobLocation `json:"location,omitempty"`
+	Name               *string      `json:"name,omitempty"`
+	Description        *string      `json:"description,omitempty"`
+	Timezone           *string      `json:"timezone,omitempty"`
+	EmploymentType     *string      `json:"employmentType,omitempty"`
+	DatePosted         *string      `json:"datePosted,omitempty"`
+	ValidThrough       *string      `json:"validThrough,omitempty"`
+	Keywords           *[]string    `json:"keywords,omitempty"`
+	Location           *JobLocation `json:"location,omitempty"`
+	HiringOrganization *string      `json:"hiringOrganization,omitemppty"`
 
 	// Urls
 	ApplicationURL *string `json:"applicationUrl,omitempty"`
