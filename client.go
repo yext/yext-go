@@ -281,7 +281,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 			if ioError != nil {
 				return resultResponse, err
 			}
-			errWithResponse := fmt.Errorf("request response: %v\n error: %s\n", string(b), err.Error())
+			errWithResponse := fmt.Errorf("request response: %s\n error: %s\n", string(b), err.Error())
 			return resultResponse, errWithResponse
 		} else if len(resultResponse.Meta.Errors) > 0 {
 			return resultResponse, resultResponse.Meta.Errors
