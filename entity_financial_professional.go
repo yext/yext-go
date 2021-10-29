@@ -82,7 +82,7 @@ type FinancialProfessional struct {
 	GoogleCoverPhoto       **Image   `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto   *string   `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto     **Image   `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride  *string   `json:"googleWebsiteOverride,omitempty"`
+	GoogleWebsiteOverride  **string  `json:"googleWebsiteOverride,omitempty"`
 	GoogleAccountID        *string   `json:"googleAccountId,omitempty"`
 	GooglePlaceID          *string   `json:"googlePlaceId,omitempty"`
 	GoogleMyBusinessLabels *[]string `json:"googleMyBusinessLabels,omitempty"`
