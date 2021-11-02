@@ -18,7 +18,7 @@ type JobEntity struct {
 	ValidThrough       *string      `json:"validThrough,omitempty"`
 	Keywords           *[]string    `json:"keywords,omitempty"`
 	Location           *JobLocation `json:"location,omitempty"`
-	HiringOrganization *string      `json:"hiringOrganization,omitemppty"`
+	HiringOrganization *string      `json:"hiringOrganization,omitempty"`
 
 	// Urls
 	ApplicationURL *string `json:"applicationUrl,omitempty"`
