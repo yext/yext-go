@@ -27,7 +27,7 @@ type AnalyticsData struct {
 	AverageRating                         *float64 `json:"Average Rating"`
 	NewReviews                            *int     `json:"Reviews"`
 	StorepagesSessions                    *int     `json:"Storepages Sessions"`
-	StorepagesPageviews                   *int     `json:"Page Views"`
+	StorepagesPageviews                   *int     `json:"Pages Views"`
 	StorepagesDrivingdirections           *int     `json:"Driving Directions"`
 	StorepagesPhonecalls                  *int     `json:"Taps to Call"`
 	StorepagesCalltoactionclicks          *int     `json:"Call to Action Clicks"`
@@ -59,6 +59,7 @@ type AnalyticsData struct {
 	PartnerSite                           *string  `json:"site"`
 	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
 	Competitor                            *string  `json:"competitor"`
+	Clicks                                *int     `json:"CLICKS"`
 }
 
 func (y AnalyticsData) GetCompetitor() string {
@@ -444,4 +445,11 @@ func (y AnalyticsData) GetMonth() string {
 		return *y.Month
 	}
 	return ""
+}
+
+func (y AnalyticsData) GetClicks() int {
+	if y.Clicks != nil {
+		return *y.Clicks
+	}
+	return 0
 }
