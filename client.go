@@ -277,16 +277,23 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 		}
 
 		if err != nil {
+			errMsg := "error: " + err.Error()
+			if decodeError != nil {
+				errMsg = fmt.Sprintf("%s\nDecode() error: %s", errMsg, decodeError.Error())
+			}
 			b, ioError := httputil.DumpResponse(resp, true)
 			if ioError != nil {
-				return resultResponse, fmt.Errorf("io error: %s\n error: %s\n", ioError.Error(), err.Error())
+				errMsg = fmt.Sprintf("%s\nDumpResponse() error: %s", errMsg, ioError.Error())
+			} else {
+				errMsg = fmt.Sprintf("%s\nResponse: %s", errMsg, string(b))
 			}
-			return resultResponse, fmt.Errorf("request response: %s\n error: %s\n", string(b), err.Error())
+			return resultResponse, fmt.Errorf(errMsg)
 		} else if len(resultResponse.Meta.Errors) > 0 {
 			return resultResponse, resultResponse.Meta.Errors
 		} else {
 			return resultResponse, nil
 		}
+
 	}
 	return resultResponse, resultError
 }
