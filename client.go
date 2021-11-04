@@ -23,6 +23,7 @@ type ListOptions struct {
 	Offset                 int
 	DisableCountValidation bool
 	PageToken              string
+	Name                   string
 }
 
 type Client struct {
@@ -44,6 +45,7 @@ type Client struct {
 	AnalyticsService               *AnalyticsService
 	EntityService                  *EntityService
 	LanguageProfileService         *LanguageProfileService
+	AccountService                 *AccountService
 }
 
 func NewClient(config *Config) *Client {
@@ -67,6 +69,7 @@ func NewClient(config *Config) *Client {
 	c.EntityService = &EntityService{client: c}
 	c.EntityService.RegisterDefaultEntities()
 	c.LanguageProfileService = &LanguageProfileService{client: c}
+	c.AccountService = &AccountService{client: c}
 	c.LanguageProfileService.RegisterDefaultEntities()
 	return c
 }
@@ -358,6 +361,9 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 	}
 
 	q := u.Query()
+	if opts.Name != "" {
+		q.Add("name", opts.Name)
+	}
 	if opts.Limit != 0 {
 		q.Add("limit", strconv.Itoa(opts.Limit))
 	}
