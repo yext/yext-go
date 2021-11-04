@@ -53,6 +53,7 @@ type AnalyticsData struct {
 	IstLocalPackShareOfSearch             *float64 `json:"Ist Local Pack Share Of Search"`
 	IstShareOfIntelligentSearch           *float64 `json:"Ist Share Of Intelligent Search"`
 	LocationId                            *string  `json:"location_id"`
+	EntityId                              *string  `json:"entity_id"`
 	Month                                 *string  `json:"month"`
 	ResponseTime                          *int     `json:"Response Time (Hours)"`
 	ResponseRate                          *int     `json:"Response Rate"`
@@ -439,6 +440,14 @@ func (y AnalyticsData) GetLocationId() string {
 	}
 	return ""
 }
+
+func (y AnalyticsData) GetEntityId() string {
+	if y.EntityId != nil {
+		return *y.EntityId
+	}
+	return ""
+}
+
 
 func (y AnalyticsData) GetMonth() string {
 	if y.Month != nil {
