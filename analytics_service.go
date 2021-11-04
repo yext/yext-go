@@ -11,7 +11,7 @@ type AnalyticsFilters struct {
 	EndDate                 *string   `json:"endDate"`
 	LocationIds             *[]string `json:"locationIds"`
 	EntityTypes             *[]string `json:"entityType"`
-	FolderId                *int      `json:"folderId"`
+	FolderIds               *[]int    `json:"folderIds"`
 	Countries               *[]string `json:"countries"`
 	LocationLabels          *[]string `json:"locationLabels"`
 	Platforms               *[]string `json:"platforms"`
