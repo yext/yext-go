@@ -3,6 +3,7 @@ package yext
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -255,7 +257,12 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 			}
 		}
 
-		if resp.StatusCode >= 500 {
+		isConnectionReset := false
+		if decodeError != nil {
+			isConnectionReset = errors.Is(decodeError, syscall.ECONNRESET)
+		}
+
+		if resp.StatusCode >= 500 || isConnectionReset {
 			if decodeError != nil {
 				resultError = decodeError
 				resultResponse = nil
