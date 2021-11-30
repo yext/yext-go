@@ -11,6 +11,19 @@ const reviewsPath = "reviews"
 
 const reviewInvitePath = "reviewinvites"
 
+//Review update enums
+const (
+	ReviewStatusLive        = "LIVE"
+	ReviewStatusQuarantined = "QUARANTINED"
+	ReviewStatusRemoved     = "REMOVED"
+
+	ReviewFlagStatusInappropriate = "INAPPROPRIATE"
+	ReviewFlagStatusSpam          = "SPAM"
+	ReviewFlagStatusIrrelevant    = "IRRELEVANT"
+	ReviewFlagStatusSensitive     = "SENSITIVE"
+	ReviewFlagStatusNotFlagged    = "NOT_FLAGGED"
+)
+
 var (
 	ReviewListMaxLimit = 50
 )
@@ -45,6 +58,20 @@ type ReviewListResponse struct {
 	AverageRating float64   `json:"averageRating"`
 	Reviews       []*Review `json:"reviews"`
 	NextPageToken string    `json:"nextPageToken"`
+}
+
+type ReviewUpdateOptions struct {
+	Rating      float64 `json:"rating,omitempty"`
+	Content     string  `json:"content,omitempty"`
+	AuthorName  string  `json:"authorName,omitempty"`
+	AuthorEmail string  `json:"authorEmail,omitempty"`
+	LocationId  string  `json:"locationId,omitempty"`
+	Status      string  `json:"status,omitempty"`
+	FlagStatus  string  `json:"flagStatus,omitempty"`
+}
+
+type ReviewUpdateResponse struct {
+	Id string `json:"id"`
 }
 
 type ReviewCreateInvitationResponse struct {
@@ -188,6 +215,16 @@ func (l *ReviewService) List(opts *ReviewListOptions) (*ReviewListResponse, *Res
 func (l *ReviewService) Get(id int) (*Review, *Response, error) {
 	var v Review
 	r, err := l.client.DoRequest("GET", fmt.Sprintf("%s/%d", reviewsPath, id), &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return &v, r, nil
+}
+
+func (l *ReviewService) Update(id int, opts *ReviewUpdateOptions) (*ReviewUpdateResponse, *Response, error) {
+	var v ReviewUpdateResponse
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%d", reviewsPath, id), opts, &v)
 	if err != nil {
 		return nil, r, err
 	}
