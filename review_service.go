@@ -38,6 +38,7 @@ type ReviewListOptions struct {
 	FolderId              string
 	Countries             []string
 	LocationLabels        []string
+	LabelIds              []string
 	PublisherIds          []string
 	ReviewContent         string
 	MinRating             float64
@@ -144,6 +145,9 @@ func addReviewListOptions(requrl string, opts *ReviewListOptions) (string, error
 	}
 	if opts.LocationLabels != nil {
 		q.Add("locationLabels", strings.Join(opts.LocationLabels, ","))
+	}
+	if opts.LabelIds != nil {
+		q.Add("labelIds", strings.Join(opts.LabelIds, ","))
 	}
 	if opts.PublisherIds != nil {
 		q.Add("publisherIds", strings.Join(opts.PublisherIds, ","))
