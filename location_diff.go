@@ -147,7 +147,12 @@ func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 	case reflect.Float64:
 		return v.Float() == 0.0
 	case reflect.Ptr, reflect.Interface:
-		if v.IsNil() && !interpretNilAsZeroValue {
+		isNil := v.IsNil()
+		if isNil && v.Type() == reflect.TypeOf((**bool)(nil)) {
+			// nil booleans represent a non-zero value in the platform ("Unspecified" / unset)
+			return false
+		}
+		if isNil && !interpretNilAsZeroValue {
 			return false
 		}
 		return IsZeroValue(v.Elem(), true) // Needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
