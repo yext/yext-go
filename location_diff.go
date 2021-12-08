@@ -149,6 +149,7 @@ func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 	case reflect.Ptr, reflect.Interface:
 		isNil := v.IsNil()
 		if isNil && v.Type() == reflect.TypeOf((**bool)(nil)) {
+			// nil booleans represent a non-zero value in the platform ("Unspecified" / unset)
 			return false
 		}
 		if isNil && !interpretNilAsZeroValue {

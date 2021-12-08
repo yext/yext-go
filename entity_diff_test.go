@@ -341,6 +341,7 @@ func TestEntityDiff(t *testing.T) {
 			newValue:  nil,
 			isDiff:    false,
 		},
+		// tests K & L differ from similar tests for other types, since nil isn't the zero value for booleans
 		diffTest{
 			name:           "**Bool: base is nil (nil is empty), new is zero value (K)",
 			property:       "Closed",
