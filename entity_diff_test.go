@@ -347,7 +347,8 @@ func TestEntityDiff(t *testing.T) {
 			baseValue:      nil,
 			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
-			isDiff:         false,
+			isDiff:         true,
+			deltaValue:     NullableBool(false),
 		},
 		diffTest{
 			name:           "**Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
@@ -356,7 +357,8 @@ func TestEntityDiff(t *testing.T) {
 			newValue:       NullableBool(false),
 			baseNilIsEmpty: true,
 			newNilIsEmpty:  true,
-			isDiff:         false,
+			isDiff:         true,
+			deltaValue:     NullableBool(false),
 		},
 		diffTest{
 			name:          "**Bool: base is zero value, new is nil (nil is empty) (L)",
