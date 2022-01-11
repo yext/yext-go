@@ -66,6 +66,8 @@ type LocationEntity struct {
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
 	Specialties *[]string `json:"specialities,omitempty"`
 
+	FrequentlyAskedQuestions *[]FAQField `json:"frequentlyAskedQuestions,omitempty"`
+
 	Languages      *[]string `json:"languages,omitempty"`
 	Logo           **Photo   `json:"logo,omitempty"`
 	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
@@ -1028,6 +1030,25 @@ func ToCTA(c CTA) *CTA {
 }
 
 func NullableCTA(c CTA) **CTA {
+	p := &c
+	return &p
+}
+
+type FAQField struct {
+	Answer   *string `json:"answer,omitempty"`
+	Question *string `json:"question,omitempty"`
+}
+
+func (y FAQField) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
+}
+
+func ToFAQ(c FAQField) *FAQField {
+	return &c
+}
+
+func NullableFAQ(c FAQField) **FAQField {
 	p := &c
 	return &p
 }
