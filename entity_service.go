@@ -51,9 +51,10 @@ type EntityListOptions struct {
 
 // Used for Create and Edit
 type EntityServiceOptions struct {
-	TemplateId     string   `json:"templateId,omitempty"`
-	TemplateFields []string `json:"templateFields,omitempty"`
-	Format         string   `json:"format,omitempty"`
+	TemplateId              string   `json:"templateId,omitempty"`
+	TemplateFields          []string `json:"templateFields,omitempty"`
+	Format                  string   `json:"format,omitempty"`
+	StripUnsupportedFormats bool     `json:"stripUnsupportedFormats,omitempty"`
 }
 
 type EntityListResponse struct {
@@ -167,6 +168,9 @@ func addEntityServiceOptions(requrl string, opts *EntityServiceOptions) (string,
 	}
 	if opts.Format != "" {
 		q.Add("format", opts.Format)
+	}
+	if opts.StripUnsupportedFormats {
+		q.Add("stripUnsupportedFormats", "true")
 	}
 	if len(opts.TemplateFields) > 0 {
 		q.Add("templateFields", strings.Join(opts.TemplateFields, ","))
