@@ -69,6 +69,7 @@ type ReviewUpdateOptions struct {
 	LocationId  string  `json:"locationId,omitempty"`
 	Status      string  `json:"status,omitempty"`
 	FlagStatus  string  `json:"flagStatus,omitempty"`
+	ExternalId  *string `json:"externalId"` // Must have v param >= 20220120
 }
 
 type ReviewUpdateResponse struct {
