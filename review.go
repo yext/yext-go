@@ -15,6 +15,7 @@ type Reviewer struct {
 type Review struct {
 	Id                 *int           `json:"id"`
 	LocationId         *string        `json:"locationId"`
+	ExternalId         *string        `json:"externalId"` // Must have v param >= 20220120
 	AccountId          *string        `json:"accountId"`
 	PublisherId        *string        `json:"publisherId"`
 	Rating             *float64       `json:"rating"`
@@ -40,6 +41,7 @@ type Review struct {
 
 type ReviewCreate struct {
 	LocationId     *string  `json:"locationId"`
+	ExternalId     *string  `json:"externalId"` // Must have v param >= 20220120
 	AccountId      *string  `json:"accountId"`
 	Rating         *float64 `json:"rating"`
 	Content        *string  `json:"content"`
