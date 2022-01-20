@@ -25,7 +25,7 @@ const (
 )
 
 var (
-	ReviewListMaxLimit = 50
+	ReviewListMaxLimit = 100
 )
 
 type ReviewService struct {
@@ -254,4 +254,18 @@ func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateRevie
 	}
 
 	return v, r, nil
+}
+
+type ReviewUpdateLabelOptions struct {
+	LabelIds *[]int `json:"labelIds,omitempty"`
+}
+
+func (l *ReviewService) UpdateLabels(id int, opts *ReviewUpdateLabelOptions) (*ReviewUpdateResponse, *Response, error) {
+	var v ReviewUpdateResponse
+	r, err := l.client.DoRequestJSON("PUT", fmt.Sprintf("%s/%d/labels", reviewsPath, id), opts, &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return &v, r, nil
 }
