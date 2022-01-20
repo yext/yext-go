@@ -61,6 +61,10 @@ type AnalyticsData struct {
 	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
 	Competitor                            *string  `json:"competitor"`
 	Clicks                                *int     `json:"CLICKS"`
+	AnswersSearchesWithClicks             *int     `json:"ANSWERS_SEARCHES_WITH_CLICKS"`
+	AnswersSearches                       *int     `json:"ANSWERS_SEARCHES"`
+	Week                                  *string  `json:"week"`
+	AnswersKGResultRate                   *float64 `json:"ANSWERS_KG_RESULT_RATE"`
 }
 
 func (y AnalyticsData) GetCompetitor() string {
@@ -448,7 +452,6 @@ func (y AnalyticsData) GetEntityId() string {
 	return ""
 }
 
-
 func (y AnalyticsData) GetMonth() string {
 	if y.Month != nil {
 		return *y.Month
@@ -461,4 +464,32 @@ func (y AnalyticsData) GetClicks() int {
 		return *y.Clicks
 	}
 	return 0
+}
+
+func (y AnalyticsData) GetAnswersSearches() int {
+	if y.AnswersSearches != nil {
+		return *y.AnswersSearches
+	}
+	return 0
+}
+
+func (y AnalyticsData) GetAnswersSearchesWithClicks() int {
+	if y.AnswersSearchesWithClicks != nil {
+		return *y.AnswersSearchesWithClicks
+	}
+	return 0
+}
+
+func (y AnalyticsData) GetWeek() string {
+	if y.Week != nil {
+		return *y.Week
+	}
+	return ""
+}
+
+func (y AnalyticsData) GetAnswersKGResultRate() float64 {
+	if y.AnswersKGResultRate != nil {
+		return *y.AnswersKGResultRate
+	}
+	return -1
 }
