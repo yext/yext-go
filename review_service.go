@@ -77,15 +77,16 @@ type ReviewUpdateResponse struct {
 }
 
 type ReviewCreateInvitationResponse struct {
-	Id         string `json:"id"`
-	LocationId string `json:"locationId"`
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	Contact    string `json:"contact"`
-	Image      bool   `json:"image"`
-	TemplateId int    `json:"templateId"`
-	Status     string `json:"status"`
-	Details    string `json:"details"`
+	Id         string        `json:"id"`
+	LocationId string        `json:"locationId"`
+	Entity     *ReviewEntity `json:"entity,omitempty"` // Must have v param >= 20210728
+	FirstName  string        `json:"firstName"`
+	LastName   string        `json:"lastName"`
+	Contact    string        `json:"contact"`
+	Image      bool          `json:"image"`
+	TemplateId int           `json:"templateId"`
+	Status     string        `json:"status"`
+	Details    string        `json:"details"`
 }
 
 type ReviewCreateReviewResponse struct {
