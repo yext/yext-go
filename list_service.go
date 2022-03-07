@@ -136,6 +136,29 @@ func (e *ListService) ListEventLists(opts *ListOptions) (*EventListsResponse, *R
 	return v, r, nil
 }
 
+func (e *ListService) ListAllMenuListsWithDataFunc(dataFunc func(list *MenuList) *MenuList) ([]*MenuList, error) {
+	var menuLists []*MenuList
+	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
+		plr, _, err := e.ListMenuLists(opts)
+		if err != nil {
+			return 0, 0, err
+		}
+
+		processedLists := []*MenuList{}
+		for _, list := range plr.MenuLists {
+			processedLists = append(processedLists, dataFunc(list))
+		}
+		menuLists = append(menuLists, processedLists...)
+		return len(plr.MenuLists), plr.Count, err
+	}
+
+	if err := listHelper(lr, &ListOptions{Limit: ListListMaxLimit}); err != nil {
+		return nil, err
+	} else {
+		return menuLists, nil
+	}
+}
+
 func (e *ListService) ListAllMenuLists() ([]*MenuList, error) {
 	var menuLists []*MenuList
 	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
