@@ -16,9 +16,15 @@ var (
 	UnsetPhotoValue = (*CustomLocationPhoto)(nil)
 )
 
+type Translation struct {
+	LanguageCode string `json:"languageCode"`
+	Value        string `json:"value"`
+}
+
 type CustomFieldOption struct {
-	Key   string `json:"key,omitempty"`
-	Value string `json:"value"`
+	Key          string        `json:"key,omitempty"`
+	Value        string        `json:"value"`
+	Translations []Translation `json:"translations,omitempty"`
 }
 
 type CustomFieldValue interface {
