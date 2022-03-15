@@ -43,6 +43,7 @@ type EntityListOptions struct {
 	ListOptions
 	SearchIDs           []string
 	ResolvePlaceholders bool
+	Rendered            bool // will return resolved placeholders for language profiles
 	EntityTypes         []string
 	Fields              []string
 	Filter              string
@@ -199,6 +200,9 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	}
 	if opts.ResolvePlaceholders {
 		q.Add("resolvePlaceholders", "true")
+	}
+	if opts.Rendered {
+		q.Add("rendered", "true")
 	}
 	if len(opts.EntityTypes) > 0 {
 		q.Add("entityTypes", strings.Join(opts.EntityTypes, ","))
