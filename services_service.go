@@ -47,7 +47,7 @@ type ExistingLocationAddResponse struct {
 	NewLocationData           string   `json:"newLocationData"`
 	NewEntityData             string   `json:"newEntityData"`
 	Skus                      []string `json:"skus"`
-	AgreementId               string   `json:"agreementId"`
+	AgreementId               int      `json:"agreementId"`
 	Status                    string   `json:"status"`
 	DateSubmitted             string   `json:"dateSubmitted"`
 	DateCompleted             string   `json:"dateCompleted"`
