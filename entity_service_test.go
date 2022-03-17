@@ -57,6 +57,7 @@ func TestEntityListOptions(t *testing.T) {
 		searchIDs           string
 		entityTypes         string
 		resolvePlaceholders bool
+		rendered            bool
 		filter              string
 		format              string
 	}{
@@ -141,6 +142,14 @@ func TestEntityListOptions(t *testing.T) {
 			filter:    "",
 			format:    "none",
 		},
+		{
+			opts:      &EntityListOptions{Rendered: true},
+			limit:     "",
+			token:     "",
+			searchIDs: "",
+			rendered:  true,
+			filter:    "",
+		},
 	}
 
 	for _, test := range tests {
@@ -161,6 +170,10 @@ func TestEntityListOptions(t *testing.T) {
 			v := r.URL.Query().Get("resolvePlaceholders")
 			if v == "true" && !test.resolvePlaceholders || v == "" && test.resolvePlaceholders || v == "false" && test.resolvePlaceholders {
 				t.Errorf("Wanted resolvePlaceholders %t, got %s", test.resolvePlaceholders, v)
+			}
+			v = r.URL.Query().Get("rendered")
+			if v == "true" && !test.rendered || v == "" && test.rendered || v == "false" && test.rendered {
+				t.Errorf("Wanted rendered %t, got %s", test.rendered, v)
 			}
 			if v := r.URL.Query().Get("filter"); v != test.filter {
 				t.Errorf("Wanted filter %s, got %s", test.filter, v)
