@@ -113,6 +113,7 @@ type LocationEntity struct {
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
 
 	GoogleCoverPhoto      **Image  `json:"googleCoverPhoto,omitempty"`
+	GoogleMyBusinessLabels *[]string `json:"googleMyBusinessLabels,omitempty"`
 	GooglePreferredPhoto  *string  `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto    **Image  `json:"googleProfilePhoto,omitempty"`
 	GoogleWebsiteOverride **string `json:"googleWebsiteOverride,omitempty"`
