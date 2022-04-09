@@ -41,6 +41,7 @@ type RestaurantEntity struct {
 	Logo                **Photo   `json:"logo,omitempty"`
 	PaymentOptions      *[]string `json:"paymentOptions,omitempty"`
 	Geomodifier         *string   `json:"geomodifier,omitempty"`
+	PickupAndDeliveryServices *[]string `json:"pickupAndDeliveryServices,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
