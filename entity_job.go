@@ -4,21 +4,32 @@ import (
 	"encoding/json"
 )
 
-const ENTITYTYPE_JOB EntityType = "job"
+const (
+	ENTITYTYPE_JOB EntityType = "job"
+
+	EmploymentTypeFullTime   EmploymentType = "FULL_TIME"
+	EmploymentTypePartTime   EmploymentType = "PART_TIME"
+	EmploymentTypeContractor EmploymentType = "CONTRACTOR"
+	EmploymentTypeTemporary  EmploymentType = "TEMPORARY"
+	EmploymentTypeIntern     EmploymentType = "INTERN"
+	EmploymentTypeVolunteer  EmploymentType = "VOLUNTEER"
+	EmploymentTypePerDiem    EmploymentType = "PER_DIEM"
+	EmploymentTypeOther      EmploymentType = "OTHER"
+)
 
 type JobEntity struct {
 	BaseEntity
 
 	//Job Info
-	Name               *string      `json:"name,omitempty"`
-	Description        *string      `json:"description,omitempty"`
-	Timezone           *string      `json:"timezone,omitempty"`
-	EmploymentType     *string      `json:"employmentType,omitempty"`
-	DatePosted         *string      `json:"datePosted,omitempty"`
-	ValidThrough       *string      `json:"validThrough,omitempty"`
-	Keywords           *[]string    `json:"keywords,omitempty"`
-	Location           *JobLocation `json:"location,omitempty"`
-	HiringOrganization *string      `json:"hiringOrganization,omitempty"`
+	Name               *string         `json:"name,omitempty"`
+	Description        *string         `json:"description,omitempty"`
+	Timezone           *string         `json:"timezone,omitempty"`
+	EmploymentType     *EmploymentType `json:"employmentType,omitempty"`
+	DatePosted         *string         `json:"datePosted,omitempty"`
+	ValidThrough       *string         `json:"validThrough,omitempty"`
+	Keywords           *[]string       `json:"keywords,omitempty"`
+	Location           *JobLocation    `json:"location,omitempty"`
+	HiringOrganization *string         `json:"hiringOrganization,omitempty"`
 
 	// Urls
 	ApplicationURL *string `json:"applicationUrl,omitempty"`
@@ -58,7 +69,7 @@ func (j JobEntity) GetTimezone() string {
 	return ""
 }
 
-func (j JobEntity) GetEmploymentType() string {
+func (j JobEntity) GetEmploymentType() EmploymentType {
 	if j.EmploymentType != nil {
 		return *j.EmploymentType
 	}
@@ -110,4 +121,12 @@ func (j JobEntity) GetExternalLocation() string {
 func (j *JobEntity) String() string {
 	b, _ := json.Marshal(j)
 	return string(b)
+}
+
+type EmploymentType string
+
+func NewEmploymentType(v EmploymentType) *EmploymentType {
+	p := new(EmploymentType)
+	*p = v
+	return p
 }
