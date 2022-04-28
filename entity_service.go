@@ -5,6 +5,8 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 const (
@@ -92,10 +94,12 @@ func (e *EntityService) WithClient(c *Client) *EntityService {
 
 // TODO: Add List for SearchID (similar to location-service). Follow up with Techops to see if SearchID is implemented
 func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
-	var entities []Entity
-	if opts == nil {
-		opts = &EntityListOptions{}
-	}
+	var (
+		entities            []Entity
+		totalCountRetrieved = false
+		bar                 = progressbar.Default(-1)
+	)
+
 	opts.ListOptions = ListOptions{Limit: EntityListMaxLimit}
 	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
 		opts.ListOptions = *listOptions
@@ -104,7 +108,19 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 			return "", err
 		}
 
+		//show progress bar if number of entities > 250
+		if resp.Count > 250 {
+			if !totalCountRetrieved {
+				bar = progressbar.Default(int64(resp.Count))
+				bar.Add(len(resp.typedEntites))
+				totalCountRetrieved = true
+			} else {
+				bar.Add(len(resp.typedEntites))
+			}
+		}
+
 		entities = append(entities, resp.typedEntites...)
+
 		return resp.PageToken, nil
 	}
 
