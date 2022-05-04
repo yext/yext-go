@@ -53,6 +53,7 @@ type LocationEntity struct {
 	Hours                     **Hours           `json:"hours,omitempty"`
 	AccessHours               **Hours           `json:"accessHours,omitempty"`
 	DriveThroughHours         **Hours           `json:"driveThroughHours,omitempty"`
+	PickupHours               **Hours           `json:"pickupHours,omitempty"`
 	Closed                    **bool            `json:"closed,omitempty"`
 	Description               *string           `json:"description,omitempty"`
 	AdditionalHoursText       *string           `json:"additionalHoursText,omitempty"`
@@ -112,11 +113,11 @@ type LocationEntity struct {
 	FacebookPageUrl      *string       `json:"facebookPageUrl,omitempty"`
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
 
-	GoogleCoverPhoto      **Image  `json:"googleCoverPhoto,omitempty"`
+	GoogleCoverPhoto       **Image   `json:"googleCoverPhoto,omitempty"`
 	GoogleMyBusinessLabels *[]string `json:"googleMyBusinessLabels,omitempty"`
-	GooglePreferredPhoto  *string  `json:"googlePreferredPhoto,omitempty"`
-	GoogleProfilePhoto    **Image  `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride **string `json:"googleWebsiteOverride,omitempty"`
+	GooglePreferredPhoto   *string   `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto     **Image   `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride  **string  `json:"googleWebsiteOverride,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
