@@ -100,6 +100,10 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		bar                 = progressbar.Default(-1)
 	)
 
+	if opts == nil {
+		opts = &EntityListOptions{}
+	}
+
 	opts.ListOptions = ListOptions{Limit: EntityListMaxLimit}
 	var lg tokenListRetriever = func(listOptions *ListOptions) (string, error) {
 		opts.ListOptions = *listOptions
