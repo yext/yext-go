@@ -50,6 +50,7 @@ type EntityListOptions struct {
 	Fields              []string
 	Filter              string
 	Format              RichTextFormat
+	HideProgressBar     bool
 }
 
 // Used for Create and Edit
@@ -113,7 +114,7 @@ func (e *EntityService) ListAll(opts *EntityListOptions) ([]Entity, error) {
 		}
 
 		//show progress bar if number of entities > 250
-		if resp.Count > 250 {
+		if resp.Count > 250 && !opts.HideProgressBar {
 			if !totalCountRetrieved {
 				bar = progressbar.Default(int64(resp.Count))
 				bar.Add(len(resp.typedEntites))
