@@ -54,6 +54,7 @@ type LocationEntity struct {
 	AccessHours               **Hours           `json:"accessHours,omitempty"`
 	DriveThroughHours         **Hours           `json:"driveThroughHours,omitempty"`
 	PickupHours               **Hours           `json:"pickupHours,omitempty"`
+	DeliveryHours             **Hours           `json:"deliveryHours,omitempty"`
 	Closed                    **bool            `json:"closed,omitempty"`
 	Description               *string           `json:"description,omitempty"`
 	AdditionalHoursText       *string           `json:"additionalHoursText,omitempty"`
