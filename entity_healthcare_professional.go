@@ -35,6 +35,7 @@ type HealthcareProfessionalEntity struct {
 	Address       *Address `json:"address,omitempty"`
 	AddressHidden **bool   `json:"addressHidden,omitempty"`
 	ISORegionCode *string  `json:"isoRegionCode,omitempty"`
+	Geomodifier   *string  `json:"geomodifier,omitempty"`
 
 	// Other Contact Info
 	AlternatePhone *string   `json:"alternatePhone,omitempty"`
@@ -599,6 +600,13 @@ func (y *HealthcareProfessionalEntity) SetValidDegrees(degrees []string) []strin
 func (y HealthcareProfessionalEntity) GetGooglePlaceId() string {
 	if y.GooglePlaceId != nil {
 		return *y.GooglePlaceId
+	}
+	return ""
+}
+
+func (y HealthcareProfessionalEntity) GetGeomodifier() string {
+	if y.Geomodifier != nil {
+		return GetString(y.Geomodifier)
 	}
 	return ""
 }
