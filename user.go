@@ -15,6 +15,7 @@ type User struct {
 	SSO           *bool   `json:"sso,omitempty"`
 	ACLs          []ACL   `json:"acl,omitempty"`
 	LastLoginDate *string `json:"lastLoginDate,omitempty"`
+	CreatedDate   *string `json:"createdDate,omitempty"`
 }
 
 func (u *User) GetId() string {
@@ -77,6 +78,13 @@ func (u *User) GetLastLoginDate() string {
 		return ""
 	}
 	return *u.LastLoginDate
+}
+
+func (u *User) GetCreatedDate() string {
+	if u.CreatedDate == nil {
+		return ""
+	}
+	return *u.CreatedDate
 }
 
 func (u *User) String() string {
