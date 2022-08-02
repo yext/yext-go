@@ -37,8 +37,9 @@ func (r RichTextFormat) ToString() string {
 }
 
 type EntityService struct {
-	client   *Client
-	Registry *EntityRegistry
+	client         *Client
+	Registry       *EntityRegistry
+	nilBoolIsEmpty bool
 }
 
 type EntityListOptions struct {
@@ -168,6 +169,9 @@ func (e *EntityService) List(opts *EntityListOptions) (*EntityListResponse, *Res
 	entities := []Entity{}
 	for _, entity := range typedEntities {
 		setNilIsEmpty(entity)
+		if e.nilBoolIsEmpty {
+			setNilBoolIsEmpty(entity)
+		}
 		entities = append(entities, entity)
 	}
 	v.typedEntites = entities
@@ -253,6 +257,9 @@ func (e *EntityService) Get(id string) (Entity, *Response, error) {
 	}
 
 	setNilIsEmpty(entity)
+	if e.nilBoolIsEmpty {
+		setNilBoolIsEmpty(entity)
+	}
 
 	return entity, r, nil
 }
@@ -264,8 +271,26 @@ func setNilIsEmpty(i interface{}) {
 	}
 }
 
+func setNilBoolIsEmpty(i interface{}) {
+	m := reflect.ValueOf(i).MethodByName("SetNilBoolIsEmpty")
+	if m.IsValid() {
+		m.Call([]reflect.Value{reflect.ValueOf(true)})
+	}
+}
+
 func GetNilIsEmpty(i interface{}) bool {
 	m := reflect.ValueOf(i).MethodByName("GetNilIsEmpty")
+	if m.IsValid() {
+		values := m.Call([]reflect.Value{})
+		if len(values) == 1 {
+			return values[0].Interface().(bool)
+		}
+	}
+	return false
+}
+
+func GetNilBoolIsEmpty(i interface{}) bool {
+	m := reflect.ValueOf(i).MethodByName("GetNilBoolIsEmpty")
 	if m.IsValid() {
 		values := m.Call([]reflect.Value{})
 		if len(values) == 1 {
@@ -344,4 +369,8 @@ func (e *EntityService) Edit(y Entity) (*Response, error) {
 // Delete sends a request to the Knowledge Entities API to delete an entity with a given id
 func (e *EntityService) Delete(id string) (*Response, error) {
 	return e.client.DoRequestJSON("DELETE", fmt.Sprintf("%s/%s", entityPath, id), nil, nil)
+}
+
+func (e *EntityService) SetNilBoolIsEmpty(nilBoolIsEmpty bool) {
+	e.nilBoolIsEmpty = nilBoolIsEmpty
 }

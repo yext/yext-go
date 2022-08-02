@@ -13,7 +13,7 @@ func (a *CFTAsset) Diff(b *CFTAsset) (*CFTAsset, bool) {
 		return nil, true
 	}
 
-	delta, isDiff := GenericDiff(a, b, true, true)
+	delta, isDiff := GenericDiff(a, b, true, true, true, true)
 	if !isDiff {
 		return nil, isDiff
 	}

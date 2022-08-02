@@ -6,14 +6,16 @@ import (
 )
 
 type diffTest struct {
-	name           string
-	property       string
-	isDiff         bool
-	baseValue      interface{}
-	newValue       interface{}
-	baseNilIsEmpty bool
-	newNilIsEmpty  bool
-	deltaValue     interface{}
+	name               string
+	property           string
+	isDiff             bool
+	baseValue          interface{}
+	newValue           interface{}
+	baseNilIsEmpty     bool
+	newNilIsEmpty      bool
+	baseNilBoolIsEmpty bool
+	newNilBoolIsEmpty  bool
+	deltaValue         interface{}
 }
 
 func setValOnProperty(val interface{}, property string, entity Entity) {
@@ -342,38 +344,59 @@ func TestEntityDiff(t *testing.T) {
 			isDiff:    false,
 		},
 		diffTest{
-			name:           "**Bool: base is nil (nil is empty), new is zero value (K)",
-			property:       "Closed",
-			baseValue:      nil,
-			newValue:       NullableBool(false),
-			baseNilIsEmpty: true,
-			isDiff:         false,
+			name:               "**Bool: base is nil (nil is empty), new is zero value (K)",
+			property:           "Closed",
+			baseValue:          nil,
+			newValue:           NullableBool(false),
+			baseNilIsEmpty:     true,
+			baseNilBoolIsEmpty: true,
+			newNilBoolIsEmpty:  true,
+			isDiff:             false,
 		},
 		diffTest{
-			name:           "**Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
-			property:       "Closed",
-			baseValue:      nil,
-			newValue:       NullableBool(false),
-			baseNilIsEmpty: true,
-			newNilIsEmpty:  true,
-			isDiff:         false,
+			name:               "**Bool: base is nil (nil is empty), new is zero value (nil is empty) (L)",
+			property:           "Closed",
+			baseValue:          nil,
+			newValue:           NullableBool(false),
+			baseNilIsEmpty:     true,
+			newNilIsEmpty:      true,
+			baseNilBoolIsEmpty: true,
+			newNilBoolIsEmpty:  true,
+			isDiff:             false,
 		},
 		diffTest{
-			name:          "**Bool: base is zero value, new is nil (nil is empty) (L)",
-			property:      "Closed",
-			baseValue:     NullableBool(false),
-			newValue:      nil,
-			newNilIsEmpty: true,
-			isDiff:        false,
+			name:               "**Bool: base is zero value, new is nil (nil is empty) (L)",
+			property:           "Closed",
+			baseValue:          NullableBool(false),
+			newValue:           nil,
+			newNilIsEmpty:      true,
+			baseNilBoolIsEmpty: true,
+			newNilBoolIsEmpty:  true,
+			isDiff:             false,
 		},
 		diffTest{
-			name:           "**Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
-			property:       "Closed",
-			baseValue:      NullableBool(false),
-			newValue:       nil,
-			baseNilIsEmpty: true,
-			newNilIsEmpty:  true,
-			isDiff:         false,
+			name:               "**Bool: base is zero value (nil is empty), new is nil (nil is empty) (L)",
+			property:           "Closed",
+			baseValue:          NullableBool(false),
+			newValue:           nil,
+			baseNilIsEmpty:     true,
+			newNilIsEmpty:      true,
+			baseNilBoolIsEmpty: true,
+			newNilBoolIsEmpty:  true,
+			isDiff:             false,
+		},
+		// test M differ from similar tests for other types, as it doesn't consider nil to be the zero value
+		diffTest{
+			name:               "**Bool: base is nil (nil is empty), new is zero value (M)",
+			property:           "Closed",
+			baseValue:          nil,
+			newValue:           NullableBool(false),
+			baseNilIsEmpty:     true,
+			newNilIsEmpty:      true,
+			baseNilBoolIsEmpty: false,
+			newNilBoolIsEmpty:  false,
+			isDiff:             true,
+			deltaValue:         NullableBool(false),
 		},
 		// Struct tests (Address)
 		diffTest{
@@ -828,6 +851,12 @@ func TestEntityDiff(t *testing.T) {
 			}
 			if test.newNilIsEmpty {
 				setNilIsEmpty(newEntity)
+			}
+			if test.baseNilBoolIsEmpty {
+				setNilBoolIsEmpty(baseEntity)
+			}
+			if test.newNilBoolIsEmpty {
+				setNilBoolIsEmpty(newEntity)
 			}
 			delta, isDiff, _ := Diff(baseEntity, newEntity)
 			if isDiff != test.isDiff {

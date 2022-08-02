@@ -804,7 +804,7 @@ func TestSetValue(t *testing.T) {
 		if err != nil {
 			t.Errorf("Got err: %s", err)
 		}
-		if delta, isDiff := RawEntityDiff(*test.Raw, *test.Want, false, false); isDiff {
+		if delta, isDiff := RawEntityDiff(*test.Raw, *test.Want, false, false, false, false); isDiff {
 			t.Errorf("Got: %v, Wanted: %v, Delta: %v", test.Raw, test.Want, delta)
 		}
 	}
