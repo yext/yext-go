@@ -34,8 +34,9 @@ type Location struct {
 	Language     *string                `json:"language,omitempty"`
 	CustomFields map[string]interface{} `json:"customFields,omitempty"`
 
-	hydrated   bool
-	nilIsEmpty bool
+	hydrated       bool
+	nilIsEmpty     bool
+	nilBoolIsEmpty bool
 
 	// Address Fields
 	Name            *string `json:"locationName,omitempty"`

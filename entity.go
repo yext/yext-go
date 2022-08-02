@@ -22,8 +22,9 @@ type EntityMeta struct {
 }
 
 type BaseEntity struct {
-	Meta       *EntityMeta `json:"meta,omitempty"`
-	nilIsEmpty bool
+	Meta           *EntityMeta `json:"meta,omitempty"`
+	nilIsEmpty     bool
+	nilBoolIsEmpty bool
 }
 
 func (b *BaseEntity) GetEntityId() string {
@@ -94,8 +95,16 @@ func (b *BaseEntity) GetNilIsEmpty() bool {
 	return b.nilIsEmpty
 }
 
+func (b *BaseEntity) GetNilBoolIsEmpty() bool {
+	return b.nilBoolIsEmpty
+}
+
 func (b *BaseEntity) SetNilIsEmpty(val bool) {
 	b.nilIsEmpty = val
+}
+
+func (b *BaseEntity) SetNilBoolIsEmpty(val bool) {
+	b.nilBoolIsEmpty = val
 }
 
 type RawEntity map[string]interface{}

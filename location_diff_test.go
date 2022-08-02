@@ -1579,10 +1579,11 @@ func TestHoursAreEquivalentDiff(t *testing.T) {
 
 func TestIsZeroValue(t *testing.T) {
 	tests := []struct {
-		name       string
-		i          interface{}
-		nilIsEmpty bool
-		want       bool
+		name           string
+		i              interface{}
+		nilIsEmpty     bool
+		nilBoolIsEmpty bool
+		want           bool
 	}{
 		{
 			name: "Non-Empty String",
@@ -1738,7 +1739,7 @@ func TestIsZeroValue(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if isZeroValue := IsZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty); test.want != isZeroValue {
+			if isZeroValue := IsZeroValue(reflect.ValueOf(test.i), test.nilIsEmpty, test.nilBoolIsEmpty); test.want != isZeroValue {
 				t.Errorf(`Expected IsZeroValue: %t\nGot:%t`, test.want, isZeroValue)
 			}
 		})

@@ -11,8 +11,9 @@ const (
 )
 
 type LanguageProfileService struct {
-	client   *Client
-	registry *EntityRegistry
+	client         *Client
+	registry       *EntityRegistry
+	nilBoolIsEmpty bool
 }
 
 type LanguageProfileListResponse struct {
@@ -48,6 +49,9 @@ func (l *LanguageProfileService) Get(id string, languageCode string) (*Entity, *
 		return nil, r, err
 	}
 	setNilIsEmpty(entity)
+	if l.nilBoolIsEmpty {
+		setNilBoolIsEmpty(entity)
+	}
 
 	return &entity, r, nil
 }
@@ -68,6 +72,9 @@ func (l *LanguageProfileService) List(id string) ([]Entity, *Response, error) {
 	}
 	for _, profile := range typedProfiles {
 		setNilIsEmpty(profile)
+		if l.nilBoolIsEmpty {
+			setNilBoolIsEmpty(profile)
+		}
 		profiles = append(profiles, profile)
 	}
 	return profiles, r, nil
@@ -138,6 +145,9 @@ func (l *LanguageProfileService) listAllHelper(opts *EntityListOptions) (*Langua
 
 	for _, entity := range typedEntities {
 		setNilIsEmpty(entity)
+		if l.nilBoolIsEmpty {
+			setNilBoolIsEmpty(entity)
+		}
 	}
 
 	v.typedProfiles = typedEntities
@@ -181,4 +191,8 @@ func (l *LanguageProfileService) Delete(id string, languageCode string) (*Respon
 		return r, err
 	}
 	return r, nil
+}
+
+func (l *LanguageProfileService) SetNilBoolIsEmpty(nilBoolIsEmpty bool) {
+	l.nilBoolIsEmpty = nilBoolIsEmpty
 }

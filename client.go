@@ -69,9 +69,9 @@ func NewClient(config *Config) *Client {
 	c.CFTAssetService.RegisterDefaultAssetValues()
 	c.ActivityLogService = &ActivityLogService{client: c}
 	c.AnalyticsService = &AnalyticsService{client: c}
-	c.EntityService = &EntityService{client: c}
+	c.EntityService = &EntityService{client: c, nilBoolIsEmpty: true}
 	c.EntityService.RegisterDefaultEntities()
-	c.LanguageProfileService = &LanguageProfileService{client: c}
+	c.LanguageProfileService = &LanguageProfileService{client: c, nilBoolIsEmpty: true}
 	c.AccountService = &AccountService{client: c}
 	c.ServicesService = &ServicesService{client: c}
 	c.LanguageProfileService.RegisterDefaultEntities()

@@ -57,7 +57,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 			}
 		}
 
-		if IsZeroValue(valA, y.nilIsEmpty) && IsZeroValue(valB, b.nilIsEmpty) {
+		if IsZeroValue(valA, y.nilIsEmpty, y.nilBoolIsEmpty) && IsZeroValue(valB, b.nilIsEmpty, b.nilBoolIsEmpty) {
 			continue
 		}
 
@@ -88,7 +88,7 @@ func (y Location) Diff(b *Location) (d *Location, diff bool) {
 							diff = true
 							d.CustomFields[field] = value
 						}
-					} else if !(IsZeroValue(reflect.ValueOf(value), b.nilIsEmpty) && y.nilIsEmpty) {
+					} else if !(IsZeroValue(reflect.ValueOf(value), b.nilIsEmpty, b.nilBoolIsEmpty) && y.nilIsEmpty) {
 						d.CustomFields[field] = value
 						diff = true
 					}
@@ -128,7 +128,7 @@ func getUnderlyingValue(v interface{}) interface{} {
 	return rv.Interface()
 }
 
-func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
+func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool, interpretNilBooleansAsZeroValue bool) bool {
 	if !v.IsValid() {
 		return true
 	}
@@ -147,13 +147,17 @@ func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool) bool {
 	case reflect.Float64:
 		return v.Float() == 0.0
 	case reflect.Ptr, reflect.Interface:
-		if v.IsNil() && !interpretNilAsZeroValue {
+		isNil := v.IsNil()
+		if isNil && v.Type() == reflect.TypeOf((**bool)(nil)) {
+			return interpretNilBooleansAsZeroValue
+		}
+		if isNil && !interpretNilAsZeroValue {
 			return false
 		}
-		return IsZeroValue(v.Elem(), true) // Needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
+		return IsZeroValue(v.Elem(), true, interpretNilBooleansAsZeroValue) // interpretNilAsZeroValue needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
 	case reflect.Struct:
 		for i, n := 0, v.NumField(); i < n; i++ {
-			if !IsZeroValue(v.Field(i), true) {
+			if !IsZeroValue(v.Field(i), true, interpretNilBooleansAsZeroValue) {
 				return false
 			}
 		}
