@@ -154,10 +154,10 @@ func IsZeroValue(v reflect.Value, interpretNilAsZeroValue bool, interpretNilBool
 		if isNil && !interpretNilAsZeroValue {
 			return false
 		}
-		return IsZeroValue(v.Elem(), true, interpretNilBooleansAsZeroValue) // interpretNilAsZeroValue needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
+		return IsZeroValue(v.Elem(), true, true) // Needs to be true for case of double pointer **Hours where **Hours is nil (we want this to be zero)
 	case reflect.Struct:
 		for i, n := 0, v.NumField(); i < n; i++ {
-			if !IsZeroValue(v.Field(i), true, interpretNilBooleansAsZeroValue) {
+			if !IsZeroValue(v.Field(i), true, true) {
 				return false
 			}
 		}
