@@ -112,6 +112,7 @@ type LocationEntity struct {
 	FacebookCoverPhoto   **Image       `json:"facebookCoverPhoto,omitempty"`
 	FacebookPageUrl      *string       `json:"facebookPageUrl,omitempty"`
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
+	FacebookUsername 	 *string 	   `json:"facebookVanityUrl,omitempty" // It's called vanity url in json but Username in front end
 
 	GoogleCoverPhoto       **Image   `json:"googleCoverPhoto,omitempty"`
 	GoogleMyBusinessLabels *[]string `json:"googleMyBusinessLabels,omitempty"`
