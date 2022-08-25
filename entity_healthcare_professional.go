@@ -29,6 +29,7 @@ type HealthcareProfessionalEntity struct {
 	CategoryIds *[]string `json:"categoryIds,omitempty"`
 	Closed      **bool    `json:"closed,omitempty"`
 	Keywords    *[]string `json:"keywords,omitempty"`
+	Slug        *string   `json:"slug,omitempty"`
 
 	// Address Fields
 	Name          *string  `json:"name,omitempty"`
