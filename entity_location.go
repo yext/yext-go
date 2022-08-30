@@ -10,19 +10,21 @@ import (
 )
 
 const (
-	ENTITYTYPE_LOCATION          EntityType = "location"
-	FACEBOOKCTA_TYPE_BOOKNOW                = "BOOK_NOW"
-	FACEBOOKCTA_TYPE_CALLNOW                = "CALL_NOW"
-	FACEBOOKCTA_TYPE_CONTACTUS              = "CONTACT_US"
-	FACEBOOKCTA_TYPE_LEARNMORE              = "LEARN_MORE"
-	FACEBOOKCTA_TYPE_OFF                    = "NONE"
-	FACEBOOKCTA_TYPE_PLAYGAME               = "PLAY_GAME"
-	FACEBOOKCTA_TYPE_SENDEMAIL              = "SEND_EMAIL"
-	FACEBOOKCTA_TYPE_SENDMESSAGE            = "SEND_MESSAGE"
-	FACEBOOKCTA_TYPE_SHOPNOW                = "SHOP_NOW"
-	FACEBOOKCTA_TYPE_SIGNUP                 = "SIGN_UP"
-	FACEBOOKCTA_TYPE_USEAPP                 = "USE_APP"
-	FACEBOOKCTA_TYPE_WATCHVIDEO             = "WATCH_VIDEO"
+	ENTITYTYPE_LOCATION                           EntityType = "location"
+	FACEBOOKCTA_TYPE_BOOKNOW                                 = "BOOK_NOW"
+	FACEBOOKCTA_TYPE_CALLNOW                                 = "CALL_NOW"
+	FACEBOOKCTA_TYPE_CONTACTUS                               = "CONTACT_US"
+	FACEBOOKCTA_TYPE_LEARNMORE                               = "LEARN_MORE"
+	FACEBOOKCTA_TYPE_OFF                                     = "NONE"
+	FACEBOOKCTA_TYPE_PLAYGAME                                = "PLAY_GAME"
+	FACEBOOKCTA_TYPE_SENDEMAIL                               = "SEND_EMAIL"
+	FACEBOOKCTA_TYPE_SENDMESSAGE                             = "SEND_MESSAGE"
+	FACEBOOKCTA_TYPE_SHOPNOW                                 = "SHOP_NOW"
+	FACEBOOKCTA_TYPE_SIGNUP                                  = "SIGN_UP"
+	FACEBOOKCTA_TYPE_USEAPP                                  = "USE_APP"
+	FACEBOOKCTA_TYPE_WATCHVIDEO                              = "WATCH_VIDEO"
+	GOOGLE_ENTITIY_RELATIONSHIP_TYPE_DEPARTMENTIN            = "DEPARTMENT_IN"
+	GOOGLE_ENTITY_RELATIONSHIP_TYPE_INDEPENDENT              = "INDEPENDENT_ESTABLISHMENT_IN"
 )
 
 // Location is the representation of a Location in Yext Location Manager.
@@ -112,13 +114,14 @@ type LocationEntity struct {
 	FacebookCoverPhoto   **Image       `json:"facebookCoverPhoto,omitempty"`
 	FacebookPageUrl      *string       `json:"facebookPageUrl,omitempty"`
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
-	FacebookUsername *string `json:"facebookVanityUrl,omitempty"` // It's called vanity url in json but Username in front end
+	FacebookUsername     *string       `json:"facebookVanityUrl,omitempty"` // It's called vanity url in json but Username in front end
 
-	GoogleCoverPhoto       **Image   `json:"googleCoverPhoto,omitempty"`
-	GoogleMyBusinessLabels *[]string `json:"googleMyBusinessLabels,omitempty"`
-	GooglePreferredPhoto   *string   `json:"googlePreferredPhoto,omitempty"`
-	GoogleProfilePhoto     **Image   `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride  **string  `json:"googleWebsiteOverride,omitempty"`
+	GoogleCoverPhoto         **Image                   `json:"googleCoverPhoto,omitempty"`
+	GoogleEntityRelationship *GoogleEntityRelationship `json:"googleEntityRelationship,omitempty"`
+	GoogleMyBusinessLabels   *[]string                 `json:"googleMyBusinessLabels,omitempty"`
+	GooglePreferredPhoto     *string                   `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto       **Image                   `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride    **string                  `json:"googleWebsiteOverride,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
@@ -175,6 +178,20 @@ type VideoUrl struct {
 type UberLink struct {
 	Text         *string `json:"text,omitempty"`
 	Presentation *string `json:"presentation,omitempty"`
+}
+
+type GoogleEntityRelationship struct {
+	Type    *string `json:"type,omitempty"`
+	PlaceId *string `json:"placeId,omitempty"`
+}
+
+func NullableGoogleEntityRelationship(g *GoogleEntityRelationship) **GoogleEntityRelationship {
+	return &g
+}
+
+func NullGoogleEntityRelationship() **GoogleEntityRelationship {
+	var g *GoogleEntityRelationship
+	return &g
 }
 
 func NullableUberLink(u *UberLink) **UberLink {
