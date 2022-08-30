@@ -116,12 +116,12 @@ type LocationEntity struct {
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
 	FacebookUsername     *string       `json:"facebookVanityUrl,omitempty"` // It's called vanity url in json but Username in front end
 
-	GoogleCoverPhoto         **Image                   `json:"googleCoverPhoto,omitempty"`
-	GoogleEntityRelationship *GoogleEntityRelationship `json:"googleEntityRelationship,omitempty"`
-	GoogleMyBusinessLabels   *[]string                 `json:"googleMyBusinessLabels,omitempty"`
-	GooglePreferredPhoto     *string                   `json:"googlePreferredPhoto,omitempty"`
-	GoogleProfilePhoto       **Image                   `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride    **string                  `json:"googleWebsiteOverride,omitempty"`
+	GoogleCoverPhoto         **Image                    `json:"googleCoverPhoto,omitempty"`
+	GoogleEntityRelationship **GoogleEntityRelationship `json:"googleEntityRelationship,omitempty"`
+	GoogleMyBusinessLabels   *[]string                  `json:"googleMyBusinessLabels,omitempty"`
+	GooglePreferredPhoto     *string                    `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto       **Image                    `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride    **string                   `json:"googleWebsiteOverride,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
