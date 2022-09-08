@@ -60,10 +60,10 @@ type FinancialProfessional struct {
 	OrderUrl        **Website         `json:"orderUrl,omitempty"`
 	ReservationUrl  **Website         `json:"reservationUrl,omitempty"`
 	WebsiteUrl      **Website         `json:"websiteUrl,omitempty"`
-	LandingPageUrl  **Website         `json:"landingPageUrl,omitempty"`
-	IOSAppURL       **Website         `json:"iosAppUrl,omitempty"`
-	AndroidAppURL   **Website         `json:"androidAppUrl,omitempty"`
-	DisclosureLink  **Website         `json:"disclosureLink,omitempty"`
+	LandingPageUrl  *string           `json:"landingPageUrl,omitempty"`
+	IOSAppURL       *string           `json:"iosAppUrl,omitempty"`
+	AndroidAppURL   *string           `json:"androidAppUrl,omitempty"`
+	DisclosureLink  *string           `json:"disclosureLink,omitempty"`
 	FeaturedMessage **FeaturedMessage `json:"featuredMessage,omitempty"`
 
 	// Social Media
