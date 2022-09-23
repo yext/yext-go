@@ -1708,7 +1708,7 @@ func TestIsZeroValue(t *testing.T) {
 			i: &[]HolidayHours{
 				HolidayHours{
 					Date:     String("01-21-2019"),
-					IsClosed: NullableBool(true),
+					IsClosed: true,
 				},
 			},
 			nilIsEmpty: true,
@@ -1717,7 +1717,7 @@ func TestIsZeroValue(t *testing.T) {
 		{
 			name: "**struct",
 			i: NullableDayHours(&DayHours{
-				IsClosed: NullableBool(true),
+				IsClosed: true,
 			}),
 			nilIsEmpty: true,
 			want:       false,
@@ -1725,7 +1725,7 @@ func TestIsZeroValue(t *testing.T) {
 		{
 			name: "**struct",
 			i: NullableDayHours(&DayHours{
-				IsClosed: NullableBool(false),
+				IsClosed: false,
 			}),
 			nilIsEmpty: true,
 			want:       true,

@@ -402,7 +402,7 @@ func NewHoursUnspecifiedAllWeek() *Hours {
 
 type DayHours struct {
 	OpenIntervals *[]Interval `json:"openIntervals,omitempty"`
-	IsClosed      **bool      `json:"isClosed,omitempty"`
+	IsClosed      bool      `json:"isClosed,omitempty"`
 }
 
 func NullableDayHours(d *DayHours) **DayHours {
@@ -422,7 +422,7 @@ func GetDayHours(d **DayHours) *DayHours {
 }
 
 func (d *DayHours) SetClosed() {
-	d.IsClosed = NullableBool(true)
+	d.IsClosed = true
 	d.OpenIntervals = nil
 }
 
@@ -435,7 +435,7 @@ func (d *DayHours) GetIntervals() []Interval {
 
 func (d *DayHours) AddHours(start string, end string) {
 	intervals := []Interval{}
-	d.IsClosed = nil
+	d.IsClosed = false
 	if d.OpenIntervals != nil {
 		intervals = *d.OpenIntervals
 	}
@@ -447,7 +447,7 @@ func (d *DayHours) AddHours(start string, end string) {
 }
 
 func (d *DayHours) SetHours(start string, end string) {
-	d.IsClosed = nil
+	d.IsClosed = false
 	d.OpenIntervals = &[]Interval{
 		Interval{
 			Start: start,
@@ -532,40 +532,19 @@ func (h *Hours) SetUnspecifiedAllWeek() {
 func (h *Hours) SetUnspecified(w Weekday) {
 	switch w {
 	case Sunday:
-		h.Sunday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Sunday = NullDayHours()
 	case Monday:
-		h.Monday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Monday = NullDayHours()
 	case Tuesday:
-		h.Tuesday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Tuesday = NullDayHours()
 	case Wednesday:
-		h.Wednesday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Wednesday = NullDayHours()
 	case Thursday:
-		h.Thursday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Thursday = NullDayHours()
 	case Friday:
-		h.Friday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Friday = NullDayHours()
 	case Saturday:
-		h.Saturday = NullableDayHours(&DayHours{
-			OpenIntervals: nil,
-			IsClosed:      nil,
-		})
+		h.Saturday = NullDayHours()
 	}
 }
 
@@ -1016,7 +995,7 @@ func (y LocationEntity) IsClosed() bool {
 type HolidayHours struct {
 	Date           *string     `json:"date"`
 	OpenIntervals  *[]Interval `json:"openIntervals,omitempty"`
-	IsClosed       **bool      `json:"isClosed,omitempty"`
+	IsClosed       bool      `json:"isClosed,omitempty"`
 	IsRegularHours **bool      `json:"isRegularHours,omitempty"`
 }
 

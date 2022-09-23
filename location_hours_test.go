@@ -204,7 +204,7 @@ func TestStructSerialize(t *testing.T) {
 					},
 				}),
 				Monday: NullableDayHours(&DayHours{
-					IsClosed: NullableBool(true),
+					IsClosed: true,
 				}),
 				Tuesday: NullableDayHours(&DayHours{
 					OpenIntervals: &[]Interval{
@@ -268,7 +268,7 @@ func TestStructSerialize(t *testing.T) {
 					},
 				}),
 				Monday: NullableDayHours(&DayHours{
-					IsClosed: NullableBool(true),
+					IsClosed: true,
 				}),
 				Tuesday: NullableDayHours(&DayHours{
 					OpenIntervals: &[]Interval{
@@ -332,7 +332,7 @@ func TestStructSerialize(t *testing.T) {
 					},
 				}),
 				Monday: NullableDayHours(&DayHours{
-					IsClosed: NullableBool(true),
+					IsClosed: true,
 				}),
 				Tuesday: NullableDayHours(&DayHours{
 					OpenIntervals: &[]Interval{
@@ -400,7 +400,7 @@ func TestStructSerialize(t *testing.T) {
 					},
 				}),
 				Monday: NullableDayHours(&DayHours{
-					IsClosed: NullableBool(true),
+					IsClosed: true,
 				}),
 				Tuesday: NullableDayHours(&DayHours{
 					OpenIntervals: &[]Interval{
@@ -529,7 +529,7 @@ func TestHolidayHoursConvert(t *testing.T) {
 			},
 			Want: &HolidayHours{
 				Date:     String("2018-12-25"),
-				IsClosed: NullableBool(true),
+				IsClosed: true,
 			},
 		},
 	}

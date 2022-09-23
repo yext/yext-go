@@ -217,7 +217,7 @@ func (h *LocationHoursHelper) StructSerialize() **Hours {
 func (h *LocationHoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
 	if h.HoursAreUnspecified(weekday) || h.HoursAreClosed(weekday) || len(h.GetHours(weekday)) == 0 {
 		return &DayHours{
-			IsClosed: NullableBool(true),
+			IsClosed: true,
 		}
 	}
 	var d = &DayHours{}
@@ -374,7 +374,7 @@ func LocationHolidayHoursToHolidayHours(l *LocationHolidayHours) (*HolidayHours,
 		Date: String(l.Date),
 	}
 	if l.Hours == "" {
-		h.IsClosed = NullableBool(true)
+		h.IsClosed = true
 	} else {
 		intervalsList := []Interval{}
 		intervals := strings.Split(l.Hours, ",")
