@@ -3,14 +3,15 @@ package yext
 import "encoding/json"
 
 type Reviewer struct {
-	LocationId *string       `json:"locationId,omitempty"`
-	Entity     *ReviewEntity `json:"entity,omitempty"` // Must have v param >= 20210728
-	FirstName  *string       `json:"firstName,omitempty"`
-	LastName   *string       `json:"lastName,omitempty"`
-	Contact    *string       `json:"contact,omitempty"`
-	Image      *bool         `json:"image,omitempty"`
-	TemplateId *string       `json:"templateId,omitempty"`
-	LabelIds   []*string     `json:"labelIds,omitempty"`
+	LocationId       *string       `json:"locationId,omitempty"`
+	Entity           *ReviewEntity `json:"entity,omitempty"` // Must have v param >= 20210728
+	FirstName        *string       `json:"firstName,omitempty"`
+	LastName         *string       `json:"lastName,omitempty"`
+	Contact          *string       `json:"contact,omitempty"`
+	Image            *bool         `json:"image,omitempty"`
+	TemplateId       *string       `json:"templateId,omitempty"`
+	LabelIds         []*string     `json:"labelIds,omitempty"`
+	ReviewLabelNames []*string     `json:"reviewLabelNames,omitempty"`
 }
 
 type ReviewEntity struct {
