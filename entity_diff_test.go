@@ -777,7 +777,7 @@ func TestEntityDiff(t *testing.T) {
 			isDiff:         false,
 		},
 		diffTest{
-			name:               "Hours: base is IsClosed: nil, new is IsClosed: false. Should not have diff because will result in API error ",
+			name:               "Hours: base is IsClosed: omitted (defaults to false), new is IsClosed: false. ",
 			property:           "Hours",
 			baseValue:          NullableHours(&Hours{
 				Monday: NullableDayHours(&DayHours{
@@ -864,9 +864,6 @@ func TestEntityDiff(t *testing.T) {
 					},
 					IsClosed: false,
 				})}),
-			////newNilIsEmpty:      true,
-			//baseNilBoolIsEmpty: false,
-			//newNilBoolIsEmpty:  false,
 			isDiff:             false,
 		},
 		// EmbeddedStruct tests
