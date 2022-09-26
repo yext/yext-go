@@ -104,6 +104,7 @@ func TestEntityJSONSerialization(t *testing.T) {
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: nil}}, `{}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullHours()}}, `{"hours":null}`},
 		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullableHours(&Hours{Monday: NullDayHours(), Tuesday: NullDayHours(), Wednesday: NullDayHours(), Thursday: NullDayHours(), Friday: NullDayHours(), Saturday: NullDayHours(), Sunday: NullDayHours()})}}, `{"hours":{"monday":null,"tuesday":null,"wednesday":null,"thursday":null,"friday":null,"saturday":null,"sunday":null}}`},
+		{&CustomLocationEntity{LocationEntity: LocationEntity{Hours: NullableHours(NewHoursUnspecifiedAllWeek())}}, `{"hours":{"monday":null,"tuesday":null,"wednesday":null,"thursday":null,"friday":null,"saturday":null,"sunday":null}}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: String("")}}, `{"cf_Url":""}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFUrl: nil}}, `{}`},
 		{&CustomLocationEntity{CustomEntity: CustomEntity{CFTextList: &[]string{}}}, `{"cf_TextList":[]}`},

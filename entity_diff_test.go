@@ -776,6 +776,96 @@ func TestEntityDiff(t *testing.T) {
 			newNilIsEmpty:  true,
 			isDiff:         false,
 		},
+		diffTest{
+			name:               "Hours: base is IsClosed: omitted (defaults to false), new is IsClosed: false. ",
+			property:           "Hours",
+			baseValue:          NullableHours(&Hours{
+				Monday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Tuesday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Wednesday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Thursday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+				}),
+				Friday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Saturday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Sunday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				})}),
+			newValue: NullableHours(&Hours{
+				Monday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Tuesday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Wednesday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Thursday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Friday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Saturday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				}),
+				Sunday: NullableDayHours(&DayHours{
+					OpenIntervals: &[]Interval{
+						Interval{Start: "08:00", End: "16:30"},
+					},
+					IsClosed: false,
+				})}),
+			isDiff:             false,
+		},
 		// EmbeddedStruct tests
 		diffTest{
 			name:     "Base Entity: different Ids",
@@ -1087,7 +1177,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1099,7 +1189,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-22"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1112,7 +1202,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-22"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1127,7 +1217,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(false),
+								IsClosed: false,
 							},
 						},
 					}),
@@ -1139,7 +1229,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1152,7 +1242,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1184,7 +1274,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1197,7 +1287,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1267,11 +1357,11 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-21"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("2019-01-22"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1283,11 +1373,11 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-23"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("2019-01-24"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1300,11 +1390,11 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("2019-01-23"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("2019-01-24"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1380,7 +1470,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 					}),
 				},
@@ -1389,7 +1479,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(false),
+							IsClosed: false,
 						}),
 					}),
 				},
@@ -1399,7 +1489,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(false),
+							IsClosed: false,
 						}),
 					}),
 				},
@@ -1411,16 +1501,16 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1430,16 +1520,16 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-22-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1452,11 +1542,11 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-22-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 							HolidayHours{
 								Date:     String("01-23-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1469,7 +1559,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1480,24 +1570,24 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1507,7 +1597,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1518,24 +1608,24 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1563,7 +1653,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1574,24 +1664,24 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1610,7 +1700,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1646,7 +1736,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1656,7 +1746,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1667,24 +1757,24 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1695,7 +1785,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1706,19 +1796,19 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 					}),
 				},
@@ -1730,7 +1820,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1741,19 +1831,19 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 					}),
 				},
@@ -1833,7 +1923,7 @@ func TestEntityDiffComplex(t *testing.T) {
 				LocationEntity: LocationEntity{
 					Hours: NullableHours(&Hours{
 						Monday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Tuesday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -1844,24 +1934,24 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Wednesday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Thursday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Sunday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1880,7 +1970,7 @@ func TestEntityDiffComplex(t *testing.T) {
 						HolidayHours: &[]HolidayHours{
 							HolidayHours{
 								Date:     String("01-21-2019"),
-								IsClosed: NullableBool(true),
+								IsClosed: true,
 							},
 						},
 					}),
@@ -1926,7 +2016,7 @@ func TestEntityDiffComplex(t *testing.T) {
 							},
 						}),
 						Friday: NullableDayHours(&DayHours{
-							IsClosed: NullableBool(true),
+							IsClosed: true,
 						}),
 						Saturday: NullableDayHours(&DayHours{
 							OpenIntervals: &[]Interval{
@@ -2511,7 +2601,7 @@ func TestInstanceOf(t *testing.T) {
 	var (
 		h = &[]HolidayHours{
 			HolidayHours{
-				IsClosed: NullableBool(true),
+				IsClosed: true,
 			},
 		}
 		j = InstanceOf(h)
@@ -2523,7 +2613,7 @@ func TestInstanceOf(t *testing.T) {
 	var (
 		hours = NullableHours(&Hours{
 			Monday: NullableDayHours(&DayHours{
-				IsClosed: NullableBool(true),
+				IsClosed: true,
 			}),
 		})
 		k = InstanceOf(hours)
@@ -2535,6 +2625,7 @@ func TestInstanceOf(t *testing.T) {
 	} else if GetHours(iHours) == nil {
 		t.Error("**Hours instance is nil")
 	}
+
 
 	var (
 		address = &Address{
