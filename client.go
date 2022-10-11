@@ -49,6 +49,7 @@ type Client struct {
 	LanguageProfileService         *LanguageProfileService
 	AccountService                 *AccountService
 	ServicesService                *ServicesService
+	ListingsService                *ListingsService
 }
 
 func NewClient(config *Config) *Client {
@@ -75,6 +76,7 @@ func NewClient(config *Config) *Client {
 	c.AccountService = &AccountService{client: c}
 	c.ServicesService = &ServicesService{client: c}
 	c.LanguageProfileService.RegisterDefaultEntities()
+	c.ListingsService = &ListingsService{client: c}
 	return c
 }
 
