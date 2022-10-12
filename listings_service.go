@@ -10,11 +10,6 @@ const (
 	ListingsListMaxLimit = 100
 )
 
-type ListingsJSONResponse struct {
-	Meta     Meta         `json:"meta"`
-	Response ListingsData `json:"response"`
-}
-
 type AlternateBrands struct {
 	BrandName  string `json:"brandName"`
 	ListingURL string `json:"listingUrl"`
@@ -33,7 +28,7 @@ type Listing struct {
 	LoginURL         string             `json:"loginUrl,omitempty"`
 }
 
-type ListingsData struct {
+type ListingResponse struct {
 	Count     int       `json:"count"`
 	Listings  []Listing `json:"listings"`
 	PageToken string    `json:"pageToken"`
@@ -79,9 +74,9 @@ func (l *ListingsService) ListAll(opts *ListingsListOptions) ([]Listing, error) 
 			return "", err
 		}
 
-		listings = append(listings, resp.Response.Listings...)
+		listings = append(listings, resp.Listings...)
 
-		return resp.Response.PageToken, nil
+		return resp.PageToken, nil
 	}
 
 	if err := tokenListHelper(lg, &opts.ListOptions); err != nil {
@@ -92,7 +87,7 @@ func (l *ListingsService) ListAll(opts *ListingsListOptions) ([]Listing, error) 
 
 // List performs the API call outlined here
 // https://hitchhikers.yext.com/docs/knowledgeapis/listings/listingsmanagement/listings/
-func (l *ListingsService) List(opts *ListingsListOptions) (*ListingsJSONResponse, *Response, error) {
+func (l *ListingsService) List(opts *ListingsListOptions) (*ListingResponse, *Response, error) {
 	var (
 		requrl = listingsPath + "/listings"
 		err    error
@@ -112,7 +107,7 @@ func (l *ListingsService) List(opts *ListingsListOptions) (*ListingsJSONResponse
 		}
 	}
 
-	v := &ListingsJSONResponse{}
+	v := &ListingResponse{}
 	r, err := l.client.DoRequest("GET", requrl, v)
 	if err != nil {
 		return nil, r, err
