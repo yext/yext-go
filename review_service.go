@@ -1,7 +1,10 @@
 package yext
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -77,21 +80,20 @@ type ReviewUpdateResponse struct {
 }
 
 type ReviewCreateInvitationResponse struct {
-	InvitationUID string        `json:"invitationUid"`
-	Id            string        `json:"id"`
-	LocationId    string        `json:"locationId"`
-	Entity        *ReviewEntity `json:"entity,omitempty"` // Must have v param >= 20210728
-	FirstName     string        `json:"firstName"`
-	LastName      string        `json:"lastName"`
-	Contact       string        `json:"contact"`
-	Image         bool          `json:"image"`
-	TemplateId    int           `json:"templateId"`
-	Status        string        `json:"status"`
-	Details       string        `json:"details"`
+	Id         string        `json:"id"`
+	LocationId string        `json:"locationId"`
+	Entity     *ReviewEntity `json:"entity,omitempty"` // Must have v param >= 20210728
+	FirstName  string        `json:"firstName"`
+	LastName   string        `json:"lastName"`
+	Contact    string        `json:"contact"`
+	Image      bool          `json:"image"`
+	TemplateId int           `json:"templateId"`
+	Status     string        `json:"status"`
+	Details    string        `json:"details"`
 }
 
 type ReviewCreateReviewResponse struct {
-	Id string `json:"id"`
+	Id string `json:"apiIdentifier"`
 }
 
 func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review, error) {
@@ -249,6 +251,7 @@ func (l *ReviewService) CreateInvitation(jsonData []*Reviewer) ([]*ReviewCreateI
 	return v, r, nil
 }
 
+//CreateReview: Pls use the new liveAPI implementation below
 func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
 	var v *ReviewCreateReviewResponse
 	r, err := l.client.DoRequestJSON("POST", reviewsPath, jsonData, &v)
@@ -257,6 +260,53 @@ func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateRevie
 	}
 
 	return v, r, nil
+}
+
+//the new way to create reviews on the yext platform
+//refer to https://yextops.slack.com/archives/C01269F1ZTL/p1634751884059700
+func (l *ReviewService) CreateReviewLiveAPI(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
+	reviewCreateReviewResponse := &ReviewCreateReviewResponse{}
+	baseURL := "https://liveapi.yext.com"
+	if strings.Contains(l.client.Config.BaseUrl, "sandbox") {
+		baseURL = "https://liveapi-sandbox.yext.com"
+	}
+
+	reviewSubmissionLiveAPIURL := fmt.Sprintf("%s/v2/accounts/%s/reviewSubmission?api_key=%s&v=%s", baseURL, l.client.Config.AccountId, l.client.Config.ApiKey, l.client.Config.Version)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPost, reviewSubmissionLiveAPIURL, strings.NewReader(jsonData.String()))
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil, err
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	reviewResponse := &Response{}
+
+	err = json.Unmarshal(body, reviewResponse)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	err = json.Unmarshal(*reviewResponse.ResponseRaw, reviewCreateReviewResponse)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return reviewCreateReviewResponse, reviewResponse, nil
 }
 
 type ReviewUpdateLabelOptions struct {
