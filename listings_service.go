@@ -49,7 +49,7 @@ type ListingsService struct {
 
 type ListingsListOptions struct {
 	ListOptions
-	EntityIds    []string `json:"entityIds"`
+	LocationIds  []string `json:"locationIds"`
 	Language     string   `json:"language"`
 	PublisherIds []string `json:"publisherIds"`
 	Statuses     []string `json:"statuses"`
@@ -128,8 +128,8 @@ func addListingListOptions(requrl string, opts *ListingsListOptions) (string, er
 	}
 
 	q := u.Query()
-	if len(opts.EntityIds) > 0 {
-		q.Add("entityIds", strings.Join(opts.EntityIds, ","))
+	if len(opts.LocationIds) > 0 {
+		q.Add("locationIds", strings.Join(opts.LocationIds, ","))
 	}
 	if len(opts.Statuses) > 0 {
 		q.Add("statuses", strings.Join(opts.Statuses, ","))
