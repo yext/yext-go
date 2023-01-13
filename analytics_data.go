@@ -25,9 +25,11 @@ type AnalyticsData struct {
 	GooglePhoneCalls                      *int     `json:"Google Phone Calls"`
 	YelpCustomerActions                   *int     `json:"Yelp Customer Actions"`
 	AverageRating                         *float64 `json:"Average Rating"`
-	NewReviews                            *int     `json:"Reviews"`
+	NewReviews                            *int     `json:"Reviews"`     // used to unmarshal new reviews for api versions on or after 20210729
+	NewReviewsAlternative                 *int     `json:"New Reviews"` // used to unmarshal new reviews for api versions before 20210729
 	StorepagesSessions                    *int     `json:"Storepages Sessions"`
-	StorepagesPageviews                   *int     `json:"Pages Views"`
+	StorepagesPageviews                   *int     `json:"Pages Views"` // used to unmarshal page views for api versions before 20210729
+	StorepagesPageviewsAlternative        *int     `json:"Page Views"`  // used to unmarshal page views for api versions on or after 20210729
 	StorepagesDrivingdirections           *int     `json:"Driving Directions"`
 	StorepagesPhonecalls                  *int     `json:"Taps to Call"`
 	StorepagesCalltoactionclicks          *int     `json:"Call to Action Clicks"`
@@ -65,6 +67,7 @@ type AnalyticsData struct {
 	AnswersSearches                       *int     `json:"ANSWERS_SEARCHES"`
 	Week                                  *string  `json:"week"`
 	AnswersKGResultRate                   *float64 `json:"ANSWERS_KG_RESULT_RATE"`
+	ResponseCount                         *int     `json:"Response Count"`
 }
 
 func (y AnalyticsData) GetCompetitor() string {
@@ -256,6 +259,13 @@ func (y AnalyticsData) GetNewReviews() int {
 	return 0
 }
 
+func (y AnalyticsData) GetNewReviewsAlternative() int {
+	if y.NewReviewsAlternative != nil {
+		return *y.NewReviewsAlternative
+	}
+	return 0
+}
+
 func (y AnalyticsData) GetStorepagesSessions() int {
 	if y.StorepagesSessions != nil {
 		return *y.StorepagesSessions
@@ -266,6 +276,13 @@ func (y AnalyticsData) GetStorepagesSessions() int {
 func (y AnalyticsData) GetStorepagesPageviews() int {
 	if y.StorepagesPageviews != nil {
 		return *y.StorepagesPageviews
+	}
+	return 0
+}
+
+func (y AnalyticsData) GetStorepagesPageviewsAlternative() int {
+	if y.StorepagesPageviewsAlternative != nil {
+		return *y.StorepagesPageviewsAlternative
 	}
 	return 0
 }
@@ -459,6 +476,13 @@ func (y AnalyticsData) GetMonth() string {
 	return ""
 }
 
+func (y AnalyticsData) GetResponseRate() int {
+	if y.ResponseRate != nil {
+		return *y.ResponseRate
+	}
+	return 0
+}
+
 func (y AnalyticsData) GetClicks() int {
 	if y.Clicks != nil {
 		return *y.Clicks
@@ -492,4 +516,11 @@ func (y AnalyticsData) GetAnswersKGResultRate() float64 {
 		return *y.AnswersKGResultRate
 	}
 	return -1
+}
+
+func (y AnalyticsData) GetResponseCount() int {
+	if y.ResponseCount != nil {
+		return *y.ResponseCount
+	}
+	return 0
 }
