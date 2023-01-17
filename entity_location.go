@@ -114,11 +114,13 @@ type LocationEntity struct {
 	FacebookCoverPhoto   **Image       `json:"facebookCoverPhoto,omitempty"`
 	FacebookPageUrl      *string       `json:"facebookPageUrl,omitempty"`
 	FacebookProfilePhoto **Image       `json:"facebookProfilePhoto,omitempty"`
+	FacebookStoreId      *string       `json:"facebookStoreId,omitempty"`
 	FacebookUsername     *string       `json:"facebookVanityUrl,omitempty"` // It's called vanity url in json but Username in front end
 
 	GoogleCoverPhoto         **Image                    `json:"googleCoverPhoto,omitempty"`
 	GoogleEntityRelationship **GoogleEntityRelationship `json:"googleEntityRelationship,omitempty"`
 	GoogleMyBusinessLabels   *[]string                  `json:"googleMyBusinessLabels,omitempty"`
+	GooglePlaceId            *string                    `json:"googlePlaceId,omitempty"`
 	GooglePreferredPhoto     *string                    `json:"googlePreferredPhoto,omitempty"`
 	GoogleProfilePhoto       **Image                    `json:"googleProfilePhoto,omitempty"`
 	GoogleWebsiteOverride    **string                   `json:"googleWebsiteOverride,omitempty"`
@@ -402,7 +404,7 @@ func NewHoursUnspecifiedAllWeek() *Hours {
 
 type DayHours struct {
 	OpenIntervals *[]Interval `json:"openIntervals,omitempty"`
-	IsClosed      bool      `json:"isClosed,omitempty"`
+	IsClosed      bool        `json:"isClosed,omitempty"`
 }
 
 func NullableDayHours(d *DayHours) **DayHours {
@@ -995,7 +997,7 @@ func (y LocationEntity) IsClosed() bool {
 type HolidayHours struct {
 	Date           *string     `json:"date"`
 	OpenIntervals  *[]Interval `json:"openIntervals,omitempty"`
-	IsClosed       bool      `json:"isClosed,omitempty"`
+	IsClosed       bool        `json:"isClosed,omitempty"`
 	IsRegularHours **bool      `json:"isRegularHours,omitempty"`
 }
 
