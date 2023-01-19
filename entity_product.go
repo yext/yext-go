@@ -27,6 +27,7 @@ type ProductEntity struct {
 	NumberOfItemsInPack          *int              `json:"numberOfItemsInPack,omitempty"`
 	Pattern                      *string           `json:"pattern,omitempty"`
 	Price                        **Price           `json:"price,omitempty"`
+	PrimaryPhoto                 **Photo           `json:"primaryPhoto,omitempty"`
 	ProductHighlights            *UnorderedStrings `json:"productHighlights,omitempty"`
 	ProductionCost               **Price           `json:"productionCost,omitempty"`
 	RichTextDescription          *string           `json:"richTextDescription,omitempty"`
