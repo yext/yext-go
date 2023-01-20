@@ -19,6 +19,7 @@ type ProductEntity struct {
 	IncludesAdultContent         **bool            `json:"includesAdultContent,omitempty"`
 	InstallmentPlan              **Plan            `json:"installmentPlan,omitempty"`
 	InventoryQuantity            *int              `json:"inventoryQuantity,omitempty"`
+	LandingPageURL               *string           `json:"landingPageUrl,omitempty"`
 	LoyaltyPoints                **LoyaltyPoints   `json:"loyaltyPoints,omitempty"`
 	Material                     *string           `json:"material,omitempty"`
 	MaximumEnergyEfficiencyClass *string           `json:"maximumEnergyEfficiencyClass,omitempty"`
@@ -27,6 +28,7 @@ type ProductEntity struct {
 	NumberOfItemsInPack          *int              `json:"numberOfItemsInPack,omitempty"`
 	Pattern                      *string           `json:"pattern,omitempty"`
 	Price                        **Price           `json:"price,omitempty"`
+	PrimaryPhoto                 **Photo           `json:"primaryPhoto,omitempty"`
 	ProductHighlights            *UnorderedStrings `json:"productHighlights,omitempty"`
 	ProductionCost               **Price           `json:"productionCost,omitempty"`
 	RichTextDescription          *string           `json:"richTextDescription,omitempty"`
