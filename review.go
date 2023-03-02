@@ -17,6 +17,11 @@ type ReviewEntity struct {
 	Id string `json:"id"`
 }
 
+func NullableReviewEntity(v ReviewEntity) **ReviewEntity {
+	p := &v
+	return &p
+}
+
 type Review struct {
 	Id                 *int           `json:"id"`
 	LocationId         *string        `json:"locationId"`
@@ -44,18 +49,25 @@ type Review struct {
 }
 
 type ReviewCreate struct {
-	LocationId     *string  `json:"locationId"`
-	ExternalId     *string  `json:"externalId"` // Must have v param >= 20220120
-	AccountId      *string  `json:"accountId"`
-	Rating         *float64 `json:"rating"`
-	Content        *string  `json:"content"`
-	AuthorName     *string  `json:"authorName"`
+	LocationId     *string  `json:"locationId,omitempty"`
+	ExternalId     *string  `json:"externalId,omitempty"` // Must have v param >= 20220120
+	AccountId      *string  `json:"accountId,omitempty"`
+	Rating         *float64 `json:"rating,omitempty"`
+	Content        *string  `json:"content,omitempty"`
+	AuthorName     *string  `json:"authorName,omitempty"`
 	AuthorEmail    *string  `json:"authorEmail,omitempty"`
 	Status         *string  `json:"status,omitempty"`
 	FlagStatus     *string  `json:"flagStatus,omitempty"`
 	ReviewLanguage *string  `json:"reviewLanguage,omitempty"`
 	TransactionId  *string  `json:"transactionId,omitempty"`
 	Date           *string  `json:"date,omitempty"`
+
+	//LiveAPI Specific Fields
+	ReviewEntity     **ReviewEntity `json:"entity,omitempty"`
+	Title            *string        `json:"title,omitempty"`
+	ReviewLabelNames *[]string      `json:"reviewLabelNames,omitempty"`
+	InvitationUID    *string        `json:"invitationUid,omitempty"`
+	ReviewDate       *string        `json:"reviewDate,omitempty"`
 }
 
 type Comment struct {
