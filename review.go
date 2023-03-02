@@ -17,6 +17,11 @@ type ReviewEntity struct {
 	Id string `json:"id"`
 }
 
+func NullableReviewEntity(v ReviewEntity) **ReviewEntity {
+	p := &v
+	return &p
+}
+
 type Review struct {
 	Id                 *int           `json:"id"`
 	LocationId         *string        `json:"locationId"`
@@ -58,11 +63,11 @@ type ReviewCreate struct {
 	Date           *string  `json:"date,omitempty"`
 
 	//LiveAPI Specific Fields
-	ReviewEntity     *ReviewEntity `json:"entity,omitempty"`
-	Title            *string       `json:"title,omitempty"`
-	ReviewLabelNames *[]string     `json:"reviewLabelNames,omitempty"`
-	InvitationUID    *string       `json:"invitationUid,omitempty"`
-	ReviewDate       *string       `json:"reviewDate,omitempty"`
+	ReviewEntity     **ReviewEntity `json:"entity,omitempty"`
+	Title            *string        `json:"title,omitempty"`
+	ReviewLabelNames *[]string      `json:"reviewLabelNames,omitempty"`
+	InvitationUID    *string        `json:"invitationUid,omitempty"`
+	ReviewDate       *string        `json:"reviewDate,omitempty"`
 }
 
 type Comment struct {
