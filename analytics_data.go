@@ -68,6 +68,8 @@ type AnalyticsData struct {
 	Week                                  *string  `json:"week"`
 	AnswersKGResultRate                   *float64 `json:"ANSWERS_KG_RESULT_RATE"`
 	ResponseCount                         *int     `json:"Response Count"`
+	ListingImpressions                    *int     `json:"LISTINGS_IMPRESSIONS"`
+	App                                   *string  `json:"APP"`
 }
 
 func (y AnalyticsData) GetCompetitor() string {
@@ -523,4 +525,18 @@ func (y AnalyticsData) GetResponseCount() int {
 		return *y.ResponseCount
 	}
 	return 0
+}
+
+func (y AnalyticsData) GetListingImpressions() int {
+	if y.ListingImpressions != nil {
+		return *y.ListingImpressions
+	}
+	return 0
+}
+
+func (y AnalyticsData) GetApp() string {
+	if y.App != nil {
+		return *y.App
+	}
+	return ""
 }
