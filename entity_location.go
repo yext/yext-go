@@ -139,6 +139,9 @@ type LocationEntity struct {
 
 	TimeZoneUtcOffset *string `json:"timeZoneUtcOffset,omitempty"`
 	Timezone          *string `json:"timezone,omitempty"`
+
+	//Competitors
+	RankTrackingCompetitors *[]Competitor `json:"rankTrackingCompetitors,omitempty"`
 }
 
 func (l *LocationEntity) UnmarshalJSON(data []byte) error {
@@ -1052,4 +1055,9 @@ func ToFAQ(c FAQField) *FAQField {
 func NullableFAQ(c FAQField) **FAQField {
 	p := &c
 	return &p
+}
+
+type Competitor struct {
+	Name *string `json:"name,omitempty"`
+	Website *string `json:"website,omitempty"`
 }
