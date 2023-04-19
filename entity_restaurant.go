@@ -90,6 +90,9 @@ type RestaurantEntity struct {
 	// Reviews
 	ReviewGenerationUrl  *string `json:"reviewGenerationUrl,omitempty"`
 	FirstPartyReviewPage *string `json:"firstPartyReviewPage,omitempty"`
+
+	TimeZoneUtcOffset *string `json:"timeZoneUtcOffset,omitempty"`
+	Timezone          *string `json:"timezone,omitempty"`
 }
 
 func (r *RestaurantEntity) UnmarshalJSON(data []byte) error {
