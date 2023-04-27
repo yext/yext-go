@@ -8,6 +8,7 @@ const ENTITYTYPE_HEALTHCAREFACILITY EntityType = "healthcareFacility"
 
 // Location is the representation of a Location in Yext Location Manager.
 // For details see https://www.yext.com/support/platform-api/#Administration_API/Locations.htm
+
 type HealthcareFacilityEntity struct {
 	BaseEntity
 
@@ -90,12 +91,13 @@ type HealthcareFacilityEntity struct {
 	FacebookPageUrl      *string `json:"facebookPageUrl,omitempty"`
 	FacebookProfilePhoto **Image `json:"facebookProfilePhoto,omitempty"`
 
-	GoogleCoverPhoto       **Image           `json:"googleCoverPhoto,omitempty"`
-	GooglePreferredPhoto   *string           `json:"googlePreferredPhoto,omitempty"`
-	GoogleProfilePhoto     **Image           `json:"googleProfilePhoto,omitempty"`
-	GoogleWebsiteOverride  **string          `json:"googleWebsiteOverride,omitempty"`
-	GooglePlaceId          *string           `json:"googlePlaceId,omitempty"`
-	GoogleMyBusinessLabels *UnorderedStrings `json:"googleMyBusinessLabels,omitempty"`
+	GoogleCoverPhoto         **Image                    `json:"googleCoverPhoto,omitempty"`
+	GooglePreferredPhoto     *string                    `json:"googlePreferredPhoto,omitempty"`
+	GoogleProfilePhoto       **Image                    `json:"googleProfilePhoto,omitempty"`
+	GoogleWebsiteOverride    **string                   `json:"googleWebsiteOverride,omitempty"`
+	GooglePlaceId            *string                    `json:"googlePlaceId,omitempty"`
+	GoogleMyBusinessLabels   *UnorderedStrings          `json:"googleMyBusinessLabels,omitempty"`
+	GoogleEntityRelationship **GoogleEntityRelationship `json:"googleEntityRelationship,omitempty"`
 
 	InstagramHandle *string `json:"instagramHandle,omitempty"`
 	TwitterHandle   *string `json:"twitterHandle,omitempty"`
