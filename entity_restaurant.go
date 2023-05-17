@@ -70,9 +70,11 @@ type RestaurantEntity struct {
 	UberTripBranding **UberTripBranding `json:"uberTripBranding,omitempty"`
 
 	// Social Media
-	FacebookCoverPhoto   **Image `json:"facebookCoverPhoto,omitempty"`
-	FacebookPageUrl      *string `json:"facebookPageUrl,omitempty"`
-	FacebookProfilePhoto **Image `json:"facebookProfilePhoto,omitempty"`
+	FacebookCoverPhoto         **Image `json:"facebookCoverPhoto,omitempty"`
+	FacebookLocationDescriptor *string `json:"facebookDescriptor,omitempty"`
+	FacebookPageUrl            *string `json:"facebookPageUrl,omitempty"`
+	FacebookProfilePhoto       **Image `json:"facebookProfilePhoto,omitempty"`
+	FacebookUsername           *string `json:"facebookVanityUrl,omitempty"`
 
 	GoogleCoverPhoto      **Image  `json:"googleCoverPhoto,omitempty"`
 	GooglePreferredPhoto  *string  `json:"googlePreferredPhoto,omitempty"`
