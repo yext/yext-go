@@ -24,6 +24,10 @@ type CustomFieldResponse struct {
 }
 
 func (s *CustomFieldService) ListAll() ([]*CustomField, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.ListAll()
+	}
+
 	var customFields []*CustomField
 	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
 		cfr, _, err := s.List(opts)
@@ -56,6 +60,10 @@ func (s *CustomFieldService) List(opts *ListOptions) (*CustomFieldResponse, *Res
 }
 
 func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.Create(cf)
+	}
+
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
@@ -69,6 +77,9 @@ func (s *CustomFieldService) Create(cf *CustomField) (*Response, error) {
 }
 
 func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.Edit(cf)
+	}
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
@@ -84,6 +95,9 @@ func (s *CustomFieldService) Edit(cf *CustomField) (*Response, error) {
 }
 
 func (s *CustomFieldService) Delete(cf *CustomField) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return nil, fmt.Errorf("deleting custom fields is not supported in the Config API")
+	}
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
@@ -282,11 +296,13 @@ func (c *CustomFieldManager) GetMultiOptionNames(fieldName string, optionIds *Un
 // MustGetMultiOptionNames returns a slice containing the names of the options that are set
 // Example Use:
 // Custom field name: "Available Breeds"
-// Custom field option ID to name map: {
-//		"2421": "Labrador Retriever",
-//		"2422": "Chihuahua",
-//		"2423": "Boston Terrier"
-// }
+//
+//	Custom field option ID to name map: {
+//			"2421": "Labrador Retriever",
+//			"2422": "Chihuahua",
+//			"2423": "Boston Terrier"
+//	}
+//
 // Custom field options that are set: "2421" and "2422"
 // cfmanager.MustGetMultiOptionNames("Available Breeds", loc.AvailableBreeds) returns ["Labrador Retriever", "Chihuahua"]
 func (c *CustomFieldManager) MustGetMultiOptionNames(fieldName string, options *UnorderedStrings) []string {
@@ -317,12 +333,13 @@ func (c *CustomFieldManager) GetAllOptionNames(fieldName string) ([]string, erro
 // It returns an empty slice if the field has no options
 // Example Use:
 // Custom field name: "Dog Height"
-// Custom field option ID to name map: {
-//		"1423": "Tall",
-//		"1424": "Short",
-// }
-// cfmanager.MustGetAllOptionNames("Dog Height") returns []string{"Tall', "Short"}
 //
+//	Custom field option ID to name map: {
+//			"1423": "Tall",
+//			"1424": "Short",
+//	}
+//
+// cfmanager.MustGetAllOptionNames("Dog Height") returns []string{"Tall', "Short"}
 func (c *CustomFieldManager) MustGetAllOptionNames(fieldName string) []string {
 	if names, err := c.GetAllOptionNames(fieldName); err != nil {
 		panic(err)
@@ -347,13 +364,14 @@ func (c *CustomFieldManager) GetSingleOptionName(fieldName string, optionId **st
 // option is unset (i.e. if its value is a NullString)
 // Example Use:
 // Custom field name: "Dog Height"
-// Custom field option ID to name map: {
-//		"1423": "Tall",
-//		"1424": "Short",
-// }
+//
+//	Custom field option ID to name map: {
+//			"1423": "Tall",
+//			"1424": "Short",
+//	}
+//
 // Custom field option that is set: "1424"
 // cfmanager.MustGetSingleOptionName("Dog Height", loc.DogHeight) returns "Short"
-//
 func (c *CustomFieldManager) MustGetSingleOptionName(fieldName string, optionId **string) string {
 	if id, err := c.GetSingleOptionName(fieldName, optionId); err != nil {
 		panic(err)

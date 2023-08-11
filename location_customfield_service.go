@@ -13,6 +13,10 @@ type LocationCustomFieldService struct {
 }
 
 func (s *LocationCustomFieldService) ListAll() ([]*CustomField, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.ListAll()
+	}
+
 	var customFields []*CustomField
 	var lr listRetriever = func(opts *ListOptions) (int, int, error) {
 		cfr, _, err := s.List(opts)
@@ -45,6 +49,10 @@ func (s *LocationCustomFieldService) List(opts *ListOptions) (*CustomFieldRespon
 }
 
 func (s *LocationCustomFieldService) Create(cf *CustomField) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.Create(cf)
+	}
+
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
@@ -59,6 +67,9 @@ func (s *LocationCustomFieldService) Create(cf *CustomField) (*Response, error) 
 }
 
 func (s *LocationCustomFieldService) Edit(cf *CustomField) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return s.client.ConfigFieldService.Edit(cf)
+	}
 	asJSON, err := json.Marshal(cf)
 	if err != nil {
 		return nil, err
@@ -74,6 +85,9 @@ func (s *LocationCustomFieldService) Edit(cf *CustomField) (*Response, error) {
 }
 
 func (s *LocationCustomFieldService) Delete(customFieldId string) (*Response, error) {
+	if s.client.UseConfigAPIForCFs {
+		return nil, errors.New("cannot delete custom fields via the config API")
+	}
 	return s.client.DoRequest("DELETE", fmt.Sprintf("%s/%s", customFieldPath, customFieldId), nil)
 }
 
