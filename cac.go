@@ -180,6 +180,7 @@ func (c *ConfigField) TransformToCustomField(entityAvailability []EntityType) *C
 	for i, char := range c.Group {
 		if unicode.IsDigit(char) {
 			r.Group = c.Group[:i] + "_" + c.Group[i:]
+			break
 		}
 	}
 

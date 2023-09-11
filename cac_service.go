@@ -102,7 +102,7 @@ func (s *ConfigFieldService) Edit(cf *CustomField) (*Response, error) {
 		updatedDefinition.Type = nil
 	}
 
-	r, err := s.client.DoRequestJSON("PATCH", fmt.Sprintf("%s/%s/%s", ConfigResourcesPath, ConfigFieldSubType, GetString(cf.Id)), cf.TransformToConfigField(), nil)
+	r, err := s.client.DoRequestJSON("PATCH", fmt.Sprintf("%s/%s/%s", ConfigResourcesPath, ConfigFieldSubType, GetString(cf.Id)), updatedDefinition, nil)
 	if err != nil {
 		return r, err
 	}
