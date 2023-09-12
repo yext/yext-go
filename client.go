@@ -50,6 +50,8 @@ type Client struct {
 	AccountService                 *AccountService
 	ServicesService                *ServicesService
 	ListingsService                *ListingsService
+	ConfigFieldService             *ConfigFieldService
+	UseConfigAPIForCFs             bool
 }
 
 func NewClient(config *Config) *Client {
@@ -77,6 +79,12 @@ func NewClient(config *Config) *Client {
 	c.ServicesService = &ServicesService{client: c}
 	c.LanguageProfileService.RegisterDefaultEntities()
 	c.ListingsService = &ListingsService{client: c}
+	c.ConfigFieldService = &ConfigFieldService{client: c}
+	return c
+}
+
+func (c *Client) WithConfigAPIForCFs() *Client {
+	c.UseConfigAPIForCFs = true
 	return c
 }
 
