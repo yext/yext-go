@@ -11,6 +11,7 @@ import (
 const (
 	SandboxHost    string = "api-sandbox.yext.com"
 	ProductionHost string = "api.yext.com"
+	EUHost         string = "api.eu.yextapis.com"
 	AccountId      string = "me"
 	Version        string = "20180226"
 )
@@ -58,6 +59,10 @@ func (c *Config) WithHost(host string) *Config {
 
 func (c *Config) WithSandboxHost() *Config {
 	return c.WithHost(SandboxHost)
+}
+
+func (c *Config) WithEUHost() *Config {
+	return c.WithHost(EUHost)
 }
 
 func (c *Config) WithProductionHost() *Config {
