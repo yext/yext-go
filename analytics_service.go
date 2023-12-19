@@ -12,7 +12,7 @@ type AnalyticsFilters struct {
 	LocationIds                      *[]string `json:"locationIds"`
 	EntityIds                        *[]string `json:"entityIds"`
 	EntityTypes                      *[]string `json:"entityType"`
-	FolderId                         *int      `json:"folderId"`
+	FolderIds                        *[]int    `json:"folderIds"`
 	Countries                        *[]string `json:"countries"`
 	LocationLabels                   *[]string `json:"locationLabels"`
 	Platforms                        *[]string `json:"platforms"`
