@@ -31,19 +31,22 @@ type RestaurantEntity struct {
 	Emails         *[]string `json:"emails,omitempty"`
 
 	// Location Info
-	Description               *string   `json:"description,omitempty"`
-	Hours                     **Hours   `json:"hours,omitempty"`
-	BrunchHours               **Hours   `json:"brunchHours,omitempty"`
-	DriveThroughHours         **Hours   `json:"driveThroughHours,omitempty"`
-	AdditionalHoursText       *string   `json:"additionalHoursText,omitempty"`
-	DeliveryHours             **Hours   `json:"deliveryHours,omitempty"`
-	YearEstablished           **float64 `json:"yearEstablished,omitempty"`
-	Services                  *[]string `json:"services,omitempty"`
-	Languages                 *[]string `json:"languages,omitempty"`
-	Logo                      **Photo   `json:"logo,omitempty"`
-	PaymentOptions            *[]string `json:"paymentOptions,omitempty"`
-	Geomodifier               *string   `json:"geomodifier,omitempty"`
-	PickupAndDeliveryServices *[]string `json:"pickupAndDeliveryServices,omitempty"`
+	Description               *string           `json:"description,omitempty"`
+	Hours                     **Hours           `json:"hours,omitempty"`
+	BrunchHours               **Hours           `json:"brunchHours,omitempty"`
+	DriveThroughHours         **Hours           `json:"driveThroughHours,omitempty"`
+	AdditionalHoursText       *string           `json:"additionalHoursText,omitempty"`
+	DeliveryHours             **Hours           `json:"deliveryHours,omitempty"`
+	YearEstablished           **float64         `json:"yearEstablished,omitempty"`
+	Services                  *[]string         `json:"services,omitempty"`
+	Languages                 *[]string         `json:"languages,omitempty"`
+	Logo                      **Photo           `json:"logo,omitempty"`
+	PaymentOptions            *[]string         `json:"paymentOptions,omitempty"`
+	Geomodifier               *string           `json:"geomodifier,omitempty"`
+	PickupAndDeliveryServices *[]string         `json:"pickupAndDeliveryServices,omitempty"`
+	MealsServed               *UnorderedStrings `json:"mealsServed,omitempty"`
+	AcceptsReservations       **Ternary         `json:"kitchenHours,omitempty"`
+	KitchenHours              **Hours           `json:"kitchenHours,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
