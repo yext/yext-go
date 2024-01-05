@@ -62,7 +62,7 @@ type AnalyticsData struct {
 	PartnerSite                           *string  `json:"site"`
 	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
 	Competitor                            *string  `json:"competitor"`
-	Clicks                                *int     `json:"CLICKS"`
+	Clicks                                *int     `json:"CLICK_COUNT"`
 	AnswersSearchesWithClicks             *int     `json:"ANSWERS_SEARCHES_WITH_CLICKS"`
 	AnswersSearches                       *int     `json:"ANSWERS_SEARCHES"`
 	Week                                  *string  `json:"week"`
