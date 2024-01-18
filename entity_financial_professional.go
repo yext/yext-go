@@ -47,6 +47,9 @@ type FinancialProfessional struct {
 	// Spelling of json tag 'specialities' is intentional to match mispelling in Yext API
 	Specialties *[]string `json:"specialities,omitempty"`
 
+	// Lists
+	ProductLists **Lists `json:"productLists,omitempty"`
+
 	Languages      *[]string `json:"languages,omitempty"`
 	Logo           **Photo   `json:"logo,omitempty"`
 	PaymentOptions *[]string `json:"paymentOptions,omitempty"`
@@ -365,6 +368,10 @@ func (y FinancialProfessional) GetSpecialties() (v []string) {
 		v = *y.Specialties
 	}
 	return v
+}
+
+func (y FinancialProfessional) GetProductLists() (v *Lists) {
+	return GetLists(y.ProductLists)
 }
 
 func (y FinancialProfessional) GetServices() (v []string) {
