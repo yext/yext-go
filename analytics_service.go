@@ -35,10 +35,6 @@ type AnalyticsFilters struct {
 	MatchType                        *[]string `json:"matchType"`
 	MinSearchFrequency               *int      `json:"minSearchFrequency"`
 	MaxSearchFrequency               *int      `json:"maxSearchFrequency"`
-	FoursquareCheckinType            *string   `json:"foursquareCheckinType"`
-	FoursquareCheckinAge             *string   `json:"foursquareCheckinAge"`
-	FoursquareCheckinGender          *string   `json:"foursquareCheckinGender"`
-	InstagramContentType             *string   `json:"instagramContentType"`
 	Age                              *[]string `json:"age"`
 	Gender                           *string   `json:"gender"`
 	FacebookImpressionType           *[]string `json:"facebookImpressionType"`
