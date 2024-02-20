@@ -47,6 +47,7 @@ type RestaurantEntity struct {
 	MealsServed               *UnorderedStrings `json:"mealsServed,omitempty"`
 	AcceptsReservations       **Ternary         `json:"kitchenHours,omitempty"`
 	KitchenHours              **Hours           `json:"kitchenHours,omitempty"`
+	DineInHours               **Hours           `json:"dineInHours,omitempty"`
 
 	// Lats & Lngs
 	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
