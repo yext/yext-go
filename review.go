@@ -46,9 +46,11 @@ type Review struct {
 	Recommendation     *string        `json:"recommendation"`
 	TransactionId      *string        `json:"transactionId"`
 	InvitationId       *string        `json:"invitationId"`
+	ApiIdentifier      *string        `json:"apiIdentifier"`
 }
 
 type ReviewCreate struct {
+	EntityId       *string  `json:"entityId,omitempty"`
 	LocationId     *string  `json:"locationId,omitempty"`
 	ExternalId     *string  `json:"externalId,omitempty"` // Must have v param >= 20220120
 	AccountId      *string  `json:"accountId,omitempty"`
@@ -61,6 +63,7 @@ type ReviewCreate struct {
 	ReviewLanguage *string  `json:"reviewLanguage,omitempty"`
 	TransactionId  *string  `json:"transactionId,omitempty"`
 	Date           *string  `json:"date,omitempty"`
+	PublisherId    *string  `json:"publisherId,omitempty"`
 
 	//LiveAPI Specific Fields
 	ReviewEntity     **ReviewEntity `json:"entity,omitempty"`
@@ -71,14 +74,16 @@ type ReviewCreate struct {
 }
 
 type Comment struct {
-	Id            *int    `json:"id"`
-	ParentId      *int    `json:"parentId"`
-	PublisherDate *int    `json:"publisherDate"`
-	AuthorName    *string `json:"authorName"`
-	AuthorEmail   *string `json:"authorEmail"`
-	AuthorRole    *string `json:"authorRole"`
-	Content       *string `json:"content"`
-	Visibility    *string `json:"visibility"`
+	Id                      *int    `json:"id"`
+	ParentId                *int    `json:"parentId"`
+	PublisherDate           *int    `json:"publisherDate"`
+	AuthorName              *string `json:"authorName"`
+	AuthorEmail             *string `json:"authorEmail"`
+	AuthorRole              *string `json:"authorRole"`
+	Content                 *string `json:"content"`
+	Visibility              *string `json:"visibility"`
+	SuppressReviewerContact *bool   `json:"suppressReviewerContact"`
+	Date                    *string `json:"date"`
 }
 
 type ReviewLabel struct {
@@ -287,6 +292,20 @@ func (y Comment) GetContent() string {
 		return *y.Content
 	}
 	return ""
+}
+
+func (y Comment) GetDate() string {
+	if y.Date != nil {
+		return *y.Date
+	}
+	return ""
+}
+
+func (y Comment) GetSuppressReviewerContact() bool {
+	if y.SuppressReviewerContact == nil {
+		return false
+	}
+	return *y.SuppressReviewerContact
 }
 
 func (y Comment) GetVisibility() string {
