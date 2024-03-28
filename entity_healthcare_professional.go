@@ -20,6 +20,7 @@ const (
 	GENDER_MALE                                  = "MALE"
 	GENDER_FEMALE                                = "FEMALE"
 	GENDER_UNSPECIFIED                           = "UNSPECIFIED"
+	GENDER_NONBINARY                             = "NONBINARY"
 )
 
 type HealthcareProfessionalEntity struct {
