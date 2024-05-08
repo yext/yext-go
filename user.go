@@ -16,6 +16,7 @@ type User struct {
 	ACLs          []ACL   `json:"acl,omitempty"`
 	LastLoginDate *string `json:"lastLoginDate,omitempty"`
 	CreatedDate   *string `json:"createdDate,omitempty"`
+	NotifyUser    *bool   `json:"notifyUser,omitempty"`
 }
 
 func (u *User) GetId() string {
@@ -85,6 +86,13 @@ func (u *User) GetCreatedDate() string {
 		return ""
 	}
 	return *u.CreatedDate
+}
+
+func (u *User) GetNotifyUser() bool {
+	if u.NotifyUser == nil {
+		return false
+	}
+	return *u.NotifyUser
 }
 
 func (u *User) String() string {
