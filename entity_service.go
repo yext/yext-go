@@ -44,14 +44,15 @@ type EntityService struct {
 
 type EntityListOptions struct {
 	ListOptions
-	SearchIDs           []string
-	ResolvePlaceholders bool
-	Rendered            bool // will return resolved placeholders for language profiles
-	EntityTypes         []string
-	Fields              []string
-	Filter              string
-	Format              RichTextFormat
-	HideProgressBar     bool
+	SearchIDs             []string
+	ResolvePlaceholders   bool
+	Rendered              bool // will return resolved placeholders for language profiles
+	EntityTypes           []string
+	Fields                []string
+	Filter                string
+	Format                RichTextFormat
+	HideProgressBar       bool
+	ConvertRichTextToHTML bool
 }
 
 // Used for Create and Edit
@@ -237,6 +238,9 @@ func addEntityListOptions(requrl string, opts *EntityListOptions) (string, error
 	}
 	if opts.Format != RichTextFormatDefault {
 		q.Add("format", opts.Format.ToString())
+	}
+	if opts.ConvertRichTextToHTML {
+		q.Add("convertRichTextToHTML", "true")
 	}
 
 	u.RawQuery = q.Encode()
