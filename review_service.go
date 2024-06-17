@@ -14,7 +14,7 @@ const reviewsPath = "reviews"
 
 const reviewInvitePath = "reviewinvites"
 
-//Review update enums
+// Review update enums
 const (
 	ReviewStatusLive        = "LIVE"
 	ReviewStatusQuarantined = "QUARANTINED"
@@ -76,7 +76,30 @@ type ReviewUpdateOptions struct {
 }
 
 type ReviewUpdateResponse struct {
-	Id string `json:"id"`
+	Id IdWrapper `json:"id"`
+}
+
+// Wrapper types are helpful because the Yext API versions have different data types that the ID is returned as.
+// These wrappers allow unmarshalling and using as a string vs using an interface and type casting every time
+type IdWrapper string
+
+func (w *IdWrapper) UnmarshalJSON(data []byte) (err error) {
+	if id, err := strconv.Atoi(string(data)); err == nil {
+		str := strconv.Itoa(id)
+		*w = IdWrapper(str)
+		return nil
+	}
+	var str string
+	err = json.Unmarshal(data, &str)
+	if err != nil {
+		return err
+	}
+	*w = IdWrapper(str)
+	return nil
+}
+
+func (n IdWrapper) String() string {
+	return string(n)
 }
 
 type ReviewCreateInvitationResponse struct {
@@ -262,8 +285,8 @@ func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateRevie
 	return v, r, nil
 }
 
-//the new way to create reviews on the yext platform
-//refer to https://yextops.slack.com/archives/C01269F1ZTL/p1634751884059700
+// the new way to create reviews on the yext platform
+// refer to https://yextops.slack.com/archives/C01269F1ZTL/p1634751884059700
 func (l *ReviewService) CreateReviewLiveAPI(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
 	reviewCreateReviewResponse := &ReviewCreateReviewResponse{}
 	baseURL := "https://liveapi.yext.com"
