@@ -52,6 +52,7 @@ type CFTAsset struct {
 
 type ForEntities struct {
 	MappingType   MappingType       `json:"mappingType,omitempty"`
+	FolderIds     *UnorderedStrings `json:"folderIds,omitempty"`
 	FolderId      *string           `json:"folderId,omitempty"`
 	EntityIds     *UnorderedStrings `json:"entityIds,omitempty"`
 	LabelIds      *UnorderedStrings `json:"labelIds,omitempty"`
