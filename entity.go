@@ -62,6 +62,16 @@ func (b *BaseEntity) GetCountryCode() string {
 	return ""
 }
 
+func (b *BaseEntity) GetTimestamp() string {
+	if b == nil || b.Meta == nil {
+		return ""
+	}
+	if b.Meta.Timestamp != nil {
+		return *b.Meta.Timestamp
+	}
+	return ""
+}
+
 // GetLabels returns a list of labels.
 // Labels are stored in the system by ID, not by name
 // Given a label "Example Label" with ID "123"
