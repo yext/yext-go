@@ -19,6 +19,7 @@ type EntityMeta struct {
 	Labels      *UnorderedStrings `json:"labels,omitempty"`
 	Language    *string           `json:"language,omitempty"`
 	CountryCode *string           `json:"countryCode,omitempty"`
+	Timestamp   *string           `json:"timestamp,omitempty"`
 }
 
 type BaseEntity struct {
