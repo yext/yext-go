@@ -2,6 +2,7 @@ package yext
 
 import (
 	"encoding/json"
+	"time"
 )
 
 type EntityType string
@@ -70,6 +71,19 @@ func (b *BaseEntity) GetTimestamp() string {
 		return *b.Meta.Timestamp
 	}
 	return ""
+}
+
+func (b *BaseEntity) GetTimestampAsTime(layout string) (*time.Time, error) {
+	timeLayout := layout
+	if timeLayout == "" {
+		timeLayout = "2006-01-02T15:04:05Z"
+	}
+
+	t, err := time.Parse(timeLayout, *b.Meta.Timestamp)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
 }
 
 // GetLabels returns a list of labels.
