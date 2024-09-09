@@ -21,6 +21,8 @@ const (
 )
 
 type ListOptions struct {
+	usePageSize            bool // some services use pageSize param instead of limit
+
 	Limit                  int
 	Offset                 int
 	DisableCountValidation bool
@@ -51,6 +53,7 @@ type Client struct {
 	ServicesService                *ServicesService
 	ListingsService                *ListingsService
 	ConfigFieldService             *ConfigFieldService
+	LicenseService                 *LicenseService
 	UseConfigAPIForCFs             bool
 }
 
@@ -79,6 +82,7 @@ func NewClient(config *Config) *Client {
 	c.ServicesService = &ServicesService{client: c}
 	c.LanguageProfileService.RegisterDefaultEntities()
 	c.ListingsService = &ListingsService{client: c}
+	c.LicenseService = &LicenseService{client: c}
 	c.ConfigFieldService = &ConfigFieldService{client: c}
 	return c
 }
@@ -390,8 +394,13 @@ func addListOptions(requrl string, opts *ListOptions) (string, error) {
 		q.Add("name", opts.Name)
 	}
 	if opts.Limit != 0 {
-		q.Add("limit", strconv.Itoa(opts.Limit))
+		if opts.usePageSize {
+			q.Add("pageSize", strconv.Itoa(opts.Limit))
+		} else {
+			q.Add("limit", strconv.Itoa(opts.Limit))
+		}
 	}
+
 	if opts.PageToken != "" {
 		q.Add("pageToken", opts.PageToken)
 	} else if opts.Offset != 0 {
