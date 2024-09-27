@@ -14,7 +14,7 @@ func (u *LicenseService) ListPacks(opts *ListOptions) (*LicensePacksListResponse
 	if opts != nil {
 		opts.usePageSize = true
 	}
-	
+
 	requrl, err := addListOptions(packsPath, opts)
 	if err != nil {
 		return nil, nil, err
@@ -40,7 +40,8 @@ func (u *LicenseService) ListAllPacks() ([]*LicensePack, error) {
 		return lpr.NextPageToken, err
 	}
 
-	if err := tokenListHelper(al, nil); err != nil {
+	opts := ListOptions{}
+	if err := tokenListHelper(al, &opts); err != nil {
 		return nil, err
 	} else {
 		return licensePacks, nil
@@ -76,7 +77,8 @@ func (u *LicenseService) ListAllAssignments(licensePackId string) ([]*LicenseAss
 		return lar.NextPageToken, err
 	}
 
-	if err := tokenListHelper(al, nil); err != nil {
+	opts := ListOptions{}
+	if err := tokenListHelper(al, &opts); err != nil {
 		return nil, err
 	} else {
 		return licenseAssignments, nil
@@ -94,5 +96,3 @@ func (u *LicenseService) CreateAssignment(l *AssignedEntity) (*Response, error) 
 func (u *LicenseService) DeleteAssignment(l *AssignedEntity) (*Response, error) {
 	return u.client.DoRequest("DELETE", l.pathToAssignment(), nil)
 }
-
-
