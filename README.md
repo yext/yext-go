@@ -22,6 +22,6 @@ Go client for the Yext API
     * ex: `2e0a9278c9e8d6a354566770512f92e4822a0f6e`
 * Then run `cd $CONGO && go get gopkg.in/yext/yext-go.v2@COMMIT_HASH` with `COMMIT_HASH` swapped for hash you just copied
     * ex: `go get gopkg.in/yext/yext-go.v2@2e0a9278c9e8d6a354566770512f92e4822a0f6e` 
-* run `make updategomod updatebazeldeps` to update the go mod/sum and bazel files
+* run `make updategomod updatedepsbzl` to update the go mod/sum and bazel files
 * make a commit with those changes, wait for `+1` from CongoTestBed and then you should be good to ship it 🥳
     * ex: https://gerrit.yext.com/c/congo/+/259564
