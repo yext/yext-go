@@ -80,11 +80,12 @@ type HealthcareProfessionalEntity struct {
 	EducationList        *[]Education      `json:"educationList,omitempty"`
 
 	// Lats & Lngs
-	DisplayCoordinate  **Coordinate `json:"displayCoordinate,omitempty"`
-	DropoffCoordinate  **Coordinate `json:"dropoffCoordinate,omitempty"`
-	WalkableCoordinate **Coordinate `json:"walkableCoordinate,omitempty"`
-	RoutableCoordinate **Coordinate `json:"routableCoordinate,omitempty"`
-	PickupCoordinate   **Coordinate `json:"pickupCoordinate,omitempty"`
+	DisplayCoordinate     **Coordinate `json:"displayCoordinate,omitempty"`
+	DropoffCoordinate     **Coordinate `json:"dropoffCoordinate,omitempty"`
+	WalkableCoordinate    **Coordinate `json:"walkableCoordinate,omitempty"`
+	RoutableCoordinate    **Coordinate `json:"routableCoordinate,omitempty"`
+	PickupCoordinate      **Coordinate `json:"pickupCoordinate,omitempty"`
+	YextDisplayCoordinate **Coordinate `json:"yextDisplayCoordinate,omitempty"`
 
 	// Lists
 	Bios         **Lists `json:"bios,omitempty"`
@@ -419,6 +420,22 @@ func (y HealthcareProfessionalEntity) GetRoutableLat() float64 {
 
 func (y HealthcareProfessionalEntity) GetRoutableLng() float64 {
 	c := GetCoordinate(y.RoutableCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Longitude)
+	}
+	return 0
+}
+
+func (y HealthcareProfessionalEntity) GetYextDisplayLat() float64 {
+	c := GetCoordinate(y.YextDisplayCoordinate)
+	if c != nil {
+		return GetNullableFloat(c.Latitude)
+	}
+	return 0
+}
+
+func (y HealthcareProfessionalEntity) GetYextDisplayLng() float64 {
+	c := GetCoordinate(y.YextDisplayCoordinate)
 	if c != nil {
 		return GetNullableFloat(c.Longitude)
 	}
