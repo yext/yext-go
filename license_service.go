@@ -65,15 +65,22 @@ func (u *LicenseService) ListAssignments(licensePackId string, opts *ListOptions
 	return v, r, nil
 }
 
-func (u *LicenseService) ListAllAssignments(licensePackId string) ([]*LicenseAssignment, error) {
-	var licenseAssignments []*LicenseAssignment
+func (u *LicenseService) ListAllAssignments(licensePackId string) (*LicenseAssignment, error) {
+	var licenseAssignments = &LicenseAssignment{}
 
 	var al tokenListRetriever = func(opts *ListOptions) (string, error) {
 		lar, _, err := u.ListAssignments(licensePackId, opts)
 		if err != nil {
 			return "", err
 		}
-		licenseAssignments = append(licenseAssignments, lar.LicenseAssignments...)
+
+		if len(lar.LicenseAssignments) == 0 {
+			return "", fmt.Errorf("error: no license assignments found for id %s", licensePackId)
+		}
+
+		licenseAssignments.LicensePacks = lar.LicenseAssignments[0].LicensePacks
+		licenseAssignments.AssignedEntities = append(licenseAssignments.AssignedEntities, lar.LicenseAssignments[0].AssignedEntities...)
+		
 		return lar.NextPageToken, err
 	}
 
