@@ -12,14 +12,15 @@ type Entity interface {
 }
 
 type EntityMeta struct {
-	Id          *string           `json:"id,omitempty"`
-	AccountId   *string           `json:"accountId,omitempty"`
-	EntityType  EntityType        `json:"entityType,omitempty"`
-	FolderId    *string           `json:"folderId,omitempty"`
-	Labels      *UnorderedStrings `json:"labels,omitempty"`
-	Language    *string           `json:"language,omitempty"`
-	CountryCode *string           `json:"countryCode,omitempty"`
-	Timestamp   *string           `json:"timestamp,omitempty"`
+	Id               *string           `json:"id,omitempty"`
+	AccountId        *string           `json:"accountId,omitempty"`
+	EntityType       EntityType        `json:"entityType,omitempty"`
+	FolderId         *string           `json:"folderId,omitempty"`
+	Labels           *UnorderedStrings `json:"labels,omitempty"`
+	Language         *string           `json:"language,omitempty"`
+	CountryCode      *string           `json:"countryCode,omitempty"`
+	Timestamp        *string           `json:"timestamp,omitempty"`
+	CreatedTimestamp *string           `json:"createdTimestamp,omitempty"`
 }
 
 type BaseEntity struct {
@@ -68,6 +69,16 @@ func (b *BaseEntity) GetTimestamp() string {
 	}
 	if b.Meta.Timestamp != nil {
 		return *b.Meta.Timestamp
+	}
+	return ""
+}
+
+func (b *BaseEntity) GetCreatedTimestamp() string {
+	if b == nil || b.Meta == nil {
+		return ""
+	}
+	if b.Meta.CreatedTimestamp != nil {
+		return *b.Meta.CreatedTimestamp
 	}
 	return ""
 }
