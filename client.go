@@ -21,7 +21,7 @@ const (
 )
 
 type ListOptions struct {
-	usePageSize            bool // some services use pageSize param instead of limit
+	usePageSize bool // some services use pageSize param instead of limit
 
 	Limit                  int
 	Offset                 int
@@ -55,6 +55,7 @@ type Client struct {
 	ConfigFieldService             *ConfigFieldService
 	LicenseService                 *LicenseService
 	UseConfigAPIForCFs             bool
+	UpdateOperationId              string
 }
 
 func NewClient(config *Config) *Client {
@@ -89,6 +90,11 @@ func NewClient(config *Config) *Client {
 
 func (c *Client) WithConfigAPIForCFs() *Client {
 	c.UseConfigAPIForCFs = true
+	return c
+}
+
+func (c *Client) WithUpdateOperationIdHeader(id string) *Client {
+	c.UpdateOperationId = id
 	return c
 }
 
@@ -149,6 +155,11 @@ func (c *Client) NewRequestBody(method string, fullPath string, data []byte) (*h
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+
+	if c.UpdateOperationId != "" {
+		req.Header.Set("Update-Operation-Id", c.UpdateOperationId)
+	}
+
 	q := req.URL.Query()
 	q.Add("api_key", c.Config.ApiKey)
 	q.Add("v", c.Config.Version)
