@@ -265,7 +265,7 @@ func (c *ConfigField) GetCustomFieldType() string {
 		return CUSTOMFIELDTYPE_SINGLELINETEXT
 	}
 
-	return CUSTOMFIELDTYPE_STRUCT
+	return c.TypeId
 }
 
 func (c *ConfigField) GetCustomFieldOptions() []CustomFieldOption {
