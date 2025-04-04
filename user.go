@@ -14,6 +14,7 @@ type User struct {
 	Password     *string `json:"password,omitempty"`
 	SSO          *bool   `json:"sso,omitempty"`
 	ACLs         []ACL   `json:"acl,omitempty"`
+	LastLoginDate *string `json:"lastLoginDate,omitempty"`
 }
 
 func (u *User) GetId() string {
@@ -69,6 +70,13 @@ func (u *User) GetSSO() bool {
 		return false
 	}
 	return *u.SSO
+}
+
+func (u *User) GetLastLoginDate() string {
+	if u.LastLoginDate == nil {
+		return ""
+	}
+	return *u.LastLoginDate
 }
 
 func (u *User) String() string {

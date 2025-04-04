@@ -119,3 +119,12 @@ func (u *UserService) NewLocationACL(l *Location, r Role) ACL {
 		AccessOn:  ACCESS_LOCATION,
 	}
 }
+
+func (u *UserService) NewEntityACL(e Entity, r Role) ACL {
+    return ACL{
+        Role:      r,
+        On:        e.GetEntityId(),
+        AccountId: u.client.Config.AccountId,
+        AccessOn:  ACCESS_LOCATION,
+    }
+}

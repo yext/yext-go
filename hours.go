@@ -11,6 +11,8 @@ const (
 	HoursClosedAllWeek = "1:closed,2:closed,3:closed,4:closed,5:closed,6:closed,7:closed"
 	HoursOpen24Hours   = "00:00:00:00"
 	HoursClosed        = "closed"
+	HoursFormat        = "15:04"
+	hoursLen           = 11 // XX:XX:XX:XX format
 )
 
 type Weekday int
@@ -49,7 +51,7 @@ func (w Weekday) ToString() string {
 	return "Unknown"
 }
 
-type HoursHelper struct {
+type LocationHoursHelper struct {
 	Sunday    []string
 	Monday    []string
 	Tuesday   []string
@@ -59,9 +61,10 @@ type HoursHelper struct {
 	Saturday  []string
 }
 
-func HoursHelperFromString(str string) (*HoursHelper, error) {
+// String Format used from LocationService
+func LocationHoursHelperFromString(str string) (*LocationHoursHelper, error) {
 	var (
-		hoursHelper  = &HoursHelper{}
+		hoursHelper  = &LocationHoursHelper{}
 		hoursForDays = strings.Split(str, ",")
 	)
 	if len(str) == 0 {
@@ -82,15 +85,15 @@ func HoursHelperFromString(str string) (*HoursHelper, error) {
 	return hoursHelper, nil
 }
 
-func MustHoursHelperFromString(str string) *HoursHelper {
-	hoursHelper, err := HoursHelperFromString(str)
+func MustLocationHoursHelperFromString(str string) *LocationHoursHelper {
+	hoursHelper, err := LocationHoursHelperFromString(str)
 	if err != nil {
 		panic(err)
 	}
 	return hoursHelper
 }
 
-func (h *HoursHelper) SetHours(weekday Weekday, hours []string) {
+func (h *LocationHoursHelper) SetHours(weekday Weekday, hours []string) {
 	switch weekday {
 	case Sunday:
 		h.Sunday = hours
@@ -109,7 +112,7 @@ func (h *HoursHelper) SetHours(weekday Weekday, hours []string) {
 	}
 }
 
-func (h *HoursHelper) AppendHours(weekday Weekday, hours string) {
+func (h *LocationHoursHelper) AppendHours(weekday Weekday, hours string) {
 	switch weekday {
 	case Sunday:
 		h.Sunday = append(h.Sunday, hours)
@@ -128,19 +131,19 @@ func (h *HoursHelper) AppendHours(weekday Weekday, hours string) {
 	}
 }
 
-func (h *HoursHelper) SetClosed(weekday Weekday) {
+func (h *LocationHoursHelper) SetClosed(weekday Weekday) {
 	h.SetHours(weekday, []string{HoursClosed})
 }
 
-func (h *HoursHelper) SetUnspecified(weekday Weekday) {
+func (h *LocationHoursHelper) SetUnspecified(weekday Weekday) {
 	h.SetHours(weekday, nil)
 }
 
-func (h *HoursHelper) SetOpen24Hours(weekday Weekday) {
+func (h *LocationHoursHelper) SetOpen24Hours(weekday Weekday) {
 	h.SetHours(weekday, []string{HoursOpen24Hours})
 }
 
-func (h *HoursHelper) GetHours(weekday Weekday) []string {
+func (h *LocationHoursHelper) GetHours(weekday Weekday) []string {
 	switch weekday {
 	case Sunday:
 		return h.Sunday
@@ -160,37 +163,77 @@ func (h *HoursHelper) GetHours(weekday Weekday) []string {
 	return nil
 }
 
-func (h *HoursHelper) Serialize() string {
+func (h *LocationHoursHelper) StringSerialize() string {
 	if h.HoursAreAllUnspecified() {
 		return ""
 	}
 	var days = []string{
-		h.SerializeDay(Sunday),
-		h.SerializeDay(Monday),
-		h.SerializeDay(Tuesday),
-		h.SerializeDay(Wednesday),
-		h.SerializeDay(Thursday),
-		h.SerializeDay(Friday),
-		h.SerializeDay(Saturday),
+		h.StringSerializeDay(Sunday),
+		h.StringSerializeDay(Monday),
+		h.StringSerializeDay(Tuesday),
+		h.StringSerializeDay(Wednesday),
+		h.StringSerializeDay(Thursday),
+		h.StringSerializeDay(Friday),
+		h.StringSerializeDay(Saturday),
 	}
 	return strings.Join(days, ",")
 }
 
-func (h *HoursHelper) SerializeDay(weekday Weekday) string {
+func (h *LocationHoursHelper) StringSerializeDay(weekday Weekday) string {
 	if h.HoursAreAllUnspecified() {
 		return ""
 	}
 	var hoursStrings = []string{}
-	if h.GetHours(weekday) == nil || len(h.GetHours(weekday)) == 0 {
+	if h.GetHours(weekday) == nil || len(h.GetHours(weekday)) == 0 || h.HoursAreClosed(weekday) {
 		return fmt.Sprintf("%d:%s", weekday, HoursClosed)
 	}
 	for _, hours := range h.GetHours(weekday) {
+		if len(hours) != hoursLen {
+			hours = "0" + hours
+		}
 		hoursStrings = append(hoursStrings, fmt.Sprintf("%d:%s", weekday, hours))
 	}
 	return strings.Join(hoursStrings, ",")
 }
 
-func (h *HoursHelper) ToStringSlice() ([]string, error) {
+func (h *LocationHoursHelper) StructSerialize() **Hours {
+	if h.HoursAreAllUnspecified() {
+		return NullRegularHours()
+	}
+	hours := &Hours{}
+	hours.Sunday = NullableDayHours(h.StructSerializeDay(Sunday))
+	hours.Monday = NullableDayHours(h.StructSerializeDay(Monday))
+	hours.Tuesday = NullableDayHours(h.StructSerializeDay(Tuesday))
+	hours.Wednesday = NullableDayHours(h.StructSerializeDay(Wednesday))
+	hours.Thursday = NullableDayHours(h.StructSerializeDay(Thursday))
+	hours.Friday = NullableDayHours(h.StructSerializeDay(Friday))
+	hours.Saturday = NullableDayHours(h.StructSerializeDay(Saturday))
+	return NullableHours(hours)
+
+}
+
+func (h *LocationHoursHelper) StructSerializeDay(weekday Weekday) *DayHours {
+	if h.HoursAreUnspecified(weekday) || h.HoursAreClosed(weekday) || len(h.GetHours(weekday)) == 0 {
+		return &DayHours{
+			IsClosed: NullableBool(true),
+		}
+	}
+	var d = &DayHours{}
+	intervals := []Interval{}
+	for _, interval := range h.GetHours(weekday) {
+		parts := strings.Split(interval, ":")
+		intervals = append(intervals,
+			Interval{
+				Start: fmt.Sprintf("%s:%s", parts[0], parts[1]),
+				End:   fmt.Sprintf("%s:%s", parts[2], parts[3]),
+			},
+		)
+	}
+	d.OpenIntervals = &intervals
+	return d
+}
+
+func (h *LocationHoursHelper) ToStringSlice() ([]string, error) {
 	var hoursStringSlice = make([][]string, 7)
 	for i := range hoursStringSlice {
 		weekday := Weekday(i + 1)
@@ -205,10 +248,10 @@ func (h *HoursHelper) ToStringSlice() ([]string, error) {
 				if err != nil {
 					return nil, err
 				}
-				if open, err = ConvertBetweenFormats(open, "15:04", "3:04pm"); err != nil {
+				if open, err = ConvertBetweenFormats(open, "15:04", "03:04pm"); err != nil {
 					return nil, err
 				}
-				if close, err = ConvertBetweenFormats(close, "15:04", "3:04pm"); err != nil {
+				if close, err = ConvertBetweenFormats(close, "15:04", "03:04pm"); err != nil {
 					return nil, err
 				}
 				hoursStringSlice[i] = append(hoursStringSlice[i], fmt.Sprintf("%s - %s", open, close))
@@ -222,7 +265,7 @@ func (h *HoursHelper) ToStringSlice() ([]string, error) {
 	return hoursSlice, nil
 }
 
-func (h *HoursHelper) MustToStringSlice() []string {
+func (h *LocationHoursHelper) MustToStringSlice() []string {
 	hoursStringSlice, err := h.ToStringSlice()
 	if err != nil {
 		panic(err)
@@ -242,7 +285,17 @@ func parseWeekdayAndHoursFromString(str string) (Weekday, string, error) {
 	if err != nil {
 		return -1, "", fmt.Errorf("Error parsing weekday hours from string; unable to convert index to num: %s", err)
 	}
-	return Weekday(weekdayInt), strings.Join(hoursParts[1:], ":"), nil
+	if strings.ToLower(hoursParts[1]) == HoursClosed {
+		return Weekday(weekdayInt), HoursClosed, nil
+	}
+	// Pad hours with leading 0s
+	for i := 1; i < len(hoursParts); i += 2 {
+		if len(hoursParts[i])+len(hoursParts[i+1]) != 4 {
+			hoursParts[i] = "0" + hoursParts[i]
+		}
+	}
+	hours := strings.Join(hoursParts[1:], ":")
+	return Weekday(weekdayInt), hours, nil
 }
 
 func ParseOpenAndCloseHoursFromString(hours string) (string, string, error) {
@@ -257,7 +310,7 @@ func ParseOpenAndCloseHoursFromString(hours string) (string, string, error) {
 	return "", "", fmt.Errorf("Error parsing open and close hours from string %s: Unexpected format", hours)
 }
 
-func (h HoursHelper) ToMap() map[Weekday][]string {
+func (h LocationHoursHelper) ToMap() map[Weekday][]string {
 	return map[Weekday][]string{
 		Sunday:    h.Sunday,
 		Monday:    h.Monday,
@@ -269,7 +322,7 @@ func (h HoursHelper) ToMap() map[Weekday][]string {
 	}
 }
 
-func (h *HoursHelper) HoursAreAllUnspecified() bool {
+func (h *LocationHoursHelper) HoursAreAllUnspecified() bool {
 	for _, hours := range h.ToMap() {
 		if hours != nil {
 			return false
@@ -278,16 +331,16 @@ func (h *HoursHelper) HoursAreAllUnspecified() bool {
 	return true
 }
 
-func (h *HoursHelper) HoursAreUnspecified(weekday Weekday) bool {
+func (h *LocationHoursHelper) HoursAreUnspecified(weekday Weekday) bool {
 	return h.GetHours(weekday) == nil
 }
 
-func (h *HoursHelper) HoursAreClosed(weekday Weekday) bool {
+func (h *LocationHoursHelper) HoursAreClosed(weekday Weekday) bool {
 	var hours = h.GetHours(weekday)
 	return hours != nil && len(hours) == 1 && hours[0] == HoursClosed
 }
 
-func (h *HoursHelper) HoursAreOpen24Hours(weekday Weekday) bool {
+func (h *LocationHoursHelper) HoursAreOpen24Hours(weekday Weekday) bool {
 	var hours = h.GetHours(weekday)
 	return hours != nil && len(hours) == 1 && hours[0] == HoursOpen24Hours
 }
@@ -310,4 +363,37 @@ func ConvertBetweenFormats(hours string, convertFromFormat string, convertToForm
 		return "", fmt.Errorf("Hours %s was not in expected format %s: %s", hours, convertFromFormat, err)
 	}
 	return t.Format(convertToFormat), nil
+}
+
+func LocationHolidayHoursToHolidayHours(l *LocationHolidayHours) (*HolidayHours, error) {
+	if l == nil {
+		return nil, nil
+	}
+	var h = &HolidayHours{
+		Date: String(l.Date),
+	}
+	if l.Hours == "" {
+		h.IsClosed = NullableBool(true)
+	} else {
+		intervalsList := []Interval{}
+		intervals := strings.Split(l.Hours, ",")
+		for _, i := range intervals {
+			open, close, err := ParseOpenAndCloseHoursFromString(i)
+			if err != nil {
+				return nil, err
+			}
+			if len(open) != 5 {
+				open = "0" + open
+			}
+			if len(close) != 5 {
+				close = "0" + close
+			}
+			intervalsList = append(intervalsList, Interval{
+				Start: open,
+				End:   close,
+			})
+		}
+		h.OpenIntervals = &intervalsList
+	}
+	return h, nil
 }

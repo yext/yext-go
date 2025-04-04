@@ -54,9 +54,13 @@ type ReviewCreateInvitationResponse struct {
 	LastName   string `json:"lastName"`
 	Contact    string `json:"contact"`
 	Image      bool   `json:"image"`
-	TemplateId string `json:"templateId"`
+	TemplateId int    `json:"templateId"`
 	Status     string `json:"status"`
 	Details    string `json:"details"`
+}
+
+type ReviewCreateReviewResponse struct {
+	Id string `json:"id"`
 }
 
 func (l *ReviewService) ListAllWithOptions(rlOpts *ReviewListOptions) ([]*Review, error) {
@@ -191,9 +195,19 @@ func (l *ReviewService) Get(id int) (*Review, *Response, error) {
 	return &v, r, nil
 }
 
-func (l *ReviewService) CreateInvitation(jsonData []Reviewer) (*[]ReviewCreateInvitationResponse, *Response, error) {
-	v := &[]ReviewCreateInvitationResponse{}
-	r, err := l.client.DoRequestJSON("POST", reviewInvitePath, jsonData, v)
+func (l *ReviewService) CreateInvitation(jsonData []*Reviewer) ([]*ReviewCreateInvitationResponse, *Response, error) {
+	var v []*ReviewCreateInvitationResponse
+	r, err := l.client.DoRequestJSON("POST", reviewInvitePath, jsonData, &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return v, r, nil
+}
+
+func (l *ReviewService) CreateReview(jsonData *ReviewCreate) (*ReviewCreateReviewResponse, *Response, error) {
+	var v *ReviewCreateReviewResponse
+	r, err := l.client.DoRequestJSON("POST", reviewsPath, jsonData, &v)
 	if err != nil {
 		return nil, r, err
 	}

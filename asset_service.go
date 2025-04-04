@@ -2,10 +2,6 @@ package yext
 
 import "fmt"
 
-const assetsPath = "assets"
-
-var AssetListMaxLimit = 1000
-
 type AssetService struct {
 	client *Client
 }

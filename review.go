@@ -1,12 +1,15 @@
 package yext
 
+import "encoding/json"
+
 type Reviewer struct {
-	LocationId *string `json:"locationId"`
-	FirstName  *string `json:"firstName"`
-	LastName   *string `json:"lastName"`
-	Contact    *string `json:"contact"`
-	Image      *bool   `json:"image"`
-	TemplateId *string `json:"templateId"`
+	LocationId *string   `json:"locationId,omitempty"`
+	FirstName  *string   `json:"firstName,omitempty"`
+	LastName   *string   `json:"lastName,omitempty"`
+	Contact    *string   `json:"contact,omitempty"`
+	Image      *bool     `json:"image,omitempty"`
+	TemplateId *string   `json:"templateId,omitempty"`
+	LabelIds   []*string `json:"labelIds,omitempty"`
 }
 
 type Review struct {
@@ -27,6 +30,20 @@ type Review struct {
 	ExternalId         *string        `json:"externalId"`
 	ReviewLabels       *[]ReviewLabel `json:"reviewLabels"`
 	InvitationId       *string        `json:"invitationId"`
+}
+
+type ReviewCreate struct {
+	LocationId     *string  `json:"locationId"`
+	AccountId      *string  `json:"accountId"`
+	Rating         *float64 `json:"rating"`
+	Content        *string  `json:"content"`
+	AuthorName     *string  `json:"authorName"`
+	AuthorEmail    *string  `json:"authorEmail,omitempty"`
+	Status         *string  `json:"status,omitempty"`
+	FlagStatus     *string  `json:"flagStatus,omitempty"`
+	ReviewLanguage *string  `json:"reviewLanguage,omitempty"`
+	TransactionId  *string  `json:"transactionId,omitempty"`
+	Date           *string  `json:"date,omitempty"`
 }
 
 type Comment struct {
@@ -225,4 +242,86 @@ func (y ReviewLabel) GetName() string {
 		return *y.Name
 	}
 	return ""
+}
+
+func (y ReviewCreate) GetLocationId() string {
+	if y.LocationId != nil {
+		return *y.LocationId
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetAccountId() string {
+	if y.AccountId != nil {
+		return *y.AccountId
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetRating() float64 {
+	if y.Rating != nil {
+		return *y.Rating
+	}
+	return 0
+}
+
+func (y ReviewCreate) GetContent() string {
+	if y.Content != nil {
+		return *y.Content
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetAuthorName() string {
+	if y.AuthorName != nil {
+		return *y.AuthorName
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetAuthorEmail() string {
+	if y.AuthorEmail != nil {
+		return *y.AuthorEmail
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetStatus() string {
+	if y.Status != nil {
+		return *y.Status
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetFlagStatus() string {
+	if y.FlagStatus != nil {
+		return *y.FlagStatus
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetReviewLanguage() string {
+	if y.ReviewLanguage != nil {
+		return *y.ReviewLanguage
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetTransactionId() string {
+	if y.TransactionId != nil {
+		return *y.TransactionId
+	}
+	return ""
+}
+
+func (y ReviewCreate) GetDate() string {
+	if y.Date != nil {
+		return *y.Date
+	}
+	return ""
+}
+
+func (y ReviewCreate) String() string {
+	b, _ := json.Marshal(y)
+	return string(b)
 }
