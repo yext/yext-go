@@ -58,7 +58,7 @@ type AnalyticsData struct {
 	EntityId                              *string  `json:"entity_id"`
 	Month                                 *string  `json:"month"`
 	ResponseTime                          *int     `json:"Response Time (Hours)"`
-	ResponseRate                          *int     `json:"Response Rate"`
+	ResponseRate                          *float64 `json:"Response Rate"`
 	PartnerSite                           *string  `json:"site"`
 	CumulativeRating                      *float64 `json:"Rolling Average Rating"`
 	Competitor                            *string  `json:"competitor"`
@@ -478,11 +478,11 @@ func (y AnalyticsData) GetMonth() string {
 	return ""
 }
 
-func (y AnalyticsData) GetResponseRate() int {
+func (y AnalyticsData) GetResponseRate() float64 {
 	if y.ResponseRate != nil {
 		return *y.ResponseRate
 	}
-	return 0
+	return -1
 }
 
 func (y AnalyticsData) GetClicks() int {
