@@ -20,10 +20,6 @@ type AnalyticsFilters struct {
 	CustomerActionType               *[]string `json:"customerActionType"`
 	GoogleQueryType                  *[]string `json:"googleQueryType"`
 	Hours                            *[]int    `json:"hours"`
-	Ratings                          *[]int    `json:"ratings"`
-	FrequentWords                    *[]string `json:"frequentWords"`
-	Partners                         *[]int    `json:"partners"`
-	ReviewLabels                     *[]int    `json:"reviewLabels"`
 	PageTypes                        *[]string `json:"pageTypes"`
 	ListingsLiveType                 *string   `json:"listingsLiveType"`
 	QueryTemplate                    *[]string `json:"queryTemplate"`
