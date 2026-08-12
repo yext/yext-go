@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	multierror "github.com/hashicorp/go-multierror"
 )
 
 // Legacy hours format used for Yext v2 locations API
@@ -93,6 +95,24 @@ func MustLocationHoursHelperFromString(str string) *LocationHoursHelper {
 		panic(err)
 	}
 	return hoursHelper
+}
+
+func FormatHours(timeString string, clientTimeFormat string, parseErrors *multierror.Error) (string, error) {
+	if timeString == "" {
+		return "", nil
+	}
+
+	if clientTime, err := time.Parse(clientTimeFormat, timeString); err != nil {
+		parsedError := fmt.Errorf("Can't parse time %s. Error: %v", timeString, err)
+		return "", parsedError
+	} else {
+		hours := clientTime.Format(HoursFormat)
+		if hours == "00:00" {
+			hours = "23:59"
+		}
+
+		return hours, nil
+	}
 }
 
 func (h *LocationHoursHelper) SetHours(weekday Weekday, hours []string) {
