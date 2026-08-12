@@ -63,6 +63,9 @@ func NullString() **string {
 }
 
 func Strings(v []string) *[]string {
+	if v == nil {
+		v = []string{}
+	}
 	return &v
 }
 
