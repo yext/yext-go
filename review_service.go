@@ -349,3 +349,23 @@ func (l *ReviewService) UpdateLabels(id int, opts *ReviewUpdateLabelOptions) (*R
 
 	return &v, r, nil
 }
+
+type ReviewSyndicateOptions struct {
+	PublisherId int `json:"publisherId,omitempty"`
+}
+
+type ReviewSyndicateResponse struct {
+	Id               IdWrapper `json:"id"`
+	Outcome          string    `json:"outcome"`
+	ExternalReviewId string    `json:"externalReviewId"`
+}
+
+func (l *ReviewService) Syndicate(id int, opts *ReviewSyndicateOptions) (*ReviewSyndicateResponse, *Response, error) {
+	var v ReviewSyndicateResponse
+	r, err := l.client.DoRequestJSON("POST", fmt.Sprintf("%s/%d/syndicate", reviewsPath, id), opts, &v)
+	if err != nil {
+		return nil, r, err
+	}
+
+	return &v, r, nil
+}

@@ -2,8 +2,10 @@ package yext
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -234,6 +236,102 @@ func TestReviewList(t *testing.T) {
 		client.ReviewService.ListAll()
 		if reqs < len(test.expectedTokenRequests) {
 			t.Errorf("Too few requests sent to review list - got %d, expected %d", reqs, len(test.expectedTokenRequests))
+		}
+
+		teardown()
+	}
+}
+
+func TestReviewSyndicate(t *testing.T) {
+	tests := []struct {
+		id           int
+		opts         *ReviewSyndicateOptions
+		wantBody     string
+		mockResponse *ReviewSyndicateResponse
+		want         *ReviewSyndicateResponse
+	}{
+		{
+			id:       123,
+			opts:     &ReviewSyndicateOptions{PublisherId: 456},
+			wantBody: `{"publisherId":456}`,
+			mockResponse: &ReviewSyndicateResponse{
+				Id:               "0",
+				Outcome:          "SUCCESS",
+				ExternalReviewId: "ext-123",
+			},
+			want: &ReviewSyndicateResponse{
+				Id:               "0",
+				Outcome:          "SUCCESS",
+				ExternalReviewId: "ext-123",
+			},
+		},
+		{
+			id:       789,
+			opts:     nil,
+			wantBody: `null`,
+			mockResponse: &ReviewSyndicateResponse{
+				Id:      "789",
+				Outcome: "FAILURE",
+			},
+			want: &ReviewSyndicateResponse{
+				Id:      "789",
+				Outcome: "FAILURE",
+			},
+		},
+		{
+			id:       789,
+			opts:     &ReviewSyndicateOptions{},
+			wantBody: `{}`,
+			mockResponse: &ReviewSyndicateResponse{
+				Id:      "789",
+				Outcome: "SUCCESS",
+			},
+			want: &ReviewSyndicateResponse{
+				Id:      "789",
+				Outcome: "SUCCESS",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		setup()
+
+		var gotPath, gotMethod, gotBody string
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			gotPath = r.URL.Path
+			gotMethod = r.Method
+
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				t.Fatalf("Failed to read request body: %v", err)
+			}
+			gotBody = strings.TrimSpace(string(body))
+
+			v := &mockResponse{Response: test.mockResponse}
+			data, _ := json.Marshal(v)
+			w.Write(data)
+		})
+
+		got, _, err := client.ReviewService.Syndicate(test.id, test.opts)
+		if err != nil {
+			t.Errorf("Unexpected error calling Syndicate: %v", err)
+		}
+
+		wantPath := "/accounts/" + client.Config.AccountId + "/reviews/" + strconv.Itoa(test.id) + "/syndicate"
+		if gotPath != wantPath {
+			t.Errorf("Wanted path %s, got %s", wantPath, gotPath)
+		}
+
+		if gotMethod != http.MethodPost {
+			t.Errorf("Wanted method %s, got %s", http.MethodPost, gotMethod)
+		}
+
+		if gotBody != test.wantBody {
+			t.Errorf("Wanted body %s, got %s", test.wantBody, gotBody)
+		}
+
+		if got.Id != test.want.Id || got.Outcome != test.want.Outcome || got.ExternalReviewId != test.want.ExternalReviewId {
+			t.Errorf("Wanted response %+v, got %+v", test.want, got)
 		}
 
 		teardown()
